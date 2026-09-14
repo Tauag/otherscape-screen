@@ -24,9 +24,9 @@ run a real session from a phone before starting S8.
 
 ---
 
-## S0 Rules research
+## S0 Rules research — done
 
-### T01 Answer open questions O2 to O6
+### T01 Answer open questions O2 to O6 — done
 Read the rulebook and record the answers in the PRD: decay track length (O2),
 starting theme count and type limits (O3), starting tag counts (O4), starting
 loadout Power (O5), the full themebook list (O6).
@@ -34,7 +34,7 @@ loadout Power (O5), the full themebook list (O6).
 matching unresolved item.
 **Refs:** PRD O2-O6
 
-### T02 Answer O1, rolling with Self, Mythos, or Noise
+### T02 Answer O1, rolling with Self, Mythos, or Noise — done
 Confirm the rule on rulebook p.122. It changes the `power` signature, not a
 constant, so settle it before T17.
 **Done when:** the rule is written into PRD 7.8 as a sentence the roll builder can
