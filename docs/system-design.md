@@ -2,7 +2,8 @@
 
 Status: draft v1
 Owner: Gavin Li
-Related: [PRD.md](./PRD.md) (what and why), [design.md](./design.md) (interface)
+Related: [PRD.md](./PRD.md) (what and why), [design.md](./design.md) (interface),
+[tasks.md](./tasks.md) (build order)
 
 This document holds the technical decisions. It replaces the removed infra plan.
 

@@ -2,7 +2,8 @@
 
 Status: draft v1
 Owner: Gavin Li
-Related: [system-design.md](./system-design.md) (technical decisions), [design.md](./design.md) (interface)
+Related: [system-design.md](./system-design.md) (technical decisions), [design.md](./design.md) (interface),
+[tasks.md](./tasks.md) (build order)
 
 This document states what the product does and why. It states no technical or
 interface decisions. Those get workshopped separately.
