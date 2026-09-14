@@ -50,14 +50,16 @@ function isDocument(value: unknown): value is Record<string, unknown> {
 export async function createCharacter(): Promise<Message> {
   const { supabase, userId } = await session();
 
-  const { error } = await supabase.from("characters").insert({
-    owner: userId,
-    data: newCharacter(),
-  });
-  if (error) return "Could not create the character.";
+  const { data: created, error } = await supabase
+    .from("characters")
+    .insert({ owner: userId, data: newCharacter() })
+    .select("id")
+    .returns<{ id: string }[]>()
+    .single();
+  if (error || !created) return "Could not create the character.";
 
   revalidatePath("/");
-  return null;
+  redirect(`/c/${created.id}`);
 }
 
 export async function renameCharacter(_previous: Message, form: FormData): Promise<Message> {
