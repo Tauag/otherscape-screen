@@ -122,7 +122,7 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
   loses the rest.
 - Themes: up to 4
 - Loadout: see below
-- Play state: statuses, story tags, tag combos
+- Play state: statuses and story tags
 
 ### Theme
 - Type: Mythos, Self, or Noise
@@ -182,10 +182,6 @@ it has no Decay track.
 
 ### Story tag
 - Name, positive or negative, scratched flag.
-
-### Tag combo (roll builder)
-- Chosen effect, selected power tags, selected weakness tags, selected statuses
-- Resulting Power total
 
 ## 7. Requirements
 
@@ -283,7 +279,9 @@ This is what a player uses while a session runs.
 - Play actions are quick enough to do mid-conversation, without interrupting the table.
 
 ### 7.8 Roll builder — P0
-- Select an effect, then select the tags and statuses that apply to the action.
+- Select the tags and statuses that apply to the action. Do not ask for an effect.
+  One action can land several effects at once, and the player chooses them after
+  the roll, when they spend the Power. The builder totals an action, nothing more.
 - Compute Power: each relevant positive tag adds 1, each negative tag subtracts 1.
   Only the highest positive status tier and the highest negative status tier count.
   A burnt power tag contributes 3 instead of 1. Theme specials change that number,
@@ -292,9 +290,9 @@ This is what a player uses while a session runs.
   themes of that type instead of the counted tags. Several Essence specials grant
   this. See open question O1.
 - Allow a manual modifier for the Scale gap and for MC calls.
-- The running Power total stays visible while the player builds the combo.
-- The cost of the chosen effect is visible while the player builds the combo.
-- Save the combo to the sheet, the way the sheet's four TAG COMBO slots work.
+- The running Power total stays visible while the player builds the roll.
+- Do not save rolls. A roll is thrown away once it is made. The sheet's four TAG
+  COMBO slots exist because paper cannot recompute; the app recomputes instantly.
 
 ### 7.9 Dice roller — P1
 - Roll 2d6, add Power, and show strong hit (10+), mixed hit (7-9), or miss (6-).
@@ -302,7 +300,9 @@ This is what a player uses while a session runs.
 - Keep a per-session roll log.
 
 ### 7.10 Reference — P0
-Port the CHEATSHEET tab. A player reads it during play without losing their current state.
+Port the CHEATSHEET tab. A player reads it during play without losing their current
+state. The reference is read-only. It never selects anything for a roll. A player
+reads the effect costs here after the roll, when they decide how to spend Power.
 - Effects and their costs: Attack, Disrupt, Influence, Weaken, Bestow, Create,
   Enhance, Restore, Advance, Set Back, Discover, Extra Feat.
 - Mitigation costs.

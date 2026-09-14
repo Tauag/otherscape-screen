@@ -1,0 +1,109 @@
+{
+  "artboards": [
+    {
+      "file": "Roster.dc.html",
+      "title": "Characters",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "Sheet",
+      "x": 490,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Theme.dc.html",
+      "title": "Theme detail",
+      "x": 980,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Play.dc.html",
+      "title": "Play state",
+      "x": 1470,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Roll.dc.html",
+      "title": "Roll builder",
+      "x": 0,
+      "y": 1000,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Loadout.dc.html",
+      "title": "Loadout",
+      "x": 490,
+      "y": 1000,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Create.dc.html",
+      "title": "Guided creation",
+      "x": 980,
+      "y": 1000,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Reference.dc.html",
+      "title": "Reference",
+      "x": 1470,
+      "y": 1000,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Desktop.dc.html",
+      "title": "Desktop, prep",
+      "x": 0,
+      "y": 2000,
+      "w": 1440,
+      "h": 900
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-session",
+      "x": 0,
+      "y": -170,
+      "w": 880,
+      "text": "M1-M3 screens: everything needed to run one session from a phone.\n\nOne hue per theme type carries the whole system: Self red, Mythos purple, Noise cyan. Positive mint, negative amber, burnt a bright neutral. Nothing else is coloured, so a tag's origin is readable at a glance. Magenta is reserved for the app's own primary action."
+    },
+    {
+      "id": "note-roll",
+      "x": 0,
+      "y": 1900,
+      "w": 880,
+      "text": "No effect picker, and nothing to save. One action can influence and weaken at once, so the builder just totals an action; effects get chosen afterwards, when Power is spent, and the roll is thrown away once made.\n\nPower is always shown as a breakdown, never a bare number. traced-1 sits selected but struck through: only the highest tier on each side counts, and the app says so instead of silently dropping it."
+    },
+    {
+      "id": "note-warn",
+      "x": 980,
+      "y": 1900,
+      "w": 880,
+      "text": "Compute and warn, never block. The loadout sits 1P over budget and the app says so in plain words. The desktop readiness check reads the same way."
+    },
+    {
+      "id": "note-slots",
+      "x": 1960,
+      "y": 1000,
+      "w": 300,
+      "text": "Reference shows the content pack with its rules text empty: the effect names ship, the cost and rule slots stay visibly blank until filled."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}
