@@ -27,45 +27,15 @@ run a real session from a phone before starting S8.
 ## S0 Rules research — done
 
 ### T01 Answer open questions O2 to O6 — done
-Read the rulebook and record the answers in the PRD: decay track length (O2),
-starting theme count and type limits (O3), starting tag counts (O4), starting
-loadout Power (O5), the full themebook list (O6).
-**Done when:** PRD section 9 lists each answer, and design.md section 5 drops the
-matching unresolved item.
-**Refs:** PRD O2-O6
-
 ### T02 Answer O1, rolling with Self, Mythos, or Noise — done
-Confirm the rule on rulebook p.122. It changes the `power` signature, not a
-constant, so settle it before T17.
-**Done when:** the rule is written into PRD 7.8 as a sentence the roll builder can
-implement.
-**Refs:** PRD O1
 
 ---
 
 ## S1 Supabase — done
 
 ### T03 Create the Supabase project and enable Google auth — done
-Create the project, enable the Google provider, and record the redirect URLs for
-local and production. Keep the service role key out of the repo.
-**Done when:** a Google sign-in from a scratch page returns a session.
-**Refs:** sysdesign 5
-
 ### T04 Migration: characters and content_packs — done
-One migration file. Both tables, the `name` and `essence` generated columns, the
-`(owner, updated_at desc)` index, and the `pgcrypto` extension.
-**Done when:** the migration applies to a clean database and an inserted row
-reports its generated `name`.
-**Refs:** sysdesign 3
-
 ### T05 Migration: version trigger, RLS, and column grants — done
-The `bump_version` trigger, the `own_characters` policy, the `read_pack` policy,
-and the column grants that keep `id`, `version`, `created_at`, and `updated_at`
-out of client hands.
-**Done when:** a client update to another user's row returns zero rows, and a
-client attempt to write `version` is rejected.
-**Depends on:** T04
-**Refs:** sysdesign 3
 
 ---
 
