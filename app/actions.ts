@@ -47,8 +47,6 @@ function isDocument(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-// Takes no arguments: useActionState passes the previous message and the form
-// data, and creating a blank character needs neither.
 export async function createCharacter(): Promise<Message> {
   const { supabase, userId } = await session();
 
@@ -66,11 +64,6 @@ export async function renameCharacter(_previous: Message, form: FormData): Promi
   const id = String(form.get("id") ?? "");
   const name = String(form.get("name") ?? "").trim();
   const { supabase } = await session();
-
-  // lazy: a read-modify-write of the whole document, because the column grants
-  // allow updating `data` only. Ceiling: two round trips, and the document
-  // crosses the wire twice for a rename. Upgrade path: a `jsonb_set` RPC, which
-  // makes it one atomic round trip. Until then `version` carries the check.
   const { data: row, error } = await supabase
     .from("characters")
     .select("data, version")
