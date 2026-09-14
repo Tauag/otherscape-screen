@@ -121,7 +121,8 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
   the track marks. It also records when the theme was lost and why. Players read
   these back later. The sheet keeps only themebook, type, and title tag, which
   loses the rest.
-- Themes: up to 4
+- Themes: 4 at creation, not counting the loadout or the crew theme. The app
+  warns, never blocks, past 4 (see 7.3)
 - Loadout: see below
 - Play state: statuses and story tags
 
@@ -143,7 +144,10 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
 - Title tag: the first power tag that answers question A. Every theme has one. The
   sheet renders it in capitals. A later answer to A is a normal power tag.
 - Nascent flag. A nascent theme hides its locked rows and shows fewer tags.
-- Upgrade track: 3 points. Decay track: marked boxes.
+- Upgrade track: 3 points. Decay track: 3 boxes.
+- Starting size: 3 power tags, the title tag included, and 1 weakness tag. One
+  theme may instead take 4 power tags and 2 weakness tags; the player chooses
+  which theme.
 - Power tags: ordered list of (themebook, question letter, text, burnt flag). Each
   power tag answers a themebook question, labelled A to J. Question A is always
   answered. The player chooses which others to answer, and may answer a question
@@ -167,8 +171,10 @@ it has no Decay track.
 - Loadout tag sets, grouped per loadout theme, each with a flaw
 - Misc / wildcard loadout tags, and misc loadout flaws
 - Loadout theme specials
-- Available loadout Power: a budget. A loadout tag costs 1P, a wildcard tag 2P.
-  It starts at a fixed value and grows as the loadout theme upgrades. See O5.
+- Available loadout Power: a budget, tracked for reference rather than
+  enforced. A loadout tag costs 1P, a wildcard tag 2P. It starts at 1 and
+  grows as the loadout theme upgrades. In-session actions can let the player
+  load past it, so the app computes and warns, never blocks.
 
 ### Status (tracking card)
 - Name
@@ -199,7 +205,9 @@ and edits a blank sheet directly.
 3. Choose a themebook for each theme, offering only themebooks of that theme's type.
 4. Answer question A for each theme. That answer becomes the theme's title tag.
 5. Answer further power tag questions, and at least one weakness question, per theme.
-   A question may be answered more than once.
+   A question may be answered more than once. Starting size is 3 power tags
+   (the title tag counts as one) and 1 weakness tag per theme, except one
+   theme the player may build with 4 power tags and 2 weakness tags instead.
 6. Write the Identity, Ritual, or Itch line for each theme.
 7. Choose the Essence from the candidates the theme mix allows.
 8. Build the starting loadout inside the starting Power budget.
@@ -292,9 +300,10 @@ This is what a player uses while a session runs.
   Only the highest positive status tier and the highest negative status tier count.
   A burnt power tag contributes 3 instead of 1. Theme specials change that number,
   so treat 3 as the default and let the player set it per burn.
-- Support rolling with Self, Mythos, or Noise, where Power comes from the count of
-  themes of that type instead of the counted tags. Several Essence specials grant
-  this. See open question O1.
+- Support rolling with Self, Mythos, or Noise: when the action is generally
+  about that domain, Power comes from the count of themes of that type instead
+  of the counted tags. Negative tags and statuses still count, and the player
+  cannot burn a tag for Power on that roll. Several Essence specials grant this.
 - Allow a manual modifier for the Scale gap and for MC calls.
 - The running Power total stays visible while the player builds the roll.
 - Do not save rolls. A roll is thrown away once it is made. The sheet's four TAG
@@ -344,21 +353,32 @@ reads the effect costs here after the roll, when they decide how to spend Power.
 Ship M3 before adding anything. Running one real session is the only test that
 matters here.
 
-## 9. Open questions
+## 9. Rules answers
 
-- **O1. Rolling with Self, Mythos, or Noise.** Confirm the rule (rulebook p.122)
-  before building it into the roll builder.
-- **O2. Decay track length.** Confirm the box count. The trigger and the outcome
-  are settled: Decay marks when a character acts against an Identity, neglects a
-  Ritual, or suppresses an Itch, and a filled track loses the theme.
-- **O3. Starting themes.** Confirm the number of themes at creation, and any limit
-  on how many share one type.
-- **O4. Starting tags.** Confirm how many power tags and weakness tags a theme
-  carries at creation.
-- **O5. Starting loadout Power.** The sheet's template shows 2 and the sample PC
-  shows 3. Confirm the starting value.
-- **O6. Themebook list.** Fourteen themebooks are recorded, from the pages
-  provided. Confirm no others exist.
+Confirmed against the rulebook. O1 to O6 are closed.
+
+- **O1. Rolling with Self, Mythos, or Noise.** Rulebook p.122. When an action is
+  generally about one of the three domains (identifying or understanding a
+  phenomenon of that type, or resisting a transformation of that type, are the
+  common cases), the player may use the count of themes of that type as Power
+  instead of counting tags. Negative tags and statuses still apply. The player
+  cannot burn a tag for Power on that roll. The MC decides which actions
+  qualify.
+- **O2. Decay track length.** 3 boxes, the same length as the Upgrade track.
+  Decay marks when a character acts against an Identity, neglects a Ritual, or
+  suppresses an Itch, and a filled track loses the theme.
+- **O3. Starting themes.** 4, always, not counting the loadout or the crew
+  theme. No hard cap on how many share one type, or even one themebook: a
+  player could take Assets four times over. The book advises against it but
+  does not block it, so the app does not either.
+- **O4. Starting tags.** 3 power tags per theme, the title tag included, and 1
+  weakness tag. One theme may instead take 4 power tags and 2 weakness tags;
+  the player chooses which theme gets the larger set.
+- **O5. Starting loadout Power.** 1. It rises as the loadout theme upgrades,
+  and in-session actions can let the player load a tag past the budget. Treat
+  it as a tracked reference number, not a hard cap, per the "compute and warn"
+  rule in section 4.
+- **O6. Themebook list.** The 14 themebooks in section 6 are the complete set.
 
 ## 10. Later: GM tools
 

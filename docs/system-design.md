@@ -425,8 +425,8 @@ building before that test happens.
 
 ## 13. Open
 
-- PRD O1 to O6 are still open. Step 3 isolates all of them in `constants.ts`
-  except O1, which changes `power` itself.
+- PRD O1 to O6 are answered. `constants.ts` (T16) still needs to encode O2 to
+  O5, and `power` (T17) needs O1's rule.
 - design.md leaves the three type hues unconfirmed against the Google Sheet.
 - Whether the content pack ever holds the rulebook wording. The app runs either
   way, which is the point of section 6.

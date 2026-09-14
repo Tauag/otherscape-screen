@@ -107,8 +107,9 @@ more than once, so two tags may carry the same letter.
 ## 5. Unresolved
 
 - Exact hex values for the three type hues. See section 2.
-- Decay tracks are drawn as three boxes, and starting loadout Power as 4. Both
-  are open in the PRD (O2, O5).
+- The Decay track box count (3) is confirmed and matches the artboards.
+  Starting loadout Power is confirmed at 1 (PRD O5); the Loadout artboard
+  still draws 4 and needs a canvas edit to match.
 - Effect costs on the Reference screen. They come from the CHEATSHEET tab.
 
 ## 6. Editing the canvas
