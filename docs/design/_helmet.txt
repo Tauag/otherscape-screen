@@ -1,9 +1,0 @@
-<helmet>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap">
-  <style>
-    body { margin: 0; background: #0A0A0F; color: #E8E6F0; font-family: 'Barlow', 'Helvetica Neue', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-    * { box-sizing: border-box; }
-    a { color: #47D9E8; text-decoration: none; }
-    a:hover { color: #8BE9F2; }
-  </style>
-</helmet>

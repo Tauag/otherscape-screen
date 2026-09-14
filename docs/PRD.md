@@ -2,7 +2,7 @@
 
 Status: draft v1
 Owner: Gavin Li
-Related: [infra-plan.md](./infra-plan.md) (hosting and platform decisions)
+Related: [system-design.md](./system-design.md) (technical decisions), [design.md](./design.md) (interface)
 
 This document states what the product does and why. It states no technical or
 interface decisions. Those get workshopped separately.
@@ -139,18 +139,19 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
   Identity, Ritual, or Itch, 3 crew relationship scenarios each with a suggested
   relationship tag, and 5 theme specials. Allow a typed-in name for a homebrew
   themebook.
-- Title tag: the power tag that answers question A. Every theme has one. The sheet
-  renders it in capitals.
+- Title tag: the first power tag that answers question A. Every theme has one. The
+  sheet renders it in capitals. A later answer to A is a normal power tag.
 - Nascent flag. A nascent theme hides its locked rows and shows fewer tags.
 - Upgrade track: 3 points. Decay track: marked boxes.
 - Power tags: ordered list of (themebook, question letter, text, burnt flag). Each
   power tag answers a themebook question, labelled A to J. Question A is always
-  answered. The player chooses which others to answer. The answer is the tag. A tag
+  answered. The player chooses which others to answer, and may answer a question
+  again at any time. One question can carry several tags. The answer is the tag. A tag
   usually cites its own theme's themebook, but several theme specials let a tag
   answer a question from a named other themebook, so the tag records which
   themebook the question came from.
 - Weakness tags: ordered list of (question letter, text). Weakness questions are
-  labelled A to D and work the same way.
+  labelled A to D and follow the same rule, repeat answers included.
 - Identity, Ritual, or Itch. One quote line, named by theme type:
   Mythos uses Ritual, Self uses Identity, Noise uses Itch.
 - Theme specials: chosen from that themebook's five. Some change rules the app
@@ -197,6 +198,7 @@ and edits a blank sheet directly.
 3. Choose a themebook for each theme, offering only themebooks of that theme's type.
 4. Answer question A for each theme. That answer becomes the theme's title tag.
 5. Answer further power tag questions, and at least one weakness question, per theme.
+   A question may be answered more than once.
 6. Write the Identity, Ritual, or Itch line for each theme.
 7. Choose the Essence from the candidates the theme mix allows.
 8. Build the starting loadout inside the starting Power budget.
@@ -222,11 +224,14 @@ and edits a blank sheet directly.
 - Choose theme specials from that themebook's five.
 - Record which themebook and which question letter a power tag answers, including
   when a special sends the player to another themebook's question.
+- Let a question take another answer at any time. Never retire an answered question
+  or cap a theme's tags at the question count.
 - Add, edit, reorder, and delete power tags and weakness tags.
 - Mark and clear boxes on the Upgrade and Decay tracks.
 - Mark an Upgrade point when the player uses one of that theme's weakness tags.
 - At 3 points, clear the track and prompt for the Upgrade. The player takes either
-  a new power tag, answering another themebook question, or a theme special.
+  a new power tag, answering any themebook question including one already answered,
+  or a theme special.
 - Toggle a theme to nascent.
 - Edit the Identity, Ritual, or Itch line. Label it by the theme's type.
 - Warn when a character holds more than 4 themes. Do not block.

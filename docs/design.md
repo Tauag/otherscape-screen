@@ -2,11 +2,16 @@
 
 Status: draft v1
 Owner: Gavin Li
-Related: [PRD.md](./PRD.md) (what the product does and why)
+Related: [PRD.md](./PRD.md) (what the product does and why),
+[system-design.md](./system-design.md) (technical decisions)
 
 The PRD states no interface decisions. This document holds them.
 
-Canvas: https://claude.ai/code/artifact/1e55c96a-02c5-4710-8b68-4d936b153b8e
+**The artboards live in the canvas, and nowhere else:**
+https://claude.ai/code/artifact/1e55c96a-02c5-4710-8b68-4d936b153b8e
+
+Open that link to read, edit, or export a screen. This document holds the
+decisions; the canvas holds the pictures they describe.
 
 ## 1. Scope
 
@@ -80,7 +85,8 @@ are unconfirmed. Replace these hexes when the sheet's values are to hand.
 | JetBrains Mono | Section labels, question letters, Power math |
 
 Question letters ride on every tag: `B` for a power tag, `wA` for a weakness tag.
-A tag always shows which themebook question it answers.
+A tag always shows which themebook question it answers. A question can be answered
+more than once, so two tags may carry the same letter.
 
 ## 4. Interface decisions
 
@@ -105,14 +111,14 @@ A tag always shows which themebook question it answers.
   are open in the PRD (O2, O5).
 - Effect costs on the Reference screen. They come from the CHEATSHEET tab.
 
-## 6. Rebuilding the canvas
+## 6. Editing the canvas
 
-`bodies/*.html` holds each artboard's markup. `_helmet.txt` holds the shared
-fonts and reset. Edit those, never the generated files.
+Edit the artboards in the canvas itself, at the link above. Saving there
+publishes a new version.
 
-```
-cd docs/design && python3 build.py
-```
+The repo once held the artboard markup and a `build.py` that seeded the canvas
+from it. That build is gone. Keeping two copies of nine screens in sync earned
+nothing, because the canvas edits them directly and exports PNG and PDF on its
+own.
 
-That writes the `*.dc.html` artboards. Both the artboards and the seeded 2.5 MB
-canvas payload are generated, so neither is committed.
+One consequence: the canvas is the only copy. Nothing in git can rebuild it.
