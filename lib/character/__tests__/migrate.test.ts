@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CURRENT_SCHEMA_VERSION, migrate } from "./migrate.ts";
+import { CURRENT_SCHEMA_VERSION, migrate } from "../migrate.ts";
 import { sample } from "./sample.ts";
 
 test("a current-version document passes through unchanged", () => {
