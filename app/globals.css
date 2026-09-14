@@ -60,10 +60,6 @@
   --hue-text: var(--color-negative-text);
 }
 
-/* Burning is a state a tag enters, not a third origin, so it overrides
-   whatever hue the type or valence axis set rather than adding one. */
-/* Matches the literal "true" because React renders data-burnt={false} as
-   data-burnt="false", which a bare [data-burnt] would still paint. */
 [data-burnt="true"] {
   --hue: var(--color-burnt);
   --hue-title: var(--color-burnt);

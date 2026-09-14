@@ -1,6 +1,3 @@
-// lazy: a token check, not the roster. T12 replaces this page with the real
-// roster screen; every chip below shares one markup shape and paints only
-// from --hue / --hue-text, so a broken token shows up here first.
 const chips = [
   { label: "Self", attr: { "data-type": "self" } },
   { label: "Mythos", attr: { "data-type": "mythos" } },
