@@ -43,22 +43,22 @@ implement.
 
 ---
 
-## S1 Supabase
+## S1 Supabase — done
 
-### T03 Create the Supabase project and enable Google auth
+### T03 Create the Supabase project and enable Google auth — done
 Create the project, enable the Google provider, and record the redirect URLs for
 local and production. Keep the service role key out of the repo.
 **Done when:** a Google sign-in from a scratch page returns a session.
 **Refs:** sysdesign 5
 
-### T04 Migration: characters and content_packs
+### T04 Migration: characters and content_packs — done
 One migration file. Both tables, the `name` and `essence` generated columns, the
 `(owner, updated_at desc)` index, and the `pgcrypto` extension.
 **Done when:** the migration applies to a clean database and an inserted row
 reports its generated `name`.
 **Refs:** sysdesign 3
 
-### T05 Migration: version trigger, RLS, and column grants
+### T05 Migration: version trigger, RLS, and column grants — done
 The `bump_version` trigger, the `own_characters` policy, the `read_pack` policy,
 and the column grants that keep `id`, `version`, `created_at`, and `updated_at`
 out of client hands.
