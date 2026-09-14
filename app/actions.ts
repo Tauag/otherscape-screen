@@ -106,8 +106,7 @@ export async function duplicateCharacter(_previous: Message, form: FormData): Pr
   const { error: writeError } = await supabase.from("characters").insert({
     owner: userId,
     data: { ...document, name: `${source || "Unnamed"} (copy)` },
-    // Explicit: a copy must not inherit a live share link.
-    share_token: null,
+    share_token: null, // Explicit: a copy must not inherit a live share link.
   });
   if (writeError) return "Could not copy that character.";
 
