@@ -345,8 +345,29 @@ The artboards hold fewer real widgets than they look like they do.
 | Theme card, tag set, status card | `<section>` and CSS |
 | Bottom bar | `<nav>` of `<Link>`, `aria-current="page"` |
 | Themebook, question, and essence pickers | A route, not an overlay |
+| Tag text, names, Identity line | `<input type=text>` |
+| Appearance, background, specials | `<textarea>`, `field-sizing: content` |
+| Reference filter, the only search field | `<input type=search>` and `Array.filter` |
+| Theme type, and any 3-option choice | A radio group, styled as a segmented control |
 | Save state | One `aria-live` region |
 | Confirm a lost theme, take an Upgrade, override a burn value, resolve a conflict | Base UI `Dialog` |
+
+No artboard holds a dropdown, a `<select>`, or a caret. Every choice in this app
+carries explanatory text, so it reads as a list screen instead: picking a
+themebook means reading six concepts, and picking a special means reading five
+rules. Section 9 already makes those routes, so they are a `<ul>` of `<Link>`.
+
+The form-library category is absent too. The PRD computes and warns rather than
+blocking, and section 8 saves every keystroke, so there is no submit, no
+validation pass, and no error state to render.
+
+Reorder (PRD 7.3) is the one fiddly interaction. It ships as move-up and
+move-down buttons, which touch and screen readers both get for free.
+`lazy:` no drag-and-drop. The ceiling is a theme with many tags, where dragging
+would be quicker. The upgrade path is `dnd-kit` on the tag list alone.
+
+If a combobox ever earns its place, such as searching all 140 questions at once,
+Base UI is already a dependency and supplies one.
 
 Base UI supplies `Dialog`, and `Popover` if a desktop picker ever wants one.
 Focus traps and dismissal are the two things worth a dependency, per the
