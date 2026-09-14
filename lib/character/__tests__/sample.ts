@@ -1,5 +1,5 @@
-import { CURRENT_SCHEMA_VERSION } from "./migrate.ts";
-import type { Character } from "./types.ts";
+import { CURRENT_SCHEMA_VERSION } from "../migrate.ts";
+import type { Character } from "../types.ts";
 
 // An invented Metro:Otherscape character. It is the type check for types.ts, so
 // it exercises every corner of the document: mixed theme types, a burnt tag, one
