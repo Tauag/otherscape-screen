@@ -213,9 +213,9 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         </Link>
       </section>
 
-      <div className="flex flex-wrap gap-x-4">
-        <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} />
-        <Track themeId={theme.id} track="decay" marked={theme.decay} />
+      <div className="flex gap-[10px]">
+        <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} size="lg" />
+        <Track themeId={theme.id} track="decay" marked={theme.decay} size="lg" />
       </div>
 
       {/* Losing a theme is offered here whatever the Decay track says (PRD 7.4).

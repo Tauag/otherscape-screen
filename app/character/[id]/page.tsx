@@ -8,7 +8,7 @@ import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";
 import type { Essence, GhostMemory, Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
-import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
+import { DECAY_TRACK_LENGTH, DEFAULT_BURN_VALUE, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { tagLabel } from "@/lib/tag-label";
@@ -110,71 +110,114 @@ function EssenceCard() {
 
 function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
   const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+  const { nascent } = theme;
 
   return (
     <article
       data-type={theme.type}
-      className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4"
+      className={`flex overflow-hidden rounded-md border ${
+        nascent ? "border-dashed border-raised bg-recess" : "border-border bg-surface"
+      }`}
     >
+      {/* Outside the body padding, so it runs the card's full height. */}
+      <div
+        aria-hidden="true"
+        className={`w-[3px] shrink-0 ${nascent ? "bg-[var(--hue)]/35" : "bg-[var(--hue)]"}`}
+      />
 
-      <Link href={href} className="flex flex-col gap-1">
-        <span className="flex items-baseline justify-between gap-2">
-          <span className={LABEL}>{theme.themebook.trim() || "No themebook"}</span>
-          {theme.nascent && <span className={LABEL}>Nascent</span>}
-        </span>
-
-        {title ? (
-          <h2
-            data-burnt={title.burnt ? "true" : undefined}
-            className={`font-display text-[21px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
-              title.burnt ? "line-through" : ""
+      <div className="flex min-w-0 flex-1 flex-col gap-[9px] px-3 pt-[11px] pb-2.5">
+        <div className="flex items-center justify-between gap-2">
+          <Link
+            href={href}
+            className={`font-display text-[10px] font-semibold tracking-[0.17em] uppercase ${
+              nascent ? "text-muted" : "text-dim"
             }`}
           >
-            {title.text}
-          </h2>
-        ) : (
-          <h2 className="min-h-11 content-center font-sans text-sm text-dim">No title tag yet.</h2>
+            {theme.type} · {theme.themebook.trim() || "No themebook"}
+          </Link>
+
+          {nascent ? (
+            <span className="border border-pip px-[5px] py-0.5 font-mono text-[8px] font-bold tracking-[0.1em] text-dim">
+              NASCENT
+            </span>
+          ) : (
+            <div className="flex items-center gap-[9px]">
+              <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} size="sm" />
+              <Track themeId={theme.id} track="decay" marked={theme.decay} size="sm" />
+            </div>
+          )}
+        </div>
+
+        <Link href={href} className="block">
+          {title ? (
+            <h2
+              data-burnt={title.burnt ? "true" : undefined}
+              className={`font-display text-[21px] leading-tight font-bold tracking-[0.045em] uppercase ${
+                title.burnt ? "line-through" : ""
+              } ${
+                nascent
+                  ? "text-[var(--hue-title)]/60"
+                  : "text-[var(--hue-title)] [text-shadow:0_0_20px_color-mix(in_oklab,var(--hue)_38%,transparent)]"
+              }`}
+            >
+              {title.text}
+            </h2>
+          ) : (
+            <h2 className="min-h-11 content-center font-sans text-sm text-dim">No title tag yet.</h2>
+          )}
+        </Link>
+
+        {/* The artboard draws a nascent card as the header and title alone. */}
+        {!nascent && (
+          <>
+            <ul className="flex flex-wrap gap-1.5">
+              {theme.powerTags
+                .filter((tag) => tag.id !== theme.titleTagId)
+                .map((tag) => (
+                  <Chip
+                    key={tag.id}
+                    label={tagLabel(tag, "power")}
+                    text={tag.text}
+                    burnt={tag.burnt}
+                    burnValue={tag.burnValue}
+                  />
+                ))}
+
+              {theme.weaknessTags.map((tag) => (
+                <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
+              ))}
+            </ul>
+
+            {theme.quote.trim() && (
+              <div className="flex items-baseline gap-[7px] pt-0.5">
+                <span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-faint uppercase">
+                  {themeLine(theme.type)}
+                </span>
+                <span className="font-sans text-[12.5px] text-quiet italic">{theme.quote}</span>
+              </div>
+            )}
+
+            {/* The artboard predates the specials list, the decay warning, and
+                the lose-theme button, so they run after the quote line. */}
+            {theme.specials.length > 0 && (
+              <ul className="flex flex-col gap-1">
+                {theme.specials.map((special, index) => (
+                  <li key={index} className="font-sans text-[13px] text-dim">
+                    {specialName(special)}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {decayFull(theme) && (
+              <>
+                <DecayWarning />
+                <LoseTheme themeId={theme.id} named={title?.text.trim() || "this theme"} />
+              </>
+            )}
+          </>
         )}
-      </Link>
-
-      <ul className="flex flex-col gap-1.5">
-        {theme.powerTags
-          .filter((tag) => tag.id !== theme.titleTagId)
-          .map((tag) => (
-            <Chip
-              key={tag.id}
-              label={tagLabel(tag, "power")}
-              text={tag.text}
-              burnt={tag.burnt}
-            />
-          ))}
-
-        {theme.weaknessTags.map((tag) => (
-          <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
-        ))}
-      </ul>
-
-      {theme.specials.length > 0 && (
-        <ul className="flex flex-col gap-1">
-          {theme.specials.map((special, index) => (
-            <li key={index} className="font-sans text-[13px] text-dim">
-              {specialName(special)}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="flex flex-wrap gap-x-4">
-        <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} />
-        <Track themeId={theme.id} track="decay" marked={theme.decay} />
       </div>
-
-      {decayFull(theme) && (
-        <>
-          <DecayWarning />
-          <LoseTheme themeId={theme.id} named={title?.text.trim() || "this theme"} />
-        </>
-      )}
     </article>
   );
 }
@@ -223,9 +266,15 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
           Read it back
         </summary>
 
-        <ul className="flex flex-col gap-1.5">
+        <ul className="flex flex-wrap gap-1.5">
           {theme.powerTags.map((tag) => (
-            <Chip key={tag.id} label={tagLabel(tag, "power")} text={tag.text} burnt={tag.burnt} />
+            <Chip
+              key={tag.id}
+              label={tagLabel(tag, "power")}
+              text={tag.text}
+              burnt={tag.burnt}
+              burnValue={tag.burnValue}
+            />
           ))}
           {theme.weaknessTags.map((tag) => (
             <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
@@ -254,31 +303,45 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
   );
 }
 
+// Not a control, so unlike Track's pips this carries no 44px target of its own.
 function Chip({
   label,
   text,
   burnt,
+  burnValue,
   negative,
 }: {
   label: string;
   text: string;
   burnt?: boolean;
+  burnValue?: number;
   negative?: boolean;
 }) {
   return (
     <li
       data-burnt={burnt ? "true" : undefined}
       data-valence={negative ? "negative" : undefined}
-      className="flex min-h-11 items-center gap-2 border-l-2 border-[var(--hue)] pl-2"
+      className={`flex items-center gap-[7px] rounded-sm border px-[9px] py-1.5 ${
+        burnt
+          ? "border-dashed border-pip bg-[repeating-linear-gradient(135deg,transparent_0_4px,rgba(255,255,255,.025)_4px_8px)]"
+          : "border-[var(--hue)]/32 bg-[var(--hue)]/7"
+      }`}
     >
-      <span className="font-mono text-[10px] text-[var(--hue)]">{label}</span>
       <span
-        className={`font-display text-[15px] tracking-[0.03em] text-[var(--hue-text)] ${
-          burnt ? "line-through" : ""
-        }`}
+        className={`font-mono text-[9px] font-bold ${burnt ? "text-faint" : "text-[var(--hue)]/80"}`}
+      >
+        {label}
+      </span>
+      <span
+        className={`font-display text-[13px] ${burnt ? "text-muted line-through" : "text-[var(--hue-text)]"}`}
       >
         {text}
       </span>
+      {burnt && (
+        <span className="bg-badge text-burnt px-1 py-0.5 font-mono text-[8px] font-bold tracking-[0.08em]">
+          BURNT {burnValue ?? DEFAULT_BURN_VALUE}P
+        </span>
+      )}
     </li>
   );
 }

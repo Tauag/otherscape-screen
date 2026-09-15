@@ -14,9 +14,21 @@ import {
 
 export const LABEL = "font-mono text-[10px] tracking-[0.08em] text-faint uppercase";
 
-const TRACKS: Record<TrackName, { name: string; length: number }> = {
-  upgrade: { name: "Upgrade", length: UPGRADE_TRACK_LENGTH },
-  decay: { name: "Decay", length: DECAY_TRACK_LENGTH },
+const TRACKS: Record<TrackName, { name: string; short: string; length: number }> = {
+  upgrade: { name: "Upgrade", short: "UPG", length: UPGRADE_TRACK_LENGTH },
+  decay: { name: "Decay", short: "DEC", length: DECAY_TRACK_LENGTH },
+};
+
+/** The two sizes Track draws: the sheet's header-row pips, and the theme
+ *  screen's panel pips. One prop, not a second component. */
+type TrackSize = "sm" | "lg";
+
+const PIP_SIZE: Record<TrackSize, string> = { sm: "size-[9px]", lg: "size-[18px]" };
+
+/** The glow radius scales with the pip: 6px at 9px, 9px at 18px. Decay never glows. */
+const GLOW: Record<TrackSize, string> = {
+  sm: "shadow-[0_0_6px_color-mix(in_oklab,var(--hue)_60%,transparent)]",
+  lg: "shadow-[0_0_9px_color-mix(in_oklab,var(--hue)_60%,transparent)]",
 };
 
 const DIALOG =
@@ -27,18 +39,22 @@ const PRIMARY =
 const QUIET =
   "inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase";
 
-/** The same track on both screens, so either one can mark it. */
+/** The same track on both screens, so either one can mark it. `size` picks the
+ *  sheet's small header-row pips or the theme screen's large panel pips; the
+ *  control and its accessibility markup are identical either way. */
 export function Track({
   themeId,
   track,
   marked,
+  size,
 }: {
   themeId: string;
   track: TrackName;
   marked: number;
+  size: TrackSize;
 }) {
   const { dispatch } = useCharacter();
-  const { name, length } = TRACKS[track];
+  const { name, short, length } = TRACKS[track];
   const upgrade = useRef<HTMLDialogElement>(null);
 
   function mark(index: number) {
@@ -46,21 +62,59 @@ export function Track({
     if (track === "upgrade" && marksTo(marked, index) >= length) upgrade.current?.showModal();
   }
 
+  const upgradeTrack = track === "upgrade";
+
   return (
     <>
-      <div className="flex items-center gap-1" role="group" aria-label={`${name} track`}>
-        <p className={LABEL}>{name}</p>
-        {Array.from({ length }, (_, index) => (
-          <label key={index} className="grid size-11 place-items-center">
-            <input
-              type="checkbox"
-              checked={index < marked}
-              onChange={() => mark(index)}
-              className="size-[18px] accent-[var(--hue)]"
-            />
-            <span className="sr-only">{`${name} ${index + 1} of ${length}`}</span>
-          </label>
-        ))}
+      <div
+        role="group"
+        aria-label={`${name} track`}
+        className={
+          size === "sm"
+            ? "flex items-center gap-1"
+            : `flex flex-1 flex-col gap-2 rounded-[5px] border px-3 py-[11px] ${
+                upgradeTrack ? "border-[var(--hue)] bg-[var(--hue)]/7" : "border-border bg-surface"
+              }`
+        }
+      >
+        {size === "sm" ? (
+          <p className="font-mono text-[8px] tracking-[0.1em] text-faint">{short}</p>
+        ) : (
+          <p
+            className={`font-mono text-[9px] font-bold tracking-[0.16em] ${
+              upgradeTrack ? "text-[var(--hue)]/90" : "text-faint"
+            }`}
+          >
+            {name.toUpperCase()} {marked}/{length}
+          </p>
+        )}
+
+        <div className={size === "sm" ? "flex gap-[3px]" : "flex gap-1.5"}>
+          {Array.from({ length }, (_, index) => {
+            const lit = index < marked;
+            return (
+              <label key={index} className="grid size-11 place-items-center">
+                <input
+                  type="checkbox"
+                  checked={lit}
+                  onChange={() => mark(index)}
+                  className="peer sr-only"
+                />
+                <span
+                  aria-hidden="true"
+                  className={`${PIP_SIZE[size]} peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary ${
+                    lit
+                      ? upgradeTrack
+                        ? `bg-[var(--hue)] ${GLOW[size]}`
+                        : "bg-muted"
+                      : "border border-pip"
+                  }`}
+                />
+                <span className="sr-only">{`${name} ${index + 1} of ${length}`}</span>
+              </label>
+            );
+          })}
+        </div>
       </div>
 
       {track === "upgrade" && <UpgradeDialog themeId={themeId} ref={upgrade} />}
