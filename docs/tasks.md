@@ -59,14 +59,14 @@ run a real session from a phone before starting S8.
 All of `lib/rules/` is pure. No React, no Supabase, no I/O. Tests run under
 `node --test`, no framework and no fixtures.
 
-### T16 constants.ts
+### T16 constants.ts — done
 Hold every number the PRD left open: decay track length, starting loadout Power,
 starting tag counts, the default burn value of 3.
 **Done when:** answering an open question is a one-line edit here.
 **Depends on:** T01
 **Refs:** sysdesign 7
 
-### T17 power(selection)
+### T17 power(selection) — done
 Return a breakdown as a list of labelled values plus the total, never a bare
 number. Positive tag +1, negative tag -1. Only the highest positive status tier
 and the highest negative status tier count. A burnt tag reads its own burn value.
@@ -76,7 +76,7 @@ Support the manual modifier and rolling with a theme type.
 **Depends on:** T02, T16
 **Refs:** PRD 7.8
 
-### T18 raiseStatus and lowerStatus
+### T18 raiseStatus and lowerStatus — done
 Stacking marks the new tier, and marks one tier higher while the target is
 already marked. Removal moves every mark one box left per tier, and erases a mark
 pushed below tier 1.
