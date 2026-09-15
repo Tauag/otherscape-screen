@@ -81,15 +81,16 @@ the hot play state into its own column, which also splits the conflict case.
 create extension if not exists pgcrypto;
 
 create table characters (
-  id          uuid primary key default gen_random_uuid(),
-  owner       uuid not null references auth.users on delete cascade,
-  data        jsonb not null,
-  version     int  not null default 1,
-  share_token uuid unique,
-  name        text generated always as (data->>'name') stored,
-  essence     text generated always as (data->>'essence') stored,
-  created_at  timestamptz not null default now(),
-  updated_at  timestamptz not null default now()
+  id             uuid primary key default gen_random_uuid(),
+  owner          uuid not null references auth.users on delete cascade,
+  data           jsonb not null,
+  version        int  not null default 1,
+  share_token    uuid unique,
+  name           text generated always as (data->>'name') stored,
+  essence        text generated always as (data->>'essence') stored,
+  roster_summary jsonb generated always as (roster_summary(data)) stored,
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now()
 );
 
 create index on characters (owner, updated_at desc);
@@ -101,9 +102,12 @@ create table content_packs (
 );
 ```
 
-`name` and `essence` are generated columns, so the roster lists every character
-without downloading every document, and the label can never drift from the
-document. A trigger or a client-written duplicate could both go stale.
+`name`, `essence`, and `roster_summary` are generated columns, so the roster
+lists every character without downloading every document, and the label can
+never drift from the document. A trigger or a client-written duplicate could
+both go stale. `roster_summary` holds each theme's type and nascent flag, in
+document order, plus a count of statuses still in play: the roster card's
+theme-mix bars and its statuses line read this column alone.
 
 ### Concurrency
 
