@@ -24,7 +24,7 @@ export default async function RosterPage() {
     .select("id, name, essence, updated_at, share_token")
     .eq("owner", user.id)
     .order("updated_at", { ascending: false })
-    .returns<RosterRow[]>();
+    .overrideTypes<RosterRow[], { merge: false }>();
 
   const metadata = user.user_metadata as Record<string, unknown>;
   const accountName =

@@ -1,5 +1,3 @@
-// Status stacking and removal (PRD 6, PRD 7.7). Both return a new array.
-
 import type { TierMarks } from "../character/types.ts";
 import { MAX_STATUS_TIER } from "./constants.ts";
 

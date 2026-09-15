@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCharacter } from "@/app/c/[id]/provider";
+import { useCharacter } from "@/app/character/[id]/provider";
 
 // lazy: a placeholder. It exists to prove the state provider and autosave from
 // the screen, so it holds the two fields the reducer has verbs for. S4 replaces

@@ -63,7 +63,7 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited }: 
           <h2
             className={`font-display text-[21px] leading-tight font-bold tracking-[0.05em] uppercase ${name.trim() ? "text-text" : "text-dim"}`}
           >
-            <Link href={`/c/${id}`} className="inline-flex min-h-11 items-center">
+            <Link href={`/character/${id}`} className="inline-flex min-h-11 items-center">
               {label}
             </Link>
           </h2>

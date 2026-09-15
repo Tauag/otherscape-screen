@@ -1,5 +1,3 @@
-// The roll builder's arithmetic (PRD 7.8). It totals an action and nothing more.
-
 import type { PowerTag, ThemeType, Valence } from "../character/types.ts";
 import { DEFAULT_BURN_VALUE } from "./constants.ts";
 

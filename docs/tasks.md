@@ -106,7 +106,7 @@ one returns an empty list.
 ## S4 Sheet
 
 ### T21 Character layout and bottom bar
-The `/c/[id]` layout loads the document once and owns the tab bar. Tabs are
+The `/character/[id]` layout loads the document once and owns the tab bar. Tabs are
 `<Link>` routes with `aria-current="page"`. The centre key is the roll, labelled
 with the live Power total.
 **Done when:** switching tabs refetches nothing and the phone back button works.
@@ -226,7 +226,7 @@ service role key from the local environment. The file stays out of git.
 ## S6 Creation
 
 ### T36 Guided creation flow
-`/c/[id]/create`, ten steps in the book's order. Every step saves, and a
+`/character/[id]/create`, ten steps in the book's order. Every step saves, and a
 half-built character reopens where the player left it. An experienced player skips
 the flow and edits a blank sheet.
 **Done when:** a new player builds a character with no rulebook open for the steps.

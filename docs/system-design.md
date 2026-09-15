@@ -276,7 +276,7 @@ statuses excluded from the total.
 
 ## 8. State, autosave, and offline
 
-One `useReducer` per open character, in a context provider on the `/c/[id]`
+One `useReducer` per open character, in a context provider on the `/character/[id]`
 layout. Reducer actions are the domain verbs: `burnTag`, `markUpgrade`,
 `raiseStatus`, `loseTheme`. No state library. The document is the state.
 
@@ -306,14 +306,14 @@ rarely, and the two documents are both readable.
 ```
 /                      roster, server component, generated columns only
 /login, /auth/callback sign-in
-/c/[id]                layout: loads the document, owns the tab bar
-  /c/[id]              sheet          (design.md: Main)
-  /c/[id]/theme/[tid]  one theme      (Theme)
-  /c/[id]/loadout      loadout        (Loadout)
-  /c/[id]/play         statuses       (Play)
-  /c/[id]/roll         roll builder   (Roll)
-  /c/[id]/reference    cheatsheet     (Reference)
-/c/[id]/create         guided creation, step N of 10  (Create)
+/character/[id]                layout: loads the document, owns the tab bar
+  /character/[id]              sheet          (design.md: Main)
+  /character/[id]/theme/[tid]  one theme      (Theme)
+  /character/[id]/loadout      loadout        (Loadout)
+  /character/[id]/play         statuses       (Play)
+  /character/[id]/roll         roll builder   (Roll)
+  /character/[id]/reference    cheatsheet     (Reference)
+/character/[id]/create         guided creation, step N of 10  (Create)
 /s/[token]             read-only share
 ```
 
