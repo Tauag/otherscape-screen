@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { newCharacter } from "./character/new.ts";
 import { CURRENT_SCHEMA_VERSION, migrate } from "./character/migrate.ts";
 import { relativeTime } from "./relative-time.ts";
+import { parseRosterSummary } from "./roster.ts";
 
 const now = new Date("2026-09-14T12:00:00.000Z");
 const ago = (seconds: number) => new Date(now.getTime() - seconds * 1000);
@@ -42,4 +43,33 @@ test("a blank character starts empty at the first creation step", () => {
   assert.deepEqual(blank.themes, []);
   assert.deepEqual(blank.loadout.tags, []);
   assert.deepEqual(blank.loadout.themeIds, []);
+});
+
+// roster_summary is null on every row written before its migration lands,
+// which is every row today. That must render as no bars, not a crash.
+test("parseRosterSummary reads a row from before the migration as empty", () => {
+  assert.deepEqual(parseRosterSummary(null), { themes: [], statuses: 0 });
+});
+
+test("parseRosterSummary reads the verified shapes", () => {
+  assert.deepEqual(parseRosterSummary({ themes: [], statuses: 0 }), { themes: [], statuses: 0 });
+  assert.deepEqual(
+    parseRosterSummary({ themes: [{ type: "mythos", nascent: false }], statuses: 2 }),
+    { themes: [{ type: "mythos", nascent: false }], statuses: 2 },
+  );
+  assert.deepEqual(
+    parseRosterSummary({ themes: [{ type: null, nascent: true }], statuses: 0 }),
+    { themes: [{ type: null, nascent: true }], statuses: 0 },
+  );
+});
+
+test("parseRosterSummary never throws on a malformed value", () => {
+  for (const value of [undefined, "not json", 42, [], { themes: "nope" }, { themes: [1, null], statuses: -1 }]) {
+    assert.doesNotThrow(() => parseRosterSummary(value));
+  }
+  assert.deepEqual(parseRosterSummary({ themes: "nope", statuses: "3" }), { themes: [], statuses: 0 });
+  assert.deepEqual(parseRosterSummary({ themes: [1, null, { type: "noise" }] }), {
+    themes: [{ type: "noise", nascent: false }],
+    statuses: 0,
+  });
 });

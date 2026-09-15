@@ -2,15 +2,19 @@ import { redirect } from "next/navigation";
 import { signOut } from "@/lib/actions";
 import { CharacterCard, NewCharacterBar } from "@/app/_components/roster-controls";
 import { relativeTime } from "@/lib/relative-time";
+import { parseRosterSummary } from "@/lib/roster";
 import { createClient } from "@/lib/supabase/server";
 
 // The generated columns and nothing else. The document never travels here.
+// roster_summary is unknown, not a shape: a database row is a trust boundary,
+// and parseRosterSummary is where an unexpected value stops.
 type RosterRow = {
   id: string;
   name: string | null;
   essence: string | null;
   updated_at: string;
   share_token: string | null;
+  roster_summary: unknown;
 };
 
 export default async function RosterPage() {
@@ -21,7 +25,7 @@ export default async function RosterPage() {
 
   const { data: characters, error } = await supabase
     .from("characters")
-    .select("id, name, essence, updated_at, share_token")
+    .select("id, name, essence, updated_at, share_token, roster_summary")
     .eq("owner", user.id)
     .order("updated_at", { ascending: false })
     .overrideTypes<RosterRow[], { merge: false }>();
@@ -95,6 +99,7 @@ export default async function RosterPage() {
             shared={character.share_token !== null}
             updatedAt={character.updated_at}
             edited={relativeTime(character.updated_at)}
+            summary={parseRosterSummary(character.roster_summary)}
           />
         ))}
       </div>
