@@ -15,6 +15,7 @@ run a real session from a phone before starting S8.
 | S2 Shell | T06-T15 | M1 |
 | S3 Rules engine | T16-T20 | M2 |
 | S4 Sheet | T21-T32 | M2 |
+| S4.5 Design realignment | T58 | M2 |
 | S5 Content pack | T33-T35 | M2 |
 | S6 Creation | T36-T38 | M2.5 |
 | S7 Play | T39-T43 | M3 |
@@ -67,97 +68,55 @@ run a real session from a phone before starting S8.
 ## S4 Sheet — done
 
 ### T21 Character layout and bottom bar — done
-The `/character/[id]` layout loads the document once and owns the tab bar. Tabs are
-`<Link>` routes with `aria-current="page"`. The centre key is the roll, labelled
-with the live Power total.
-**Done when:** switching tabs refetches nothing and the phone back button works.
-**Depends on:** T14
-**Refs:** sysdesign 9, design.md 4
-
 ### T22 Main sheet screen — done
-Four theme cards. Each card carries `data-type`, so every chip inside inherits the
-hue. Show the title tag in capitals, the tags, and both tracks.
-**Done when:** the screen matches the Main artboard.
-**Depends on:** T21, T07
-**Refs:** PRD 7.3, design.md Main
-
 ### T23 Theme screen — done
-One theme, open for editing. Tag list with question letters, the Identity, Ritual,
-or Itch line labelled by theme type, and the two tracks.
-**Done when:** the screen matches the Theme artboard.
-**Depends on:** T22
-**Refs:** PRD 7.3, design.md Theme
-
 ### T24 Add, edit, and delete tags — done
-Power tags and weakness tags. Each tag records its themebook, its question letter,
-and its own id. A question may be answered again at any time, and no screen treats
-a question as consumed.
-**Done when:** one theme holds two tags marked `B` and each edits independently.
-**Depends on:** T23
-**Refs:** PRD 7.3, sysdesign 2
-
 ### T25 Reorder tags — done
-Move-up and move-down buttons. No drag and drop.
-**Done when:** a tag moves both ways with touch and with a screen reader.
-**Depends on:** T24
-**Refs:** PRD 7.3, sysdesign 10
-
 ### T26 Burn and un-burn a tag — done
-A burnt tag paints achromatic everywhere it appears. A dialog takes the burn
-value, defaulting to 3, because theme specials change it.
-**Done when:** a burnt tag reads as burnt on the sheet, the theme screen, and the
-roll builder, and its value reaches `power`.
-**Depends on:** T24, T17
-**Refs:** PRD 7.3, PRD 7.8
-
 ### T27 Upgrade and Decay tracks — done
-Checkbox boxes on both tracks. At 3 Upgrade points, clear the track and open the
-Upgrade dialog: take a new power tag or a theme special.
-**Done when:** marking the third box opens the dialog and either choice applies.
-**Depends on:** T23
-**Refs:** PRD 7.3
-
 ### T28 Themebook picker — done
-A route, not an overlay. List the themebooks of the chosen type with their
-concepts. Allow a typed-in name for a homebrew themebook.
-**Done when:** picking a themebook returns to the theme screen with it set.
-**Depends on:** T23, T33
-**Refs:** PRD 7.3, sysdesign 10
-
 ### T29 Question picker — done
-A route listing the themebook's questions, A to J for power and A to D for
-weakness. Already-answered questions stay offered. A special may send the player
-to another themebook's questions.
-**Done when:** a tag records the themebook it borrowed a question from.
-**Depends on:** T24, T33
-**Refs:** PRD 7.3
-
 ### T30 Theme specials picker — done
-A route listing that themebook's five specials, each with its rule text.
-**Done when:** a chosen special shows on the theme card.
-**Depends on:** T28
-**Refs:** PRD 7.3
-
 ### T31 Essence — done
-Suggest the Essence, or the Avatar/Conduit pair, from the theme mix. The player
-confirms. Re-suggest when the mix changes, and never overwrite the choice
-silently. Hold one free-text Essence special.
-**Done when:** changing a theme type re-suggests without clearing the choice.
-**Depends on:** T19, T22
-**Refs:** PRD 7.5
-
 ### T32 Loadout screen — done
-Move themes in and out. Loadout tag sets grouped per theme, each with a flaw.
-Wildcard tags and misc flaws. Spent Power against available Power, with the
-over-budget warning as a sentence. The loadout Upgrade track, and its own Upgrade
-prompt: 1 more available Power or a loadout special.
-**Done when:** the budget math agrees with `loadoutSpend`. The artboard is stale
-here: it draws a starting Power of 4, and PRD O5 confirms 1.
-**Depends on:** T19, T21
-**Refs:** PRD 7.6, design.md Loadout
 
-**Not covered by S4:** a full Decay track does nothing on its own. T54 and T55
-build the theme-loss flow it offers.
+**Reopened by S4.5:** T21 to T23 closed without matching their artboards. T58
+finishes that.
+
+---
+
+## S4.5 Design realignment — next
+
+The number runs on from T57. The step sits here because every screen S6 and S7
+add draws these pieces. Realigning later means realigning them in five more
+screens.
+
+### T58 Realign the built screens with the artboards
+The tokens already match design.md sections 2 and 3. The drift is composition.
+Five shared pieces first, because every later screen draws them:
+
+1. **Chip.** A bordered pill: hue border, tinted fill, and the question letter as
+   a mono badge. Today it is a list row with a left border.
+2. **Track pips.** Small squares under `UPG` and `DEC`, lit when marked. Today
+   both tracks are native checkboxes labelled in words. Keep the 44px hit target
+   and the screen-reader text T27 gives them.
+3. **Theme card.** A hue spine down the left edge, a `TYPE · THEMEBOOK` header row,
+   the title carrying its hue glow, and the Identity, Ritual, or Itch line. A
+   nascent theme keeps the dashed card.
+4. **App bar.** Monogram, character name, the theme-mix rule, and the Essence.
+   Name and player name move out of the scroll body into it.
+5. **Tab bar.** Fixed to the bottom, icon above label, and the centre Roll key in
+   primary pink. The key reads 0 until T41 builds a selection, because `power`
+   takes a roll selection and nothing stores one yet. Keys for screens that do
+   not exist stay out, per T21.
+
+Then the roster card: the theme-mix bars and the statuses-in-play line. Both need
+theme data the roster query does not select, so the row needs another generated
+column. The document never travels to the roster.
+
+**Done when:** the Main and Roster screens match their artboards at 390x844.
+**Depends on:** T22, T32
+**Refs:** design.md Main, design.md Roster, design.md 4
 
 ---
 
