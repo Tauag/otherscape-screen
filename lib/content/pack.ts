@@ -1,7 +1,3 @@
-// The themebook content, in one shape. Whether it came from the `content_packs`
-// row or from fallback.ts, a consumer reads the same fields and the same counts;
-// only the text is empty. No React and no Supabase here, so node --test can run it.
-
 import type { PowerQuestionLetter, ThemeType, WeaknessQuestionLetter } from "../character/types.ts";
 import {
   FALLBACK_THEMEBOOKS,

@@ -1,7 +1,3 @@
-// What the app knows about the themebooks without the content pack row.
-// Names, types, and question letters only: those are printed in the PRD. Every
-// text slot is publisher text, so it stays empty until the pack is uploaded.
-
 import type { PowerQuestionLetter, ThemeType, WeaknessQuestionLetter } from "../character/types.ts";
 
 export const POWER_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as const satisfies
