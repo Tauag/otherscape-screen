@@ -80,10 +80,20 @@ type Props = {
   document: Character;
   version: number;
   updatedAt: string;
+  /** The tab bar, built by the layout. One sticky element holds both, so the
+   *  save line and the bar cannot pin to the same edge and overlap. */
+  bar: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function CharacterProvider({ id, document: server, version, updatedAt, children }: Props) {
+export function CharacterProvider({
+  id,
+  document: server,
+  version,
+  updatedAt,
+  bar,
+  children,
+}: Props) {
   const [character, dispatch] = useReducer(reduce, server);
   const [status, setStatus] = useState<SaveStatus>("saved");
   const [conflict, setConflict] = useState<Conflict | null>(null);
@@ -346,6 +356,8 @@ export function CharacterProvider({ id, document: server, version, updatedAt, ch
             <code className="font-mono text-faint">{parked}</code>.
           </p>
         )}
+
+        {bar}
       </div>
 
       {/* lazy: the native dialog gives the focus trap, the backdrop, and Escape

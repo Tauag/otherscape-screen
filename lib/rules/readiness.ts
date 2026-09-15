@@ -14,6 +14,15 @@ function themeName(theme: Theme, index: number): string {
   return themebook ? `Theme ${index + 1} (${themebook})` : `Theme ${index + 1}`;
 }
 
+/**
+ * PRD 7.3: past the starting count the app warns in plain words and never
+ * blocks. The sheet prints this sentence too, so it lives in one place.
+ */
+export function themeCountWarning(count: number): string | null {
+  if (count <= STARTING_THEMES) return null;
+  return `The character has ${count} themes, more than the ${STARTING_THEMES} it starts with.`;
+}
+
 /** One plain sentence per gap, in reading order. Empty means ready. */
 export function readiness(character: Character): string[] {
   const { themes } = character;
@@ -42,9 +51,8 @@ export function readiness(character: Character): string[] {
   const { warning } = loadoutSpend(character.loadout);
   if (warning) gaps.push(warning);
 
-  if (themes.length > STARTING_THEMES) {
-    gaps.push(`The character has ${themes.length} themes, more than the ${STARTING_THEMES} it starts with.`);
-  }
+  const count = themeCountWarning(themes.length);
+  if (count) gaps.push(count);
 
   return gaps;
 }

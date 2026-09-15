@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { CharacterProvider } from "@/app/character/[id]/provider";
+import { TabBar } from "@/app/character/[id]/tabs";
 import { migrate } from "@/lib/character/migrate";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,6 +29,7 @@ export default async function CharacterLayout({ children, params }: LayoutProps<
       document={migrate(row.data)}
       version={row.version}
       updatedAt={row.updated_at}
+      bar={<TabBar id={id} />}
     >
       {children}
     </CharacterProvider>
