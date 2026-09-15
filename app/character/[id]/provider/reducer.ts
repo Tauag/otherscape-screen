@@ -16,6 +16,8 @@ import {
 import type {
   Character,
   Essence,
+  Loadout,
+  LoadoutTagKind,
   PowerQuestionLetter,
   PowerTag,
   Theme,
@@ -23,6 +25,12 @@ import type {
   WeaknessQuestionLetter,
   WeaknessTag,
 } from "@/lib/character/types";
+import {
+  markLoadoutUpgrade,
+  takeLoadoutUpgrade,
+  toggleLoadoutTheme,
+  type UpgradeChoice,
+} from "@/lib/loadout-edit";
 
 /**
  * Domain verbs, never generic setters. A new verb is one more case below, so
@@ -74,7 +82,15 @@ export type CharacterAction =
   | { type: "markTrack"; themeId: string; track: TrackName; index: number }
   /** Only a player action carries this, because the app never sets the Essence alone (PRD 7.5). */
   | { type: "setEssence"; essence: Essence }
-  | { type: "setEssenceSpecial"; essenceSpecial: string };
+  | { type: "setEssenceSpecial"; essenceSpecial: string }
+  | { type: "toggleLoadoutTheme"; themeId: string }
+  /** The id is minted by the caller, so this stays a pure function. */
+  | { type: "addLoadoutTag"; id: string; kind: LoadoutTagKind; themeId: string | null }
+  | { type: "editLoadoutTag"; id: string; text: string }
+  | { type: "removeLoadoutTag"; id: string }
+  | { type: "markLoadoutUpgrade"; index: number }
+  | { type: "takeLoadoutUpgrade"; choice: UpgradeChoice }
+  | { type: "editLoadoutSpecial"; index: number; text: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(character: Character, themeId: string, edit: (theme: Theme) => Theme): Character {
@@ -84,7 +100,14 @@ function inTheme(character: Character, themeId: string, edit: (theme: Theme) => 
   };
 }
 
+const withLoadout = (character: Character, loadout: Partial<Loadout>): Character => ({
+  ...character,
+  loadout: { ...character.loadout, ...loadout },
+});
+
 export function reduce(character: Character, action: CharacterAction): Character {
+  const { loadout } = character;
+
   switch (action.type) {
     case "replace":
       return action.document;
@@ -157,5 +180,32 @@ export function reduce(character: Character, action: CharacterAction): Character
       return { ...character, essence: action.essence };
     case "setEssenceSpecial":
       return { ...character, essenceSpecial: action.essenceSpecial };
+    case "toggleLoadoutTheme":
+      return { ...character, loadout: toggleLoadoutTheme(loadout, action.themeId) };
+    case "addLoadoutTag":
+      return withLoadout(character, {
+        tags: [
+          ...loadout.tags,
+          { id: action.id, kind: action.kind, text: "", themeId: action.themeId },
+        ],
+      });
+    case "editLoadoutTag":
+      return withLoadout(character, {
+        tags: loadout.tags.map((tag) =>
+          tag.id === action.id ? { ...tag, text: action.text } : tag,
+        ),
+      });
+    case "removeLoadoutTag":
+      return withLoadout(character, { tags: loadout.tags.filter((tag) => tag.id !== action.id) });
+    case "markLoadoutUpgrade":
+      return withLoadout(character, { upgrade: markLoadoutUpgrade(loadout.upgrade, action.index) });
+    case "takeLoadoutUpgrade":
+      return { ...character, loadout: takeLoadoutUpgrade(loadout, action.choice) };
+    case "editLoadoutSpecial":
+      return withLoadout(character, {
+        specials: loadout.specials.map((text, index) =>
+          index === action.index ? action.text : text,
+        ),
+      });
   }
 }

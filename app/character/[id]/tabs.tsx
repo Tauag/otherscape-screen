@@ -4,7 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { power } from "@/lib/rules/power";
 
-export const TABS: { label: string; segment: string }[] = [{ label: "Sheet", segment: "" }];
+/**
+ * The keys of the bottom bar, in reading order, as segments under
+ * /character/[id]. A later ticket adds its screen here in one line. A route
+ * that does not exist yet stays out, because a key that 404s is worse than a
+ * key that is missing. The roll is not in this list: it is the centre key.
+ */
+export const TABS: { label: string; segment: string }[] = [
+  { label: "Sheet", segment: "" },
+  { label: "Loadout", segment: "/loadout" },
+];
 
 const KEY =
   "grid min-h-11 flex-1 place-items-center rounded-sm px-3 font-display text-xs font-semibold tracking-[0.08em] uppercase";
