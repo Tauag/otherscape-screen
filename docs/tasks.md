@@ -156,8 +156,8 @@ here: it draws a starting Power of 4, and PRD O5 confirms 1.
 **Depends on:** T19, T21
 **Refs:** PRD 7.6, design.md Loadout
 
-**Not covered by S4:** a full Decay track does nothing. Losing a theme needs the
-ghost-memory flow, a confirm dialog, and a `loseTheme` verb. No ticket owns it.
+**Not covered by S4:** a full Decay track does nothing on its own. T54 and T55
+build the theme-loss flow it offers.
 
 ---
 
@@ -335,7 +335,7 @@ A 20-deep stack of previous documents.
 **Depends on:** T14
 **Refs:** PRD 7.2
 
-### T54 Lose a theme
+### T54 Lose a theme — done
 One action, callable at any time on the player's command. It never depends on the
 Decay track. Archive the theme whole into Ghost Memories, with when and why it was
 lost.
@@ -343,7 +343,7 @@ lost.
 **Depends on:** T23
 **Refs:** PRD 7.4
 
-### T55 Decay warning and replacement
+### T55 Decay warning and replacement — done
 Warn when a Decay track fills, and offer to lose that theme. Never lose it
 automatically. A replacement starts nascent, except for a Nexus that stays a Nexus
 and for a Conduit.
