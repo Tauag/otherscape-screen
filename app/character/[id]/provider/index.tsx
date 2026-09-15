@@ -22,28 +22,10 @@ import {
 import { migrate } from "@/lib/character/migrate";
 import type { Character } from "@/lib/character/types";
 import { createClient } from "@/lib/supabase/client";
+import { reduce, type CharacterAction } from "./reducer";
+import { Side } from "./side";
 
-/**
- * Domain verbs, never generic setters. A new verb is one more case below, so
- * S3 to S7 add burnTag, markUpgrade, raiseStatus and loseTheme here without a
- * refactor. `replace` is the exception: it is how a whole document arrives,
- * from the offline copy on mount or from a resolved conflict.
- */
-export type CharacterAction =
-  | { type: "replace"; document: Character }
-  | { type: "rename"; name: string }
-  | { type: "setPlayerName"; playerName: string };
-
-function reduce(character: Character, action: CharacterAction): Character {
-  switch (action.type) {
-    case "replace":
-      return action.document;
-    case "rename":
-      return { ...character, name: action.name };
-    case "setPlayerName":
-      return { ...character, playerName: action.playerName };
-  }
-}
+export type { CharacterAction };
 
 const Context = createContext<{
   character: Character;
@@ -80,22 +62,28 @@ type Props = {
   document: Character;
   version: number;
   updatedAt: string;
+  /** The tab bar, built by the layout. One sticky element holds both, so the
+   *  save line and the bar cannot pin to the same edge and overlap. */
+  bar: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function CharacterProvider({ id, document: server, version, updatedAt, children }: Props) {
+export function CharacterProvider({
+  id,
+  document: server,
+  version,
+  updatedAt,
+  bar,
+  children,
+}: Props) {
   const [character, dispatch] = useReducer(reduce, server);
   const [status, setStatus] = useState<SaveStatus>("saved");
   const [conflict, setConflict] = useState<Conflict | null>(null);
-  // The key of the copy the last conflict parked, so the screen names the
-  // copy that is really there.
   const [parked, setParked] = useState<string | null>(null);
 
   const characterRef = useRef(character);
   const versionRef = useRef(version);
   const statusRef = useRef<SaveStatus>("saved");
-  // The last document the dirty effect acted on. Reference equality, because
-  // the reducer returns a new object only for a real change.
   const handled = useRef(character);
   const hydrated = useRef(false);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -111,9 +99,6 @@ export function CharacterProvider({ id, document: server, version, updatedAt, ch
     show("saving");
 
     const supabase = createClient();
-    // `version` is a filter and never a payload: the column grants forbid
-    // writing it, and the trigger owns it. The row it returns is the next
-    // base version, so the following save does not conflict with this one.
     const { data, error } = await supabase
       .from("characters")
       .update({ data: snapshot })
@@ -131,8 +116,6 @@ export function CharacterProvider({ id, document: server, version, updatedAt, ch
       versionRef.current = data[0].version;
       writeLocal(id, {
         version: data[0].version,
-        // An edit landed while the save was in flight, so the version is
-        // current but the document on screen is not saved yet.
         dirty: characterRef.current !== snapshot,
         savedAt: new Date().toISOString(),
         document: characterRef.current,
@@ -346,11 +329,10 @@ export function CharacterProvider({ id, document: server, version, updatedAt, ch
             <code className="font-mono text-faint">{parked}</code>.
           </p>
         )}
+
+        {bar}
       </div>
 
-      {/* lazy: the native dialog gives the focus trap, the backdrop, and Escape
-          dismissal for free. Ceiling: showModal is all it gives. Upgrade path:
-          @base-ui/react Dialog when a dialog needs more than that. */}
       <dialog
         ref={dialog}
         aria-labelledby={headingId}
@@ -385,59 +367,5 @@ export function CharacterProvider({ id, document: server, version, updatedAt, ch
         )}
       </dialog>
     </Context.Provider>
-  );
-}
-
-function Side({
-  label,
-  document: value,
-  at,
-  action,
-  onKeep,
-}: {
-  label: string;
-  document: Character;
-  at: string;
-  action: string;
-  onKeep: () => void;
-}) {
-  const json = JSON.stringify(value, null, 2);
-
-  return (
-    <section className="rounded-sm border border-border p-3">
-      <p className="font-mono text-[10px] tracking-[0.08em] text-faint uppercase">{label}</p>
-      <p className="font-display text-lg font-bold tracking-[0.05em] uppercase">
-        {value.name.trim() || "Unnamed"}
-      </p>
-      <p className="font-sans text-[11.5px] text-dim">
-        Edited <time dateTime={at}>{new Date(at).toLocaleString()}</time>
-      </p>
-
-      <details className="mt-2">
-        <summary className="min-h-11 cursor-pointer content-center font-mono text-[10px] tracking-[0.08em] text-dim uppercase">
-          Read it
-        </summary>
-        <pre className="mt-1 max-h-48 overflow-auto rounded-sm bg-bg p-2 font-mono text-[10px] text-dim">
-          {json}
-        </pre>
-      </details>
-
-      <div className="mt-2 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onKeep}
-          className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-        >
-          {action}
-        </button>
-        <button
-          type="button"
-          onClick={() => void navigator.clipboard?.writeText(json)}
-          className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
-        >
-          Copy
-        </button>
-      </div>
-    </section>
   );
 }

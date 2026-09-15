@@ -64,9 +64,9 @@ run a real session from a phone before starting S8.
 
 ---
 
-## S4 Sheet
+## S4 Sheet — done
 
-### T21 Character layout and bottom bar
+### T21 Character layout and bottom bar — done
 The `/character/[id]` layout loads the document once and owns the tab bar. Tabs are
 `<Link>` routes with `aria-current="page"`. The centre key is the roll, labelled
 with the live Power total.
@@ -74,21 +74,21 @@ with the live Power total.
 **Depends on:** T14
 **Refs:** sysdesign 9, design.md 4
 
-### T22 Main sheet screen
+### T22 Main sheet screen — done
 Four theme cards. Each card carries `data-type`, so every chip inside inherits the
 hue. Show the title tag in capitals, the tags, and both tracks.
 **Done when:** the screen matches the Main artboard.
 **Depends on:** T21, T07
 **Refs:** PRD 7.3, design.md Main
 
-### T23 Theme screen
+### T23 Theme screen — done
 One theme, open for editing. Tag list with question letters, the Identity, Ritual,
 or Itch line labelled by theme type, and the two tracks.
 **Done when:** the screen matches the Theme artboard.
 **Depends on:** T22
 **Refs:** PRD 7.3, design.md Theme
 
-### T24 Add, edit, and delete tags
+### T24 Add, edit, and delete tags — done
 Power tags and weakness tags. Each tag records its themebook, its question letter,
 and its own id. A question may be answered again at any time, and no screen treats
 a question as consumed.
@@ -96,13 +96,13 @@ a question as consumed.
 **Depends on:** T23
 **Refs:** PRD 7.3, sysdesign 2
 
-### T25 Reorder tags
+### T25 Reorder tags — done
 Move-up and move-down buttons. No drag and drop.
 **Done when:** a tag moves both ways with touch and with a screen reader.
 **Depends on:** T24
 **Refs:** PRD 7.3, sysdesign 10
 
-### T26 Burn and un-burn a tag
+### T26 Burn and un-burn a tag — done
 A burnt tag paints achromatic everywhere it appears. A dialog takes the burn
 value, defaulting to 3, because theme specials change it.
 **Done when:** a burnt tag reads as burnt on the sheet, the theme screen, and the
@@ -110,21 +110,21 @@ roll builder, and its value reaches `power`.
 **Depends on:** T24, T17
 **Refs:** PRD 7.3, PRD 7.8
 
-### T27 Upgrade and Decay tracks
+### T27 Upgrade and Decay tracks — done
 Checkbox boxes on both tracks. At 3 Upgrade points, clear the track and open the
 Upgrade dialog: take a new power tag or a theme special.
 **Done when:** marking the third box opens the dialog and either choice applies.
 **Depends on:** T23
 **Refs:** PRD 7.3
 
-### T28 Themebook picker
+### T28 Themebook picker — done
 A route, not an overlay. List the themebooks of the chosen type with their
 concepts. Allow a typed-in name for a homebrew themebook.
 **Done when:** picking a themebook returns to the theme screen with it set.
 **Depends on:** T23, T33
 **Refs:** PRD 7.3, sysdesign 10
 
-### T29 Question picker
+### T29 Question picker — done
 A route listing the themebook's questions, A to J for power and A to D for
 weakness. Already-answered questions stay offered. A special may send the player
 to another themebook's questions.
@@ -132,13 +132,13 @@ to another themebook's questions.
 **Depends on:** T24, T33
 **Refs:** PRD 7.3
 
-### T30 Theme specials picker
+### T30 Theme specials picker — done
 A route listing that themebook's five specials, each with its rule text.
 **Done when:** a chosen special shows on the theme card.
 **Depends on:** T28
 **Refs:** PRD 7.3
 
-### T31 Essence
+### T31 Essence — done
 Suggest the Essence, or the Avatar/Conduit pair, from the theme mix. The player
 confirms. Re-suggest when the mix changes, and never overwrite the choice
 silently. Hold one free-text Essence special.
@@ -146,28 +146,31 @@ silently. Hold one free-text Essence special.
 **Depends on:** T19, T22
 **Refs:** PRD 7.5
 
-### T32 Loadout screen
+### T32 Loadout screen — done
 Move themes in and out. Loadout tag sets grouped per theme, each with a flaw.
 Wildcard tags and misc flaws. Spent Power against available Power, with the
 over-budget warning as a sentence. The loadout Upgrade track, and its own Upgrade
 prompt: 1 more available Power or a loadout special.
-**Done when:** the screen matches the Loadout artboard and the budget math agrees
-with `loadoutSpend`.
+**Done when:** the budget math agrees with `loadoutSpend`. The artboard is stale
+here: it draws a starting Power of 4, and PRD O5 confirms 1.
 **Depends on:** T19, T21
 **Refs:** PRD 7.6, design.md Loadout
+
+**Not covered by S4:** a full Decay track does nothing on its own. T54 and T55
+build the theme-loss flow it offers.
 
 ---
 
 ## S5 Content pack
 
-### T33 Fallback content
+### T33 Fallback content — done
 `lib/content/fallback.ts` holds the 14 themebook names, their types, and the
 question letters. Every text slot renders empty, and a tag editor shows
 "power tag question B" over a blank field.
 **Done when:** the app runs with no content pack row and no screen breaks.
 **Refs:** sysdesign 6
 
-### T34 Load and cache the pack
+### T34 Load and cache the pack — done
 Fetch the `themebooks` row once and cache it in `localStorage`, keyed by
 `updated_at`. A refilled pack changes the key and every device refetches.
 **Done when:** a second page load makes no pack request, and changing the row
@@ -332,7 +335,7 @@ A 20-deep stack of previous documents.
 **Depends on:** T14
 **Refs:** PRD 7.2
 
-### T54 Lose a theme
+### T54 Lose a theme — done
 One action, callable at any time on the player's command. It never depends on the
 Decay track. Archive the theme whole into Ghost Memories, with when and why it was
 lost.
@@ -340,7 +343,7 @@ lost.
 **Depends on:** T23
 **Refs:** PRD 7.4
 
-### T55 Decay warning and replacement
+### T55 Decay warning and replacement — done
 Warn when a Decay track fills, and offer to lose that theme. Never lose it
 automatically. A replacement starts nascent, except for a Nexus that stays a Nexus
 and for a Conduit.
