@@ -20,7 +20,6 @@ export default async function CharacterLayout({ children, params }: LayoutProps<
     .maybeSingle()
     .overrideTypes<{ data: unknown; version: number; updated_at: string }, { merge: false }>();
 
-  // RLS hides another owner's row, so a miss is a miss either way.
   if (error || !row) notFound();
 
   return (
