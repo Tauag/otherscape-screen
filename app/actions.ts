@@ -47,36 +47,31 @@ function isDocument(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-// Takes no arguments: useActionState passes the previous message and the form
-// data, and creating a blank character needs neither.
 export async function createCharacter(): Promise<Message> {
   const { supabase, userId } = await session();
 
-  const { error } = await supabase.from("characters").insert({
-    owner: userId,
-    data: newCharacter(),
-  });
-  if (error) return "Could not create the character.";
+  const { data: created, error } = await supabase
+    .from("characters")
+    .insert({ owner: userId, data: newCharacter() })
+    .select("id")
+    .returns<{ id: string }[]>()
+    .single();
+  if (error || !created) return "Could not create the character.";
 
   revalidatePath("/");
-  return null;
+  redirect(`/c/${created.id}`);
 }
 
 export async function renameCharacter(_previous: Message, form: FormData): Promise<Message> {
   const id = String(form.get("id") ?? "");
   const name = String(form.get("name") ?? "").trim();
   const { supabase } = await session();
-
-  // lazy: a read-modify-write of the whole document, because the column grants
-  // allow updating `data` only. Ceiling: two round trips, and the document
-  // crosses the wire twice for a rename. Upgrade path: a `jsonb_set` RPC, which
-  // makes it one atomic round trip. Until then `version` carries the check.
   const { data: row, error } = await supabase
     .from("characters")
     .select("data, version")
     .eq("id", id)
-    .returns<{ data: unknown; version: number }[]>()
-    .single();
+    .single()
+    .overrideTypes<{ data: unknown; version: number }, { merge: false }>();
 
   const document = row?.data;
   if (error || !row || !isDocument(document)) return "Could not find that character.";
@@ -103,8 +98,8 @@ export async function duplicateCharacter(_previous: Message, form: FormData): Pr
     .from("characters")
     .select("data")
     .eq("id", id)
-    .returns<{ data: unknown }[]>()
-    .single();
+    .single()
+    .overrideTypes<{ data: unknown }, { merge: false }>();
 
   const document = row?.data;
   if (error || !isDocument(document)) return "Could not copy that character.";
@@ -113,8 +108,7 @@ export async function duplicateCharacter(_previous: Message, form: FormData): Pr
   const { error: writeError } = await supabase.from("characters").insert({
     owner: userId,
     data: { ...document, name: `${source || "Unnamed"} (copy)` },
-    // Explicit: a copy must not inherit a live share link.
-    share_token: null,
+    share_token: null, // Explicit: a copy must not inherit a live share link.
   });
   if (writeError) return "Could not copy that character.";
 

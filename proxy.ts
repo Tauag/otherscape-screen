@@ -24,14 +24,8 @@ export async function proxy(request: NextRequest) {
   // the auth server as a fallback) rather than trusting the cookie as-is.
   const { data } = await supabase.auth.getClaims();
   const email = data?.claims.email as string | undefined;
-
-  // The insert trigger only ever stops a *new* account, so a signed-in email
-  // needs its own check on every request: it catches an account that
-  // predates the allow-list, or one whose invite was revoked since. Skip it
-  // for the callback route itself, mid-OAuth-round-trip, where it's moot.
   const invited =
     email && !isAuthCallbackPath(pathname) ? (await supabase.rpc("current_user_invited")).data === true : undefined;
-
   const route = decideRoute({ pathname, email, invited });
 
   if (route === "not-invited") {
