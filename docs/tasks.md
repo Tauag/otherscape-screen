@@ -39,83 +39,18 @@ run a real session from a phone before starting S8.
 
 ---
 
-## S2 Shell
+## S2 Shell — done
 
-### T06 Scaffold the Next.js app
-App Router, TypeScript, Tailwind v4. Self-host Chakra Petch, Barlow, and JetBrains
-Mono with `next/font/google`.
-**Done when:** `next build` passes and the three faces render offline.
-**Refs:** sysdesign 10
-
-### T07 Encode the design tokens
-Turn design.md section 2 into one `@theme` block in `globals.css`. Add the
-`data-type` and `data-valence` rules that set `--hue` and `--hue-text`.
-**Done when:** a test page paints a Self, Mythos, and Noise chip without any
-component writing a hex.
-**Refs:** design.md 2, sysdesign 10
-
-### T08 Wire the Supabase browser and server clients
-Use `@supabase/ssr`. Session in an httpOnly cookie, refreshed in `proxy.ts`.
-Port the household-inventory wiring and drop the membership check.
-**Done when:** a server component reads the session and a browser client reads its
-own rows.
-**Depends on:** T03
-**Refs:** sysdesign 5
-
-### T09 Sign-in and callback routes
-`/login` and `/auth/callback`. Every route except `/s/[token]` redirects an
-anonymous visitor to sign-in.
-**Done when:** signing in lands on the roster, and signing out returns to `/login`.
-**Depends on:** T08
-**Refs:** PRD 7.11
-
-### T10 Define the character document type
-TypeScript types for the whole document: character, theme, tag, loadout, ghost
-memory, status, story tag. Every tag carries its own id, assigned at creation.
-Include `schema_version`.
-**Done when:** the type compiles and a hand-written sample of the owner's real
-character type-checks.
-**Refs:** sysdesign 2
-
-### T11 Document migration on read
-`migrate(doc)` upgrades an older `schema_version` in code. Version 1 is a
-pass-through, so the seam exists before it is needed.
-**Done when:** a document one version behind loads without error.
-**Depends on:** T10
-**Refs:** sysdesign 2
-
-### T12 Roster screen
-Server component at `/`. List the user's characters from the generated columns
-only, sorted by last edit. Never download a document here.
-**Done when:** the roster renders names and Essences, and the network tab shows no
-`data` column.
-**Depends on:** T09, T05
-**Refs:** PRD 7.2, design.md Roster
-
-### T13 Character CRUD
-Create, rename, duplicate, and delete. Duplicate copies the document and clears
-the share token.
-**Done when:** each of the four actions works from the roster.
-**Depends on:** T12
-**Refs:** PRD 7.2
-
-### T14 Character state provider
-One `useReducer` per open character in the `/c/[id]` layout. Reducer actions are
-domain verbs. Every dispatch replaces the document in memory and writes it to
-`localStorage`.
-**Done when:** a dispatch updates the screen and survives a page reload with no
-network.
-**Depends on:** T10
-**Refs:** sysdesign 8
-
-### T15 Autosave and the version conflict prompt
-Debounce about 800 ms. Flush on `pagehide` and `visibilitychange`. Every save
-carries the last-read version. Zero rows updated opens a dialog asking which
-document to keep. Never discard an edit to resolve a conflict.
-**Done when:** two browser tabs editing one character produce the prompt, and both
-documents are readable in it.
-**Depends on:** T14
-**Refs:** sysdesign 3, sysdesign 8
+### T06 Scaffold the Next.js app — done
+### T07 Encode the design tokens — done
+### T08 Wire the Supabase browser and server clients — done
+### T09 Sign-in and callback routes — done
+### T10 Define the character document type — done
+### T11 Document migration on read — done
+### T12 Roster screen — done
+### T13 Character CRUD — done
+### T14 Character state provider — done
+### T15 Autosave and the version conflict prompt — done
 
 ---
 
