@@ -6,9 +6,10 @@
 import Link from "next/link";
 import type { ThemeType } from "@/lib/character/types";
 
-const PAGE = "mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-6 pb-2";
+const PAGE = "mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3 pb-2";
 
-const BACK = "inline-flex min-h-11 items-center gap-1.5 font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
+const BACK =
+  "-mb-2 inline-flex min-h-11 items-center gap-1.5 font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
 
 const BUTTON =
   "inline-flex min-h-11 items-center self-start rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase";

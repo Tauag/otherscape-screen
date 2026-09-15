@@ -12,6 +12,7 @@ import { DECAY_TRACK_LENGTH, DEFAULT_BURN_VALUE, UPGRADE_TRACK_LENGTH } from "@/
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { tagLabel } from "@/lib/tag-label";
+import { BackLink } from "@/components/back-link";
 
 export default function SheetPage({ params }: PageProps<"/character/[id]">) {
   const { id } = use(params);
@@ -19,7 +20,9 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
   const warning = themeCountWarning(character.themes.length);
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-6">
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3">
+      <BackLink href="/" text="Characters" />
+
       {warning && <p className="font-sans text-sm text-negative-text">{warning}</p>}
 
       {character.themes.length === 0 ? (

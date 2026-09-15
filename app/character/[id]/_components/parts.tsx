@@ -93,7 +93,7 @@ export function Track({
           {Array.from({ length }, (_, index) => {
             const lit = index < marked;
             return (
-              <label key={index} className="grid size-11 place-items-center">
+              <label key={index} className="grid size-4 place-items-center">
                 <input
                   type="checkbox"
                   checked={lit}

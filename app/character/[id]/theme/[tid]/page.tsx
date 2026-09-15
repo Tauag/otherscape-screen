@@ -9,6 +9,7 @@ import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
 import { TagRow } from "./_components/tag-row";
+import { BackLink } from "@/components/back-link";
 
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 
@@ -47,15 +48,9 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
   return (
     <main
       data-type={theme.type}
-      className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-6"
+      className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3"
     >
-      <Link
-        href={back}
-        className="inline-flex min-h-11 items-center gap-1.5 font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
-      >
-        <span aria-hidden>←</span>
-        Sheet
-      </Link>
+      <BackLink href={back} text="Sheet" />
 
       <h1
         data-burnt={title?.burnt ? "true" : undefined}
