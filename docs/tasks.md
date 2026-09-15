@@ -459,3 +459,12 @@ name, appearance, background, and crew relationships. Archive every replaced the
 holds the old themes.
 **Depends on:** T54
 **Refs:** PRD 7.4
+
+### T57 Turn the roles sketch into real tickets
+sysdesign 5 sketches admin roles: a `profiles` table, the role-aware
+`own_characters` policy, and the JWT-claim optimization if the subquery ever
+needs it. Break that sketch into scoped tickets here, the way this file
+breaks down every other section.
+**Done when:** the roles work has its own S11 with tickets a player could pick
+up and build, each with a Done-when and its Refs.
+**Refs:** sysdesign 5
