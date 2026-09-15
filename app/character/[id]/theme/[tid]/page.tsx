@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use } from "react";
-import { DecayWarning, LABEL, LoseTheme, Track } from "@/app/character/[id]/parts";
-import { useCharacter } from "@/app/character/[id]/provider";
+import { DecayWarning, LABEL, LoseTheme, Track } from "@/app/character/[id]/_components/parts";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
-import { TagRow } from "./tag-row";
+import { TagRow } from "./_components/tag-row";
 
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 

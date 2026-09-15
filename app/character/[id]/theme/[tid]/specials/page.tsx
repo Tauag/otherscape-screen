@@ -6,8 +6,8 @@ import {
   PickerFrame,
   ROW,
   ROW_TEXT,
-} from "@/app/character/[id]/theme/[tid]/picker";
-import { useCharacter } from "@/app/character/[id]/provider";
+} from "@/app/character/[id]/theme/[tid]/_components/picker";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
 import { formatSpecial, specialsOf } from "@/lib/pickers";
 

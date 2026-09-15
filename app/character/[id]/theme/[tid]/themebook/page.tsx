@@ -1,15 +1,15 @@
 "use client";
 
 import { use, useState } from "react";
-import { LABEL } from "@/app/character/[id]/parts";
+import { LABEL } from "@/app/character/[id]/_components/parts";
 import {
   MissingTheme,
   PickerFrame,
   ROW,
   ROW_TEXT,
-  usePick,
-} from "@/app/character/[id]/theme/[tid]/picker";
-import { useCharacter } from "@/app/character/[id]/provider";
+} from "@/app/character/[id]/theme/[tid]/_components/picker";
+import { usePick } from "@/app/character/[id]/theme/[tid]/_hooks/use-pick";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
 import { findThemebook, themebooksOfType } from "@/lib/content/pack";
 

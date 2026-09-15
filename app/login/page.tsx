@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { signInWithGoogle } from "@/app/actions";
+import { signInWithGoogle } from "@/lib/actions";
 
 export const metadata: Metadata = { title: "Sign in" };
 

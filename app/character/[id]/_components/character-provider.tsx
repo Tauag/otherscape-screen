@@ -3,7 +3,6 @@
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useMemo,
@@ -22,21 +21,13 @@ import {
 import { migrate } from "@/lib/character/migrate";
 import type { Character } from "@/lib/character/types";
 import { createClient } from "@/lib/supabase/client";
-import { reduce, type CharacterAction } from "./reducer";
-import { Side } from "./side";
+import { reduce, type CharacterAction } from "../_lib/reducer";
+import { Side } from "./conflict-side";
 
-export type { CharacterAction };
-
-const Context = createContext<{
+export const CharacterContext = createContext<{
   character: Character;
   dispatch: (action: CharacterAction) => void;
 } | null>(null);
-
-export function useCharacter() {
-  const value = useContext(Context);
-  if (!value) throw new Error("useCharacter needs a CharacterProvider above it.");
-  return value;
-}
 
 const SAVE_DELAY = 800;
 
@@ -309,7 +300,7 @@ export function CharacterProvider({
   const value = useMemo(() => ({ character, dispatch }), [character]);
 
   return (
-    <Context.Provider value={value}>
+    <CharacterContext.Provider value={value}>
       {children}
 
       <div className="sticky bottom-0 mx-auto w-full max-w-md bg-bg px-5 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
@@ -366,6 +357,6 @@ export function CharacterProvider({
           </div>
         )}
       </dialog>
-    </Context.Provider>
+    </CharacterContext.Provider>
   );
 }

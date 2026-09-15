@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { signOut } from "@/app/actions";
-import { CharacterCard, NewCharacterBar } from "@/app/roster-controls";
+import { signOut } from "@/lib/actions";
+import { CharacterCard, NewCharacterBar } from "@/app/_components/roster-controls";
 import { relativeTime } from "@/lib/relative-time";
 import { createClient } from "@/lib/supabase/server";
 

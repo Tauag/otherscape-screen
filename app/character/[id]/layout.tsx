@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
-import { CharacterProvider } from "@/app/character/[id]/provider";
-import { TabBar } from "@/app/character/[id]/tabs";
+import { CharacterProvider } from "@/app/character/[id]/_components/character-provider";
+import { TabBar } from "@/app/character/[id]/_components/tabs";
 import { migrate } from "@/lib/character/migrate";
 import { createClient } from "@/lib/supabase/server";
 

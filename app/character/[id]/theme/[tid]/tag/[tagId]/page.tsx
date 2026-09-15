@@ -1,16 +1,17 @@
 "use client";
 
 import { use } from "react";
-import { LABEL } from "@/app/character/[id]/parts";
+import { LABEL } from "@/app/character/[id]/_components/parts";
 import {
   MissingTag,
   MissingTheme,
   PickerFrame,
   ROW,
   ROW_TEXT,
-  usePick,
-} from "@/app/character/[id]/theme/[tid]/picker";
-import { useCharacter, type CharacterAction } from "@/app/character/[id]/provider";
+} from "@/app/character/[id]/theme/[tid]/_components/picker";
+import { usePick } from "@/app/character/[id]/theme/[tid]/_hooks/use-pick";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import { useContentPack } from "@/lib/content/load";
 import { findThemebook, questionLabel } from "@/lib/content/pack";
 import { answerCounts, powerQuestions, weaknessQuestions } from "@/lib/pickers";

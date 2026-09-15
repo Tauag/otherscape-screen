@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { use } from "react";
-import { DecayWarning, LABEL, LoseTheme, Track } from "@/app/character/[id]/parts";
-import { useCharacter } from "@/app/character/[id]/provider";
+import { DecayWarning, LABEL, LoseTheme, Track } from "@/app/character/[id]/_components/parts";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";
 import type { Essence, GhostMemory, Theme } from "@/lib/character/types";

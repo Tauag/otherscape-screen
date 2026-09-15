@@ -7,7 +7,7 @@ import {
   deleteCharacter,
   duplicateCharacter,
   renameCharacter,
-} from "@/app/actions";
+} from "@/lib/actions";
 
 const action =
   "inline-flex min-h-11 min-w-11 items-center justify-center px-2 font-mono text-[10px] tracking-[0.08em] text-dim uppercase";

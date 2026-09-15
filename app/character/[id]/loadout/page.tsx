@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { useCharacter } from "@/app/character/[id]/provider";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { LoadoutTag, LoadoutTagKind, Theme, ThemeType } from "@/lib/character/types";
 import { groupLoadout, type UpgradeChoice } from "@/lib/loadout-edit";
 import {

@@ -1,5 +1,20 @@
 @AGENTS.md
 
+## File layout
+
+Colocate code with the route that uses it. A private folder (leading
+underscore) never becomes a route segment, so it sits inside `app/`. A
+segment's private folder serves that segment and everything below it.
+
+- Used by one route subtree: `_components/`, `_hooks/`, `_lib/` inside that
+  segment's folder.
+- Used by two sibling subtrees: `components/`, `hooks/`, `lib/` at the repo
+  root. `app/_components/` is for `/` alone, so anything `/login` also needs
+  goes to the root instead.
+
+A second subtree reaching into a private folder is the signal to move the file
+up to the shared folder, not to deepen the import path.
+
 ## Migrations
 
 Supabase CLI, linked to project `pclyysmrsuhftgwvdwor`. New SQL files go in

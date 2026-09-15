@@ -4,7 +4,7 @@
 // theme type: `data-type` sits on the screen's root and the hue rides down.
 
 import { useId, useRef, useState } from "react";
-import { useCharacter } from "@/app/character/[id]/provider";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { marksTo, type TrackName } from "@/lib/character/theme";
 import {
   DECAY_TRACK_LENGTH,
