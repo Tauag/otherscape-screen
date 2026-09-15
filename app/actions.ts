@@ -54,12 +54,12 @@ export async function createCharacter(): Promise<Message> {
     .from("characters")
     .insert({ owner: userId, data: newCharacter() })
     .select("id")
-    .returns<{ id: string }[]>()
-    .single();
+    .single()
+    .overrideTypes<{ id: string }, { merge: false }>();
   if (error || !created) return "Could not create the character.";
 
   revalidatePath("/");
-  redirect(`/c/${created.id}`);
+  redirect(`/character/${created.id}`);
 }
 
 export async function renameCharacter(_previous: Message, form: FormData): Promise<Message> {

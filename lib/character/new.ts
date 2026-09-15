@@ -1,3 +1,4 @@
+import { STARTING_LOADOUT_POWER } from "../rules/constants.ts";
 import { CURRENT_SCHEMA_VERSION } from "./migrate.ts";
 import type { Character } from "./types.ts";
 
@@ -22,7 +23,7 @@ export function newCharacter(): Character {
     },
     crew: [],
     themes: [],
-    loadout: { themeIds: [], tags: [], specials: [], availablePower: 1, upgrade: 0 },
+    loadout: { themeIds: [], tags: [], specials: [], availablePower: STARTING_LOADOUT_POWER, upgrade: 0 },
     ghostMemories: [],
     statuses: [],
     storyTags: [],

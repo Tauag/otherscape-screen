@@ -120,7 +120,7 @@ export function CharacterProvider({ id, document: server, version, updatedAt, ch
       .eq("id", id)
       .eq("version", versionRef.current)
       .select("version")
-      .returns<{ version: number }[]>();
+      .overrideTypes<{ version: number }[], { merge: false }>();
 
     if (error) {
       show("offline");
@@ -147,8 +147,8 @@ export function CharacterProvider({ id, document: server, version, updatedAt, ch
       .from("characters")
       .select("data, version, updated_at")
       .eq("id", id)
-      .returns<{ data: unknown; version: number; updated_at: string }[]>()
-      .maybeSingle();
+      .maybeSingle()
+      .overrideTypes<{ data: unknown; version: number; updated_at: string }, { merge: false }>();
 
     if (!row) {
       show("offline");

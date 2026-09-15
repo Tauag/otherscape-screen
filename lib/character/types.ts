@@ -33,6 +33,8 @@ export type PowerTag = {
   letter: PowerQuestionLetter;
   text: string;
   burnt: boolean;
+  /** The Power a burn is worth. Absent reads as the default, because theme specials set 4 or 5. */
+  burnValue?: number;
 };
 
 export type WeaknessTag = {

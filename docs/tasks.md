@@ -54,19 +54,19 @@ run a real session from a phone before starting S8.
 
 ---
 
-## S3 Rules engine
+## S3 Rules engine — done
 
 All of `lib/rules/` is pure. No React, no Supabase, no I/O. Tests run under
 `node --test`, no framework and no fixtures.
 
-### T16 constants.ts
+### T16 constants.ts — done
 Hold every number the PRD left open: decay track length, starting loadout Power,
 starting tag counts, the default burn value of 3.
 **Done when:** answering an open question is a one-line edit here.
 **Depends on:** T01
 **Refs:** sysdesign 7
 
-### T17 power(selection)
+### T17 power(selection) — done
 Return a breakdown as a list of labelled values plus the total, never a bare
 number. Positive tag +1, negative tag -1. Only the highest positive status tier
 and the highest negative status tier count. A burnt tag reads its own burn value.
@@ -76,7 +76,7 @@ Support the manual modifier and rolling with a theme type.
 **Depends on:** T02, T16
 **Refs:** PRD 7.8
 
-### T18 raiseStatus and lowerStatus
+### T18 raiseStatus and lowerStatus — done
 Stacking marks the new tier, and marks one tier higher while the target is
 already marked. Removal moves every mark one box left per tier, and erases a mark
 pushed below tier 1.
@@ -84,7 +84,7 @@ pushed below tier 1.
 removal that erases a tier 1 mark.
 **Refs:** PRD 6, PRD 7.7
 
-### T19 essenceCandidates and loadoutSpend
+### T19 essenceCandidates and loadoutSpend — done
 `essenceCandidates(themes)` maps the theme mix to one Essence or to the
 Avatar/Conduit pair. `loadoutSpend(loadout)` totals 1P per loadout tag and 2P per
 wildcard tag, and reports the over-budget warning as a sentence.
@@ -92,7 +92,7 @@ wildcard tag, and reports the over-budget warning as a sentence.
 **Depends on:** T16
 **Refs:** PRD 7.5, PRD 7.6
 
-### T20 readiness(character)
+### T20 readiness(character) — done
 Return a list of sentences naming what is missing: a theme without a title tag, a
 theme without a weakness tag, a missing Identity line, an unchosen Essence, an
 over-budget loadout, more than four themes.
@@ -106,7 +106,7 @@ one returns an empty list.
 ## S4 Sheet
 
 ### T21 Character layout and bottom bar
-The `/c/[id]` layout loads the document once and owns the tab bar. Tabs are
+The `/character/[id]` layout loads the document once and owns the tab bar. Tabs are
 `<Link>` routes with `aria-current="page"`. The centre key is the roll, labelled
 with the live Power total.
 **Done when:** switching tabs refetches nothing and the phone back button works.
@@ -226,7 +226,7 @@ service role key from the local environment. The file stays out of git.
 ## S6 Creation
 
 ### T36 Guided creation flow
-`/c/[id]/create`, ten steps in the book's order. Every step saves, and a
+`/character/[id]/create`, ten steps in the book's order. Every step saves, and a
 half-built character reopens where the player left it. An experienced player skips
 the flow and edits a blank sheet.
 **Done when:** a new player builds a character with no rulebook open for the steps.
