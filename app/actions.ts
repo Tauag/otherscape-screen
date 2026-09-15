@@ -70,8 +70,8 @@ export async function renameCharacter(_previous: Message, form: FormData): Promi
     .from("characters")
     .select("data, version")
     .eq("id", id)
-    .returns<{ data: unknown; version: number }[]>()
-    .single();
+    .single()
+    .overrideTypes<{ data: unknown; version: number }, { merge: false }>();
 
   const document = row?.data;
   if (error || !row || !isDocument(document)) return "Could not find that character.";
@@ -98,8 +98,8 @@ export async function duplicateCharacter(_previous: Message, form: FormData): Pr
     .from("characters")
     .select("data")
     .eq("id", id)
-    .returns<{ data: unknown }[]>()
-    .single();
+    .single()
+    .overrideTypes<{ data: unknown }, { merge: false }>();
 
   const document = row?.data;
   if (error || !isDocument(document)) return "Could not copy that character.";
