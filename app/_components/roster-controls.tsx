@@ -8,6 +8,7 @@ import {
   duplicateCharacter,
   renameCharacter,
 } from "@/lib/actions";
+import type { RosterSummary } from "@/lib/roster";
 
 const action =
   "inline-flex min-h-11 min-w-11 items-center justify-center px-2 font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
@@ -21,9 +22,11 @@ type CardProps = {
   updatedAt: string;
   /** Formatted on the server, so the client never recomputes it. */
   edited: string;
+  /** Parsed on the server: a null or malformed roster_summary already reads as empty here. */
+  summary: RosterSummary;
 };
 
-export function CharacterCard({ id, name, essence, shared, updatedAt, edited }: CardProps) {
+export function CharacterCard({ id, name, essence, shared, updatedAt, edited, summary }: CardProps) {
   const [renaming, setRenaming] = useState(false);
   const [renameError, rename, renamePending] = useActionState(renameCharacter, null);
   const [copyError, copy, copyPending] = useActionState(duplicateCharacter, null);
@@ -36,7 +39,7 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited }: 
   const error = renameError ?? copyError ?? deleteError;
 
   return (
-    <article className="flex flex-col gap-[11px] rounded-md border border-border bg-surface px-[15px] py-[14px]">
+    <article className="flex flex-col gap-[11px] rounded-md border border-raised bg-surface px-[15px] py-[14px]">
       <div className="flex items-start justify-between gap-3">
         {renaming ? (
           <form
@@ -87,11 +90,35 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited }: 
         )}
       </div>
 
-      <p className="font-display text-[11px] font-semibold tracking-[0.16em] text-dim uppercase">
-        {essence || "Essence not set"}
-      </p>
+      <div className="flex items-center gap-[9px]">
+        {/* aria-hidden: a picture of what the Essence text already says in words. */}
+        {summary.themes.length > 0 && (
+          <div aria-hidden="true" className="flex gap-[3px]">
+            {summary.themes.map((theme, index) => (
+              <div
+                key={index}
+                data-type={theme.type ?? undefined}
+                style={theme.nascent ? { opacity: 0.28 } : undefined}
+                className={`h-1 w-[30px] ${theme.type ? "bg-[var(--hue)]" : "bg-pip"}`}
+              />
+            ))}
+          </div>
+        )}
+        <p className="font-display text-[11px] font-semibold tracking-[0.16em] text-dim uppercase">
+          {essence || "Essence not set"}
+        </p>
 
-      <div className="flex items-center justify-between gap-2 border-t border-border">
+        {summary.statuses > 0 && (
+          <div className="ml-auto flex items-center gap-1.5">
+            <span aria-hidden="true" className="size-1.5 rounded-full bg-negative" />
+            <p className="font-sans text-[11.5px] text-negative-text/65">
+              {summary.statuses} {summary.statuses === 1 ? "status" : "statuses"} in play
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between gap-2 border-t border-hairline pt-[11px]">
         <p className="font-sans text-[11.5px] text-faint">
           Edited <time dateTime={updatedAt}>{edited}</time>
         </p>
