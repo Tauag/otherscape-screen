@@ -167,15 +167,11 @@ export function marksTo(marked: number, index: number): number {
   return index < marked ? index : index + 1;
 }
 
-/**
- * lazy: a full Decay track only sits there. Ceiling: the rules say the theme is
- * lost and the app does not say so. Upgrade path: the theme-loss flow, its
- * confirm dialog, `Character.ghostMemories`, and a `loseTheme` verb (T34).
- */
 export function markTrack(theme: Theme, track: TrackName, index: number): Theme {
   const next = marksTo(theme[track], index);
   // A filled Upgrade track clears itself: the three points buy the Upgrade that
-  // the dialog then takes (PRD 7.3).
+  // the dialog then takes (PRD 7.3). A filled Decay track does neither. It warns
+  // and stays full until the player loses the theme or unmarks a box (PRD 7.4).
   const cleared = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
   return { ...theme, [track]: cleared ? 0 : (MARKS.at(next) ?? 0) };
 }

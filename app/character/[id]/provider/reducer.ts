@@ -1,3 +1,5 @@
+import { loseTheme } from "@/lib/character/loss";
+import { newTheme } from "@/lib/character/new";
 import {
   addPowerTag,
   addWeaknessTag,
@@ -46,13 +48,9 @@ export type CharacterAction =
   | { type: "setThemebook"; themeId: string; themebook: string }
   | { type: "setNascent"; themeId: string; nascent: boolean }
   | { type: "setThemeQuote"; themeId: string; quote: string }
-  // Free text, so the special itself is the key: T30 stores the pack's
-  // "name — text" line and hands the same line back to drop it.
   | { type: "addThemeSpecial"; themeId: string; special: string }
   | { type: "removeThemeSpecial"; themeId: string; special: string }
   | { type: "setTitleTag"; themeId: string; tagId: string | null }
-  // The id is minted by the caller, because a reducer runs twice in development
-  // and has to return the same document both times.
   | { type: "addPowerTag"; themeId: string; id: string; letter: PowerQuestionLetter }
   | { type: "addWeaknessTag"; themeId: string; id: string; letter: WeaknessQuestionLetter }
   | {
@@ -76,15 +74,14 @@ export type CharacterAction =
       tagId: string;
       direction: MoveDirection;
     }
-  // The burn value rides on the action, because the dialog takes it per burn.
   | { type: "burnTag"; themeId: string; tagId: string; burnValue: number }
   | { type: "unburnTag"; themeId: string; tagId: string }
   | { type: "markTrack"; themeId: string; track: TrackName; index: number }
-  /** Only a player action carries this, because the app never sets the Essence alone (PRD 7.5). */
+  | { type: "addTheme"; id: string }
+  | { type: "loseTheme"; themeId: string; id: string; lostAt: string; reason: string }
   | { type: "setEssence"; essence: Essence }
   | { type: "setEssenceSpecial"; essenceSpecial: string }
   | { type: "toggleLoadoutTheme"; themeId: string }
-  /** The id is minted by the caller, so this stays a pure function. */
   | { type: "addLoadoutTag"; id: string; kind: LoadoutTagKind; themeId: string | null }
   | { type: "editLoadoutTag"; id: string; text: string }
   | { type: "removeLoadoutTag"; id: string }
@@ -176,6 +173,14 @@ export function reduce(character: Character, action: CharacterAction): Character
       return inTheme(character, action.themeId, (theme) =>
         markTrack(theme, action.track, action.index),
       );
+    case "addTheme":
+      return { ...character, themes: [...character.themes, newTheme(action.id, character.essence)] };
+    case "loseTheme":
+      return loseTheme(character, action.themeId, {
+        id: action.id,
+        lostAt: action.lostAt,
+        reason: action.reason,
+      });
     case "setEssence":
       return { ...character, essence: action.essence };
     case "setEssenceSpecial":

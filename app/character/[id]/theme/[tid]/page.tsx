@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { use } from "react";
-import { LABEL, Track } from "@/app/character/[id]/parts";
+import { DecayWarning, LABEL, LoseTheme, Track } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
+import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
 import { TagRow } from "./tag-row";
@@ -17,6 +19,7 @@ const ADD =
 export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[tid]">) {
   const { id, tid } = use(params);
   const { character, dispatch } = useCharacter();
+  const router = useRouter();
 
   const theme = character.themes.find((candidate) => candidate.id === tid);
   const back = `/character/${id}`;
@@ -212,10 +215,21 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         </Link>
       </section>
 
-      <div className="flex flex-wrap gap-x-4 pb-2">
+      <div className="flex flex-wrap gap-x-4">
         <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} />
         <Track themeId={theme.id} track="decay" marked={theme.decay} />
       </div>
+
+      {/* Losing a theme is offered here whatever the Decay track says (PRD 7.4).
+          replace, not push: back would land on a route whose theme is gone. */}
+      <section className="flex flex-col gap-2 pb-2">
+        {decayFull(theme) && <DecayWarning />}
+        <LoseTheme
+          themeId={theme.id}
+          named={title?.text.trim() || "this theme"}
+          onLost={() => router.replace(back)}
+        />
+      </section>
     </main>
   );
 }

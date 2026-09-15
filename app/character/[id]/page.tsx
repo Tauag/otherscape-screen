@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import { use } from "react";
-import { LABEL, Track } from "@/app/character/[id]/parts";
+import { DecayWarning, LABEL, LoseTheme, Track } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
-import type { Essence, Theme } from "@/lib/character/types";
+import { decayFull } from "@/lib/character/loss";
+import { themeLine } from "@/lib/character/theme";
+import type { Essence, GhostMemory, Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
+import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { tagLabel } from "@/lib/tag-label";
@@ -55,7 +58,17 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
         ))
       )}
 
+      {/* T55: the replacement for a lost theme, and the way to add any other. */}
+      <button
+        type="button"
+        onClick={() => dispatch({ type: "addTheme", id: crypto.randomUUID() })}
+        className="inline-flex min-h-11 items-center self-start rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
+      >
+        Add a theme
+      </button>
+
       <EssenceCard />
+      <GhostMemories />
     </main>
   );
 }
@@ -193,6 +206,90 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
         <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} />
         <Track themeId={theme.id} track="decay" marked={theme.decay} />
       </div>
+
+      {/* The offer, never the act. The theme screen carries the same button at
+          any Decay mark, since the track is one trigger among many (PRD 7.4). */}
+      {decayFull(theme) && (
+        <>
+          <DecayWarning />
+          <LoseTheme themeId={theme.id} named={title?.text.trim() || "this theme"} />
+        </>
+      )}
+    </article>
+  );
+}
+
+/** PRD 6: the archive players read back. Read-only, and never editable. */
+function GhostMemories() {
+  const { character } = useCharacter();
+  if (character.ghostMemories.length === 0) return null;
+
+  return (
+    <section className="flex flex-col gap-4 rounded-md border border-border bg-surface p-4">
+      <h2 className={LABEL}>Ghost memories</h2>
+      {character.ghostMemories.map((memory) => (
+        <GhostEntry key={memory.id} memory={memory} />
+      ))}
+    </section>
+  );
+}
+
+function GhostEntry({ memory }: { memory: GhostMemory }) {
+  const { theme } = memory;
+  const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+
+  return (
+    <article
+      data-type={theme.type}
+      className="flex flex-col gap-1 border-l-2 border-[var(--hue)] pl-2"
+    >
+      <span className={LABEL}>
+        {theme.themebook.trim() || "No themebook"} · {theme.type}
+      </span>
+      <h3 className="font-display text-[17px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
+        {title?.text.trim() || "Untitled theme"}
+      </h3>
+      <p className="font-sans text-[13px] text-dim">
+        {/* lazy: the UTC date, because this client component renders on the
+            server too and a locale-formatted time would not survive hydration.
+            Ceiling: a theme lost late at night reads as the next day. Upgrade
+            path: format it in an effect, once the browser has the page. */}
+        Lost <time dateTime={memory.lostAt}>{memory.lostAt.slice(0, 10)}</time>.{" "}
+        {memory.reason.trim() || "No reason was written down."}
+      </p>
+
+      <details>
+        <summary className="min-h-11 cursor-pointer content-center font-mono text-[10px] tracking-[0.08em] text-dim uppercase">
+          Read it back
+        </summary>
+
+        <ul className="flex flex-col gap-1.5">
+          {theme.powerTags.map((tag) => (
+            <Chip key={tag.id} label={tagLabel(tag, "power")} text={tag.text} burnt={tag.burnt} />
+          ))}
+          {theme.weaknessTags.map((tag) => (
+            <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
+          ))}
+        </ul>
+
+        {theme.quote.trim() && (
+          <p className="pt-1 font-sans text-[13px] text-dim">
+            {themeLine(theme.type)}: {theme.quote}
+          </p>
+        )}
+
+        {theme.specials.map((special, index) => (
+          <p key={index} className="pt-1 font-sans text-[13px] text-dim">
+            {special}
+          </p>
+        ))}
+
+        <p className={`${LABEL} pt-1`}>
+          {theme.nascent ? "Nascent · " : ""}
+          Upgrade {theme.upgrade} of {UPGRADE_TRACK_LENGTH} · Decay {theme.decay} of{" "}
+          {DECAY_TRACK_LENGTH}
+        </p>
+      </details>
     </article>
   );
 }
