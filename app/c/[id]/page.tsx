@@ -13,8 +13,9 @@ export default function SheetPage() {
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-6">
       <Link
         href="/"
-        className="inline-flex min-h-11 items-center font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
+        className="inline-flex min-h-11 items-center gap-1.5 font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
       >
+        <span aria-hidden>←</span>
         Characters
       </Link>
 
