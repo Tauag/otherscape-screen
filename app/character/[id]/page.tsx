@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { use } from "react";
+import { LABEL, Track } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
+import type { Theme } from "@/lib/character/types";
+import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { themeCountWarning } from "@/lib/rules/readiness";
-import { LABEL } from "./sheet/label";
-import { ThemeCard } from "./sheet/theme-card";
+import { tagLabel } from "@/lib/tag-label";
 
-export default function SheetPage() {
+export default function SheetPage({ params }: PageProps<"/character/[id]">) {
+  const { id } = use(params);
   const { character, dispatch } = useCharacter();
   const warning = themeCountWarning(character.themes.length);
 
@@ -45,8 +49,95 @@ export default function SheetPage() {
       {character.themes.length === 0 ? (
         <p className="font-sans text-sm text-dim">This character has no themes yet.</p>
       ) : (
-        character.themes.map((theme) => <ThemeCard key={theme.id} theme={theme} />)
+        character.themes.map((theme) => (
+          <ThemeCard key={theme.id} theme={theme} href={`/character/${id}/theme/${theme.id}`} />
+        ))
       )}
     </main>
+  );
+}
+
+// data-type sits here and nowhere else. Every chip below reads --hue, --hue-title
+// and --hue-text off the cascade, so no chip has to learn its own theme type.
+function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
+  const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+
+  return (
+    <article
+      data-type={theme.type}
+      className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4"
+    >
+      {/* The heading is the way in to the theme screen, so the card's largest
+          text is also its tap target. */}
+      <Link href={href} className="flex flex-col gap-1">
+        <span className="flex items-baseline justify-between gap-2">
+          <span className={LABEL}>{theme.themebook.trim() || "No themebook"}</span>
+          {theme.nascent && <span className={LABEL}>Nascent</span>}
+        </span>
+
+        {title ? (
+          <h2 className="font-display text-[21px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
+            {title.text}
+          </h2>
+        ) : (
+          <h2 className="min-h-11 content-center font-sans text-sm text-dim">No title tag yet.</h2>
+        )}
+      </Link>
+
+      <ul className="flex flex-col gap-1.5">
+        {/* The title tag is a power tag, and it is the heading above, so the
+            list holds the rest. */}
+        {theme.powerTags
+          .filter((tag) => tag.id !== theme.titleTagId)
+          .map((tag) => (
+            <Chip
+              key={tag.id}
+              label={tagLabel(tag, "power")}
+              text={tag.text}
+              burnt={tag.burnt}
+            />
+          ))}
+
+        {theme.weaknessTags.map((tag) => (
+          <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
+        ))}
+      </ul>
+
+      <div className="flex flex-wrap gap-x-4">
+        <Track name="Upgrade" length={UPGRADE_TRACK_LENGTH} marked={theme.upgrade} />
+        <Track name="Decay" length={DECAY_TRACK_LENGTH} marked={theme.decay} />
+      </div>
+    </article>
+  );
+}
+
+function Chip({
+  label,
+  text,
+  burnt,
+  negative,
+}: {
+  label: string;
+  text: string;
+  burnt?: boolean;
+  negative?: boolean;
+}) {
+  return (
+    <li
+      data-burnt={burnt ? "true" : undefined}
+      data-valence={negative ? "negative" : undefined}
+      className="flex min-h-11 items-center gap-2 border-l-2 border-[var(--hue)] pl-2"
+    >
+      <span className="font-mono text-[10px] text-[var(--hue)]">{label}</span>
+      {/* Burnt reads as struck through as well as achromatic, so the state does
+          not rest on colour alone. */}
+      <span
+        className={`font-display text-[15px] tracking-[0.03em] text-[var(--hue-text)] ${
+          burnt ? "line-through" : ""
+        }`}
+      >
+        {text}
+      </span>
+    </li>
   );
 }

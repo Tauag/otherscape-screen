@@ -1,13 +1,7 @@
-import type { Character, Theme, ThemeType } from "../character/types.ts";
+import { themeLine } from "../character/theme.ts";
+import type { Character, Theme } from "../character/types.ts";
 import { STARTING_THEMES } from "./constants.ts";
 import { loadoutSpend } from "./loadout.ts";
-
-/** The quote line's name comes from the theme type (PRD 6). */
-const LINE_NAME: Record<ThemeType, string> = {
-  mythos: "Ritual",
-  self: "Identity",
-  noise: "Itch",
-};
 
 function themeName(theme: Theme, index: number): string {
   const themebook = theme.themebook.trim();
@@ -42,7 +36,7 @@ export function readiness(character: Character): string[] {
 
   themes.forEach((theme, index) => {
     if (theme.quote.trim() === "") {
-      gaps.push(`${themeName(theme, index)} has no ${LINE_NAME[theme.type]} line.`);
+      gaps.push(`${themeName(theme, index)} has no ${themeLine(theme.type)} line.`);
     }
   });
 
