@@ -1,4 +1,4 @@
-import { LABEL } from "@/app/character/[id]/parts";
+import { BurnButton, LABEL } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
 import { POWER_LETTERS, WEAKNESS_LETTERS, type MoveDirection, type TagKind } from "@/lib/character/theme";
 import type { PowerQuestionLetter, WeaknessQuestionLetter } from "@/lib/character/types";
@@ -135,6 +135,13 @@ export function TagRow({
             />
             <span className={LABEL}>Title</span>
           </label>
+        )}
+
+        {/* lazy: burning is reached from this screen only. Ceiling: a player
+            mid-roll leaves the roll to burn a tag. Upgrade path: S7's roll
+            builder burns the tag it has already selected. */}
+        {power && (
+          <BurnButton themeId={themeId} tagId={tag.id} burnt={tag.burnt ?? false} named={named} />
         )}
 
         <div className="ml-auto flex items-center gap-1">

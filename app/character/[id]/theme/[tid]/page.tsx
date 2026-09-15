@@ -6,7 +6,6 @@ import { LABEL, Track } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
 import { themeLine } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
-import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { TagRow } from "./tag-row";
 
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
@@ -53,7 +52,14 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         Sheet
       </Link>
 
-      <h1 className="font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
+      {/* data-burnt sits on the heading alone. On <main> it would burn the
+          whole screen, and only the title tag is burnt. */}
+      <h1
+        data-burnt={title?.burnt ? "true" : undefined}
+        className={`font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
+          title?.burnt ? "line-through" : ""
+        }`}
+      >
         {title?.text.trim() || "Untitled theme"}
       </h1>
 
@@ -196,8 +202,8 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
       </section>
 
       <div className="flex flex-wrap gap-x-4 pb-2">
-        <Track name="Upgrade" length={UPGRADE_TRACK_LENGTH} marked={theme.upgrade} />
-        <Track name="Decay" length={DECAY_TRACK_LENGTH} marked={theme.decay} />
+        <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} />
+        <Track themeId={theme.id} track="decay" marked={theme.decay} />
       </div>
     </main>
   );

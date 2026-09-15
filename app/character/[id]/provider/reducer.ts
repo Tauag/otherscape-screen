@@ -1,13 +1,18 @@
 import {
   addPowerTag,
+  addSpecial,
   addWeaknessTag,
+  burnTag,
   deletePowerTag,
   deleteWeaknessTag,
   editPowerTag,
   editWeaknessTag,
+  markTrack,
   moveTag,
+  unburnTag,
   type MoveDirection,
   type TagKind,
+  type TrackName,
 } from "@/lib/character/theme";
 import type {
   Character,
@@ -58,7 +63,12 @@ export type CharacterAction =
       kind: TagKind;
       tagId: string;
       direction: MoveDirection;
-    };
+    }
+  // The burn value rides on the action, because the dialog takes it per burn.
+  | { type: "burnTag"; themeId: string; tagId: string; burnValue: number }
+  | { type: "unburnTag"; themeId: string; tagId: string }
+  | { type: "markTrack"; themeId: string; track: TrackName; index: number }
+  | { type: "addSpecial"; themeId: string; special: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(character: Character, themeId: string, edit: (theme: Theme) => Theme): Character {
@@ -116,5 +126,17 @@ export function reduce(character: Character, action: CharacterAction): Character
       return inTheme(character, action.themeId, (theme) =>
         moveTag(theme, action.kind, action.tagId, action.direction),
       );
+    case "burnTag":
+      return inTheme(character, action.themeId, (theme) =>
+        burnTag(theme, action.tagId, action.burnValue),
+      );
+    case "unburnTag":
+      return inTheme(character, action.themeId, (theme) => unburnTag(theme, action.tagId));
+    case "markTrack":
+      return inTheme(character, action.themeId, (theme) =>
+        markTrack(theme, action.track, action.index),
+      );
+    case "addSpecial":
+      return inTheme(character, action.themeId, (theme) => addSpecial(theme, action.special));
   }
 }

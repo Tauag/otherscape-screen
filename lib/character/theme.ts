@@ -1,4 +1,6 @@
+import { DEFAULT_BURN_VALUE, UPGRADE_TRACK_LENGTH } from "../rules/constants.ts";
 import type {
+  MarkCount,
   PowerQuestionLetter,
   PowerTag,
   Theme,
@@ -122,4 +124,63 @@ export function moveTag(
   return kind === "power"
     ? { ...theme, powerTags: swapped(theme.powerTags, tagId, direction) }
     : { ...theme, weaknessTags: swapped(theme.weaknessTags, tagId, direction) };
+}
+
+function burnt(tag: PowerTag, burnValue: number): PowerTag {
+  const next: PowerTag = { ...tag, burnt: true, burnValue };
+  // types.ts: absent reads as the default, so an untouched 3 stays absent and a
+  // later change to DEFAULT_BURN_VALUE still reaches this tag.
+  if (burnValue === DEFAULT_BURN_VALUE) delete next.burnValue;
+  return next;
+}
+
+/** The dialog always sends a number, so a re-burn cannot keep the earlier value. */
+export function burnTag(theme: Theme, tagId: string, burnValue: number): Theme {
+  return {
+    ...theme,
+    powerTags: theme.powerTags.map((tag) => (tag.id === tagId ? burnt(tag, burnValue) : tag)),
+  };
+}
+
+/** The value belongs to the burn and not to the tag, so un-burning drops it. */
+export function unburnTag(theme: Theme, tagId: string): Theme {
+  return {
+    ...theme,
+    powerTags: theme.powerTags.map((tag) => {
+      if (tag.id !== tagId) return tag;
+      const next: PowerTag = { ...tag, burnt: false };
+      delete next.burnValue;
+      return next;
+    }),
+  };
+}
+
+export type TrackName = "upgrade" | "decay";
+
+const MARKS: MarkCount[] = [0, 1, 2, 3];
+
+/**
+ * Clicking box `index` marks up to it, or unmarks it and every box after, so a
+ * mis-click costs one more click and never the whole track.
+ */
+export function marksTo(marked: number, index: number): number {
+  return index < marked ? index : index + 1;
+}
+
+/**
+ * lazy: a full Decay track only sits there. Ceiling: the rules say the theme is
+ * lost and the app does not say so. Upgrade path: the theme-loss flow, its
+ * confirm dialog, `Character.ghostMemories`, and a `loseTheme` verb (T34).
+ */
+export function markTrack(theme: Theme, track: TrackName, index: number): Theme {
+  const next = marksTo(theme[track], index);
+  // A filled Upgrade track clears itself: the three points buy the Upgrade that
+  // the dialog then takes (PRD 7.3).
+  const cleared = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
+  return { ...theme, [track]: cleared ? 0 : (MARKS.at(next) ?? 0) };
+}
+
+/** One of the two Upgrade outcomes. The other is addPowerTag, unchanged. */
+export function addSpecial(theme: Theme, special: string): Theme {
+  return { ...theme, specials: [...theme.specials, special] };
 }

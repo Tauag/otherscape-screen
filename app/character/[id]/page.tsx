@@ -5,7 +5,6 @@ import { use } from "react";
 import { LABEL, Track } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
 import type { Theme } from "@/lib/character/types";
-import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { tagLabel } from "@/lib/tag-label";
 
@@ -76,7 +75,14 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
         </span>
 
         {title ? (
-          <h2 className="font-display text-[21px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
+          // The title tag sits outside the chip list, so it carries its own
+          // data-burnt. A burnt title paints achromatic like any other tag.
+          <h2
+            data-burnt={title.burnt ? "true" : undefined}
+            className={`font-display text-[21px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
+              title.burnt ? "line-through" : ""
+            }`}
+          >
             {title.text}
           </h2>
         ) : (
@@ -104,8 +110,8 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
       </ul>
 
       <div className="flex flex-wrap gap-x-4">
-        <Track name="Upgrade" length={UPGRADE_TRACK_LENGTH} marked={theme.upgrade} />
-        <Track name="Decay" length={DECAY_TRACK_LENGTH} marked={theme.decay} />
+        <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} />
+        <Track themeId={theme.id} track="decay" marked={theme.decay} />
       </div>
     </article>
   );
