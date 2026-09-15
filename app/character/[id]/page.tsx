@@ -5,6 +5,7 @@ import { use } from "react";
 import { LABEL, Track } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
 import type { Theme } from "@/lib/character/types";
+import { specialName } from "@/lib/pickers";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { tagLabel } from "@/lib/tag-label";
 
@@ -108,6 +109,18 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
           <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
         ))}
       </ul>
+
+      {theme.specials.length > 0 && (
+        <ul className="flex flex-col gap-1">
+          {/* The name alone: the card has no room for the rule, and the theme
+              screen prints both. */}
+          {theme.specials.map((special, index) => (
+            <li key={index} className="font-sans text-[13px] text-dim">
+              {specialName(special)}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="flex flex-wrap gap-x-4">
         <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} />

@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { BurnButton, LABEL } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
-import { POWER_LETTERS, WEAKNESS_LETTERS, type MoveDirection, type TagKind } from "@/lib/character/theme";
+import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type { PowerQuestionLetter, WeaknessQuestionLetter } from "@/lib/character/types";
 import { tagLabel } from "@/lib/tag-label";
 
@@ -19,6 +20,7 @@ export function TagRow({
   kind,
   themeId,
   tag,
+  href,
   index,
   count,
   isTitle,
@@ -27,6 +29,8 @@ export function TagRow({
   kind: TagKind;
   themeId: string;
   tag: RowTag;
+  /** The question picker for this tag. */
+  href: string;
   index: number;
   count: number;
   /** Power tags only: this tag is the one drawn as the theme's title. */
@@ -39,17 +43,6 @@ export function TagRow({
   const label = tagLabel(tag, kind);
   const named = tag.text.trim() || `the blank ${label} tag`;
   const power = kind === "power";
-  const letters: string[] = power ? POWER_LETTERS : WEAKNESS_LETTERS;
-
-  function chooseLetter(value: string) {
-    if (power) {
-      const letter = POWER_LETTERS.find((candidate) => candidate === value);
-      if (letter) dispatch({ type: "editPowerTag", themeId, tagId: tag.id, edit: { letter } });
-      return;
-    }
-    const letter = WEAKNESS_LETTERS.find((candidate) => candidate === value);
-    if (letter) dispatch({ type: "editWeaknessTag", themeId, tagId: tag.id, edit: { letter } });
-  }
 
   function setText(text: string) {
     dispatch(
@@ -78,18 +71,15 @@ export function TagRow({
       className="flex flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2"
     >
       <div className="flex items-center gap-2">
-        <select
-          value={tag.letter}
-          onChange={(event) => chooseLetter(event.target.value)}
-          aria-label={`Question letter for ${named}`}
-          className="min-h-11 rounded-sm border border-border bg-bg px-2 font-mono text-[13px] text-[var(--hue)]"
+        {/* The letter is the way in to the question picker, which is where the
+            question text is long enough to read. */}
+        <Link
+          href={href}
+          aria-label={`Question ${label} for ${named}`}
+          className="grid size-11 shrink-0 place-items-center rounded-sm border border-border bg-bg font-mono text-[13px] text-[var(--hue)]"
         >
-          {letters.map((letter) => (
-            <option key={letter} value={letter}>
-              {power ? letter : `w${letter}`}
-            </option>
-          ))}
-        </select>
+          {label}
+        </Link>
 
         {/* Burnt reads as struck through as well as achromatic, so the state does
             not rest on colour alone. T26 owns the control that sets it. */}

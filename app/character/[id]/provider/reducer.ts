@@ -1,6 +1,5 @@
 import {
   addPowerTag,
-  addSpecial,
   addWeaknessTag,
   burnTag,
   deletePowerTag,
@@ -38,6 +37,10 @@ export type CharacterAction =
   | { type: "setThemebook"; themeId: string; themebook: string }
   | { type: "setNascent"; themeId: string; nascent: boolean }
   | { type: "setThemeQuote"; themeId: string; quote: string }
+  // Free text, so the special itself is the key: T30 stores the pack's
+  // "name — text" line and hands the same line back to drop it.
+  | { type: "addThemeSpecial"; themeId: string; special: string }
+  | { type: "removeThemeSpecial"; themeId: string; special: string }
   | { type: "setTitleTag"; themeId: string; tagId: string | null }
   // The id is minted by the caller, because a reducer runs twice in development
   // and has to return the same document both times.
@@ -67,8 +70,7 @@ export type CharacterAction =
   // The burn value rides on the action, because the dialog takes it per burn.
   | { type: "burnTag"; themeId: string; tagId: string; burnValue: number }
   | { type: "unburnTag"; themeId: string; tagId: string }
-  | { type: "markTrack"; themeId: string; track: TrackName; index: number }
-  | { type: "addSpecial"; themeId: string; special: string };
+  | { type: "markTrack"; themeId: string; track: TrackName; index: number };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(character: Character, themeId: string, edit: (theme: Theme) => Theme): Character {
@@ -97,6 +99,17 @@ export function reduce(character: Character, action: CharacterAction): Character
       return inTheme(character, action.themeId, (theme) => ({ ...theme, nascent: action.nascent }));
     case "setThemeQuote":
       return inTheme(character, action.themeId, (theme) => ({ ...theme, quote: action.quote }));
+    case "addThemeSpecial":
+      return inTheme(character, action.themeId, (theme) =>
+        theme.specials.includes(action.special)
+          ? theme
+          : { ...theme, specials: [...theme.specials, action.special] },
+      );
+    case "removeThemeSpecial":
+      return inTheme(character, action.themeId, (theme) => ({
+        ...theme,
+        specials: theme.specials.filter((special) => special !== action.special),
+      }));
     case "setTitleTag":
       return inTheme(character, action.themeId, (theme) => ({
         ...theme,
@@ -136,7 +149,5 @@ export function reduce(character: Character, action: CharacterAction): Character
       return inTheme(character, action.themeId, (theme) =>
         markTrack(theme, action.track, action.index),
       );
-    case "addSpecial":
-      return inTheme(character, action.themeId, (theme) => addSpecial(theme, action.special));
   }
 }

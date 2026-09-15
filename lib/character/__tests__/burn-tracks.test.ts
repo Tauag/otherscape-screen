@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { burnValueOf } from "../../rules/power.ts";
-import { addPowerTag, addSpecial, burnTag, markTrack, unburnTag } from "../theme.ts";
+import { addPowerTag, burnTag, markTrack, unburnTag } from "../theme.ts";
 import type { PowerTag, Theme } from "../types.ts";
 import { sample } from "./sample.ts";
 
@@ -66,7 +66,8 @@ test("the Upgrade outcome applies on the cleared track: a new power tag", () => 
 });
 
 test("the Upgrade outcome applies on the cleared track: a theme special", () => {
-  const taken = addSpecial(markTrack(past, "upgrade", 2), "Cold Case: burn this theme for 4.");
+  const cleared = markTrack(past, "upgrade", 2);
+  const taken = { ...cleared, specials: [...cleared.specials, "Cold Case: burn this theme for 4."] };
 
   assert.equal(taken.upgrade, 0);
   assert.deepEqual(taken.specials, [...past.specials, "Cold Case: burn this theme for 4."]);

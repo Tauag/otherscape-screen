@@ -179,8 +179,3 @@ export function markTrack(theme: Theme, track: TrackName, index: number): Theme 
   const cleared = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
   return { ...theme, [track]: cleared ? 0 : (MARKS.at(next) ?? 0) };
 }
-
-/** One of the two Upgrade outcomes. The other is addPowerTag, unchanged. */
-export function addSpecial(theme: Theme, special: string): Theme {
-  return { ...theme, specials: [...theme.specials, special] };
-}

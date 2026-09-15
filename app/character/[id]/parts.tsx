@@ -91,7 +91,7 @@ function UpgradeDialog({
   function takeSpecial() {
     // `required` stops an empty field, but not a field holding only spaces.
     const text = special.trim();
-    if (text) dispatch({ type: "addSpecial", themeId, special: text });
+    if (text) dispatch({ type: "addThemeSpecial", themeId, special: text });
     setSpecial("");
   }
 

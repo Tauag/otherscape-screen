@@ -20,6 +20,8 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
 
   const theme = character.themes.find((candidate) => candidate.id === tid);
   const back = `/character/${id}`;
+  /** This screen, and the root of the three picker routes that return to it. */
+  const here = `${back}/theme/${tid}`;
 
   if (!theme) {
     return (
@@ -86,18 +88,18 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         </div>
       </fieldset>
 
-      <label className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1">
         <span className={LABEL}>Themebook</span>
-        <input
-          type="text"
-          value={theme.themebook}
-          onChange={(event) =>
-            dispatch({ type: "setThemebook", themeId: theme.id, themebook: event.target.value })
-          }
-          placeholder="Troubled Past"
-          className={FIELD}
-        />
-      </label>
+        <Link
+          href={`${here}/themebook`}
+          aria-label={`Themebook: ${theme.themebook.trim() || "none yet"}`}
+          className={`${FIELD} flex items-center`}
+        >
+          <span className={theme.themebook.trim() ? undefined : "text-dim"}>
+            {theme.themebook.trim() || "Choose a themebook"}
+          </span>
+        </Link>
+      </div>
 
       <label className="flex min-h-11 items-center gap-2">
         <input
@@ -120,6 +122,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
               kind="power"
               themeId={theme.id}
               tag={tag}
+              href={`${here}/tag/${tag.id}`}
               index={index}
               count={theme.powerTags.length}
               isTitle={tag.id === theme.titleTagId}
@@ -127,6 +130,8 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
             />
           ))}
         </ul>
+        {/* A new tag starts on question A. Its letter is the way in to the
+            question picker, where the player reads the ten and chooses. */}
         <button
           type="button"
           onClick={() =>
@@ -152,6 +157,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
               kind="weakness"
               themeId={theme.id}
               tag={tag}
+              href={`${here}/tag/${tag.id}`}
               index={index}
               count={theme.weaknessTags.length}
             />
@@ -192,6 +198,8 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           <p className="font-sans text-sm text-dim">No theme specials yet.</p>
         ) : (
           <ul className="flex flex-col gap-1.5">
+            {/* The index keys: the picker takes a special or gives it back whole,
+                and nothing reorders the list. */}
             {theme.specials.map((special, index) => (
               <li key={index} className="font-sans text-sm">
                 {special}
@@ -199,6 +207,9 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
             ))}
           </ul>
         )}
+        <Link href={`${here}/specials`} className={`${ADD} mt-1`}>
+          Choose theme specials
+        </Link>
       </section>
 
       <div className="flex flex-wrap gap-x-4 pb-2">
