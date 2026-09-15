@@ -21,6 +21,11 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}/`);
     }
     console.error("[auth/callback] exchangeCodeForSession failed:", error.message);
+    
+    // lazy: treat any failure here as the invite trigger rejecting the
+    // sign-up, since that's the only known cause once Google's own round
+    // trip already succeeded.
+    return NextResponse.redirect(`${origin}/not-invited`);
   }
 
   return NextResponse.redirect(`${origin}/login`);

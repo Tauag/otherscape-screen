@@ -197,6 +197,35 @@ This is the household-inventory wiring with the membership check removed.
 
 `/s/<token>` is the one public route. Everything else redirects to sign-in.
 
+### Invites and roles
+
+`invited_emails` allow-lists sign-up: a `before insert on auth.users` trigger
+rejects any account whose email isn't in the table. It carries a `role`
+column (`user` or `admin`, default `user`) already, so inviting someone as an
+admin is one row, not a later migration on the same table.
+
+Nothing reads `role` yet. The rest of this is the plan for when something
+does:
+
+- A `profiles` table, `id uuid primary key references auth.users`, holding
+  `role`. A trigger on `auth.users` populates it on sign-up, carrying `role`
+  over from the matching `invited_emails` row.
+- `own_characters` (section 3) gains an `or` clause: an admin's `auth.uid()`
+  passes the policy for every row, not just their own.
+  ```sql
+  using (
+    owner = auth.uid()
+    or exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'admin')
+  )
+  ```
+- If that subquery ever shows up in a slow-query check, a Custom Access Token
+  Auth Hook can put `role` in the JWT instead, so the policy reads
+  `auth.jwt() ->> 'user_role'` with no lookup. Not needed at five players.
+- "Admin creates a user" is already true today: any row in `invited_emails`
+  reserves an account, `role` and all, before that person ever signs in.
+
+T57 turns this sketch into real tickets once it's needed.
+
 ## 6. Content pack
 
 One `content_packs` row, id `themebooks`, holding the existing

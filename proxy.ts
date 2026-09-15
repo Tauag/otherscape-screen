@@ -1,6 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { decideRoute } from "@/lib/supabase/route-decision.mjs";
+import { decideRoute, isAuthCallbackPath } from "@/lib/supabase/route-decision.mjs";
 import { supabaseUrl, supabaseKey } from "@/lib/supabase/env";
 
 // Next.js 16 renamed the middleware.ts convention to proxy.ts; behavior is
@@ -25,11 +25,26 @@ export async function proxy(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const email = data?.claims.email as string | undefined;
 
-  const route = decideRoute({ pathname, email });
+  // The insert trigger only ever stops a *new* account, so a signed-in email
+  // needs its own check on every request: it catches an account that
+  // predates the allow-list, or one whose invite was revoked since. Skip it
+  // for the callback route itself, mid-OAuth-round-trip, where it's moot.
+  const invited =
+    email && !isAuthCallbackPath(pathname) ? (await supabase.rpc("current_user_invited")).data === true : undefined;
+
+  const route = decideRoute({ pathname, email, invited });
+
+  if (route === "not-invited") {
+    await supabase.auth.signOut();
+  }
+
+  const redirectPath: Record<Exclude<typeof route, "next">, string> = {
+    login: "/login",
+    home: "/",
+    "not-invited": "/not-invited",
+  };
   const response =
-    route === "next"
-      ? NextResponse.next({ request })
-      : NextResponse.redirect(new URL(route === "home" ? "/" : "/login", request.url));
+    route === "next" ? NextResponse.next({ request }) : NextResponse.redirect(new URL(redirectPath[route], request.url));
 
   cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
   return response;
