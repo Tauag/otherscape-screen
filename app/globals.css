@@ -29,6 +29,15 @@
   --color-text: #f0eef8;
   --color-dim: #8a87a0;
   --color-faint: #5a5770;
+  --color-chrome: #0d0d15; /* app bar and tab bar */
+  --color-edge: #1d1d28; /* the rule under the app bar, over the tab bar */
+  --color-recess: #101018; /* a nascent card, a dimmed roster card */
+  --color-raised: #2a2a3a; /* the border of a card that is in play */
+  --color-pip: #3a3a4c; /* an unlit track pip, a dashed edge */
+  --color-muted: #6e6b86; /* an inactive tab key, a lit Decay pip */
+  --color-quiet: #9a97b0; /* the monogram, the Identity/Ritual/Itch line */
+  --color-hairline: #1e1e2a; /* the rule inside a roster card */
+  --color-badge: #2e2e3e; /* the BURNT nP badge fill */
 
   --font-display: var(--font-chakra-petch), "Arial Narrow", sans-serif;
   --font-sans: var(--font-barlow), Arial, Helvetica, sans-serif;

@@ -64,14 +64,23 @@ Self card would be unreadable.
 
 **Ground.**
 
-| Role | Colour |
-|---|---|
-| Background | `#0A0A0F` |
-| Surface | `#12121B` |
-| Border | `#232331` |
-| Text | `#F0EEF8` |
-| Dim text | `#8A87A0` |
-| Faint label | `#5A5770` |
+| Role | Colour | Where |
+|---|---|---|
+| Background | `#0A0A0F` | the page |
+| Surface | `#12121B` | a card |
+| Border | `#232331` | a card's edge |
+| Text | `#F0EEF8` | body copy |
+| Dim text | `#8A87A0` | a secondary line |
+| Faint label | `#5A5770` | a section label |
+| Chrome | `#0D0D15` | app bar and tab bar |
+| Chrome border | `#1D1D28` | the rule under the app bar, over the tab bar |
+| Recessed surface | `#101018` | a nascent card, a dimmed roster card |
+| Raised border | `#2A2A3A` | the border of a card that is in play |
+| Empty pip border | `#3A3A4C` | an unlit track pip, a dashed edge |
+| Muted | `#6E6B86` | an inactive tab key, a lit Decay pip |
+| Quiet | `#9A97B0` | the monogram, the Identity/Ritual/Itch line |
+| Hairline | `#1E1E2A` | the rule inside a roster card |
+| Burnt badge fill | `#2E2E3E` | the badge on a burnt tag |
 
 The three type hues are named after the Google Sheets original. The exact fills
 are unconfirmed. Replace these hexes when the sheet's values are to hand.

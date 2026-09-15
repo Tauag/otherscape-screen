@@ -22,6 +22,7 @@ import { migrate } from "@/lib/character/migrate";
 import type { Character } from "@/lib/character/types";
 import { createClient } from "@/lib/supabase/client";
 import { reduce, type CharacterAction } from "../_lib/reducer";
+import { AppBar } from "./app-bar";
 import { Side } from "./conflict-side";
 
 export const CharacterContext = createContext<{
@@ -301,26 +302,38 @@ export function CharacterProvider({
 
   return (
     <CharacterContext.Provider value={value}>
+      <AppBar />
       {children}
 
-      <div className="sticky bottom-0 mx-auto w-full max-w-md bg-bg px-5 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <p
-          role="status"
-          aria-live="polite"
-          className={`font-mono text-[11px] tracking-[0.08em] ${
-            status === "conflict" ? "text-negative-text" : "text-faint"
-          }`}
-        >
-          {message[status]}
-        </p>
+      <div className="relative sticky bottom-0 mx-auto w-full max-w-md bg-bg pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        {/* Fades the scrolling content into this block's own background,
+            rather than letting it stop dead under the save line and the bar. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-full h-[46px] bg-gradient-to-b from-transparent to-bg"
+        />
 
-        {parked && (
-          <p className="pt-1 font-sans text-[11px] text-dim">
-            The copy you did not keep stays in this browser, under the storage key{" "}
-            <code className="font-mono text-faint">{parked}</code>.
+        <div className="px-5">
+          <p
+            role="status"
+            aria-live="polite"
+            className={`font-mono text-[11px] tracking-[0.08em] ${
+              status === "conflict" ? "text-negative-text" : "text-faint"
+            }`}
+          >
+            {message[status]}
           </p>
-        )}
 
+          {parked && (
+            <p className="pt-1 font-sans text-[11px] text-dim">
+              The copy you did not keep stays in this browser, under the storage key{" "}
+              <code className="font-mono text-faint">{parked}</code>.
+            </p>
+          )}
+        </div>
+
+        {/* Full-bleed: the bar reaches the screen edges, unlike the save line
+            above it. */}
         {bar}
       </div>
 
