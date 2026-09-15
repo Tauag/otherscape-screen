@@ -43,8 +43,6 @@ export function Track({
 
   function mark(index: number) {
     dispatch({ type: "markTrack", themeId, track, index });
-    // markTrack clears a filled Upgrade track, so the dialog is the only record
-    // of what the three points bought.
     if (track === "upgrade" && marksTo(marked, index) >= length) upgrade.current?.showModal();
   }
 
@@ -96,9 +94,6 @@ function UpgradeDialog({
   }
 
   return (
-    /* lazy: the native dialog gives the focus trap, the backdrop, and Escape
-       dismissal for free. Ceiling: showModal is all it gives. Upgrade path:
-       @base-ui/react Dialog when a dialog needs more than that. */
     <dialog ref={ref} aria-labelledby={headingId} className={DIALOG}>
       <h2 id={headingId} className={HEADING}>
         Take an Upgrade
@@ -113,8 +108,6 @@ function UpgradeDialog({
           New power tag
         </button>
 
-        {/* method="dialog" closes on submit, and `required` says so in the
-            browser's own words rather than disabling the button. */}
         <form method="dialog" onSubmit={takeSpecial} className="flex flex-wrap items-center gap-2">
           <input
             type="text"
@@ -138,7 +131,6 @@ function UpgradeDialog({
   );
 }
 
-/** T26: the value is per burn, so burning asks for it and un-burning does not. */
 export function BurnButton({
   themeId,
   tagId,
@@ -148,7 +140,6 @@ export function BurnButton({
   themeId: string;
   tagId: string;
   burnt: boolean;
-  /** The tag as a sentence names it, for the buttons a screen reader reads. */
   named: string;
 }) {
   const { dispatch } = useCharacter();
@@ -157,8 +148,6 @@ export function BurnButton({
   const headingId = useId();
 
   function open() {
-    // Every burn starts at the default. The last burn's override was that
-    // burn's, not this tag's.
     setValue(String(DEFAULT_BURN_VALUE));
     dialog.current?.showModal();
   }
@@ -236,10 +225,6 @@ export function DecayWarning() {
   );
 }
 
-/**
- * T54: the button any trigger reaches for. It never reads the Decay track, and
- * it asks first, because the sheet cannot bring a lost theme back.
- */
 export function LoseTheme({
   themeId,
   named,

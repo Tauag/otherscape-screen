@@ -179,8 +179,6 @@ export function NewCharacterBar() {
 
   return (
     <form action={create}>
-      {/* clip-path cuts the box-shadow too, so the glow is a drop-shadow on the
-          wrapper, which follows the clipped shape. */}
       <div
         style={{
           filter: "drop-shadow(0 0 14px color-mix(in srgb, var(--color-primary) 35%, transparent))",

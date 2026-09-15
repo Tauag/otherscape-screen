@@ -51,8 +51,6 @@ export default async function RosterPage() {
               {accountName.trim().charAt(0).toUpperCase()}
             </span>
             <span className="font-sans text-xs text-dim">{accountName}</span>
-            {/* The pill signs out on tap, so it says so rather than relying on
-                the account name alone to explain what the button does. */}
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"

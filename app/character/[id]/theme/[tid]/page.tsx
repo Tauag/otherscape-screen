@@ -57,8 +57,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         Sheet
       </Link>
 
-      {/* data-burnt sits on the heading alone. On <main> it would burn the
-          whole screen, and only the title tag is burnt. */}
       <h1
         data-burnt={title?.burnt ? "true" : undefined}
         className={`font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
@@ -142,7 +140,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
               type: "addPowerTag",
               themeId: theme.id,
               id: crypto.randomUUID(),
-              letter: "B",
+              letter: "A",
             })
           }
           className={ADD}

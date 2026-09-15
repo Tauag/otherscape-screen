@@ -58,7 +58,6 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
         ))
       )}
 
-      {/* T55: the replacement for a lost theme, and the way to add any other. */}
       <button
         type="button"
         onClick={() => dispatch({ type: "addTheme", id: crypto.randomUUID() })}
@@ -137,8 +136,6 @@ function EssenceCard() {
   );
 }
 
-// data-type sits here and nowhere else. Every chip below reads --hue, --hue-title
-// and --hue-text off the cascade, so no chip has to learn its own theme type.
 function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
   const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
 
@@ -147,8 +144,7 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
       data-type={theme.type}
       className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4"
     >
-      {/* The heading is the way in to the theme screen, so the card's largest
-          text is also its tap target. */}
+
       <Link href={href} className="flex flex-col gap-1">
         <span className="flex items-baseline justify-between gap-2">
           <span className={LABEL}>{theme.themebook.trim() || "No themebook"}</span>
@@ -156,8 +152,6 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
         </span>
 
         {title ? (
-          // The title tag sits outside the chip list, so it carries its own
-          // data-burnt. A burnt title paints achromatic like any other tag.
           <h2
             data-burnt={title.burnt ? "true" : undefined}
             className={`font-display text-[21px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
@@ -172,8 +166,6 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
       </Link>
 
       <ul className="flex flex-col gap-1.5">
-        {/* The title tag is a power tag, and it is the heading above, so the
-            list holds the rest. */}
         {theme.powerTags
           .filter((tag) => tag.id !== theme.titleTagId)
           .map((tag) => (
@@ -192,8 +184,6 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 
       {theme.specials.length > 0 && (
         <ul className="flex flex-col gap-1">
-          {/* The name alone: the card has no room for the rule, and the theme
-              screen prints both. */}
           {theme.specials.map((special, index) => (
             <li key={index} className="font-sans text-[13px] text-dim">
               {specialName(special)}
@@ -207,8 +197,6 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
         <Track themeId={theme.id} track="decay" marked={theme.decay} />
       </div>
 
-      {/* The offer, never the act. The theme screen carries the same button at
-          any Decay mark, since the track is one trigger among many (PRD 7.4). */}
       {decayFull(theme) && (
         <>
           <DecayWarning />
@@ -312,8 +300,6 @@ function Chip({
       className="flex min-h-11 items-center gap-2 border-l-2 border-[var(--hue)] pl-2"
     >
       <span className="font-mono text-[10px] text-[var(--hue)]">{label}</span>
-      {/* Burnt reads as struck through as well as achromatic, so the state does
-          not rest on colour alone. */}
       <span
         className={`font-display text-[15px] tracking-[0.03em] text-[var(--hue-text)] ${
           burnt ? "line-through" : ""

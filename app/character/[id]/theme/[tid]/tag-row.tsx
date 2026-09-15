@@ -71,8 +71,6 @@ export function TagRow({
       className="flex flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2"
     >
       <div className="flex items-center gap-2">
-        {/* The letter is the way in to the question picker, which is where the
-            question text is long enough to read. */}
         <Link
           href={href}
           aria-label={`Question ${label} for ${named}`}
@@ -81,8 +79,6 @@ export function TagRow({
           {label}
         </Link>
 
-        {/* Burnt reads as struck through as well as achromatic, so the state does
-            not rest on colour alone. T26 owns the control that sets it. */}
         <input
           type="text"
           value={tag.text}
@@ -127,9 +123,6 @@ export function TagRow({
           </label>
         )}
 
-        {/* lazy: burning is reached from this screen only. Ceiling: a player
-            mid-roll leaves the roll to burn a tag. Upgrade path: S7's roll
-            builder burns the tag it has already selected. */}
         {power && (
           <BurnButton themeId={themeId} tagId={tag.id} burnt={tag.burnt ?? false} named={named} />
         )}
