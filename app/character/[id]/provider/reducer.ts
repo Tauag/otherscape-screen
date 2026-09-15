@@ -15,6 +15,7 @@ import {
 } from "@/lib/character/theme";
 import type {
   Character,
+  Essence,
   PowerQuestionLetter,
   PowerTag,
   Theme,
@@ -70,7 +71,10 @@ export type CharacterAction =
   // The burn value rides on the action, because the dialog takes it per burn.
   | { type: "burnTag"; themeId: string; tagId: string; burnValue: number }
   | { type: "unburnTag"; themeId: string; tagId: string }
-  | { type: "markTrack"; themeId: string; track: TrackName; index: number };
+  | { type: "markTrack"; themeId: string; track: TrackName; index: number }
+  /** Only a player action carries this, because the app never sets the Essence alone (PRD 7.5). */
+  | { type: "setEssence"; essence: Essence }
+  | { type: "setEssenceSpecial"; essenceSpecial: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(character: Character, themeId: string, edit: (theme: Theme) => Theme): Character {
@@ -149,5 +153,9 @@ export function reduce(character: Character, action: CharacterAction): Character
       return inTheme(character, action.themeId, (theme) =>
         markTrack(theme, action.track, action.index),
       );
+    case "setEssence":
+      return { ...character, essence: action.essence };
+    case "setEssenceSpecial":
+      return { ...character, essenceSpecial: action.essenceSpecial };
   }
 }

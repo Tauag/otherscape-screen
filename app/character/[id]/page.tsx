@@ -4,8 +4,9 @@ import Link from "next/link";
 import { use } from "react";
 import { LABEL, Track } from "@/app/character/[id]/parts";
 import { useCharacter } from "@/app/character/[id]/provider";
-import type { Theme } from "@/lib/character/types";
+import type { Essence, Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
+import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { tagLabel } from "@/lib/tag-label";
 
@@ -53,7 +54,73 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
           <ThemeCard key={theme.id} theme={theme} href={`/character/${id}/theme/${theme.id}`} />
         ))
       )}
+
+      <EssenceCard />
     </main>
+  );
+}
+
+// The Essence belongs to the character, not to a theme, so no data-type hue.
+function EssenceCard() {
+  const { character, dispatch } = useCharacter();
+  // Derived every render: the theme mix is the only source, and the suggestion
+  // is never stored. Nothing here writes character.essence except a player click.
+  const { candidates, warning } = essenceSuggestion(character.themes, character.essence);
+  const others = ESSENCES.filter((essence) => !candidates.includes(essence));
+
+  const chip = (essence: Essence) => (
+    <label
+      key={essence}
+      className={`inline-flex min-h-11 items-center gap-2 rounded-sm border px-3 font-display text-sm font-semibold tracking-[0.08em] uppercase ${
+        character.essence === essence ? "border-primary text-text" : "border-border text-dim"
+      }`}
+    >
+      <input
+        type="radio"
+        name="essence"
+        value={essence}
+        checked={character.essence === essence}
+        onChange={() => dispatch({ type: "setEssence", essence })}
+        className="size-[18px] accent-primary"
+      />
+      {essence}
+    </label>
+  );
+
+  return (
+    <section className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
+      <fieldset>
+        <legend className={LABEL}>Essence</legend>
+
+        <div className="flex flex-col gap-2 pt-1">
+          <p className="font-sans text-sm text-dim">
+            {candidates.length > 0
+              ? "Your themes suggest this. Take it, or choose another."
+              : "Add a theme and the sheet suggests an Essence. Until then, choose one yourself."}
+          </p>
+
+          {candidates.length > 0 && (
+            <div className="flex flex-wrap gap-2">{candidates.map(chip)}</div>
+          )}
+
+          {warning && <p className="font-sans text-sm text-negative-text">{warning}</p>}
+
+          <p className={LABEL}>{candidates.length > 0 ? "Other Essences" : "All Essences"}</p>
+          <div className="flex flex-wrap gap-2">{others.map(chip)}</div>
+        </div>
+      </fieldset>
+
+      <label className="flex flex-col gap-1">
+        <span className={LABEL}>Essence special</span>
+        <textarea
+          value={character.essenceSpecial}
+          onChange={(event) =>
+            dispatch({ type: "setEssenceSpecial", essenceSpecial: event.target.value })
+          }
+          className="min-h-11 rounded-sm border border-border bg-surface p-3 font-sans text-base field-sizing-content"
+        />
+      </label>
+    </section>
   );
 }
 
