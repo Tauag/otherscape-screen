@@ -54,7 +54,7 @@ run a real session from a phone before starting S8.
 
 ---
 
-## S3 Rules engine
+## S3 Rules engine — done
 
 All of `lib/rules/` is pure. No React, no Supabase, no I/O. Tests run under
 `node --test`, no framework and no fixtures.
@@ -84,7 +84,7 @@ pushed below tier 1.
 removal that erases a tier 1 mark.
 **Refs:** PRD 6, PRD 7.7
 
-### T19 essenceCandidates and loadoutSpend
+### T19 essenceCandidates and loadoutSpend — done
 `essenceCandidates(themes)` maps the theme mix to one Essence or to the
 Avatar/Conduit pair. `loadoutSpend(loadout)` totals 1P per loadout tag and 2P per
 wildcard tag, and reports the over-budget warning as a sentence.
@@ -92,7 +92,7 @@ wildcard tag, and reports the over-budget warning as a sentence.
 **Depends on:** T16
 **Refs:** PRD 7.5, PRD 7.6
 
-### T20 readiness(character)
+### T20 readiness(character) — done
 Return a list of sentences naming what is missing: a theme without a title tag, a
 theme without a weakness tag, a missing Identity line, an unchosen Essence, an
 over-budget loadout, more than four themes.
