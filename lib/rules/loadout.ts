@@ -1,5 +1,3 @@
-// The loadout Power budget (PRD 7.6). It warns and never blocks (PRD section 4).
-
 import type { Loadout, LoadoutTagKind } from "../character/types.ts";
 import { LOADOUT_TAG_COST, WILDCARD_TAG_COST } from "./constants.ts";
 

@@ -1,5 +1,3 @@
-// The pre-session readiness check (PRD 7.1). It reports; it never blocks play.
-
 import type { Character, Theme, ThemeType } from "../character/types.ts";
 import { STARTING_THEMES } from "./constants.ts";
 import { loadoutSpend } from "./loadout.ts";
@@ -11,7 +9,6 @@ const LINE_NAME: Record<ThemeType, string> = {
   noise: "Itch",
 };
 
-/** The position leads, because O3 lets a character take one themebook four times over. */
 function themeName(theme: Theme, index: number): string {
   const themebook = theme.themebook.trim();
   return themebook ? `Theme ${index + 1} (${themebook})` : `Theme ${index + 1}`;

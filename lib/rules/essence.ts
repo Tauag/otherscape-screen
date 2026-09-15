@@ -1,5 +1,3 @@
-// The Essence a theme mix allows (PRD 6, PRD 7.5). The player still picks.
-
 import type { Essence, Theme } from "../character/types.ts";
 
 /** Keyed by the distinct theme types present, sorted and joined. */
