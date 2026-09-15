@@ -56,50 +56,11 @@ run a real session from a phone before starting S8.
 
 ## S3 Rules engine — done
 
-All of `lib/rules/` is pure. No React, no Supabase, no I/O. Tests run under
-`node --test`, no framework and no fixtures.
-
 ### T16 constants.ts — done
-Hold every number the PRD left open: decay track length, starting loadout Power,
-starting tag counts, the default burn value of 3.
-**Done when:** answering an open question is a one-line edit here.
-**Depends on:** T01
-**Refs:** sysdesign 7
-
 ### T17 power(selection) — done
-Return a breakdown as a list of labelled values plus the total, never a bare
-number. Positive tag +1, negative tag -1. Only the highest positive status tier
-and the highest negative status tier count. A burnt tag reads its own burn value.
-Support the manual modifier and rolling with a theme type.
-**Done when:** tests cover an outranked status excluded from the total, a burn at
-4 and at 5, and a roll with Self.
-**Depends on:** T02, T16
-**Refs:** PRD 7.8
-
 ### T18 raiseStatus and lowerStatus — done
-Stacking marks the new tier, and marks one tier higher while the target is
-already marked. Removal moves every mark one box left per tier, and erases a mark
-pushed below tier 1.
-**Done when:** tests cover stacking past an occupied tier, a cascade of two, and
-removal that erases a tier 1 mark.
-**Refs:** PRD 6, PRD 7.7
-
 ### T19 essenceCandidates and loadoutSpend — done
-`essenceCandidates(themes)` maps the theme mix to one Essence or to the
-Avatar/Conduit pair. `loadoutSpend(loadout)` totals 1P per loadout tag and 2P per
-wildcard tag, and reports the over-budget warning as a sentence.
-**Done when:** tests cover all eight mixes and an over-budget loadout.
-**Depends on:** T16
-**Refs:** PRD 7.5, PRD 7.6
-
 ### T20 readiness(character) — done
-Return a list of sentences naming what is missing: a theme without a title tag, a
-theme without a weakness tag, a missing Identity line, an unchosen Essence, an
-over-budget loadout, more than four themes.
-**Done when:** a half-built character returns the right sentences and a complete
-one returns an empty list.
-**Depends on:** T19
-**Refs:** PRD 7.1
 
 ---
 
