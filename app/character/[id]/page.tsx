@@ -8,7 +8,12 @@ import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";
 import type { Essence, GhostMemory, Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
-import { DECAY_TRACK_LENGTH, DEFAULT_BURN_VALUE, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
+import {
+  DECAY_TRACK_LENGTH,
+  DEFAULT_BURN_VALUE,
+  STARTING_THEMES,
+  UPGRADE_TRACK_LENGTH,
+} from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { tagLabel } from "@/lib/tag-label";
@@ -33,13 +38,15 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
         ))
       )}
 
-      <button
-        type="button"
-        onClick={() => dispatch({ type: "addTheme", id: crypto.randomUUID() })}
-        className="inline-flex min-h-11 items-center self-start rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
-      >
-        Add a theme
-      </button>
+      {character.themes.length < STARTING_THEMES && (
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "addTheme", id: crypto.randomUUID() })}
+          className="inline-flex min-h-11 items-center self-start rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
+        >
+          Add a theme
+        </button>
+      )}
 
       <EssenceCard />
       <GhostMemories />

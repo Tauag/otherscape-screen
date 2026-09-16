@@ -121,8 +121,10 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
   the track marks. It also records when the theme was lost and why. Players read
   these back later. The sheet keeps only themebook, type, and title tag, which
   loses the rest.
-- Themes: 4 at creation, not counting the loadout or the crew theme. The app
-  warns, never blocks, past 4 (see 7.3)
+- Themes: 4, not counting the loadout or the crew theme. The app hides the
+  add-theme control once a character holds 4 (see 7.3). A character that
+  already held more than 4 before this cap keeps its extra themes, with a
+  warning instead of a block.
 - Loadout: see below
 - Play state: statuses and story tags
 
@@ -243,7 +245,9 @@ and edits a blank sheet directly.
   or a theme special.
 - Toggle a theme to nascent.
 - Edit the Identity, Ritual, or Itch line. Label it by the theme's type.
-- Warn when a character holds more than 4 themes. Do not block.
+- Cap a character at 4 themes: hide the add-theme control once it holds 4. A
+  character that already held more than 4 before this cap keeps them, with a
+  warning instead of a block.
 - Burn a power tag, and un-burn it. A burnt tag shows as burnt everywhere.
 
 ### 7.4 Losing and replacing themes — P1
@@ -368,9 +372,10 @@ Confirmed against the rulebook. O1 to O6 are closed.
   Decay marks when a character acts against an Identity, neglects a Ritual, or
   suppresses an Itch, and a filled track loses the theme.
 - **O3. Starting themes.** 4, always, not counting the loadout or the crew
-  theme. No hard cap on how many share one type, or even one themebook: a
-  player could take Assets four times over. The book advises against it but
-  does not block it, so the app does not either.
+  theme. The app caps a character at 4 themes total: the add-theme control
+  disappears once it holds 4. No cap on how many share one type, or even one
+  themebook: a player could take Assets four times over. The book advises
+  against it but does not block it, so the app does not either.
 - **O4. Starting tags.** 3 power tags per theme, the title tag included, and 1
   weakness tag. One theme may instead take 4 power tags and 2 weakness tags;
   the player chooses which theme gets the larger set.

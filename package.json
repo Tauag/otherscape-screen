@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test",
+    "test": "node --experimental-loader ./scripts/resolve-alias-hook.mjs --test",
     "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {

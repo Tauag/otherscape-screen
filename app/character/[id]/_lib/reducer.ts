@@ -33,6 +33,7 @@ import {
   toggleLoadoutTheme,
   type UpgradeChoice,
 } from "@/lib/loadout-edit";
+import { STARTING_THEMES } from "@/lib/rules/constants";
 
 /**
  * Domain verbs, never generic setters. A new verb is one more case below, so
@@ -174,6 +175,9 @@ export function reduce(character: Character, action: CharacterAction): Character
         markTrack(theme, action.track, action.index),
       );
     case "addTheme":
+      // No-op past the cap: the button hides at STARTING_THEMES, but this
+      // guards a dispatch that outraces the re-render (e.g. a double click).
+      if (character.themes.length >= STARTING_THEMES) return character;
       return { ...character, themes: [...character.themes, newTheme(action.id, character.essence)] };
     case "loseTheme":
       return loseTheme(character, action.themeId, {
