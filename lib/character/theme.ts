@@ -10,7 +10,7 @@ import type {
 } from "./types.ts";
 
 /**
- * PRD 6: one quote line, named by theme type. Checked against the content pack:
+ * One quote line, named by theme type. Checked against the content pack:
  * all 14 themebooks carry `motivation.label`, and it is Identity on every Self
  * book, Ritual on every Mythos book, and Itch on every Noise book. The label
  * therefore follows the type and never needs the themebook.
@@ -165,13 +165,13 @@ const TRACK_LENGTH: Record<TrackName, number> = {
 /**
  * One button, one click, one more box. A full track wraps back to empty on the
  * next click, since that's the only way off a Decay track that stays full
- * until the player loses the theme (PRD 7.4).
+ * until the player loses the theme.
  */
 export function markTrack(theme: Theme, track: TrackName): Theme {
   const marked = theme[track];
   const next = marked >= TRACK_LENGTH[track] ? 0 : ((marked + 1) as MarkCount);
   // A filled Upgrade track clears itself: the three points buy the Upgrade that
-  // the dialog then takes (PRD 7.3).
+  // the dialog then takes.
   const cleared = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
   return { ...theme, [track]: cleared ? 0 : next };
 }

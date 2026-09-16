@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { use } from "react";
-import { Chip, DecayWarning, LoseTheme, Track } from "@/app/character/[id]/_components/parts";
+import { Chip } from "@/app/character/[id]/_components/chip";
+import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
+import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
+import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";

@@ -1,5 +1,4 @@
 // The whole character sheet, as it sits in `characters.data`. Types only.
-// Field shapes come from PRD section 6.
 
 /** Lowercase to match the `data-type` values in app/globals.css. */
 export type ThemeType = "self" | "mythos" | "noise";
@@ -7,7 +6,7 @@ export type ThemeType = "self" | "mythos" | "noise";
 /** Lowercase to match the `data-valence` values in app/globals.css. */
 export type Valence = "positive" | "negative";
 
-/** PRD 6: the eight Essences, chosen by the player from the theme mix. */
+/** The eight Essences, chosen by the player from the theme mix. */
 export type Essence =
   | "Real"
   | "Avatar"
@@ -46,7 +45,7 @@ export type WeaknessTag = {
 export type Theme = {
   id: string;
   type: ThemeType;
-  /** Free text, because a homebrew themebook is allowed (PRD 7.3). */
+  /** Free text, because a homebrew themebook is allowed. */
   themebook: string;
   nascent: boolean;
   /**
@@ -79,7 +78,7 @@ export type Loadout = {
   themeIds: string[];
   tags: LoadoutTag[];
   specials: string[];
-  /** A budget the app warns against, never enforces. Starts at 1 (PRD O5). */
+  /** A budget the app warns against, never enforces. Starts at 1. */
   availablePower: number;
   upgrade: MarkCount;
 };
@@ -122,7 +121,7 @@ export type CrewRelationship = {
   tag: string;
 };
 
-/** The fixed Evolution list from PRD 6. Veteran Specials is an x3 box, so it counts. */
+/** The fixed Evolution list. Veteran Specials is an x3 box, so it counts. */
 export type Evolutions = {
   newEssenceType: boolean;
   broadPowerTag: boolean;
@@ -144,7 +143,7 @@ export type Character = {
   background: string;
   /** Set by the Essence, but the text belongs to the rulebook, so the player writes it. */
   essenceSpecial: string;
-  /** Up to 3 (PRD 6). The app warns past that, never blocks. */
+  /** Up to 3. The app warns past that, never blocks. */
   veteranSpecials: string[];
   evolutions: Evolutions;
   crew: CrewRelationship[];
@@ -153,6 +152,6 @@ export type Character = {
   ghostMemories: GhostMemory[];
   statuses: Status[];
   storyTags: StoryTag[];
-  /** Step 1-10 of guided creation, or null once it is finished (PRD 7.1). */
+  /** Step 1-10 of guided creation, or null once it is finished. */
   creationStep: number | null;
 };

@@ -105,7 +105,7 @@ const withLoadout = (character: Character, loadout: Partial<Loadout>): Character
 });
 
 /**
- * PRD 7.5: once the mix narrows to exactly one Essence and the character
+ * Once the mix narrows to exactly one Essence and the character
  * holds all 4 starting themes, it assigns itself. A tied mix (Avatar or
  * Conduit) or an Essence the player already chose is left alone; the sheet
  * menu's Desired Essence picker covers both.

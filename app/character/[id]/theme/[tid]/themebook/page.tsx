@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
-import { LABEL } from "@/app/character/[id]/_components/parts";
+import { LABEL } from "@/app/character/[id]/_components/styles";
 import {
   MissingTheme,
   PickerFrame,
@@ -52,7 +52,7 @@ export default function ThemebookPicker({
         ))}
       </ul>
 
-      {/* PRD 7.3 allows a themebook of the player's own. It reads no concept and
+      {/* A themebook of the player's own reads no concept and
           no questions, so it lives under the list rather than in it. */}
       <form
         onSubmit={(event) => {

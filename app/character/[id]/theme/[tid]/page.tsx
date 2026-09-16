@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use } from "react";
-import { DecayWarning, LABEL, LoseTheme, Track } from "@/app/character/[id]/_components/parts";
+import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
+import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
+import { LABEL } from "@/app/character/[id]/_components/styles";
+import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
 import { themeLine } from "@/lib/character/theme";
@@ -212,7 +215,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         <Track themeId={theme.id} track="decay" marked={theme.decay} size="lg" />
       </div>
 
-      {/* Losing a theme is offered here whatever the Decay track says (PRD 7.4).
+      {/* Losing a theme is offered here whatever the Decay track says.
           replace, not push: back would land on a route whose theme is gone. */}
       <section className="flex flex-col gap-2 pb-2">
         {decayFull(theme) && <DecayWarning />}

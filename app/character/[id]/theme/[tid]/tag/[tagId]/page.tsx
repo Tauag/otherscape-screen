@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { LABEL } from "@/app/character/[id]/_components/parts";
+import { LABEL } from "@/app/character/[id]/_components/styles";
 import {
   MissingTag,
   MissingTheme,

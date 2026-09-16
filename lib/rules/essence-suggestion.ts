@@ -15,8 +15,7 @@ export const ESSENCES: Essence[] = [
 
 /**
  * - `unchosen`: no Essence yet. The player can end this state at any time; so
- *   can the reducer, once the mix narrows to one Essence and 4 themes exist
- *   (PRD 7.5).
+ *   can the reducer, once the mix narrows to one Essence and 4 themes exist.
  * - `suggested`: the choice is one the mix suggests.
  * - `override`: the mix suggests nothing, so the choice stands unopposed.
  * - `mismatch`: the mix changed under a choice it no longer suggests.

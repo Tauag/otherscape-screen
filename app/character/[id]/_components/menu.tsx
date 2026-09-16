@@ -1,12 +1,8 @@
 "use client";
 
-// The toolbar's 3-dot menu: the two screens too rare to earn a spot on the
-// sheet itself (PRD 4, "optimize for frequency"). Ghost memories only exist
-// once a theme is lost, and an Essence override only matters when the
-// auto-assignment (reducer.ts) guesses wrong or ties.
-
 import { useId, useRef } from "react";
-import { Chip, DIALOG, HEADING, LABEL, QUIET } from "@/app/character/[id]/_components/parts";
+import { Chip } from "@/app/character/[id]/_components/chip";
+import { DIALOG, HEADING, LABEL, QUIET } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { themeLine } from "@/lib/character/theme";
 import type { Essence, GhostMemory } from "@/lib/character/types";
@@ -101,7 +97,7 @@ export function SheetMenu() {
   );
 }
 
-/** PRD 7.5: the player can still pick or override ahead of the auto-assignment,
+/** The player can still pick or override ahead of the auto-assignment,
  *  or fix a tied mix it can't resolve on its own (reducer.ts's `addTheme` case). */
 function EssencePicker() {
   const { character, dispatch } = useCharacter();
@@ -166,7 +162,7 @@ function EssencePicker() {
   );
 }
 
-/** PRD 6: the archive players read back. Read-only, and never editable. */
+/** The archive players read back. Read-only, and never editable. */
 function GhostMemories() {
   const { character } = useCharacter();
 

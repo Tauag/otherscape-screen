@@ -1,13 +1,13 @@
 import { DECAY_TRACK_LENGTH } from "../rules/constants.ts";
 import type { Character, GhostMemory, Theme } from "./types.ts";
 
-/** PRD 7.4: a full track is the warning. Losing the theme stays a player action. */
+/** A full track is the warning. Losing the theme stays a player action. */
 export function decayFull(theme: Theme): boolean {
   return theme.decay >= DECAY_TRACK_LENGTH;
 }
 
 /**
- * PRD 7.4: one action, and it never reads the Decay track. The caller mints the
+ * One action, and it never reads the Decay track. The caller mints the
  * ghost memory's id and timestamp, because a reducer runs twice in development
  * and has to return the same document both times.
  *
@@ -27,7 +27,7 @@ export function loseTheme(
   return {
     ...character,
     themes: character.themes.filter((theme) => theme.id !== themeId),
-    // The theme object itself, because PRD 6 reads the snapshot back whole.
+    // The theme object itself, since the archive reads the snapshot back whole.
     ghostMemories: [...character.ghostMemories, { ...memory, theme: lost }],
     loadout: {
       ...character.loadout,

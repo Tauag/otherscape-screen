@@ -89,7 +89,6 @@ function readRaw(key: string): string | null {
  * - No local copy, or a clean one: take the server's.
  * - Dirty and based on the version the server still holds (or newer, if the
  *   read was stale): the local copy carries edits the server never saw. Take it.
- *   That is the offline-edit case PRD 7.13 protects.
  * - Dirty but based on an older version: another device saved in between. Both
  *   copies hold real edits, so neither is discarded and the player chooses.
  */

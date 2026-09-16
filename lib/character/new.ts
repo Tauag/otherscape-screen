@@ -32,7 +32,7 @@ export function newCharacter(): Character {
 }
 
 /**
- * PRD 7.4: a replacement starts nascent. Two Essences gain a full theme instead:
+ * A replacement starts nascent. Two Essences gain a full theme instead:
  * a Conduit, and a Nexus that stays a Nexus after the change. The sheet reads the
  * Essence on the document, and the Nascent checkbox on the theme screen settles
  * the case where the player changes Essence after the replacement.

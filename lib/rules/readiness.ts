@@ -9,7 +9,7 @@ function themeName(theme: Theme, index: number): string {
 }
 
 /**
- * PRD 7.3: past the starting count the app warns in plain words and never
+ * Past the starting count the app warns in plain words and never
  * blocks. The sheet prints this sentence too, so it lives in one place.
  */
 export function themeCountWarning(count: number): string | null {

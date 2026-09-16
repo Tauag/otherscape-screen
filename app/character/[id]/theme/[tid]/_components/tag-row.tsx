@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BurnButton } from "@/app/character/[id]/_components/parts";
+import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type { PowerQuestionLetter, WeaknessQuestionLetter } from "@/lib/character/types";

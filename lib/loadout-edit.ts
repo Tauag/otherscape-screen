@@ -8,7 +8,7 @@ export type LoadoutGroups = {
 };
 
 /**
- * PRD 7.6: tag sets grouped per loadout theme, plus misc.
+ * Tag sets grouped per loadout theme, plus misc.
  *
  * A tag falls into misc when its theme has left the loadout, or is gone from the
  * character, rather than off the screen: loadoutSpend charges every tag in the
@@ -49,7 +49,7 @@ export function markLoadoutUpgrade(marked: MarkCount, index: number): MarkCount 
 
 export type UpgradeChoice = "power" | "special";
 
-/** PRD 7.6: the full track clears, and the player takes one of the two. */
+/** The full track clears, and the player takes one of the two. */
 export function takeLoadoutUpgrade(loadout: Loadout, choice: UpgradeChoice): Loadout {
   return {
     ...loadout,
