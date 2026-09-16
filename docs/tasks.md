@@ -85,38 +85,11 @@ finishes that.
 
 ---
 
-## S4.5 Design realignment — next
+## S4.5 Design realignment — done
 
-The number runs on from T57. The step sits here because every screen S6 and S7
-add draws these pieces. Realigning later means realigning them in five more
-screens.
+### T58 Realign the built screens with the artboards - done
 
-### T58 Realign the built screens with the artboards
-The tokens already match design.md sections 2 and 3. The drift is composition.
-Five shared pieces first, because every later screen draws them:
-
-1. **Chip.** A bordered pill: hue border, tinted fill, and the question letter as
-   a mono badge. Today it is a list row with a left border.
-2. **Track pips.** Small squares under `UPG` and `DEC`, lit when marked. Today
-   both tracks are native checkboxes labelled in words. Keep the 44px hit target
-   and the screen-reader text T27 gives them.
-3. **Theme card.** A hue spine down the left edge, a `TYPE · THEMEBOOK` header row,
-   the title carrying its hue glow, and the Identity, Ritual, or Itch line. A
-   nascent theme keeps the dashed card.
-4. **App bar.** Monogram, character name, the theme-mix rule, and the Essence.
-   Name and player name move out of the scroll body into it.
-5. **Tab bar.** Fixed to the bottom, icon above label, and the centre Roll key in
-   primary pink. The key reads 0 until T41 builds a selection, because `power`
-   takes a roll selection and nothing stores one yet. Keys for screens that do
-   not exist stay out, per T21.
-
-Then the roster card: the theme-mix bars and the statuses-in-play line. Both need
-theme data the roster query does not select, so the row needs another generated
-column. The document never travels to the roster.
-
-**Done when:** the Main and Roster screens match their artboards at 390x844.
-**Depends on:** T22, T32
-**Refs:** design.md Main, design.md Roster, design.md 4
+### T59 Fix the loadout page to align with game rules - next
 
 ---
 
