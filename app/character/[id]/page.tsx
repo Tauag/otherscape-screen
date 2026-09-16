@@ -10,7 +10,6 @@ import type { Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
 import { STARTING_THEMES } from "@/lib/rules/constants";
 import { themeCountWarning } from "@/lib/rules/readiness";
-import { tagLabel } from "@/lib/tag-label";
 import { BackLink } from "@/components/back-link";
 
 export default function SheetPage({ params }: PageProps<"/character/[id]">) {
@@ -78,7 +77,7 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
               NASCENT
             </span>
           ) : (
-            <div className="flex items-center gap-[9px]">
+            <div className="flex items-center gap-4">
               <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} size="sm" />
               <Track themeId={theme.id} track="decay" marked={theme.decay} size="sm" />
             </div>
@@ -113,7 +112,7 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
                 .map((tag) => (
                   <Chip
                     key={tag.id}
-                    label={tagLabel(tag, "power")}
+                    label={tag.letter}
                     text={tag.text}
                     burnt={tag.burnt}
                     burnValue={tag.burnValue}
@@ -121,7 +120,7 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
                 ))}
 
               {theme.weaknessTags.map((tag) => (
-                <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
+                <Chip key={tag.id} label={tag.letter} text={tag.text} negative />
               ))}
             </ul>
 

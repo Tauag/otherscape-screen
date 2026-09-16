@@ -14,8 +14,9 @@ import { BackLink } from "@/components/back-link";
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 
 const FIELD = "min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
-const ADD =
-  "inline-flex min-h-11 items-center self-start rounded-sm border border-[var(--hue)] px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase";
+const BASE = "inline-flex min-h-11 items-center self-start rounded-sm border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase";
+const ADD = `${BASE} border-[var(--hue)] text-[var(--hue)]`;
+const ADD_WEAKNESS = `${BASE} border-negative text-negative`;
 
 export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[tid]">) {
   const { id, tid } = use(params);
@@ -169,7 +170,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
               letter: "A",
             })
           }
-          className={ADD}
+          className={ADD_WEAKNESS}
         >
           Add weakness tag
         </button>

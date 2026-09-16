@@ -15,7 +15,6 @@ import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import { useContentPack } from "@/lib/content/load";
 import { findThemebook, questionLabel } from "@/lib/content/pack";
 import { answerCounts, powerQuestions, weaknessQuestions } from "@/lib/pickers";
-import { tagLabel } from "@/lib/tag-label";
 
 type Row = { label: string; text: string; count: number; action: CharacterAction };
 
@@ -41,7 +40,7 @@ export default function QuestionPicker({
 
   const rows: Row[] = power
     ? powerQuestions(pack, book).map((question) => ({
-        label: tagLabel(question, "power"),
+        label: question.letter,
         text: question.text || questionLabel("power", question.letter),
         count: counts[question.letter] ?? 0,
         action: {
@@ -52,7 +51,7 @@ export default function QuestionPicker({
         },
       }))
     : weaknessQuestions(pack, book).map((question) => ({
-        label: tagLabel(question, "weakness"),
+        label: question.letter,
         text: question.text || questionLabel("weakness", question.letter),
         count: counts[question.letter] ?? 0,
         action: {

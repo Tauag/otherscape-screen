@@ -3,7 +3,6 @@ import { BurnButton, LABEL } from "@/app/character/[id]/_components/parts";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type { PowerQuestionLetter, WeaknessQuestionLetter } from "@/lib/character/types";
-import { tagLabel } from "@/lib/tag-label";
 
 const ICON =
   "grid size-11 shrink-0 place-items-center rounded-sm border border-border text-base disabled:opacity-30";
@@ -40,7 +39,7 @@ export function TagRow({
 }) {
   const { dispatch } = useCharacter();
 
-  const label = tagLabel(tag, kind);
+  const label = tag.letter;
   const named = tag.text.trim() || `the blank ${label} tag`;
   const power = kind === "power";
 
@@ -93,74 +92,41 @@ export function TagRow({
 
       <div className="flex flex-wrap items-center gap-1">
         {power && (
-          <input
-            type="text"
-            value={tag.themebook ?? ""}
-            onChange={(event) =>
-              dispatch({
-                type: "editPowerTag",
-                themeId,
-                tagId: tag.id,
-                edit: { themebook: event.target.value },
-              })
-            }
-            placeholder={themeThemebook}
-            aria-label={`Themebook ${named} answers`}
-            className="min-h-11 min-w-32 flex-1 rounded-sm border border-border bg-bg px-3 font-sans text-[13px] text-dim"
-          />
-        )}
-
-        {power && (
-          <label className="flex min-h-11 items-center gap-1.5 px-1.5">
-            <input
-              type="radio"
-              name="title-tag"
-              checked={isTitle ?? false}
-              onChange={() => dispatch({ type: "setTitleTag", themeId, tagId: tag.id })}
-              className="size-[18px] accent-[var(--hue)]"
-            />
-            <span className={LABEL}>Title</span>
-          </label>
-        )}
-
-        {power && (
           <BurnButton themeId={themeId} tagId={tag.id} burnt={tag.burnt ?? false} named={named} />
         )}
 
-        <div className="ml-auto flex items-center gap-1">
-          <button
-            type="button"
-            disabled={index === 0}
-            onClick={(event) => move(event, "up")}
-            aria-label={`Move ${named} up`}
-            className={ICON}
-          >
-            ↑
-          </button>
-          <button
-            type="button"
-            disabled={index === count - 1}
-            onClick={(event) => move(event, "down")}
-            aria-label={`Move ${named} down`}
-            className={ICON}
-          >
-            ↓
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              dispatch(
-                power
-                  ? { type: "deletePowerTag", themeId, tagId: tag.id }
-                  : { type: "deleteWeaknessTag", themeId, tagId: tag.id },
-              )
-            }
-            aria-label={`Delete ${named}`}
-            className={ICON}
-          >
-            ✕
-          </button>
-        </div>
+        <button
+          type="button"
+          disabled={index === 0}
+          onClick={(event) => move(event, "up")}
+          aria-label={`Move ${named} up`}
+          className={`${ICON} ml-auto`}
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          disabled={index === count - 1}
+          onClick={(event) => move(event, "down")}
+          aria-label={`Move ${named} down`}
+          className={ICON}
+        >
+          ↓
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            dispatch(
+              power
+                ? { type: "deletePowerTag", themeId, tagId: tag.id }
+                : { type: "deleteWeaknessTag", themeId, tagId: tag.id },
+            )
+          }
+          aria-label={`Delete ${named}`}
+          className={ICON}
+        >
+          ✕
+        </button>
       </div>
     </li>
   );

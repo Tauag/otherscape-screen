@@ -12,7 +12,6 @@ import { themeLine } from "@/lib/character/theme";
 import type { Essence, GhostMemory } from "@/lib/character/types";
 import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
-import { tagLabel } from "@/lib/tag-label";
 
 export function SheetMenu() {
   const menu = useRef<HTMLDialogElement>(null);
@@ -217,14 +216,14 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
           {theme.powerTags.map((tag) => (
             <Chip
               key={tag.id}
-              label={tagLabel(tag, "power")}
+              label={tag.letter}
               text={tag.text}
               burnt={tag.burnt}
               burnValue={tag.burnValue}
             />
           ))}
           {theme.weaknessTags.map((tag) => (
-            <Chip key={tag.id} label={tagLabel(tag, "weakness")} text={tag.text} negative />
+            <Chip key={tag.id} label={tag.letter} text={tag.text} negative />
           ))}
         </ul>
 

@@ -23,7 +23,7 @@ const TRACKS: Record<TrackName, { name: string; short: string; length: number }>
  *  screen's panel pips. One prop, not a second component. */
 type TrackSize = "sm" | "lg";
 
-const PIP_SIZE: Record<TrackSize, string> = { sm: "size-[9px]", lg: "size-[18px]" };
+const PIP_SIZE: Record<TrackSize, string> = { sm: "size-[12px]", lg: "size-[18px]" };
 
 /** The glow radius scales with the pip: 6px at 9px, 9px at 18px. Decay never glows. */
 const GLOW: Record<TrackSize, string> = {
@@ -77,7 +77,7 @@ export function Track({
         }
       >
         {size === "sm" ? (
-          <p className="font-mono text-[8px] tracking-[0.1em] text-faint">{short}</p>
+          <p className="font-mono text-[10px] tracking-[0.1em] text-faint">{short}</p>
         ) : (
           <p
             className={`font-mono text-[9px] font-bold tracking-[0.16em] ${

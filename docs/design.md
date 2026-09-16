@@ -93,7 +93,7 @@ are unconfirmed. Replace these hexes when the sheet's values are to hand.
 | Barlow | Body text, question text, Identity and Ritual lines |
 | JetBrains Mono | Section labels, question letters, Power math |
 
-Question letters ride on every tag: `B` for a power tag, `wA` for a weakness tag.
+Question letters ride on every tag: `B`, `A`, whichever the tag answers.
 A tag always shows which themebook question it answers. A question can be answered
 more than once, so two tags may carry the same letter.
 
