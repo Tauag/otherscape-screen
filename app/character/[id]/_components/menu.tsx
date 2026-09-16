@@ -1,98 +1,74 @@
 "use client";
 
-import { useId, useRef } from "react";
+import { Dialog } from "@base-ui/react/dialog";
+import { Menu } from "@base-ui/react/menu";
+import { useState } from "react";
 import { Chip } from "@/app/character/[id]/_components/chip";
-import { DIALOG, HEADING, LABEL, QUIET } from "@/app/character/[id]/_components/styles";
+import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, LABEL, QUIET } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { themeLine } from "@/lib/character/theme";
 import type { Essence, GhostMemory } from "@/lib/character/types";
 import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
 
-export function SheetMenu() {
-  const menu = useRef<HTMLDialogElement>(null);
-  const ghosts = useRef<HTMLDialogElement>(null);
-  const essence = useRef<HTMLDialogElement>(null);
-  const menuHeadingId = useId();
-  const ghostsHeadingId = useId();
-  const essenceHeadingId = useId();
+const MENU_POPUP =
+  "min-w-[190px] rounded-md border border-border bg-surface p-1 text-text shadow-lg outline-none";
+const MENU_ITEM =
+  "flex min-h-11 cursor-pointer items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] uppercase outline-none select-none data-[highlighted]:bg-primary/10 data-[highlighted]:text-primary";
 
-  function open(target: React.RefObject<HTMLDialogElement | null>) {
-    menu.current?.close();
-    target.current?.showModal();
-  }
+export function SheetMenu() {
+  const [ghostsOpen, setGhostsOpen] = useState(false);
+  const [essenceOpen, setEssenceOpen] = useState(false);
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => menu.current?.showModal()}
-        aria-label="Sheet menu"
-        className="-m-1 flex size-11 shrink-0 items-center justify-center p-1 text-dim"
-      >
-        <svg aria-hidden="true" width="4" height="18" viewBox="0 0 4 18" fill="currentColor">
-          <circle cx="2" cy="2" r="2" />
-          <circle cx="2" cy="9" r="2" />
-          <circle cx="2" cy="16" r="2" />
-        </svg>
-      </button>
-
-      <dialog ref={menu} aria-labelledby={menuHeadingId} className={DIALOG}>
-        <h2 id={menuHeadingId} className={HEADING}>
-          Sheet menu
-        </h2>
-        <div className="mt-4 flex flex-col gap-2">
-          <button type="button" onClick={() => open(ghosts)} className={`${QUIET} justify-start`}>
-            Ghost memories
-          </button>
-          <button type="button" onClick={() => open(essence)} className={`${QUIET} justify-start`}>
-            Desired essence
-          </button>
-          <button
-            type="button"
-            onClick={() => menu.current?.close()}
-            className={`${QUIET} mt-2 self-start`}
-          >
-            Close
-          </button>
-        </div>
-      </dialog>
-
-      <dialog
-        ref={ghosts}
-        aria-labelledby={ghostsHeadingId}
-        className={`${DIALOG} max-h-[85vh] overflow-y-auto`}
-      >
-        <h2 id={ghostsHeadingId} className={HEADING}>
-          Ghost memories
-        </h2>
-        <GhostMemories />
-        <button
-          type="button"
-          onClick={() => ghosts.current?.close()}
-          className={`${QUIET} mt-4 self-start`}
+      <Menu.Root>
+        <Menu.Trigger
+          aria-label="Sheet menu"
+          className="-m-1 flex size-11 shrink-0 items-center justify-center p-1 text-dim"
         >
-          Close
-        </button>
-      </dialog>
+          <svg aria-hidden="true" width="4" height="18" viewBox="0 0 4 18" fill="currentColor">
+            <circle cx="2" cy="2" r="2" />
+            <circle cx="2" cy="9" r="2" />
+            <circle cx="2" cy="16" r="2" />
+          </svg>
+        </Menu.Trigger>
 
-      <dialog
-        ref={essence}
-        aria-labelledby={essenceHeadingId}
-        className={`${DIALOG} max-h-[85vh] overflow-y-auto`}
-      >
-        <h2 id={essenceHeadingId} className={HEADING}>
-          Desired essence
-        </h2>
-        <EssencePicker />
-        <button
-          type="button"
-          onClick={() => essence.current?.close()}
-          className={`${QUIET} mt-4 self-start`}
-        >
-          Done
-        </button>
-      </dialog>
+        <Menu.Portal>
+          <Menu.Positioner side="bottom" align="end" sideOffset={8} className="outline-none">
+            <Menu.Popup className={MENU_POPUP}>
+              <Menu.Item className={MENU_ITEM} onClick={() => setGhostsOpen(true)}>
+                Ghost memories
+              </Menu.Item>
+              <Menu.Item className={MENU_ITEM} onClick={() => setEssenceOpen(true)}>
+                Desired essence
+              </Menu.Item>
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+
+      <Dialog.Root open={ghostsOpen} onOpenChange={setGhostsOpen}>
+        <Dialog.Portal>
+          <Dialog.Backdrop className={DIALOG_BACKDROP} />
+          <Dialog.Popup className={`${DIALOG_POPUP} max-h-[85vh] overflow-y-auto`}>
+            <Dialog.Title className={HEADING}>Ghost memories</Dialog.Title>
+            <GhostMemories />
+            <Dialog.Close className={`${QUIET} mt-4 self-start`}>Close</Dialog.Close>
+          </Dialog.Popup>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      <Dialog.Root open={essenceOpen} onOpenChange={setEssenceOpen}>
+        <Dialog.Portal>
+          <Dialog.Backdrop className={DIALOG_BACKDROP} />
+          <Dialog.Popup className={`${DIALOG_POPUP} max-h-[85vh] overflow-y-auto`}>
+            <Dialog.Title className={HEADING}>Desired essence</Dialog.Title>
+            <EssencePicker />
+            <Dialog.Close className={`${QUIET} mt-4 self-start`}>Done</Dialog.Close>
+          </Dialog.Popup>
+        </Dialog.Portal>
+      </Dialog.Root>
     </>
   );
 }

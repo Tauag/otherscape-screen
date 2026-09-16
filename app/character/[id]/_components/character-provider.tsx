@@ -1,10 +1,10 @@
 "use client";
 
+import { Dialog } from "@base-ui/react/dialog";
 import {
   createContext,
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useReducer,
   useRef,
@@ -78,8 +78,6 @@ export function CharacterProvider({
   const statusRef = useRef<SaveStatus>("saved");
   const handled = useRef(character);
   const hydrated = useRef(false);
-  const dialog = useRef<HTMLDialogElement>(null);
-  const headingId = useId();
 
   const show = useCallback((next: SaveStatus) => {
     statusRef.current = next;
@@ -240,12 +238,7 @@ export function CharacterProvider({
     saver.current?.schedule();
   }, [character, id]);
 
-  useEffect(() => {
-    if (conflict) dialog.current?.showModal();
-  }, [conflict]);
-
   function dismiss() {
-    dialog.current?.close();
     setConflict(null);
   }
 
@@ -337,39 +330,44 @@ export function CharacterProvider({
         {bar}
       </div>
 
-      <dialog
-        ref={dialog}
-        aria-labelledby={headingId}
-        onCancel={(event) => event.preventDefault()}
-        className="m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text backdrop:bg-bg/80"
-      >
-        <h2 id={headingId} className="font-display text-base font-bold tracking-[0.08em] uppercase">
-          Two versions of this character
-        </h2>
-        <p className="mt-2 font-sans text-sm text-dim">
-          Another device saved while you were editing. Read both, then choose. Nothing is thrown
-          away: the copy you do not keep stays in this browser.
-        </p>
+      {/* Controlled by `conflict`, not by a Trigger: the only way out is
+          keepMine/keepTheirs, so every Base UI-initiated close attempt
+          (Escape, outside press) is canceled. */}
+      <Dialog.Root open={conflict !== null} onOpenChange={(open, eventDetails) => {
+        if (!open) eventDetails.cancel();
+      }}>
+        <Dialog.Portal>
+          <Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
+          <Dialog.Popup className="fixed inset-0 m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text">
+            <Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
+              Two versions of this character
+            </Dialog.Title>
+            <p className="mt-2 font-sans text-sm text-dim">
+              Another device saved while you were editing. Read both, then choose. Nothing is
+              thrown away: the copy you do not keep stays in this browser.
+            </p>
 
-        {conflict && (
-          <div className="mt-4 flex flex-col gap-3">
-            <Side
-              label="On this device"
-              document={conflict.mine}
-              at={conflict.mineAt}
-              action="Keep this one"
-              onKeep={keepMine}
-            />
-            <Side
-              label="Saved elsewhere"
-              document={conflict.theirs}
-              at={conflict.theirsAt}
-              action="Keep this one"
-              onKeep={keepTheirs}
-            />
-          </div>
-        )}
-      </dialog>
+            {conflict && (
+              <div className="mt-4 flex flex-col gap-3">
+                <Side
+                  label="On this device"
+                  document={conflict.mine}
+                  at={conflict.mineAt}
+                  action="Keep this one"
+                  onKeep={keepMine}
+                />
+                <Side
+                  label="Saved elsewhere"
+                  document={conflict.theirs}
+                  at={conflict.theirsAt}
+                  action="Keep this one"
+                  onKeep={keepTheirs}
+                />
+              </div>
+            )}
+          </Dialog.Popup>
+        </Dialog.Portal>
+      </Dialog.Root>
     </CharacterContext.Provider>
   );
 }

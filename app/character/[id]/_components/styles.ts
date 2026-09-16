@@ -2,8 +2,11 @@
 
 export const LABEL = "font-mono text-[10px] tracking-[0.08em] text-faint uppercase";
 
-export const DIALOG =
-  "m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text backdrop:bg-bg/80";
+// Base UI's Dialog.Popup renders a plain <div>, so it needs the `fixed inset-0`
+// that a native <dialog> gets for free before `m-auto` can center it.
+export const DIALOG_BACKDROP = "fixed inset-0 bg-bg/80";
+export const DIALOG_POPUP =
+  "fixed inset-0 m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text";
 export const HEADING = "font-display text-base font-bold tracking-[0.08em] uppercase";
 export const PRIMARY =
   "inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";

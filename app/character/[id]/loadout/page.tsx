@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { Dialog } from "@base-ui/react/dialog";
+import { useEffect, useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { LoadoutTag, LoadoutTagKind, Theme, ThemeType } from "@/lib/character/types";
 import { groupLoadout, type UpgradeChoice } from "@/lib/loadout-edit";
@@ -40,18 +41,19 @@ export default function LoadoutPage() {
   const { groups, misc } = groupLoadout(loadout, character.themes);
   const spend = loadoutSpend(loadout);
 
-  const dialog = useRef<HTMLDialogElement>(null);
-  const headingId = useId();
+  const [open, setOpen] = useState(false);
 
   // A full track prompts, once per filling. Escape closes it without choosing,
   // and the button below the track opens it again.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    if (loadout.upgrade === UPGRADE_TRACK_LENGTH) dialog.current?.showModal();
+    if (loadout.upgrade === UPGRADE_TRACK_LENGTH) setOpen(true);
   }, [loadout.upgrade]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   function take(choice: UpgradeChoice) {
     dispatch({ type: "takeLoadoutUpgrade", choice });
-    dialog.current?.close();
+    setOpen(false);
   }
 
   return (
@@ -142,45 +144,42 @@ export default function LoadoutPage() {
         </div>
         <p className="font-sans text-sm text-dim">Mark a point when you use a loadout flaw.</p>
         {loadout.upgrade === UPGRADE_TRACK_LENGTH && (
-          <button type="button" onClick={() => dialog.current?.showModal()} className={BUTTON}>
+          <button type="button" onClick={() => setOpen(true)} className={BUTTON}>
             Take the Upgrade
           </button>
         )}
       </section>
 
-      {/* lazy: the native dialog gives the focus trap, the backdrop, and Escape
-          dismissal for free, as it does in provider.tsx. Ceiling: showModal is
-          all it gives. Upgrade path: @base-ui/react Dialog if this prompt ever
-          needs more. */}
-      <dialog
-        ref={dialog}
-        aria-labelledby={headingId}
-        className="m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text backdrop:bg-bg/80"
-      >
-        <h2 id={headingId} className="font-display text-base font-bold tracking-[0.08em] uppercase">
-          Take the loadout Upgrade
-        </h2>
-        <p className="mt-2 font-sans text-sm text-dim">
-          The track is full. Take one of the two. The track clears either way.
-        </p>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Portal>
+          <Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
+          <Dialog.Popup className="fixed inset-0 m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text">
+            <Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
+              Take the loadout Upgrade
+            </Dialog.Title>
+            <p className="mt-2 font-sans text-sm text-dim">
+              The track is full. Take one of the two. The track clears either way.
+            </p>
 
-        <div className="mt-4 flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={() => take("power")}
-            className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-          >
-            1 more available Power
-          </button>
-          <button
-            type="button"
-            onClick={() => take("special")}
-            className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-          >
-            A loadout special
-          </button>
-        </div>
-      </dialog>
+            <div className="mt-4 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => take("power")}
+                className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
+              >
+                1 more available Power
+              </button>
+              <button
+                type="button"
+                onClick={() => take("special")}
+                className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
+              >
+                A loadout special
+              </button>
+            </div>
+          </Dialog.Popup>
+        </Dialog.Portal>
+      </Dialog.Root>
     </main>
   );
 }

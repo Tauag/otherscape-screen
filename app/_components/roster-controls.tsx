@@ -1,7 +1,8 @@
 "use client";
 
+import { Dialog } from "@base-ui/react/dialog";
 import Link from "next/link";
-import { useActionState, useId, useRef, useState } from "react";
+import { useActionState, useState } from "react";
 import {
   createCharacter,
   deleteCharacter,
@@ -31,8 +32,7 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited, su
   const [renameError, rename, renamePending] = useActionState(renameCharacter, null);
   const [copyError, copy, copyPending] = useActionState(duplicateCharacter, null);
   const [deleteError, remove, deletePending] = useActionState(deleteCharacter, null);
-  const dialog = useRef<HTMLDialogElement>(null);
-  const headingId = useId();
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const label = name.trim() || "Unnamed";
   const busy = renamePending || copyPending || deletePending;
@@ -142,7 +142,7 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited, su
 
           <button
             type="button"
-            onClick={() => dialog.current?.showModal()}
+            onClick={() => setDeleteOpen(true)}
             aria-label={`Delete ${label}`}
             className={action}
           >
@@ -158,45 +158,35 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited, su
         {busy ? "Working" : (error ?? "")}
       </p>
 
-      {/* lazy: the native dialog gives the focus trap, the backdrop, and Escape
-          dismissal for free. Ceiling: showModal is all it gives. Upgrade path:
-          @base-ui/react Dialog when a dialog needs more than that. */}
-      <dialog
-        ref={dialog}
-        aria-labelledby={headingId}
-        className="m-auto w-[85vw] max-w-[320px] rounded-md border border-border bg-surface p-5 text-text backdrop:bg-bg/80"
-      >
-        <h3
-          id={headingId}
-          className="font-display text-base font-bold tracking-[0.08em] uppercase"
-        >
-          Delete {label}?
-        </h3>
-        <p className="mt-2 font-sans text-sm text-dim">
-          The character and its sheet go for good. This cannot be undone.
-        </p>
+      <Dialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <Dialog.Portal>
+          <Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
+          <Dialog.Popup className="fixed inset-0 m-auto w-[85vw] max-w-[320px] rounded-md border border-border bg-surface p-5 text-text">
+            <Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
+              Delete {label}?
+            </Dialog.Title>
+            <p className="mt-2 font-sans text-sm text-dim">
+              The character and its sheet go for good. This cannot be undone.
+            </p>
 
-        <div className="mt-5 flex items-center justify-end gap-2">
-          <form method="dialog">
-            <button
-              type="submit"
-              className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
-            >
-              Cancel
-            </button>
-          </form>
+            <div className="mt-5 flex items-center justify-end gap-2">
+              <Dialog.Close className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase">
+                Cancel
+              </Dialog.Close>
 
-          <form action={remove} onSubmit={() => dialog.current?.close()}>
-            <input type="hidden" name="id" value={id} />
-            <button
-              type="submit"
-              className="inline-flex min-h-11 items-center rounded-sm bg-negative px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-            >
-              Delete
-            </button>
-          </form>
-        </div>
-      </dialog>
+              <form action={remove} onSubmit={() => setDeleteOpen(false)}>
+                <input type="hidden" name="id" value={id} />
+                <button
+                  type="submit"
+                  className="inline-flex min-h-11 items-center rounded-sm bg-negative px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
+                >
+                  Delete
+                </button>
+              </form>
+            </div>
+          </Dialog.Popup>
+        </Dialog.Portal>
+      </Dialog.Root>
     </article>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { Dialog } from "@base-ui/react/dialog";
+import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { TrackName } from "@/lib/character/theme";
 import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
-import { DIALOG, HEADING, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
+import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
 
 const TRACKS: Record<TrackName, { name: string; short: string; length: number }> = {
   upgrade: { name: "Upgrade", short: "UPG", length: UPGRADE_TRACK_LENGTH },
@@ -39,12 +40,12 @@ export function Track({
 }) {
   const { dispatch } = useCharacter();
   const { name, short, length } = TRACKS[track];
-  const upgrade = useRef<HTMLDialogElement>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   function mark() {
     const willComplete = track === "upgrade" && marked + 1 >= length;
     dispatch({ type: "markTrack", themeId, track });
-    if (willComplete) upgrade.current?.showModal();
+    if (willComplete) setUpgradeOpen(true);
   }
 
   const upgradeTrack = track === "upgrade";
@@ -99,30 +100,34 @@ export function Track({
         </button>
       </div>
 
-      {track === "upgrade" && <UpgradeDialog themeId={themeId} ref={upgrade} />}
+      {track === "upgrade" && (
+        <UpgradeDialog themeId={themeId} open={upgradeOpen} onOpenChange={setUpgradeOpen} />
+      )}
     </>
   );
 }
 
 function UpgradeDialog({
   themeId,
-  ref,
+  open,
+  onOpenChange,
 }: {
   themeId: string;
-  ref: React.RefObject<HTMLDialogElement | null>;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
   const { dispatch } = useCharacter();
   const [special, setSpecial] = useState("");
-  const headingId = useId();
 
   function takeTag() {
     // lazy: the tag lands on question A and the player moves it, since nothing
     // here knows the questions. Upgrade path: T29's picker route.
     dispatch({ type: "addPowerTag", themeId, id: crypto.randomUUID(), letter: "A" });
-    ref.current?.close();
+    onOpenChange(false);
   }
 
-  function takeSpecial() {
+  function takeSpecial(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     // `required` stops an empty field, but not a field holding only spaces.
     const text = special.trim();
     if (text) dispatch({ type: "addThemeSpecial", themeId, special: text });
@@ -130,39 +135,41 @@ function UpgradeDialog({
   }
 
   return (
-    <dialog ref={ref} aria-labelledby={headingId} className={DIALOG}>
-      <h2 id={headingId} className={HEADING}>
-        Take an Upgrade
-      </h2>
-      <p className="mt-2 font-sans text-sm text-dim">
-        Three points, one Upgrade. Take a new power tag, which may answer any question, or a theme
-        special. The track is clear either way, and the theme screen can still add both later.
-      </p>
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Backdrop className={DIALOG_BACKDROP} />
+        <Dialog.Popup className={DIALOG_POPUP}>
+          <Dialog.Title className={HEADING}>Take an Upgrade</Dialog.Title>
+          <p className="mt-2 font-sans text-sm text-dim">
+            Three points, one Upgrade. Take a new power tag, which may answer any question, or a
+            theme special. The track is clear either way, and the theme screen can still add both
+            later.
+          </p>
 
-      <div className="mt-4 flex flex-col gap-3">
-        <button type="button" onClick={takeTag} className={PRIMARY}>
-          New power tag
-        </button>
+          <div className="mt-4 flex flex-col gap-3">
+            <button type="button" onClick={takeTag} className={PRIMARY}>
+              New power tag
+            </button>
 
-        <form method="dialog" onSubmit={takeSpecial} className="flex flex-wrap items-center gap-2">
-          <input
-            type="text"
-            required
-            value={special}
-            onChange={(event) => setSpecial(event.target.value)}
-            aria-label="Theme special"
-            placeholder="A theme special, in your own words"
-            className="min-h-11 min-w-32 flex-1 rounded-sm border border-border bg-bg px-3 font-sans text-base"
-          />
-          <button type="submit" className={PRIMARY}>
-            Take special
-          </button>
-        </form>
+            <form onSubmit={takeSpecial} className="flex flex-wrap items-center gap-2">
+              <input
+                type="text"
+                required
+                value={special}
+                onChange={(event) => setSpecial(event.target.value)}
+                aria-label="Theme special"
+                placeholder="A theme special, in your own words"
+                className="min-h-11 min-w-32 flex-1 rounded-sm border border-border bg-bg px-3 font-sans text-base"
+              />
+              <button type="submit" className={PRIMARY}>
+                Take special
+              </button>
+            </form>
 
-        <button type="button" onClick={() => ref.current?.close()} className={`${QUIET} self-start`}>
-          Not now
-        </button>
-      </div>
-    </dialog>
+            <Dialog.Close className={`${QUIET} self-start`}>Not now</Dialog.Close>
+          </div>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
