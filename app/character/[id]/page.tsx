@@ -53,10 +53,13 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
   const nascent = isNascent(theme);
 
   return (
-    <article
+    <Link
+      href={href}
       data-type={theme.type}
-      className={`flex overflow-hidden rounded-md border ${
-        nascent ? "border-dashed border-raised bg-recess" : "border-border bg-surface"
+      className={`flex overflow-hidden rounded-md border transition-colors ${
+        nascent
+          ? "border-dashed border-raised bg-recess hover:border-[var(--hue)]/60"
+          : "border-border bg-surface hover:border-[var(--hue)]"
       }`}
     >
       {/* Outside the body padding, so it runs the card's full height. */}
@@ -67,14 +70,13 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 
       <div className="flex min-w-0 flex-1 flex-col gap-[9px] px-3 pt-[11px] pb-2.5">
         <div className="flex items-center justify-between gap-2">
-          <Link
-            href={href}
+          <span
             className={`font-display text-[10px] font-semibold tracking-[0.17em] uppercase ${
               nascent ? "text-muted" : "text-dim"
             }`}
           >
             {theme.type} · {theme.themebook.trim() || "No themebook"}
-          </Link>
+          </span>
 
           <div className="flex items-center gap-3">
             {nascent && (
@@ -103,24 +105,22 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
           </div>
         </div>
 
-        <Link href={href} className="block">
-          {title ? (
-            <h2
-              data-burnt={title.burnt ? "true" : undefined}
-              className={`font-display text-[21px] leading-tight font-bold tracking-[0.045em] uppercase ${
-                title.burnt ? "line-through" : ""
-              } ${
-                nascent
-                  ? "text-[var(--hue-title)]/60"
-                  : "text-[var(--hue-title)] [text-shadow:0_0_20px_color-mix(in_oklab,var(--hue)_38%,transparent)]"
-              }`}
-            >
-              {title.text}
-            </h2>
-          ) : (
-            <h2 className="min-h-11 content-center font-sans text-sm text-dim">No title tag yet.</h2>
-          )}
-        </Link>
+        {title ? (
+          <h2
+            data-burnt={title.burnt ? "true" : undefined}
+            className={`font-display text-[21px] leading-tight font-bold tracking-[0.045em] uppercase ${
+              title.burnt ? "line-through" : ""
+            } ${
+              nascent
+                ? "text-[var(--hue-title)]/60"
+                : "text-[var(--hue-title)] [text-shadow:0_0_20px_color-mix(in_oklab,var(--hue)_38%,transparent)]"
+            }`}
+          >
+            {title.text}
+          </h2>
+        ) : (
+          <h2 className="min-h-11 content-center font-sans text-sm text-dim">No title tag yet.</h2>
+        )}
 
         {/* The artboard draws a nascent card as the header and title alone. */}
         {!nascent && (
@@ -173,6 +173,6 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
           </>
         )}
       </div>
-    </article>
+    </Link>
   );
 }

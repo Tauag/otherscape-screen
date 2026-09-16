@@ -51,7 +51,10 @@ export function Track({
   const { name, short, length } = TRACKS[track];
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
-  function mark() {
+  function mark(event: React.MouseEvent<HTMLButtonElement>) {
+    // The sheet's card is a single Link to the theme screen; preventDefault stops
+    // that navigation so a track click only marks the box.
+    event.preventDefault();
     const willComplete = track === "upgrade" && marked + 1 >= length;
     dispatch({ type: "markTrack", themeId, track });
     if (willComplete) setUpgradeOpen(true);

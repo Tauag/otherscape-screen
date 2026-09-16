@@ -1,4 +1,3 @@
-/** T55: a full Decay track is a sentence. It blocks no edit and loses nothing. */
 export function DecayWarning() {
   return (
     <p className="font-sans text-sm text-negative-text">

@@ -40,6 +40,9 @@ export function LoseTheme({
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger
         aria-label={`Lose ${named}`}
+        // The sheet's card is a single Link to the theme screen; preventDefault
+        // stops that navigation so the trigger only opens the dialog.
+        onClick={(event) => event.preventDefault()}
         className={`${QUIET} self-start border-negative text-negative-text`}
       >
         Lose this theme
