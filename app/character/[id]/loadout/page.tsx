@@ -1,59 +1,28 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import { Dialog } from "@base-ui/react/dialog";
-import { Input } from "@base-ui/react/input";
-import { Toggle } from "@base-ui/react/toggle";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { themeTitle } from "@/lib/character/theme";
-import type { LoadoutTag, LoadoutTagKind, Theme, ThemeType } from "@/lib/character/types";
-import { groupLoadout, type UpgradeChoice } from "@/lib/loadout-edit";
-import {
-  LOADOUT_TAG_COST,
-  UPGRADE_TRACK_LENGTH,
-  WILDCARD_TAG_COST,
-} from "@/lib/rules/constants";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { LABEL, PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
+import { TrackPips } from "@/app/character/[id]/_components/track";
+import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
+import type { UpgradeChoice } from "@/lib/loadout-edit";
+import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
-
-const LABEL = "font-mono text-[10px] tracking-[0.08em] text-faint uppercase";
-
-const BUTTON =
-  "inline-flex min-h-11 items-center rounded-sm border border-border px-3 font-display text-xs font-semibold tracking-[0.08em] uppercase";
-
-const KIND: Record<LoadoutTagKind, string> = {
-  tag: "Tag",
-  wildcard: "Wildcard",
-  flaw: "Flaw",
-};
-
-/** The price rides on the button that spends it. A flaw is free, so it says nothing. */
-const ADD: Record<LoadoutTagKind, string> = {
-  tag: `Tag ${LOADOUT_TAG_COST}P`,
-  wildcard: `Wildcard ${WILDCARD_TAG_COST}P`,
-  flaw: "Flaw",
-};
-
-function themeName(theme: Theme): string {
-  const title = themeTitle(theme);
-  return title?.text.trim() || theme.themebook.trim() || "Untitled theme";
-}
 
 export default function LoadoutPage() {
   const { character, dispatch } = useCharacter();
   const { loadout } = character;
-  const { groups, misc } = groupLoadout(loadout, character.themes);
   const spend = loadoutSpend(loadout);
 
   const [open, setOpen] = useState(false);
 
-  // A full track prompts, once per filling. Escape closes it without choosing,
-  // and the button below the track opens it again.
-  /* eslint-disable react-hooks/set-state-in-effect */
-  useEffect(() => {
-    if (loadout.upgrade === UPGRADE_TRACK_LENGTH) setOpen(true);
-  }, [loadout.upgrade]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+  function mark() {
+    const willComplete = loadout.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
+    dispatch({ type: "markLoadoutUpgrade" });
+    if (willComplete) setOpen(true);
+  }
 
   function take(choice: UpgradeChoice) {
     dispatch({ type: "takeLoadoutUpgrade", choice });
@@ -62,40 +31,51 @@ export default function LoadoutPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-6">
-      <section>
-        <p className={LABEL}>Themes in the loadout</p>
-        {character.themes.length === 0 ? (
-          <p className="pt-2 font-sans text-sm text-dim">This character has no themes yet.</p>
-        ) : (
-          <ul className="flex flex-wrap gap-2 pt-2">
-            {character.themes.map((theme) => (
-              <li key={theme.id}>
-                <Toggle
-                  data-type={theme.type}
-                  pressed={loadout.themeIds.includes(theme.id)}
-                  onPressedChange={() => dispatch({ type: "toggleLoadoutTheme", themeId: theme.id })}
-                  className={`${BUTTON} text-dim aria-pressed:border-[var(--hue)] aria-pressed:text-[var(--hue-text)]`}
-                >
-                  {themeName(theme)}
-                </Toggle>
-              </li>
-            ))}
-          </ul>
-        )}
+      {loadout.sets.length === 0 ? (
+        <p className="font-sans text-sm text-dim">
+          No loadout sets yet. A set holds a title tag, its feature tags, and any weakness tags.
+        </p>
+      ) : (
+        loadout.sets.map((set) => <SetCard key={set.id} set={set} />)
+      )}
+
+      <Button
+        type="button"
+        onClick={() => dispatch({ type: "addLoadoutSet", id: crypto.randomUUID() })}
+        className={`${SMALL_BUTTON} self-start text-dim`}
+      >
+        + Loadout set
+      </Button>
+
+      <section className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
+        <p className={LABEL}>Wildcards</p>
+        <p className="font-sans text-sm text-dim">
+          Reserve the right to load a tag mid-session, outside Loading Up.
+        </p>
+        <div className="flex items-center gap-3 pt-1">
+          <Button
+            type="button"
+            onClick={() => dispatch({ type: "decrementWildcards" })}
+            disabled={loadout.wildcards === 0}
+            className="grid size-11 place-items-center rounded-sm border border-border text-dim disabled:opacity-40"
+            aria-label="Remove a wildcard"
+          >
+            −
+          </Button>
+          <span className="min-w-6 text-center font-display text-2xl leading-none font-bold text-primary">
+            {loadout.wildcards}
+          </span>
+          <Button
+            type="button"
+            onClick={() => dispatch({ type: "incrementWildcards" })}
+            className="grid size-11 place-items-center rounded-sm border border-border text-dim"
+            aria-label="Add a wildcard"
+          >
+            +
+          </Button>
+          <span className="font-mono text-xs text-dim">{WILDCARD_TAG_COST}P each</span>
+        </div>
       </section>
-
-      {groups.map(({ theme, tags }) => (
-        <TagSet
-          key={theme.id}
-          type={theme.type}
-          name={themeName(theme)}
-          themeId={theme.id}
-          tags={tags}
-          kinds={["tag", "flaw"]}
-        />
-      ))}
-
-      <TagSet name="Misc" themeId={null} tags={misc} kinds={["tag", "wildcard", "flaw"]} />
 
       <section>
         <p className={LABEL}>Power</p>
@@ -130,143 +110,32 @@ export default function LoadoutPage() {
         )}
       </section>
 
-      <section className="flex flex-col items-start gap-2 pb-2">
-        <div className="flex items-center gap-1" role="group" aria-label="Loadout Upgrade track">
-          <p className={LABEL}>Upgrade</p>
-          {Array.from({ length: UPGRADE_TRACK_LENGTH }, (_, index) => (
-            <label key={index} className="grid size-11 place-items-center">
-              <input
-                type="checkbox"
-                checked={index < loadout.upgrade}
-                onChange={() => dispatch({ type: "markLoadoutUpgrade", index })}
-                className="size-[18px] accent-primary"
-              />
-              <span className="sr-only">{`Upgrade ${index + 1} of ${UPGRADE_TRACK_LENGTH}`}</span>
-            </label>
-          ))}
-        </div>
-        <p className="font-sans text-sm text-dim">Mark a point when you use a loadout flaw.</p>
-        {loadout.upgrade === UPGRADE_TRACK_LENGTH && (
-          <Button type="button" onClick={() => setOpen(true)} className={BUTTON}>
-            Take the Upgrade
-          </Button>
-        )}
+      <section className="flex flex-col gap-2 pb-2">
+        <TrackPips
+          name="Upgrade"
+          short="UPG"
+          length={UPGRADE_TRACK_LENGTH}
+          marked={loadout.upgrade}
+          size="lg"
+          active
+          onMark={mark}
+        />
+        <p className="font-sans text-sm text-dim">Mark a point when you use a loadout weakness.</p>
       </section>
 
-      <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Portal>
-          <Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
-          <Dialog.Popup className="fixed inset-0 m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text">
-            <Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
-              Take the loadout Upgrade
-            </Dialog.Title>
-            <p className="mt-2 font-sans text-sm text-dim">
-              The track is full. Take one of the two. The track clears either way.
-            </p>
-
-            <div className="mt-4 flex flex-col gap-2">
-              <Button
-                type="button"
-                onClick={() => take("power")}
-                className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-              >
-                1 more available Power
-              </Button>
-              <Button
-                type="button"
-                onClick={() => take("special")}
-                className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-              >
-                A loadout special
-              </Button>
-            </div>
-          </Dialog.Popup>
-        </Dialog.Portal>
-      </Dialog.Root>
-    </main>
-  );
-}
-
-// data-type sits here and nowhere else, so every tag below reads the hue off the
-// cascade. A misc set carries no theme, so it falls back to the neutral tokens.
-function TagSet({
-  type,
-  name,
-  themeId,
-  tags,
-  kinds,
-}: {
-  type?: ThemeType;
-  name: string;
-  themeId: string | null;
-  tags: LoadoutTag[];
-  kinds: LoadoutTagKind[];
-}) {
-  const { dispatch } = useCharacter();
-
-  return (
-    <section
-      data-type={type}
-      className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4"
-    >
-      <p className={LABEL}>{name}</p>
-
-      {tags.length > 0 && (
-        <ul className="flex flex-col gap-2">
-          {tags.map((tag) => (
-            <Row key={tag.id} tag={tag} />
-          ))}
-        </ul>
-      )}
-
-      <div className="flex flex-wrap gap-2">
-        {kinds.map((kind) => (
-          <Button
-            key={kind}
-            type="button"
-            onClick={() =>
-              dispatch({ type: "addLoadoutTag", id: crypto.randomUUID(), kind, themeId })
-            }
-            className={`${BUTTON} text-dim`}
-          >
-            + {ADD[kind]}
-          </Button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Row({ tag }: { tag: LoadoutTag }) {
-  const { dispatch } = useCharacter();
-
-  return (
-    <li
-      data-valence={tag.kind === "flaw" ? "negative" : undefined}
-      className="flex items-center gap-2 border-l-2 border-[var(--hue,var(--color-border))] pl-2"
-    >
-      <label className="flex flex-1 items-center gap-2">
-        <span className="font-mono text-[10px] text-[var(--hue,var(--color-dim))]">
-          {KIND[tag.kind]}
-        </span>
-        <Input
-          type="text"
-          value={tag.text}
-          onChange={(event) =>
-            dispatch({ type: "editLoadoutTag", id: tag.id, text: event.target.value })
-          }
-          className="min-h-11 w-full rounded-sm bg-bg px-2 font-display text-[15px] tracking-[0.03em] text-[var(--hue-text,var(--color-text))]"
-        />
-      </label>
-
-      <Button
-        type="button"
-        onClick={() => dispatch({ type: "removeLoadoutTag", id: tag.id })}
-        className="grid size-11 shrink-0 place-items-center text-dim"
+      <ConfirmDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Take the loadout Upgrade"
+        description="The track is full. Take one of the two. The track clears either way."
       >
-        <span aria-hidden>×</span>
-        <span className="sr-only">{`Remove ${KIND[tag.kind].toLowerCase()} ${tag.text}`}</span>
-      </Button>
-    </li>
+        <Button type="button" onClick={() => take("power")} className={PRIMARY}>
+          1 more available Power
+        </Button>
+        <Button type="button" onClick={() => take("special")} className={PRIMARY}>
+          A loadout special
+        </Button>
+      </ConfirmDialog>
+    </main>
   );
 }

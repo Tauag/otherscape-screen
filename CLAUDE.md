@@ -15,6 +15,11 @@ segment's private folder serves that segment and everything below it.
 A second subtree reaching into a private folder is the signal to move the file
 up to the shared folder, not to deepen the import path.
 
+A `page.tsx` holds only its default-exported top-level component, plus the
+constants, prop types, and other pieces immediately relevant to that one
+component. A sub-component, or a helper substantial enough to matter on its
+own, moves to that segment's `_components/` (or `_lib/`), one file per piece.
+
 ## UI components
 
 Use Base UI (`@base-ui/react`) for interactive elements: buttons, toggles,

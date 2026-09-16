@@ -170,17 +170,26 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
   Upgrade box, and one special marks Decay on another theme in place of burning.
 
 ### Loadout
-The loadout is itself a theme. It carries its own Upgrade track of 3 points, and
-it has no Decay track.
+The loadout is itself a theme, separate from the character's 4 core themes.
+It carries its own Upgrade track of 3 points, and it has no Decay track.
 
-- Which themes sit in the loadout
-- Loadout tag sets, grouped per loadout theme, each with a flaw
-- Misc / wildcard loadout tags, and misc loadout flaws
+- Loadout sets: each holds one title tag, any number of feature tags, and
+  any number of weakness tags. None of these answer themebook questions -
+  they're written freely.
+- A set's tags are written permanently, but only loaded tags are usable in
+  play. Loading a tag spends Power during the Loading Up phase.
+- A feature tag cannot load before its set's title tag does.
+- A weakness tag loads for free, automatically, the moment its set's title
+  loads. No separate toggle, no cost.
+- Wildcards: not a named tag. A plain count of slots reserved to load a tag
+  mid-session, outside Loading Up. The player raises or lowers the count
+  directly during play.
 - Loadout theme specials
 - Available loadout Power: a budget, tracked for reference rather than
-  enforced. A loadout tag costs 1P, a wildcard tag 2P. It starts at 1 and
-  grows as the loadout theme upgrades. In-session actions can let the player
-  load past it, so the app computes and warns, never blocks.
+  enforced. Loading a title or a feature tag costs 1P; a wildcard costs 2P.
+  It starts at 1 and grows as the loadout theme upgrades. In-session actions
+  can let the player load past it, so the app computes and warns, never
+  blocks.
 
 ### Status (tracking card)
 - Name
@@ -282,16 +291,27 @@ triggers that call it.
 - Hold one free-text Essence special.
 
 ### 7.6 Loadout — P0
-- Move a theme in and out of the loadout.
-- Load Up and Load Off: rebuild the loadout tag selection inside the Power budget.
-- Move a tag between the loadout theme and a regular theme, which some theme
-  specials require.
-- Add loadout tag sets, wildcard tags, and flaws.
-- Show spent Power against available Power. 1P per loadout tag, 2P per wildcard tag.
+- Add, edit, and delete loadout sets, each with a title tag, feature tags,
+  and weakness tags.
+- Load and unload a set's title tag. Loading it spends Power; unloading it
+  also unloads every feature tag in that set, since a feature can't stay
+  loaded without its title.
+- Load and unload a feature tag, blocked until the set's title is loaded.
+  Loading it spends Power.
+- Weakness tags load automatically, for free, the moment their set's title
+  loads. No control needed.
+- Raise and lower the wildcard count, 2P per point.
+- Show spent Power against available Power.
 - Warn when the loadout is over budget.
-- Mark an Upgrade point on the loadout theme when the player uses a loadout flaw.
+- Mark an Upgrade point on the loadout theme when the player uses a loadout
+  weakness.
 - At 3 points, clear the track and prompt for the Upgrade. The player takes either
   1 more available loadout Power or a loadout theme special.
+
+Out of scope for now: a themebook special that moves one specific tag
+between a loadout set and a regular theme (PRD is silent on which
+themebooks carry it; `content/themebooks.json` has two examples). It's a
+narrow, separate mechanic and isn't built yet.
 
 ### 7.7 Play state — P0
 This is what a player uses while a session runs.

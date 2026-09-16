@@ -24,7 +24,7 @@ export function newCharacter(): Character {
     },
     crew: [],
     themes: [],
-    loadout: { themeIds: [], tags: [], specials: [], availablePower: STARTING_LOADOUT_POWER, upgrade: 0 },
+    loadout: { sets: [], wildcards: 0, specials: [], availablePower: STARTING_LOADOUT_POWER, upgrade: 0 },
     ghostMemories: [],
     statuses: [],
     storyTags: [],

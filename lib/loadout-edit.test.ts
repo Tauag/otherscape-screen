@@ -1,80 +1,114 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { sample } from "./character/__tests__/sample.ts";
-import type { Loadout, LoadoutTag, LoadoutTagKind } from "./character/types.ts";
+import type { Loadout } from "./character/types.ts";
 import {
-  groupLoadout,
+  addLoadoutFeature,
+  addLoadoutSet,
+  addLoadoutWeakness,
+  decrementWildcards,
+  editLoadoutFeature,
+  editLoadoutSetTitle,
+  incrementWildcards,
   markLoadoutUpgrade,
+  removeLoadoutFeature,
+  removeLoadoutSet,
   takeLoadoutUpgrade,
-  toggleLoadoutTheme,
+  toggleLoadoutFeature,
+  toggleLoadoutSetTitle,
 } from "./loadout-edit.ts";
-import { LOADOUT_TAG_COST, WILDCARD_TAG_COST } from "./rules/constants.ts";
 import { loadoutSpend } from "./rules/loadout.ts";
 
-const { loadout, themes } = sample;
+const { loadout } = sample;
 
-const ids = (tags: LoadoutTag[]) => tags.map((tag) => tag.id);
+test("a new set starts with an empty, unloaded title and nothing else", () => {
+  const next = addLoadoutSet(loadout, "ls-new");
+  const added = next.sets.at(-1)!;
+  assert.equal(added.id, "ls-new");
+  assert.equal(added.title, "");
+  assert.equal(added.titleLoaded, false);
+  assert.deepEqual(added.features, []);
+  assert.deepEqual(added.weaknesses, []);
+});
 
-// What the screen shows, priced from the constants. It must match loadoutSpend.
-const COST: Record<LoadoutTagKind, number> = {
-  tag: LOADOUT_TAG_COST,
-  wildcard: WILDCARD_TAG_COST,
-  flaw: 0,
-};
+test("editing a set's title touches only that set", () => {
+  const next = editLoadoutSetTitle(loadout, "ls-2", "the bone lantern's whole rig");
+  assert.equal(next.sets[1].title, "the bone lantern's whole rig");
+  assert.equal(next.sets[0], loadout.sets[0]);
+});
 
-function onScreen({ groups, misc }: ReturnType<typeof groupLoadout>): LoadoutTag[] {
-  return [...groups.flatMap((group) => group.tags), ...misc];
-}
-
-test("tags group per loadout theme, in loadout order, and the rest is misc", () => {
-  const { groups, misc } = groupLoadout(loadout, themes);
-
+test("removing a set drops it and nothing else", () => {
+  const next = removeLoadoutSet(loadout, "ls-1");
   assert.deepEqual(
-    groups.map((group) => group.theme.id),
-    ["th-chrome", "th-lantern"],
+    next.sets.map((set) => set.id),
+    ["ls-2"],
   );
-  assert.deepEqual(ids(groups[0].tags), ["lt-1", "lt-2"]);
-  assert.deepEqual(ids(groups[1].tags), ["lt-3"]);
-  assert.deepEqual(ids(misc), ["lt-4", "lt-5"]);
 });
 
-test("a tag whose theme is not in the loadout shows under misc, never nowhere", () => {
-  const orphan: Loadout = {
-    ...loadout,
-    tags: [...loadout.tags, { id: "lt-6", kind: "tag", text: "left behind", themeId: "th-past" }],
-  };
+test("loading a title costs Power; unloading it cascades to every loaded feature", () => {
+  // ls-2 starts with an unloaded title and an unloaded feature.
+  const loaded = toggleLoadoutSetTitle(loadout, "ls-2");
+  assert.equal(loaded.sets[1].titleLoaded, true);
 
-  const grouped = groupLoadout(orphan, themes);
-  assert.deepEqual(ids(grouped.misc), ["lt-4", "lt-5", "lt-6"]);
-  assert.equal(onScreen(grouped).length, orphan.tags.length);
+  const withFeature = toggleLoadoutFeature(loaded, "ls-2", "lf-3");
+  assert.equal(withFeature.sets[1].features[0].loaded, true);
+
+  const unloaded = toggleLoadoutSetTitle(withFeature, "ls-2");
+  assert.equal(unloaded.sets[1].titleLoaded, false);
+  assert.equal(unloaded.sets[1].features[0].loaded, false, "the feature can't outlive its title");
 });
 
-test("moving a theme out keeps its tags, and moving it back regroups them", () => {
-  const out = toggleLoadoutTheme(loadout, "th-chrome");
-  assert.deepEqual(out.themeIds, ["th-lantern"]);
-  assert.deepEqual(out.tags, loadout.tags);
-
-  const grouped = groupLoadout(out, themes);
-  assert.deepEqual(
-    grouped.groups.map((group) => group.theme.id),
-    ["th-lantern"],
-  );
-  assert.deepEqual(ids(grouped.misc), ["lt-1", "lt-2", "lt-4", "lt-5"]);
-  assert.equal(loadoutSpend(out).spent, loadoutSpend(loadout).spent);
-
-  const back = toggleLoadoutTheme(out, "th-chrome");
-  assert.deepEqual(ids(groupLoadout(back, themes).groups[1].tags), ["lt-1", "lt-2"]);
+test("a feature cannot load before its set's title does", () => {
+  // ls-2's title starts unloaded.
+  const attempted = toggleLoadoutFeature(loadout, "ls-2", "lf-3");
+  assert.equal(attempted.sets[1].features[0].loaded, false);
 });
 
-test("a track box marks up to itself, or unmarks itself and what follows", () => {
-  assert.equal(markLoadoutUpgrade(0, 0), 1);
-  assert.equal(markLoadoutUpgrade(1, 2), 3);
-  assert.equal(markLoadoutUpgrade(3, 2), 2);
-  assert.equal(markLoadoutUpgrade(3, 0), 0);
+test("a feature can always be unloaded, title or no title", () => {
+  // ls-1's title and its first feature both start loaded.
+  const next = toggleLoadoutFeature(loadout, "ls-1", "lf-1");
+  assert.equal(next.sets[0].features[0].loaded, false);
+});
+
+test("adding, editing, and removing a feature touches only that set", () => {
+  const added = addLoadoutFeature(loadout, "ls-1", "lf-new");
+  assert.equal(added.sets[0].features.at(-1)!.text, "");
+  assert.equal(added.sets[0].features.at(-1)!.loaded, false);
+
+  const edited = editLoadoutFeature(added, "ls-1", "lf-new", "a second cartridge");
+  assert.equal(edited.sets[0].features.at(-1)!.text, "a second cartridge");
+
+  const removed = removeLoadoutFeature(edited, "ls-1", "lf-new");
+  assert.deepEqual(removed.sets[0].features, loadout.sets[0].features);
+});
+
+test("adding a weakness starts it blank; it never carries a loaded flag", () => {
+  const next = addLoadoutWeakness(loadout, "ls-2", "lw-new");
+  assert.deepEqual(next.sets[1].weaknesses, [{ id: "lw-new", text: "" }]);
+});
+
+test("wildcards are a plain count, clamped at 0", () => {
+  const up = incrementWildcards(loadout);
+  assert.equal(up.wildcards, loadout.wildcards + 1);
+
+  const zero: Loadout = { ...loadout, wildcards: 0 };
+  assert.equal(decrementWildcards(zero).wildcards, 0);
+});
+
+test("one click, one more box, wrapping back to empty once it fills", () => {
+  const zero: Loadout = { ...loadout, upgrade: 0 };
+  const one = markLoadoutUpgrade(zero);
+  assert.equal(one.upgrade, 1);
+
+  const two = markLoadoutUpgrade(one);
+  assert.equal(two.upgrade, 2);
+
+  const full = markLoadoutUpgrade(two);
+  assert.equal(full.upgrade, 0, "the third click clears the track in the same click");
 });
 
 test("taking the Upgrade as Power clears the track and adds 1 available Power", () => {
-  const full: Loadout = { ...loadout, upgrade: markLoadoutUpgrade(2, 2) };
+  const full: Loadout = { ...loadout, upgrade: 2 };
   const taken = takeLoadoutUpgrade(full, "power");
 
   assert.equal(taken.upgrade, 0);
@@ -84,7 +118,7 @@ test("taking the Upgrade as Power clears the track and adds 1 available Power", 
 });
 
 test("taking the Upgrade as a special clears the track and appends an empty special", () => {
-  const full: Loadout = { ...loadout, upgrade: markLoadoutUpgrade(2, 2) };
+  const full: Loadout = { ...loadout, upgrade: 2 };
   const taken = takeLoadoutUpgrade(full, "special");
 
   assert.equal(taken.upgrade, 0);
@@ -92,22 +126,8 @@ test("taking the Upgrade as a special clears the track and appends an empty spec
   assert.equal(taken.availablePower, loadout.availablePower);
 });
 
-test("the budget on screen agrees with loadoutSpend", () => {
-  const priced = (tags: LoadoutTag[]) => tags.reduce((total, tag) => total + COST[tag.kind], 0);
-
-  // Two tags, one wildcard, two flaws, across two themes and misc.
-  assert.equal(priced(onScreen(groupLoadout(loadout, themes))), loadoutSpend(loadout).spent);
-  assert.deepEqual(loadoutSpend(loadout), {
-    spent: 4,
-    available: 4,
-    over: 0,
-    warning: null,
-  });
-
-  const tight: Loadout = { ...loadout, availablePower: 1 };
-  assert.equal(priced(onScreen(groupLoadout(tight, themes))), loadoutSpend(tight).spent);
-  assert.equal(
-    loadoutSpend(tight).warning,
-    "The loadout spends 4 Power against 1 available.",
-  );
+test("the fixture's spend matches what's actually loaded", () => {
+  // ls-1: title loaded (1) + one loaded feature (1). ls-2: title unloaded (0).
+  // Plus one wildcard (2). 4 spent of 4 available.
+  assert.deepEqual(loadoutSpend(loadout), { spent: 4, available: 4, over: 0, warning: null });
 });

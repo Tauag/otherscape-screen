@@ -1,50 +1,124 @@
-import type { Loadout, LoadoutTag, MarkCount, Theme } from "./character/types.ts";
+import type { Loadout, LoadoutSet, MarkCount } from "./character/types.ts";
+import { UPGRADE_TRACK_LENGTH } from "./rules/constants.ts";
 
-export type LoadoutGroups = {
-  /** One per loadout theme, in loadout order. */
-  groups: { theme: Theme; tags: LoadoutTag[] }[];
-  /** Wildcards, misc flaws, and every tag whose theme is not in the loadout. */
-  misc: LoadoutTag[];
-};
-
-/**
- * Tag sets grouped per loadout theme, plus misc.
- *
- * A tag falls into misc when its theme has left the loadout, or is gone from the
- * character, rather than off the screen: loadoutSpend charges every tag in the
- * array, so a tag the player cannot see would still cost Power.
- */
-export function groupLoadout(loadout: Loadout, themes: Theme[]): LoadoutGroups {
-  const inLoadout = loadout.themeIds.flatMap((id) => themes.find((theme) => theme.id === id) ?? []);
-  const ids = new Set(inLoadout.map((theme) => theme.id));
-
-  return {
-    groups: inLoadout.map((theme) => ({
-      theme,
-      tags: loadout.tags.filter((tag) => tag.themeId === theme.id),
-    })),
-    misc: loadout.tags.filter((tag) => tag.themeId === null || !ids.has(tag.themeId)),
-  };
-}
-
-/**
- * In, or out. A theme moved out keeps its tags, themeId and all, so the set
- * comes back whole with the theme. Dropping them would throw away text the
- * player wrote, and the budget would still be charging for it.
- */
-export function toggleLoadoutTheme(loadout: Loadout, themeId: string): Loadout {
-  const inside = loadout.themeIds.includes(themeId);
+/** Every set verb below edits one set and leaves the rest alone. */
+function inSet(loadout: Loadout, setId: string, edit: (set: LoadoutSet) => LoadoutSet): Loadout {
   return {
     ...loadout,
-    themeIds: inside
-      ? loadout.themeIds.filter((id) => id !== themeId)
-      : [...loadout.themeIds, themeId],
+    sets: loadout.sets.map((set) => (set.id === setId ? edit(set) : set)),
   };
 }
 
-/** Box `index` clicked: mark up to it, or unmark it and every box after it. */
-export function markLoadoutUpgrade(marked: MarkCount, index: number): MarkCount {
-  return (index < marked ? index : index + 1) as MarkCount;
+export function addLoadoutSet(loadout: Loadout, id: string): Loadout {
+  return {
+    ...loadout,
+    sets: [...loadout.sets, { id, title: "", titleLoaded: false, features: [], weaknesses: [] }],
+  };
+}
+
+export function editLoadoutSetTitle(loadout: Loadout, setId: string, text: string): Loadout {
+  return inSet(loadout, setId, (set) => ({ ...set, title: text }));
+}
+
+export function removeLoadoutSet(loadout: Loadout, setId: string): Loadout {
+  return { ...loadout, sets: loadout.sets.filter((set) => set.id !== setId) };
+}
+
+/**
+ * A feature can't stay loaded without its title, so turning the title off
+ * unloads every feature in the same stroke.
+ */
+export function toggleLoadoutSetTitle(loadout: Loadout, setId: string): Loadout {
+  return inSet(loadout, setId, (set) => {
+    const titleLoaded = !set.titleLoaded;
+    return {
+      ...set,
+      titleLoaded,
+      features: titleLoaded ? set.features : set.features.map((f) => ({ ...f, loaded: false })),
+    };
+  });
+}
+
+export function addLoadoutFeature(loadout: Loadout, setId: string, id: string): Loadout {
+  return inSet(loadout, setId, (set) => ({
+    ...set,
+    features: [...set.features, { id, text: "", loaded: false }],
+  }));
+}
+
+export function editLoadoutFeature(
+  loadout: Loadout,
+  setId: string,
+  featureId: string,
+  text: string,
+): Loadout {
+  return inSet(loadout, setId, (set) => ({
+    ...set,
+    features: set.features.map((f) => (f.id === featureId ? { ...f, text } : f)),
+  }));
+}
+
+export function removeLoadoutFeature(loadout: Loadout, setId: string, featureId: string): Loadout {
+  return inSet(loadout, setId, (set) => ({
+    ...set,
+    features: set.features.filter((f) => f.id !== featureId),
+  }));
+}
+
+/** A no-op while the title isn't loaded: a feature can never load ahead of it. */
+export function toggleLoadoutFeature(loadout: Loadout, setId: string, featureId: string): Loadout {
+  return inSet(loadout, setId, (set) => ({
+    ...set,
+    features: set.features.map((f) =>
+      f.id === featureId && (f.loaded || set.titleLoaded) ? { ...f, loaded: !f.loaded } : f,
+    ),
+  }));
+}
+
+export function addLoadoutWeakness(loadout: Loadout, setId: string, id: string): Loadout {
+  return inSet(loadout, setId, (set) => ({
+    ...set,
+    weaknesses: [...set.weaknesses, { id, text: "" }],
+  }));
+}
+
+export function editLoadoutWeakness(
+  loadout: Loadout,
+  setId: string,
+  weaknessId: string,
+  text: string,
+): Loadout {
+  return inSet(loadout, setId, (set) => ({
+    ...set,
+    weaknesses: set.weaknesses.map((w) => (w.id === weaknessId ? { ...w, text } : w)),
+  }));
+}
+
+export function removeLoadoutWeakness(loadout: Loadout, setId: string, weaknessId: string): Loadout {
+  return inSet(loadout, setId, (set) => ({
+    ...set,
+    weaknesses: set.weaknesses.filter((w) => w.id !== weaknessId),
+  }));
+}
+
+export function incrementWildcards(loadout: Loadout): Loadout {
+  return { ...loadout, wildcards: loadout.wildcards + 1 };
+}
+
+export function decrementWildcards(loadout: Loadout): Loadout {
+  return { ...loadout, wildcards: Math.max(0, loadout.wildcards - 1) };
+}
+
+/**
+ * One click, one more box - the same rule as a theme's Upgrade track
+ * (lib/character/theme.ts's markTrack). A full track clears itself in the
+ * same click, so the caller opens the Upgrade-choice dialog right then,
+ * from the pre-click count, not by watching for a track that stays full.
+ */
+export function markLoadoutUpgrade(loadout: Loadout): Loadout {
+  const { upgrade } = loadout;
+  const next = upgrade >= UPGRADE_TRACK_LENGTH ? 0 : ((upgrade + 1) as MarkCount);
+  return { ...loadout, upgrade: next >= UPGRADE_TRACK_LENGTH ? 0 : next };
 }
 
 export type UpgradeChoice = "power" | "special";

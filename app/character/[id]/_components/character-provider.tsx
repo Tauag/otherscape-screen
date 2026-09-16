@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog } from "@base-ui/react/dialog";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import {
   createContext,
   useCallback,
@@ -333,41 +333,34 @@ export function CharacterProvider({
       {/* Controlled by `conflict`, not by a Trigger: the only way out is
           keepMine/keepTheirs, so every Base UI-initiated close attempt
           (Escape, outside press) is canceled. */}
-      <Dialog.Root open={conflict !== null} onOpenChange={(open, eventDetails) => {
-        if (!open) eventDetails.cancel();
-      }}>
-        <Dialog.Portal>
-          <Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
-          <Dialog.Popup className="fixed inset-0 m-auto w-[90vw] max-w-[420px] rounded-md border border-border bg-surface p-5 text-text">
-            <Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
-              Two versions of this character
-            </Dialog.Title>
-            <p className="mt-2 font-sans text-sm text-dim">
-              Another device saved while you were editing. Read both, then choose. Nothing is
-              thrown away: the copy you do not keep stays in this browser.
-            </p>
-
-            {conflict && (
-              <div className="mt-4 flex flex-col gap-3">
-                <Side
-                  label="On this device"
-                  document={conflict.mine}
-                  at={conflict.mineAt}
-                  action="Keep this one"
-                  onKeep={keepMine}
-                />
-                <Side
-                  label="Saved elsewhere"
-                  document={conflict.theirs}
-                  at={conflict.theirsAt}
-                  action="Keep this one"
-                  onKeep={keepTheirs}
-                />
-              </div>
-            )}
-          </Dialog.Popup>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <ConfirmDialog
+        open={conflict !== null}
+        onOpenChange={(open, eventDetails) => {
+          if (!open) eventDetails.cancel();
+        }}
+        title="Two versions of this character"
+        description="Another device saved while you were editing. Read both, then choose. Nothing is thrown away: the copy you do not keep stays in this browser."
+        cancelLabel={null}
+      >
+        {conflict && (
+          <>
+            <Side
+              label="On this device"
+              document={conflict.mine}
+              at={conflict.mineAt}
+              action="Keep this one"
+              onKeep={keepMine}
+            />
+            <Side
+              label="Saved elsewhere"
+              document={conflict.theirs}
+              at={conflict.theirsAt}
+              action="Keep this one"
+              onKeep={keepTheirs}
+            />
+          </>
+        )}
+      </ConfirmDialog>
     </CharacterContext.Provider>
   );
 }

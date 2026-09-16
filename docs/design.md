@@ -119,6 +119,13 @@ more than once, so two tags may carry the same letter.
 - The Decay track box count (3) is confirmed and matches the artboards.
   Starting loadout Power is confirmed at 1 (PRD O5); the Loadout artboard
   still draws 4 and needs a canvas edit to match.
+- The Loadout artboard draws tags grouped under the character's core themes.
+  That was never how the rules work (7.6): the loadout is its own theme,
+  built from loadout sets (a title tag, feature tags, weakness tags) that
+  load and unload independent of the 4 core themes. The artboard needs a
+  redraw in the canvas to show sets and their load state instead of a
+  per-core-theme grouping; the built screen (`app/character/[id]/loadout`)
+  already matches the corrected rules.
 - Effect costs on the Reference screen. They come from the CHEATSHEET tab.
 
 ## 6. Editing the canvas

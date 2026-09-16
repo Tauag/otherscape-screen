@@ -4,7 +4,8 @@ import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, LABEL, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { LABEL, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
 
 export function LoseTheme({
   themeId,
@@ -37,47 +38,48 @@ export function LoseTheme({
   }
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger
+    <>
+      <Button
+        type="button"
         aria-label={`Lose ${named}`}
         // The sheet's card is a single Link to the theme screen; preventDefault
-        // stops that navigation so the trigger only opens the dialog.
-        onClick={(event) => event.preventDefault()}
+        // stops that navigation so the button only opens the dialog.
+        onClick={(event) => {
+          event.preventDefault();
+          setOpen(true);
+        }}
         className={`${QUIET} self-start border-negative text-negative-text`}
       >
         Lose this theme
-      </Dialog.Trigger>
+      </Button>
 
-      <Dialog.Portal>
-        <Dialog.Backdrop className={DIALOG_BACKDROP} />
-        <Dialog.Popup className={DIALOG_POPUP}>
-          <Dialog.Title className={HEADING}>Lose {named}?</Dialog.Title>
-          <p className="mt-2 font-sans text-sm text-dim">
-            The theme leaves the sheet and is archived whole in ghost memories: every tag, the
-            specials, and both track marks. The sheet cannot bring it back.
-          </p>
+      <ConfirmDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={`Lose ${named}?`}
+        description="The theme leaves the sheet and is archived whole in ghost memories: every tag, the specials, and both track marks. The sheet cannot bring it back."
+        cancelLabel={null}
+      >
+        <form onSubmit={lose} className="flex flex-col gap-3">
+          <label className="flex flex-col gap-1">
+            <span className={LABEL}>Why it was lost</span>
+            <textarea
+              required
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="Decay filled the night she let the lantern go out"
+              className="min-h-11 rounded-sm border border-border bg-bg p-3 font-sans text-base field-sizing-content"
+            />
+          </label>
 
-          <form onSubmit={lose} className="mt-4 flex flex-col gap-3">
-            <label className="flex flex-col gap-1">
-              <span className={LABEL}>Why it was lost</span>
-              <textarea
-                required
-                value={reason}
-                onChange={(event) => setReason(event.target.value)}
-                placeholder="Decay filled the night she let the lantern go out"
-                className="min-h-11 rounded-sm border border-border bg-bg p-3 font-sans text-base field-sizing-content"
-              />
-            </label>
-
-            <div className="flex flex-wrap gap-2">
-              <Button type="submit" className={PRIMARY}>
-                Lose the theme
-              </Button>
-              <Dialog.Close className={QUIET}>Cancel</Dialog.Close>
-            </div>
-          </form>
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog.Root>
+          <div className="flex flex-wrap gap-2">
+            <Button type="submit" className={PRIMARY}>
+              Lose the theme
+            </Button>
+            <Dialog.Close className={QUIET}>Cancel</Dialog.Close>
+          </div>
+        </form>
+      </ConfirmDialog>
+    </>
   );
 }

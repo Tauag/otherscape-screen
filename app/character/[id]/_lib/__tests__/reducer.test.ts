@@ -172,3 +172,44 @@ test("picking an Essence the mix does not suggest freezes it", () => {
   });
   assert.equal(character.essence, "Nexus"); // frozen, mix now suggests Spiritualist instead
 });
+
+test("a loadout set goes from added, to titled, to loaded, to holding a loaded feature", () => {
+  let character = newCharacter();
+  character = reduce(character, { type: "addLoadoutSet", id: "ls-1" });
+  assert.equal(character.loadout.sets.length, 1);
+
+  character = reduce(character, { type: "editLoadoutSetTitle", setId: "ls-1", text: "toolkit" });
+  assert.equal(character.loadout.sets[0].title, "toolkit");
+
+  character = reduce(character, { type: "addLoadoutFeature", setId: "ls-1", id: "lf-1" });
+  character = reduce(character, { type: "toggleLoadoutFeature", setId: "ls-1", featureId: "lf-1" });
+  assert.equal(
+    character.loadout.sets[0].features[0].loaded,
+    false,
+    "a feature can't load before its title",
+  );
+
+  character = reduce(character, { type: "toggleLoadoutSetTitle", setId: "ls-1" });
+  character = reduce(character, { type: "toggleLoadoutFeature", setId: "ls-1", featureId: "lf-1" });
+  assert.equal(character.loadout.sets[0].titleLoaded, true);
+  assert.equal(character.loadout.sets[0].features[0].loaded, true);
+
+  character = reduce(character, { type: "toggleLoadoutSetTitle", setId: "ls-1" });
+  assert.equal(character.loadout.sets[0].features[0].loaded, false, "unloading the title cascades");
+
+  character = reduce(character, { type: "removeLoadoutSet", setId: "ls-1" });
+  assert.deepEqual(character.loadout.sets, []);
+});
+
+test("wildcards increment and decrement, clamped at 0", () => {
+  let character = newCharacter();
+  character = reduce(character, { type: "decrementWildcards" });
+  assert.equal(character.loadout.wildcards, 0);
+
+  character = reduce(character, { type: "incrementWildcards" });
+  character = reduce(character, { type: "incrementWildcards" });
+  assert.equal(character.loadout.wildcards, 2);
+
+  character = reduce(character, { type: "decrementWildcards" });
+  assert.equal(character.loadout.wildcards, 1);
+});

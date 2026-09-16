@@ -89,7 +89,7 @@ finishes that.
 
 ### T58 Realign the built screens with the artboards - done
 
-### T59 Fix the loadout page to align with game rules - next
+### T59 Fix the loadout page to align with game rules - done
 
 ---
 

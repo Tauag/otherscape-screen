@@ -25,7 +25,7 @@ test("a half-built character names every gap, in reading order", () => {
     theme("th-1", "self", "Troubled Past", { weaknessTags: [], quote: "  " }),
     theme("th-2", "mythos", "", { powerTags: [] }),
   ];
-  character.loadout.tags = [{ id: "lt-1", kind: "wildcard", text: "smartgun", themeId: null }];
+  character.loadout.wildcards = 1; // 2P against the starting 1P available
 
   assert.deepEqual(readiness(character), [
     "Theme 2 has no title tag.",
@@ -80,6 +80,9 @@ test("a complete character reports nothing", () => {
     theme("th-3", "mythos", "Esoterica"),
     theme("th-4", "mythos", "Artifact"),
   ];
-  character.loadout.tags = [{ id: "lt-1", kind: "tag", text: "burner deck", themeId: null }];
+  // A set spent right up to the starting budget, never past it.
+  character.loadout.sets = [
+    { id: "ls-1", title: "burner deck", titleLoaded: true, features: [], weaknesses: [] },
+  ];
   assert.deepEqual(readiness(character), []);
 });

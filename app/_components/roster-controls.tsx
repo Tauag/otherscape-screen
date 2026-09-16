@@ -163,7 +163,7 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited, su
       <Dialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
-          <Dialog.Popup className="fixed inset-0 m-auto w-[85vw] max-w-[320px] rounded-md border border-border bg-surface p-5 text-text">
+          <Dialog.Popup className="fixed inset-0 m-auto h-fit max-h-[85vh] w-[85vw] max-w-[320px] overflow-y-auto rounded-md border border-border bg-surface p-5 text-text">
             <Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
               Delete {label}?
             </Dialog.Title>

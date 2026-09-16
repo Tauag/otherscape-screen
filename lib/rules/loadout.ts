@@ -1,11 +1,5 @@
-import type { Loadout, LoadoutTagKind } from "../character/types.ts";
+import type { Loadout } from "../character/types.ts";
 import { LOADOUT_TAG_COST, WILDCARD_TAG_COST } from "./constants.ts";
-
-const COST: Record<LoadoutTagKind, number> = {
-  tag: LOADOUT_TAG_COST,
-  wildcard: WILDCARD_TAG_COST,
-  flaw: 0,
-};
 
 export function loadoutSpend(loadout: Loadout): {
   spent: number;
@@ -13,7 +7,13 @@ export function loadoutSpend(loadout: Loadout): {
   over: number;
   warning: string | null;
 } {
-  const spent = loadout.tags.reduce((total, tag) => total + COST[tag.kind], 0);
+  // Weaknesses are never charged, loaded or not, so they're left out entirely.
+  const setsSpend = loadout.sets.reduce((total, set) => {
+    const title = set.titleLoaded ? LOADOUT_TAG_COST : 0;
+    const features = set.features.filter((feature) => feature.loaded).length * LOADOUT_TAG_COST;
+    return total + title + features;
+  }, 0);
+  const spent = setsSpend + loadout.wildcards * WILDCARD_TAG_COST;
   const available = loadout.availablePower;
   const over = Math.max(0, spent - available);
   return {

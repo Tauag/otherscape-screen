@@ -20,7 +20,6 @@ import type {
   Character,
   Essence,
   Loadout,
-  LoadoutTagKind,
   PowerQuestionLetter,
   PowerTag,
   Theme,
@@ -29,9 +28,21 @@ import type {
   WeaknessTag,
 } from "@/lib/character/types";
 import {
+  addLoadoutFeature,
+  addLoadoutSet,
+  addLoadoutWeakness,
+  decrementWildcards,
+  editLoadoutFeature,
+  editLoadoutSetTitle,
+  editLoadoutWeakness,
+  incrementWildcards,
   markLoadoutUpgrade,
+  removeLoadoutFeature,
+  removeLoadoutSet,
+  removeLoadoutWeakness,
   takeLoadoutUpgrade,
-  toggleLoadoutTheme,
+  toggleLoadoutFeature,
+  toggleLoadoutSetTitle,
   type UpgradeChoice,
 } from "@/lib/loadout-edit";
 import { STARTING_THEMES } from "@/lib/rules/constants";
@@ -81,11 +92,20 @@ export type CharacterAction =
   | { type: "loseTheme"; themeId: string; id: string; lostAt: string; reason: string }
   | { type: "setEssence"; essence: Essence }
   | { type: "setEssenceSpecial"; essenceSpecial: string }
-  | { type: "toggleLoadoutTheme"; themeId: string }
-  | { type: "addLoadoutTag"; id: string; kind: LoadoutTagKind; themeId: string | null }
-  | { type: "editLoadoutTag"; id: string; text: string }
-  | { type: "removeLoadoutTag"; id: string }
-  | { type: "markLoadoutUpgrade"; index: number }
+  | { type: "addLoadoutSet"; id: string }
+  | { type: "editLoadoutSetTitle"; setId: string; text: string }
+  | { type: "removeLoadoutSet"; setId: string }
+  | { type: "toggleLoadoutSetTitle"; setId: string }
+  | { type: "addLoadoutFeature"; setId: string; id: string }
+  | { type: "editLoadoutFeature"; setId: string; featureId: string; text: string }
+  | { type: "removeLoadoutFeature"; setId: string; featureId: string }
+  | { type: "toggleLoadoutFeature"; setId: string; featureId: string }
+  | { type: "addLoadoutWeakness"; setId: string; id: string }
+  | { type: "editLoadoutWeakness"; setId: string; weaknessId: string; text: string }
+  | { type: "removeLoadoutWeakness"; setId: string; weaknessId: string }
+  | { type: "incrementWildcards" }
+  | { type: "decrementWildcards" }
+  | { type: "markLoadoutUpgrade" }
   | { type: "takeLoadoutUpgrade"; choice: UpgradeChoice }
   | { type: "editLoadoutSpecial"; index: number; text: string };
 
@@ -210,25 +230,49 @@ export function reduce(character: Character, action: CharacterAction): Character
     }
     case "setEssenceSpecial":
       return { ...character, essenceSpecial: action.essenceSpecial };
-    case "toggleLoadoutTheme":
-      return { ...character, loadout: toggleLoadoutTheme(loadout, action.themeId) };
-    case "addLoadoutTag":
-      return withLoadout(character, {
-        tags: [
-          ...loadout.tags,
-          { id: action.id, kind: action.kind, text: "", themeId: action.themeId },
-        ],
-      });
-    case "editLoadoutTag":
-      return withLoadout(character, {
-        tags: loadout.tags.map((tag) =>
-          tag.id === action.id ? { ...tag, text: action.text } : tag,
-        ),
-      });
-    case "removeLoadoutTag":
-      return withLoadout(character, { tags: loadout.tags.filter((tag) => tag.id !== action.id) });
+    case "addLoadoutSet":
+      return { ...character, loadout: addLoadoutSet(loadout, action.id) };
+    case "editLoadoutSetTitle":
+      return { ...character, loadout: editLoadoutSetTitle(loadout, action.setId, action.text) };
+    case "removeLoadoutSet":
+      return { ...character, loadout: removeLoadoutSet(loadout, action.setId) };
+    case "toggleLoadoutSetTitle":
+      return { ...character, loadout: toggleLoadoutSetTitle(loadout, action.setId) };
+    case "addLoadoutFeature":
+      return { ...character, loadout: addLoadoutFeature(loadout, action.setId, action.id) };
+    case "editLoadoutFeature":
+      return {
+        ...character,
+        loadout: editLoadoutFeature(loadout, action.setId, action.featureId, action.text),
+      };
+    case "removeLoadoutFeature":
+      return {
+        ...character,
+        loadout: removeLoadoutFeature(loadout, action.setId, action.featureId),
+      };
+    case "toggleLoadoutFeature":
+      return {
+        ...character,
+        loadout: toggleLoadoutFeature(loadout, action.setId, action.featureId),
+      };
+    case "addLoadoutWeakness":
+      return { ...character, loadout: addLoadoutWeakness(loadout, action.setId, action.id) };
+    case "editLoadoutWeakness":
+      return {
+        ...character,
+        loadout: editLoadoutWeakness(loadout, action.setId, action.weaknessId, action.text),
+      };
+    case "removeLoadoutWeakness":
+      return {
+        ...character,
+        loadout: removeLoadoutWeakness(loadout, action.setId, action.weaknessId),
+      };
+    case "incrementWildcards":
+      return { ...character, loadout: incrementWildcards(loadout) };
+    case "decrementWildcards":
+      return { ...character, loadout: decrementWildcards(loadout) };
     case "markLoadoutUpgrade":
-      return withLoadout(character, { upgrade: markLoadoutUpgrade(loadout.upgrade, action.index) });
+      return { ...character, loadout: markLoadoutUpgrade(loadout) };
     case "takeLoadoutUpgrade":
       return { ...character, loadout: takeLoadoutUpgrade(loadout, action.choice) };
     case "editLoadoutSpecial":

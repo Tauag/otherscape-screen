@@ -1,7 +1,5 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { groupLoadout } from "../../loadout-edit.ts";
-import { loadoutSpend } from "../../rules/loadout.ts";
 import { decayFull, loseTheme } from "../loss.ts";
 import { newTheme } from "../new.ts";
 import { addPowerTag, isNascent, markTrack } from "../theme.ts";
@@ -67,21 +65,9 @@ test("a theme id that is not there loses nothing", () => {
   assert.equal(loseTheme(sample, "th-nowhere", memory), sample);
 });
 
-test("the loadout drops the lost theme's id and keeps every tag the player wrote", () => {
+test("losing a theme never touches the loadout, which no longer references core themes", () => {
   const next = loseTheme(sample, LANTERN, memory);
-
-  assert.deepEqual(next.loadout.themeIds, ["th-chrome"]);
-  assert.deepEqual(next.loadout.tags, sample.loadout.tags);
-
-  // groupLoadout sends the orphaned tag to misc, so it stays readable and
-  // deletable, and the Power it spends stays honest.
-  const { groups, misc } = groupLoadout(next.loadout, next.themes);
-  assert.deepEqual(
-    groups.map((group) => group.theme.id),
-    ["th-chrome"],
-  );
-  assert.ok(misc.some((tag) => tag.id === "lt-3"));
-  assert.equal(loadoutSpend(next.loadout).spent, loadoutSpend(sample.loadout).spent);
+  assert.deepEqual(next.loadout, sample.loadout);
 });
 
 test("a filled Decay track never loses the theme by itself", () => {

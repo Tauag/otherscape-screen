@@ -1,6 +1,6 @@
 import type { Character } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 
 type Doc = Record<string, unknown>;
 
@@ -17,6 +17,25 @@ const steps = new Map<number, Step>();
 // existing value is therefore never a real choice, only the old code's one-shot
 // guess, so it starts unchosen and goes back to tracking the theme mix live.
 steps.set(1, (doc) => ({ ...doc, essenceChosen: false }));
+
+// v2 predates the Loadout Set rewrite: the loadout used to group tags under
+// the character's core themes (themeIds + a flat tag list), which was never
+// how the rules actually work. The old shape has no title/feature split to
+// convert, so this step resets the loadout rather than guessing at one; the
+// budget fields it already tracked correctly carry over.
+steps.set(2, (doc) => {
+  const old = (doc.loadout ?? {}) as Doc;
+  return {
+    ...doc,
+    loadout: {
+      sets: [],
+      wildcards: 0,
+      specials: old.specials ?? [],
+      availablePower: old.availablePower ?? 1,
+      upgrade: old.upgrade ?? 0,
+    },
+  };
+});
 
 /**
  * Upgrade a document read from the database. This is a trust boundary, so it

@@ -29,13 +29,5 @@ export function loseTheme(
     themes: character.themes.filter((theme) => theme.id !== themeId),
     // The theme object itself, since the archive reads the snapshot back whole.
     ghostMemories: [...character.ghostMemories, { ...memory, theme: lost }],
-    loadout: {
-      ...character.loadout,
-      // An id alone, pointing at a theme that cannot come back, so it goes. The
-      // loadout tags stay: they hold text the player wrote, and groupLoadout
-      // already shows a tag whose theme is gone under misc, where it can be read
-      // and deleted. A charge the player can see is honest.
-      themeIds: character.loadout.themeIds.filter((id) => id !== themeId),
-    },
   };
 }

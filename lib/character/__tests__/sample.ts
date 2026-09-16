@@ -88,14 +88,26 @@ export const sample: Character = {
     },
   ],
   loadout: {
-    themeIds: ["th-chrome", "th-lantern"],
-    tags: [
-      { id: "lt-1", kind: "tag", text: "reflex booster, primed", themeId: "th-chrome" },
-      { id: "lt-2", kind: "flaw", text: "the booster leaves me shaking", themeId: "th-chrome" },
-      { id: "lt-3", kind: "tag", text: "lantern lit", themeId: "th-lantern" },
-      { id: "lt-4", kind: "wildcard", text: "whatever I left in the car boot", themeId: null },
-      { id: "lt-5", kind: "flaw", text: "carrying too much", themeId: null },
+    sets: [
+      {
+        id: "ls-1",
+        title: "reflex booster kit",
+        titleLoaded: true,
+        features: [
+          { id: "lf-1", text: "primed for a sprint", loaded: true },
+          { id: "lf-2", text: "spare cartridge", loaded: false },
+        ],
+        weaknesses: [{ id: "lw-1", text: "the booster leaves me shaking" }],
+      },
+      {
+        id: "ls-2",
+        title: "the bone lantern's case",
+        titleLoaded: false,
+        features: [{ id: "lf-3", text: "warding chalk", loaded: false }],
+        weaknesses: [],
+      },
     ],
+    wildcards: 1,
     specials: [],
     availablePower: 4,
     upgrade: 1,

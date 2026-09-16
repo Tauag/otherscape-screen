@@ -56,20 +56,36 @@ export type Theme = {
   decay: MarkCount;
 };
 
-export type LoadoutTagKind = "tag" | "wildcard" | "flaw";
-
-export type LoadoutTag = {
+export type LoadoutFeatureTag = {
   id: string;
-  kind: LoadoutTagKind;
   text: string;
-  /** The loadout theme this tag is grouped under, or null for a misc tag or flaw. */
-  themeId: string | null;
+  /** Loading it costs Power. It can't load before its set's title does. */
+  loaded: boolean;
+};
+
+/** Loads for free the instant its set's title loads. No cost, no toggle. */
+export type LoadoutWeaknessTag = {
+  id: string;
+  text: string;
+};
+
+/**
+ * A title tag, its features, and its weaknesses, written permanently. Only
+ * loaded tags are usable in play; loading one spends Power during Loading Up.
+ */
+export type LoadoutSet = {
+  id: string;
+  title: string;
+  titleLoaded: boolean;
+  features: LoadoutFeatureTag[];
+  weaknesses: LoadoutWeaknessTag[];
 };
 
 /** The loadout is itself a theme: its own Upgrade track, and no Decay track. */
 export type Loadout = {
-  themeIds: string[];
-  tags: LoadoutTag[];
+  sets: LoadoutSet[];
+  /** Slots reserved to load a tag mid-session, outside Loading Up. 2P each. */
+  wildcards: number;
   specials: string[];
   /** A budget the app warns against, never enforces. Starts at 1. */
   availablePower: number;

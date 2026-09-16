@@ -1,10 +1,10 @@
 "use client";
 
-import { Dialog } from "@base-ui/react/dialog";
 import { Menu } from "@base-ui/react/menu";
 import { useState } from "react";
 import { Chip } from "@/app/character/[id]/_components/chip";
-import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, LABEL, QUIET } from "@/app/character/[id]/_components/styles";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { LABEL } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Essence, GhostMemory } from "@/lib/character/types";
@@ -48,27 +48,13 @@ export function SheetMenu() {
         </Menu.Portal>
       </Menu.Root>
 
-      <Dialog.Root open={ghostsOpen} onOpenChange={setGhostsOpen}>
-        <Dialog.Portal>
-          <Dialog.Backdrop className={DIALOG_BACKDROP} />
-          <Dialog.Popup className={`${DIALOG_POPUP} max-h-[85vh] overflow-y-auto`}>
-            <Dialog.Title className={HEADING}>Ghost Memories</Dialog.Title>
-            <GhostMemories />
-            <Dialog.Close className={`${QUIET} mt-4 self-start`}>Close</Dialog.Close>
-          </Dialog.Popup>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <ConfirmDialog open={ghostsOpen} onOpenChange={setGhostsOpen} title="Ghost Memories" cancelLabel="Close">
+        <GhostMemories />
+      </ConfirmDialog>
 
-      <Dialog.Root open={essenceOpen} onOpenChange={setEssenceOpen}>
-        <Dialog.Portal>
-          <Dialog.Backdrop className={DIALOG_BACKDROP} />
-          <Dialog.Popup className={`${DIALOG_POPUP} max-h-[85vh] overflow-y-auto`}>
-            <Dialog.Title className={HEADING}>Override Essence</Dialog.Title>
-            <EssencePicker />
-            <Dialog.Close className={`${QUIET} mt-4 self-start`}>Done</Dialog.Close>
-          </Dialog.Popup>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <ConfirmDialog open={essenceOpen} onOpenChange={setEssenceOpen} title="Override Essence" cancelLabel="Done">
+        <EssencePicker />
+      </ConfirmDialog>
     </>
   );
 }
@@ -100,7 +86,7 @@ function EssencePicker() {
   );
 
   return (
-    <div className="mt-4 flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       <fieldset>
         <legend className={LABEL}>Essence</legend>
 
@@ -143,11 +129,11 @@ function GhostMemories() {
   const { character } = useCharacter();
 
   if (character.ghostMemories.length === 0) {
-    return <p className="mt-2 font-sans text-sm text-dim">No ghost memories yet.</p>;
+    return <p className="font-sans text-sm text-dim">No ghost memories yet.</p>;
   }
 
   return (
-    <div className="mt-4 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {character.ghostMemories.map((memory) => (
         <GhostEntry key={memory.id} memory={memory} />
       ))}

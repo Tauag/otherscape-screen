@@ -41,8 +41,8 @@ test("a blank character starts empty at the first creation step", () => {
   assert.equal(blank.essence, "");
   assert.equal(blank.creationStep, 1);
   assert.deepEqual(blank.themes, []);
-  assert.deepEqual(blank.loadout.tags, []);
-  assert.deepEqual(blank.loadout.themeIds, []);
+  assert.deepEqual(blank.loadout.sets, []);
+  assert.equal(blank.loadout.wildcards, 0);
 });
 
 // roster_summary is null on every row written before its migration lands,

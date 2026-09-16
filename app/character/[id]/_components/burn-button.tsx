@@ -7,7 +7,8 @@ import { Toggle } from "@base-ui/react/toggle";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
-import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, LABEL, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { LABEL, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
 
 const ICON_BUTTON =
   "grid size-11 shrink-0 place-items-center rounded-sm border border-border text-[var(--hue)]";
@@ -83,37 +84,32 @@ export function BurnButton({
         <FlameIcon burnt={burnt} />
       </Toggle>
 
-      <Dialog.Root open={open} onOpenChange={handleOpenChange}>
-        <Dialog.Portal>
-          <Dialog.Backdrop className={DIALOG_BACKDROP} />
-          <Dialog.Popup className={DIALOG_POPUP}>
-            <Dialog.Title className={HEADING}>Burn {named}</Dialog.Title>
-            <p className="mt-2 font-sans text-sm text-dim">
-              A burnt tag adds its value once, then reads as burnt until you un-burn it. Theme
-              specials burn for 4 or 5.
-            </p>
-
-            <form onSubmit={burn} className="mt-4 flex flex-wrap items-end gap-2">
-              <label className="flex flex-col gap-1">
-                <span className={LABEL}>Power</span>
-                <Input
-                  type="number"
-                  min={1}
-                  step={1}
-                  inputMode="numeric"
-                  value={value}
-                  onChange={(event) => setValue(event.target.value)}
-                  className="min-h-11 w-20 rounded-sm border border-border bg-bg px-3 font-mono text-base"
-                />
-              </label>
-              <Button type="submit" className={PRIMARY}>
-                Burn
-              </Button>
-              <Dialog.Close className={QUIET}>Cancel</Dialog.Close>
-            </form>
-          </Dialog.Popup>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <ConfirmDialog
+        open={open}
+        onOpenChange={handleOpenChange}
+        title={`Burn ${named}`}
+        description="A burnt tag adds its value once, then reads as burnt until you un-burn it. Theme specials burn for 4 or 5."
+        cancelLabel={null}
+      >
+        <form onSubmit={burn} className="flex flex-wrap items-end gap-2">
+          <label className="flex flex-col gap-1">
+            <span className={LABEL}>Power</span>
+            <Input
+              type="number"
+              min={1}
+              step={1}
+              inputMode="numeric"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+              className="min-h-11 w-20 rounded-sm border border-border bg-bg px-3 font-mono text-base"
+            />
+          </label>
+          <Button type="submit" className={PRIMARY}>
+            Burn
+          </Button>
+          <Dialog.Close className={QUIET}>Cancel</Dialog.Close>
+        </form>
+      </ConfirmDialog>
     </>
   );
 }
