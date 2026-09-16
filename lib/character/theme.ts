@@ -1,4 +1,4 @@
-import { DEFAULT_BURN_VALUE, UPGRADE_TRACK_LENGTH } from "../rules/constants.ts";
+import { DECAY_TRACK_LENGTH, DEFAULT_BURN_VALUE, UPGRADE_TRACK_LENGTH } from "../rules/constants.ts";
 import type {
   MarkCount,
   PowerQuestionLetter,
@@ -157,21 +157,21 @@ export function unburnTag(theme: Theme, tagId: string): Theme {
 
 export type TrackName = "upgrade" | "decay";
 
-const MARKS: MarkCount[] = [0, 1, 2, 3];
+const TRACK_LENGTH: Record<TrackName, number> = {
+  upgrade: UPGRADE_TRACK_LENGTH,
+  decay: DECAY_TRACK_LENGTH,
+};
 
 /**
- * Clicking box `index` marks up to it, or unmarks it and every box after, so a
- * mis-click costs one more click and never the whole track.
+ * One button, one click, one more box. A full track wraps back to empty on the
+ * next click, since that's the only way off a Decay track that stays full
+ * until the player loses the theme (PRD 7.4).
  */
-export function marksTo(marked: number, index: number): number {
-  return index < marked ? index : index + 1;
-}
-
-export function markTrack(theme: Theme, track: TrackName, index: number): Theme {
-  const next = marksTo(theme[track], index);
+export function markTrack(theme: Theme, track: TrackName): Theme {
+  const marked = theme[track];
+  const next = marked >= TRACK_LENGTH[track] ? 0 : ((marked + 1) as MarkCount);
   // A filled Upgrade track clears itself: the three points buy the Upgrade that
-  // the dialog then takes (PRD 7.3). A filled Decay track does neither. It warns
-  // and stays full until the player loses the theme or unmarks a box (PRD 7.4).
+  // the dialog then takes (PRD 7.3).
   const cleared = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
-  return { ...theme, [track]: cleared ? 0 : (MARKS.at(next) ?? 0) };
+  return { ...theme, [track]: cleared ? 0 : next };
 }

@@ -5,7 +5,7 @@
 
 import { useId, useRef, useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { marksTo, type TrackName } from "@/lib/character/theme";
+import type { TrackName } from "@/lib/character/theme";
 import {
   DECAY_TRACK_LENGTH,
   DEFAULT_BURN_VALUE,
@@ -57,9 +57,10 @@ export function Track({
   const { name, short, length } = TRACKS[track];
   const upgrade = useRef<HTMLDialogElement>(null);
 
-  function mark(index: number) {
-    dispatch({ type: "markTrack", themeId, track, index });
-    if (track === "upgrade" && marksTo(marked, index) >= length) upgrade.current?.showModal();
+  function mark() {
+    const willComplete = track === "upgrade" && marked + 1 >= length;
+    dispatch({ type: "markTrack", themeId, track });
+    if (willComplete) upgrade.current?.showModal();
   }
 
   const upgradeTrack = track === "upgrade";
@@ -67,8 +68,6 @@ export function Track({
   return (
     <>
       <div
-        role="group"
-        aria-label={`${name} track`}
         className={
           size === "sm"
             ? "flex items-center gap-1"
@@ -89,32 +88,31 @@ export function Track({
           </p>
         )}
 
-        <div className={size === "sm" ? "flex gap-[3px]" : "flex gap-1.5"}>
+        <button
+          type="button"
+          onClick={mark}
+          aria-label={`${name} track, ${marked} of ${length} marked. Click to mark one.`}
+          className={`flex cursor-pointer rounded-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+            size === "sm" ? "gap-[3px]" : "gap-1.5"
+          }`}
+        >
           {Array.from({ length }, (_, index) => {
             const lit = index < marked;
             return (
-              <label key={index} className="grid size-4 place-items-center">
-                <input
-                  type="checkbox"
-                  checked={lit}
-                  onChange={() => mark(index)}
-                  className="peer sr-only"
-                />
-                <span
-                  aria-hidden="true"
-                  className={`${PIP_SIZE[size]} peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary ${
-                    lit
-                      ? upgradeTrack
-                        ? `bg-[var(--hue)] ${GLOW[size]}`
-                        : "bg-muted"
-                      : "border border-pip"
-                  }`}
-                />
-                <span className="sr-only">{`${name} ${index + 1} of ${length}`}</span>
-              </label>
+              <span
+                key={index}
+                aria-hidden="true"
+                className={`${PIP_SIZE[size]} ${
+                  lit
+                    ? upgradeTrack
+                      ? `bg-[var(--hue)] ${GLOW[size]}`
+                      : "bg-muted"
+                    : "border border-pip"
+                }`}
+              />
             );
           })}
-        </div>
+        </button>
       </div>
 
       {track === "upgrade" && <UpgradeDialog themeId={themeId} ref={upgrade} />}
@@ -356,7 +354,7 @@ export function LoseTheme({
   );
 }
 
-/** Not a control, so unlike Track's pips this carries no 44px target of its own.
+/** Not a control, so unlike Track's mark button this carries no touch target of its own.
  *  Shared by the sheet's theme cards and the menu's ghost memory entries. */
 export function Chip({
   label,

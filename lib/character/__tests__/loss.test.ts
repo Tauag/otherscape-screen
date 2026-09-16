@@ -17,11 +17,11 @@ const memory = { id: "gm-new", lostAt: "2026-09-14T12:00:00.000Z", reason: "Blaz
 const find = (character: Character, id: string) => character.themes.find((one) => one.id === id);
 
 /** What the reducer's markTrack case does, one theme at a time. */
-function mark(character: Character, themeId: string, index: number): Character {
+function mark(character: Character, themeId: string): Character {
   return {
     ...character,
     themes: character.themes.map((theme) =>
-      theme.id === themeId ? markTrack(theme, "decay", index) : theme,
+      theme.id === themeId ? markTrack(theme, "decay") : theme,
     ),
   };
 }
@@ -86,10 +86,10 @@ test("the loadout drops the lost theme's id and keeps every tag the player wrote
 });
 
 test("a filled Decay track never loses the theme by itself", () => {
-  const two: Character = mark(sample, "th-chrome", 1);
+  const two: Character = mark(mark(sample, "th-chrome"), "th-chrome");
   assert.equal(find(two, "th-chrome")?.decay, 2);
 
-  const full = mark(two, "th-chrome", 2);
+  const full = mark(two, "th-chrome");
   assert.equal(find(full, "th-chrome")?.decay, 3);
   assert.ok(decayFull(find(full, "th-chrome")!));
 
@@ -98,12 +98,12 @@ test("a filled Decay track never loses the theme by itself", () => {
   assert.deepEqual(full.ghostMemories, sample.ghostMemories);
 });
 
-test("a full Decay track backs out one box at a time", () => {
-  const backedOut = mark(sample, LANTERN, 2);
+test("a full Decay track wraps back to empty on the next click", () => {
+  const wrapped = mark(sample, LANTERN);
 
-  assert.equal(find(backedOut, LANTERN)?.decay, 2);
-  assert.equal(decayFull(find(backedOut, LANTERN)!), false);
-  assert.equal(backedOut.themes.length, sample.themes.length);
+  assert.equal(find(wrapped, LANTERN)?.decay, 0);
+  assert.equal(decayFull(find(wrapped, LANTERN)!), false);
+  assert.equal(wrapped.themes.length, sample.themes.length);
 });
 
 test("a Conduit's replacement starts full, and an ordinary one starts nascent", () => {

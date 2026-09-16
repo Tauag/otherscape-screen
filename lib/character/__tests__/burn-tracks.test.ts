@@ -51,12 +51,11 @@ test("a burn touches one tag and nothing else on the theme", () => {
 
 test("marking the third Upgrade box clears the track", () => {
   assert.equal(past.upgrade, 2);
-  assert.equal(markTrack(past, "upgrade", 2).upgrade, 0);
-  assert.equal(markTrack({ ...past, upgrade: 0 }, "upgrade", 2).upgrade, 0);
+  assert.equal(markTrack(past, "upgrade").upgrade, 0);
 });
 
 test("the Upgrade outcome applies on the cleared track: a new power tag", () => {
-  const cleared = markTrack(past, "upgrade", 2);
+  const cleared = markTrack(past, "upgrade");
   const taken = addPowerTag(cleared, "pt-up", "C");
 
   assert.equal(taken.upgrade, 0);
@@ -66,7 +65,7 @@ test("the Upgrade outcome applies on the cleared track: a new power tag", () => 
 });
 
 test("the Upgrade outcome applies on the cleared track: a theme special", () => {
-  const cleared = markTrack(past, "upgrade", 2);
+  const cleared = markTrack(past, "upgrade");
   const taken = { ...cleared, specials: [...cleared.specials, "Cold Case: burn this theme for 4."] };
 
   assert.equal(taken.upgrade, 0);
@@ -74,26 +73,23 @@ test("the Upgrade outcome applies on the cleared track: a theme special", () => 
   assert.deepEqual(taken.powerTags, past.powerTags);
 });
 
-test("a box below the mark unmarks itself and every box after it", () => {
+test("a full Decay track wraps back to empty on the next click", () => {
   const full: Theme = { ...past, decay: 3 };
 
-  assert.equal(markTrack(full, "decay", 0).decay, 0);
-  assert.equal(markTrack(full, "decay", 1).decay, 1);
-  assert.equal(markTrack(full, "decay", 2).decay, 2);
+  assert.equal(markTrack(full, "decay").decay, 0);
 });
 
-test("the Decay track marks and unmarks, and touches nothing else", () => {
-  const marked = markTrack(past, "decay", 2);
+test("the Decay track marks one box at a time, and touches nothing else", () => {
+  const marked = markTrack({ ...past, decay: 1 }, "decay");
 
-  assert.equal(marked.decay, 3);
+  assert.equal(marked.decay, 2);
   assert.equal(marked.upgrade, past.upgrade);
   assert.deepEqual(marked.powerTags, past.powerTags);
   assert.deepEqual(marked.weaknessTags, past.weaknessTags);
-  assert.equal(markTrack(marked, "decay", 0).decay, 0);
 });
 
 test("marking a track leaves the other one alone", () => {
-  const marked = markTrack({ ...past, upgrade: 0 }, "upgrade", 0);
+  const marked = markTrack({ ...past, upgrade: 0 }, "upgrade");
 
   assert.equal(marked.upgrade, 1);
   assert.equal(marked.decay, past.decay);

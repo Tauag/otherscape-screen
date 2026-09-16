@@ -78,7 +78,7 @@ export type CharacterAction =
     }
   | { type: "burnTag"; themeId: string; tagId: string; burnValue: number }
   | { type: "unburnTag"; themeId: string; tagId: string }
-  | { type: "markTrack"; themeId: string; track: TrackName; index: number }
+  | { type: "markTrack"; themeId: string; track: TrackName }
   | { type: "addTheme"; id: string }
   | { type: "loseTheme"; themeId: string; id: string; lostAt: string; reason: string }
   | { type: "setEssence"; essence: Essence }
@@ -184,9 +184,7 @@ export function reduce(character: Character, action: CharacterAction): Character
     case "unburnTag":
       return inTheme(character, action.themeId, (theme) => unburnTag(theme, action.tagId));
     case "markTrack":
-      return inTheme(character, action.themeId, (theme) =>
-        markTrack(theme, action.track, action.index),
-      );
+      return inTheme(character, action.themeId, (theme) => markTrack(theme, action.track));
     case "addTheme": {
       // No-op past the cap: the button hides at STARTING_THEMES, but this
       // guards a dispatch that outraces the re-render (e.g. a double click).
