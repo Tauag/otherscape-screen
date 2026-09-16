@@ -61,9 +61,10 @@ export function TagRow({
 
   return (
     <li
+      id={`tag-${tag.id}`}
       data-burnt={tag.burnt ? "true" : undefined}
       data-valence={power ? undefined : "negative"}
-      className="flex flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2"
+      className="flex scroll-mt-20 flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2"
     >
       <div className="flex items-center gap-2">
         <Link

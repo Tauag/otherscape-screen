@@ -34,7 +34,6 @@ export const sample: Character = {
       id: "th-past",
       type: "self",
       themebook: "Troubled Past",
-      nascent: false,
       titleTagId: "pt-1",
       powerTags: [
         { id: "pt-1", themebook: "Troubled Past", letter: "A", text: "ex-corpsec detective", burnt: false },
@@ -51,7 +50,6 @@ export const sample: Character = {
       id: "th-lantern",
       type: "mythos",
       themebook: "Artifact",
-      nascent: false,
       titleTagId: "pt-4",
       powerTags: [
         { id: "pt-4", themebook: "Artifact", letter: "A", text: "the bone lantern", burnt: false },
@@ -68,7 +66,6 @@ export const sample: Character = {
       id: "th-chrome",
       type: "noise",
       themebook: "Augmentation",
-      nascent: false,
       titleTagId: "pt-7",
       powerTags: [
         { id: "pt-7", themebook: "Augmentation", letter: "A", text: "chromed reflexes", burnt: false },
@@ -84,7 +81,6 @@ export const sample: Character = {
       id: "th-dive",
       type: "noise",
       themebook: "Cyberspace",
-      nascent: true,
       titleTagId: "pt-9",
       powerTags: [{ id: "pt-9", themebook: "Cyberspace", letter: "A", text: "deep diver", burnt: false }],
       weaknessTags: [],
@@ -116,7 +112,6 @@ export const sample: Character = {
         id: "th-forensics",
         type: "self",
         themebook: "Expertise",
-        nascent: false,
         titleTagId: "pt-g1",
         powerTags: [
           { id: "pt-g1", themebook: "Expertise", letter: "A", text: "forensic pathologist", burnt: false },

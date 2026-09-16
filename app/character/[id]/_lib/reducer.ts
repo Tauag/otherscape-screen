@@ -48,7 +48,6 @@ export type CharacterAction =
   | { type: "setPlayerName"; playerName: string }
   | { type: "setThemeType"; themeId: string; themeType: ThemeType }
   | { type: "setThemebook"; themeId: string; themebook: string }
-  | { type: "setNascent"; themeId: string; nascent: boolean }
   | { type: "setThemeQuote"; themeId: string; quote: string }
   | { type: "addThemeSpecial"; themeId: string; special: string }
   | { type: "removeThemeSpecial"; themeId: string; special: string }
@@ -133,8 +132,6 @@ export function reduce(character: Character, action: CharacterAction): Character
         ...theme,
         themebook: action.themebook,
       }));
-    case "setNascent":
-      return inTheme(character, action.themeId, (theme) => ({ ...theme, nascent: action.nascent }));
     case "setThemeQuote":
       return inTheme(character, action.themeId, (theme) => ({ ...theme, quote: action.quote }));
     case "addThemeSpecial":
@@ -189,7 +186,7 @@ export function reduce(character: Character, action: CharacterAction): Character
       // No-op past the cap: the button hides at STARTING_THEMES, but this
       // guards a dispatch that outraces the re-render (e.g. a double click).
       if (character.themes.length >= STARTING_THEMES) return character;
-      const themes = [...character.themes, newTheme(action.id, character.essence)];
+      const themes = [...character.themes, newTheme(action.id)];
       return { ...character, themes, essence: autoEssence(character.essence, themes) };
     }
     case "loseTheme":

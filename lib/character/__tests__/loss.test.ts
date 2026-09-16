@@ -4,8 +4,8 @@ import { groupLoadout } from "../../loadout-edit.ts";
 import { loadoutSpend } from "../../rules/loadout.ts";
 import { decayFull, loseTheme } from "../loss.ts";
 import { newTheme } from "../new.ts";
-import { markTrack } from "../theme.ts";
-import type { Character, Essence } from "../types.ts";
+import { addPowerTag, isNascent, markTrack } from "../theme.ts";
+import type { Character } from "../types.ts";
 import { sample } from "./sample.ts";
 
 // Specials, a cross-themebook tag, a weakness, a quote, Decay already full.
@@ -106,20 +106,20 @@ test("a full Decay track wraps back to empty on the next click", () => {
   assert.equal(wrapped.themes.length, sample.themes.length);
 });
 
-test("a Conduit's replacement starts full, and an ordinary one starts nascent", () => {
-  assert.equal(newTheme("th-new", "Conduit").nascent, false);
-  // A Nexus that stays a Nexus gains a full theme too.
-  assert.equal(newTheme("th-new", "Nexus").nascent, false);
+test("a theme is nascent until it has 3 power tags", () => {
+  let theme = newTheme("th-new");
+  assert.equal(isNascent(theme), true);
 
-  const ordinary: Essence[] = ["Real", "Avatar", "Singularity", "Spiritualist", "Cyborg", "Transhuman"];
-  for (const essence of ordinary) {
-    assert.equal(newTheme("th-new", essence).nascent, true, `${essence} starts nascent`);
-  }
-  assert.equal(newTheme("th-new", "").nascent, true);
+  theme = addPowerTag(theme, "pt-1", "A");
+  theme = addPowerTag(theme, "pt-2", "B");
+  assert.equal(isNascent(theme), true);
+
+  theme = addPowerTag(theme, "pt-3", "C");
+  assert.equal(isNascent(theme), false);
 });
 
 test("a replacement is blank apart from the id it was given", () => {
-  const replacement = newTheme("th-new", "Real");
+  const replacement = newTheme("th-new");
 
   assert.equal(replacement.id, "th-new");
   assert.equal(replacement.titleTagId, null);

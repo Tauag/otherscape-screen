@@ -15,6 +15,13 @@ segment's private folder serves that segment and everything below it.
 A second subtree reaching into a private folder is the signal to move the file
 up to the shared folder, not to deepen the import path.
 
+## UI components
+
+Use Base UI (`@base-ui/react`) for interactive elements: buttons, toggles,
+dialogs, menus, inputs, and anything else it covers. Roll a custom component
+only when Base UI has no matching primitive, or when using it would break
+the feature (for example, `next/link` for routed navigation stays native).
+
 ## Migrations
 
 Supabase CLI, linked to project `pclyysmrsuhftgwvdwor`. New SQL files go in

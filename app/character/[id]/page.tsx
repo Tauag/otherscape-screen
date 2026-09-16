@@ -9,7 +9,7 @@ import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
 import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
-import { themeLine } from "@/lib/character/theme";
+import { isNascent, themeLine } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
 import { STARTING_THEMES } from "@/lib/rules/constants";
@@ -50,7 +50,7 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 
 function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
   const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
-  const { nascent } = theme;
+  const nascent = isNascent(theme);
 
   return (
     <article
@@ -76,16 +76,31 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
             {theme.type} · {theme.themebook.trim() || "No themebook"}
           </Link>
 
-          {nascent ? (
-            <span className="border border-pip px-[5px] py-0.5 font-mono text-[8px] font-bold tracking-[0.1em] text-dim">
-              NASCENT
-            </span>
-          ) : (
+          <div className="flex items-center gap-3">
+            {nascent && (
+              <span className="border border-pip px-[5px] py-0.5 font-mono text-[8px] font-bold tracking-[0.1em] text-dim">
+                NASCENT
+              </span>
+            )}
             <div className="flex items-center gap-4">
-              <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} size="sm" />
-              <Track themeId={theme.id} track="decay" marked={theme.decay} size="sm" />
+              <Track
+                themeId={theme.id}
+                themeHref={href}
+                nascent={nascent}
+                track="upgrade"
+                marked={theme.upgrade}
+                size="sm"
+              />
+              <Track
+                themeId={theme.id}
+                themeHref={href}
+                nascent={nascent}
+                track="decay"
+                marked={theme.decay}
+                size="sm"
+              />
             </div>
-          )}
+          </div>
         </div>
 
         <Link href={href} className="block">

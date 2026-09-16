@@ -2,7 +2,7 @@
 
 import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
-import { Input } from "@base-ui/react/input";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { TrackName } from "@/lib/character/theme";
@@ -31,11 +31,18 @@ const GLOW: Record<TrackSize, string> = {
  *  control and its accessibility markup are identical either way. */
 export function Track({
   themeId,
+  themeHref,
+  nascent,
   track,
   marked,
   size,
 }: {
   themeId: string;
+  /** The theme screen's own URL, so a completed Upgrade can land there. */
+  themeHref: string;
+  /** A nascent theme upgrades toward its missing power tags first, so the
+   *  Upgrade dialog offers only that until the theme is full. */
+  nascent: boolean;
   track: TrackName;
   marked: number;
   size: TrackSize;
@@ -103,7 +110,13 @@ export function Track({
       </div>
 
       {track === "upgrade" && (
-        <UpgradeDialog themeId={themeId} open={upgradeOpen} onOpenChange={setUpgradeOpen} />
+        <UpgradeDialog
+          themeId={themeId}
+          themeHref={themeHref}
+          nascent={nascent}
+          open={upgradeOpen}
+          onOpenChange={setUpgradeOpen}
+        />
       )}
     </>
   );
@@ -111,29 +124,32 @@ export function Track({
 
 function UpgradeDialog({
   themeId,
+  themeHref,
+  nascent,
   open,
   onOpenChange,
 }: {
   themeId: string;
+  themeHref: string;
+  nascent: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
   const { dispatch } = useCharacter();
-  const [special, setSpecial] = useState("");
+  const router = useRouter();
 
   function takeTag() {
     // lazy: the tag lands on question A and the player moves it, since nothing
     // here knows the questions. Upgrade path: T29's picker route.
-    dispatch({ type: "addPowerTag", themeId, id: crypto.randomUUID(), letter: "A" });
+    const id = crypto.randomUUID();
+    dispatch({ type: "addPowerTag", themeId, id, letter: "A" });
     onOpenChange(false);
+    router.push(`${themeHref}#tag-${id}`);
   }
 
-  function takeSpecial(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    // `required` stops an empty field, but not a field holding only spaces.
-    const text = special.trim();
-    if (text) dispatch({ type: "addThemeSpecial", themeId, special: text });
-    setSpecial("");
+  function takeSpecial() {
+    onOpenChange(false);
+    router.push(`${themeHref}/specials`);
   }
 
   return (
@@ -143,31 +159,20 @@ function UpgradeDialog({
         <Dialog.Popup className={DIALOG_POPUP}>
           <Dialog.Title className={HEADING}>Take an Upgrade</Dialog.Title>
           <p className="mt-2 font-sans text-sm text-dim">
-            Three points, one Upgrade. Take a new power tag, which may answer any question, or a
-            theme special. The track is clear either way, and the theme screen can still add both
-            later.
+            {nascent
+              ? "Three points, one Upgrade. A nascent theme takes a new power tag until it has all three."
+              : "Three points, one Upgrade. Take a new power tag, which may answer any question, or a theme special."}
           </p>
 
           <div className="mt-4 flex flex-col gap-3">
             <Button type="button" onClick={takeTag} className={PRIMARY}>
-              New power tag
+              Add power tag
             </Button>
-
-            <form onSubmit={takeSpecial} className="flex flex-wrap items-center gap-2">
-              <Input
-                type="text"
-                required
-                value={special}
-                onChange={(event) => setSpecial(event.target.value)}
-                aria-label="Theme special"
-                placeholder="A theme special, in your own words"
-                className="min-h-11 min-w-32 flex-1 rounded-sm border border-border bg-bg px-3 font-sans text-base"
-              />
-              <Button type="submit" className={PRIMARY}>
-                Take special
+            {!nascent && (
+              <Button type="button" onClick={takeSpecial} className={PRIMARY}>
+                Add theme special
               </Button>
-            </form>
-
+            )}
             <Dialog.Close className={`${QUIET} self-start`}>Not now</Dialog.Close>
           </div>
         </Dialog.Popup>

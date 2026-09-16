@@ -47,7 +47,6 @@ export type Theme = {
   type: ThemeType;
   /** Free text, because a homebrew themebook is allowed. */
   themebook: string;
-  nascent: boolean;
   /**
    * The power tag rendered as the title. Held by id, not derived from the first
    * answer to question A, because reordering tags must not move the title.

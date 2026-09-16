@@ -25,6 +25,11 @@ export function themeLine(type: ThemeType): string {
   return LINE_NAME[type];
 }
 
+/** A theme reads as under construction until it has all three power tags. */
+export function isNascent(theme: Theme): boolean {
+  return theme.powerTags.length < 3;
+}
+
 /**
  * The full range, always. sysdesign 2: a question may be answered again at any
  * time, so no screen removes a letter that already carries a tag.

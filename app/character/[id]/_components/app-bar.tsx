@@ -2,6 +2,7 @@
 
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
+import { isNascent } from "@/lib/character/theme";
 import { useCharacter } from "../_hooks/use-character";
 import { initials } from "../_lib/initials";
 import { SheetMenu } from "./menu";
@@ -42,7 +43,7 @@ export function AppBar() {
               <span
                 key={theme.id}
                 data-type={theme.type}
-                style={{ opacity: theme.nascent ? 0.28 : 1 }}
+                style={{ opacity: isNascent(theme) ? 0.28 : 1 }}
                 className="h-0.5 w-3 bg-[var(--hue)]"
               />
             ))}

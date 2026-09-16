@@ -11,7 +11,7 @@ import { LABEL } from "@/app/character/[id]/_components/styles";
 import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
-import { themeLine } from "@/lib/character/theme";
+import { isNascent, themeLine } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
 import { TagRow } from "./_components/tag-row";
 import { BackLink } from "@/components/back-link";
@@ -50,6 +50,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
   }
 
   const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+  const nascent = isNascent(theme);
 
   return (
     <main
@@ -102,18 +103,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           </span>
         </Link>
       </div>
-
-      <label className="flex min-h-11 items-center gap-2">
-        <input
-          type="checkbox"
-          checked={theme.nascent}
-          onChange={(event) =>
-            dispatch({ type: "setNascent", themeId: theme.id, nascent: event.target.checked })
-          }
-          className="size-[18px] accent-[var(--hue)]"
-        />
-        <span className="font-sans text-base">Nascent</span>
-      </label>
 
       <section className="flex flex-col gap-2">
         <h2 className={LABEL}>Power tags</h2>
@@ -213,8 +202,22 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
       </section>
 
       <div className="flex gap-[10px]">
-        <Track themeId={theme.id} track="upgrade" marked={theme.upgrade} size="lg" />
-        <Track themeId={theme.id} track="decay" marked={theme.decay} size="lg" />
+        <Track
+          themeId={theme.id}
+          themeHref={here}
+          nascent={nascent}
+          track="upgrade"
+          marked={theme.upgrade}
+          size="lg"
+        />
+        <Track
+          themeId={theme.id}
+          themeHref={here}
+          nascent={nascent}
+          track="decay"
+          marked={theme.decay}
+          size="lg"
+        />
       </div>
 
       {/* Losing a theme is offered here whatever the Decay track says.

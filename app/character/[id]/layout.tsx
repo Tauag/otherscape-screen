@@ -4,8 +4,6 @@ import { TabBar } from "@/app/character/[id]/_components/tabs";
 import { migrate } from "@/lib/character/migrate";
 import { createClient } from "@/lib/supabase/server";
 
-// The one read of the document. Tabs under /character/[id] are routes inside this
-// layout, so switching them refetches nothing.
 export default async function CharacterLayout({ children, params }: LayoutProps<"/character/[id]">) {
   const { id } = await params;
   const supabase = await createClient();
@@ -28,7 +26,7 @@ export default async function CharacterLayout({ children, params }: LayoutProps<
       document={migrate(row.data)}
       version={row.version}
       updatedAt={row.updated_at}
-      bar={<TabBar id={id} />}
+      bar={<TabBar key={`tab-bar-${id}`} id={id} />}
     >
       {children}
     </CharacterProvider>

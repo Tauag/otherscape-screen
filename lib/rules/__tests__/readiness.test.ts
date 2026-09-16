@@ -9,7 +9,6 @@ function theme(id: string, type: ThemeType, themebook: string, over: Partial<The
     id,
     type,
     themebook,
-    nascent: false,
     titleTagId: `${id}-a`,
     powerTags: [{ id: `${id}-a`, themebook, letter: "A", text: "a title", burnt: false }],
     weaknessTags: [{ id: `${id}-w`, letter: "A", text: "a weakness" }],

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Chip } from "@/app/character/[id]/_components/chip";
 import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, LABEL, QUIET } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { themeLine } from "@/lib/character/theme";
+import { isNascent, themeLine } from "@/lib/character/theme";
 import type { Essence, GhostMemory } from "@/lib/character/types";
 import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
@@ -212,7 +212,7 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
         ))}
 
         <p className={`${LABEL} pt-1`}>
-          {theme.nascent ? "Nascent · " : ""}
+          {isNascent(theme) ? "Nascent · " : ""}
           Upgrade {theme.upgrade} of {UPGRADE_TRACK_LENGTH} · Decay {theme.decay} of{" "}
           {DECAY_TRACK_LENGTH}
         </p>
