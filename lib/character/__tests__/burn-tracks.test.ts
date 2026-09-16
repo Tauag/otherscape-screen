@@ -46,7 +46,6 @@ test("a burn touches one tag and nothing else on the theme", () => {
 
   assert.deepEqual(burned.powerTags.slice(1), past.powerTags.slice(1));
   assert.deepEqual(burned.weaknessTags, past.weaknessTags);
-  assert.equal(burned.titleTagId, past.titleTagId);
 });
 
 test("marking the third Upgrade box clears the track", () => {

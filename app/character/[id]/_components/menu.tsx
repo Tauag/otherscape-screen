@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Chip } from "@/app/character/[id]/_components/chip";
 import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, LABEL, QUIET } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { isNascent, themeLine } from "@/lib/character/theme";
+import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Essence, GhostMemory } from "@/lib/character/types";
 import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
@@ -157,7 +157,7 @@ function GhostMemories() {
 
 function GhostEntry({ memory }: { memory: GhostMemory }) {
   const { theme } = memory;
-  const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+  const title = themeTitle(theme);
 
   return (
     <article

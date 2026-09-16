@@ -9,7 +9,6 @@ function theme(id: string, type: ThemeType, themebook: string, over: Partial<The
     id,
     type,
     themebook,
-    titleTagId: `${id}-a`,
     powerTags: [{ id: `${id}-a`, themebook, letter: "A", text: "a title", burnt: false }],
     weaknessTags: [{ id: `${id}-w`, letter: "A", text: "a weakness" }],
     quote: "a line",
@@ -24,7 +23,7 @@ test("a half-built character names every gap, in reading order", () => {
   const character = newCharacter();
   character.themes = [
     theme("th-1", "self", "Troubled Past", { weaknessTags: [], quote: "  " }),
-    theme("th-2", "mythos", "", { titleTagId: null, powerTags: [] }),
+    theme("th-2", "mythos", "", { powerTags: [] }),
   ];
   character.loadout.tags = [{ id: "lt-1", kind: "wildcard", text: "smartgun", themeId: null }];
 

@@ -1,4 +1,4 @@
-import { themeLine } from "../character/theme.ts";
+import { themeLine, themeTitle } from "../character/theme.ts";
 import type { Character, Theme } from "../character/types.ts";
 import { STARTING_THEMES } from "./constants.ts";
 import { loadoutSpend } from "./loadout.ts";
@@ -23,7 +23,7 @@ export function readiness(character: Character): string[] {
   const gaps: string[] = [];
 
   themes.forEach((theme, index) => {
-    if (!theme.powerTags.some((tag) => tag.id === theme.titleTagId)) {
+    if (!themeTitle(theme)) {
       gaps.push(`${themeName(theme, index)} has no title tag.`);
     }
   });

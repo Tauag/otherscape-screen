@@ -11,7 +11,7 @@ import { LABEL } from "@/app/character/[id]/_components/styles";
 import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
-import { isNascent, themeLine } from "@/lib/character/theme";
+import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
 import { TagRow } from "./_components/tag-row";
 import { BackLink } from "@/components/back-link";
@@ -49,7 +49,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
     );
   }
 
-  const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+  const title = themeTitle(theme);
   const nascent = isNascent(theme);
 
   return (
@@ -69,7 +69,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
       </h1>
 
       <fieldset className="flex flex-col gap-1">
-        <legend className={LABEL}>Theme type</legend>
         <div className="flex gap-1">
           {THEME_TYPES.map((value) => (
             <label key={value} data-type={value} className="flex-1">

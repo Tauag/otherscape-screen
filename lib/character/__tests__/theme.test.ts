@@ -7,6 +7,7 @@ import {
   editPowerTag,
   moveTag,
   themeLine,
+  themeTitle,
 } from "../theme.ts";
 import type { Theme } from "../types.ts";
 import { sample } from "./sample.ts";
@@ -31,7 +32,6 @@ test("a move keeps every tag whole and moves nothing else", () => {
 
   assert.deepEqual([...ids(moved)].sort(), [...ids(past)].sort());
   assert.deepEqual(moved.powerTags[1], past.powerTags[2]);
-  assert.equal(moved.titleTagId, past.titleTagId);
   assert.deepEqual(moved.weaknessTags, past.weaknessTags);
 });
 
@@ -66,23 +66,23 @@ test("a new tag borrows the theme's themebook and keeps the field writable", () 
   assert.equal(borrowed.powerTags.at(-1)?.themebook, "Esoterica");
 });
 
-test("the first answer to question A takes the title, later ones do not", () => {
-  const blank: Theme = { ...past, powerTags: [], titleTagId: null };
+test("the theme's title is the first power tag answering question A", () => {
+  const blank: Theme = { ...past, powerTags: [] };
 
   const first = addPowerTag(blank, "pt-a", "A");
-  assert.equal(first.titleTagId, "pt-a");
+  assert.equal(themeTitle(first)?.id, "pt-a");
 
-  assert.equal(addPowerTag(first, "pt-b", "A").titleTagId, "pt-a");
-  assert.equal(addPowerTag(blank, "pt-c", "C").titleTagId, null);
+  assert.equal(themeTitle(addPowerTag(first, "pt-b", "A"))?.id, "pt-a");
+  assert.equal(themeTitle(addPowerTag(blank, "pt-c", "C")), undefined);
 });
 
 test("deleting the title tag clears the title and leaves the rest", () => {
   const gone = deletePowerTag(past, "pt-1");
 
-  assert.equal(gone.titleTagId, null);
+  assert.equal(themeTitle(gone), undefined);
   assert.deepEqual(ids(gone), ["pt-2", "pt-3"]);
 
-  assert.equal(deletePowerTag(past, "pt-2").titleTagId, "pt-1");
+  assert.equal(themeTitle(deletePowerTag(past, "pt-2"))?.id, "pt-1");
 });
 
 test("the quote line is named by the theme type", () => {

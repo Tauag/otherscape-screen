@@ -37,7 +37,6 @@ export function newTheme(id: string): Theme {
     id,
     type: "self",
     themebook: "",
-    titleTagId: null,
     powerTags: [],
     weaknessTags: [],
     quote: "",

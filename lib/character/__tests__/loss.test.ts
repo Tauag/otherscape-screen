@@ -38,7 +38,6 @@ test("a lost theme reads back complete", () => {
   assert.deepEqual(ghost.theme.powerTags, lantern.powerTags);
   assert.deepEqual(ghost.theme.weaknessTags, lantern.weaknessTags);
   assert.deepEqual(ghost.theme.specials, lantern.specials);
-  assert.equal(ghost.theme.titleTagId, lantern.titleTagId);
   assert.equal(ghost.theme.quote, lantern.quote);
   assert.equal(ghost.theme.themebook, lantern.themebook);
   assert.equal(ghost.theme.upgrade, lantern.upgrade);
@@ -122,7 +121,6 @@ test("a replacement is blank apart from the id it was given", () => {
   const replacement = newTheme("th-new");
 
   assert.equal(replacement.id, "th-new");
-  assert.equal(replacement.titleTagId, null);
   assert.deepEqual(replacement.powerTags, []);
   assert.deepEqual(replacement.weaknessTags, []);
   assert.deepEqual(replacement.specials, []);

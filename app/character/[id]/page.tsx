@@ -9,7 +9,7 @@ import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
 import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
-import { isNascent, themeLine } from "@/lib/character/theme";
+import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
 import { STARTING_THEMES } from "@/lib/rules/constants";
@@ -49,7 +49,7 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 }
 
 function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
-  const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+  const title = themeTitle(theme);
   const nascent = isNascent(theme);
 
   return (
@@ -122,54 +122,47 @@ function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
           <h2 className="min-h-11 content-center font-sans text-sm text-dim">No title tag yet.</h2>
         )}
 
-        {/* The artboard draws a nascent card as the header and title alone. */}
-        {!nascent && (
+        <ul className="flex flex-wrap gap-1.5">
+          {theme.powerTags
+            .filter((tag) => tag.id !== title?.id)
+            .map((tag) => (
+              <Chip
+                key={tag.id}
+                label={tag.letter}
+                text={tag.text}
+                burnt={tag.burnt}
+                burnValue={tag.burnValue}
+              />
+            ))}
+
+          {theme.weaknessTags.map((tag) => (
+            <Chip key={tag.id} label={tag.letter} text={tag.text} negative />
+          ))}
+        </ul>
+
+        {theme.quote.trim() && (
+          <div className="flex items-baseline gap-[7px] pt-0.5">
+            <span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-faint uppercase">
+              {themeLine(theme.type)}
+            </span>
+            <span className="font-sans text-[12.5px] text-quiet italic">{theme.quote}</span>
+          </div>
+        )}
+
+        {theme.specials.length > 0 && (
+          <ul className="flex flex-col gap-1">
+            {theme.specials.map((special, index) => (
+              <li key={index} className="font-sans text-[13px] text-dim">
+                {specialName(special)}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {decayFull(theme) && (
           <>
-            <ul className="flex flex-wrap gap-1.5">
-              {theme.powerTags
-                .filter((tag) => tag.id !== theme.titleTagId)
-                .map((tag) => (
-                  <Chip
-                    key={tag.id}
-                    label={tag.letter}
-                    text={tag.text}
-                    burnt={tag.burnt}
-                    burnValue={tag.burnValue}
-                  />
-                ))}
-
-              {theme.weaknessTags.map((tag) => (
-                <Chip key={tag.id} label={tag.letter} text={tag.text} negative />
-              ))}
-            </ul>
-
-            {theme.quote.trim() && (
-              <div className="flex items-baseline gap-[7px] pt-0.5">
-                <span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-faint uppercase">
-                  {themeLine(theme.type)}
-                </span>
-                <span className="font-sans text-[12.5px] text-quiet italic">{theme.quote}</span>
-              </div>
-            )}
-
-            {/* The artboard predates the specials list, the decay warning, and
-                the lose-theme button, so they run after the quote line. */}
-            {theme.specials.length > 0 && (
-              <ul className="flex flex-col gap-1">
-                {theme.specials.map((special, index) => (
-                  <li key={index} className="font-sans text-[13px] text-dim">
-                    {specialName(special)}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {decayFull(theme) && (
-              <>
-                <DecayWarning />
-                <LoseTheme themeId={theme.id} named={title?.text.trim() || "this theme"} />
-              </>
-            )}
+            <DecayWarning />
+            <LoseTheme themeId={theme.id} named={title?.text.trim() || "this theme"} />
           </>
         )}
       </div>

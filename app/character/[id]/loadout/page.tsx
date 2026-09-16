@@ -6,6 +6,7 @@ import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
 import { useEffect, useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { themeTitle } from "@/lib/character/theme";
 import type { LoadoutTag, LoadoutTagKind, Theme, ThemeType } from "@/lib/character/types";
 import { groupLoadout, type UpgradeChoice } from "@/lib/loadout-edit";
 import {
@@ -34,7 +35,7 @@ const ADD: Record<LoadoutTagKind, string> = {
 };
 
 function themeName(theme: Theme): string {
-  const title = theme.powerTags.find((tag) => tag.id === theme.titleTagId);
+  const title = themeTitle(theme);
   return title?.text.trim() || theme.themebook.trim() || "Untitled theme";
 }
 

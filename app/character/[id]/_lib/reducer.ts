@@ -51,7 +51,6 @@ export type CharacterAction =
   | { type: "setThemeQuote"; themeId: string; quote: string }
   | { type: "addThemeSpecial"; themeId: string; special: string }
   | { type: "removeThemeSpecial"; themeId: string; special: string }
-  | { type: "setTitleTag"; themeId: string; tagId: string | null }
   | { type: "addPowerTag"; themeId: string; id: string; letter: PowerQuestionLetter }
   | { type: "addWeaknessTag"; themeId: string; id: string; letter: WeaknessQuestionLetter }
   | {
@@ -144,11 +143,6 @@ export function reduce(character: Character, action: CharacterAction): Character
       return inTheme(character, action.themeId, (theme) => ({
         ...theme,
         specials: theme.specials.filter((special) => special !== action.special),
-      }));
-    case "setTitleTag":
-      return inTheme(character, action.themeId, (theme) => ({
-        ...theme,
-        titleTagId: action.tagId,
       }));
     case "addPowerTag":
       return inTheme(character, action.themeId, (theme) =>

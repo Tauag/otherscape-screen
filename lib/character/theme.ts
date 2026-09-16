@@ -30,6 +30,11 @@ export function isNascent(theme: Theme): boolean {
   return theme.powerTags.length < 3;
 }
 
+/** The theme card's name: the first power tag answering question A. */
+export function themeTitle(theme: Theme): PowerTag | undefined {
+  return theme.powerTags.find((tag) => tag.letter === "A");
+}
+
 /**
  * The full range, always. sysdesign 2: a question may be answered again at any
  * time, so no screen removes a letter that already carries a tag.
@@ -56,13 +61,7 @@ export type MoveDirection = "up" | "down";
 /** The id comes from the caller, because a reducer has to stay pure. */
 export function addPowerTag(theme: Theme, id: string, letter: PowerQuestionLetter): Theme {
   const tag: PowerTag = { id, themebook: theme.themebook, letter, text: "", burnt: false };
-  return {
-    ...theme,
-    powerTags: [...theme.powerTags, tag],
-    // types.ts: the title is null until question A is answered, so the first
-    // answer to A takes the title a themeless card is missing.
-    titleTagId: theme.titleTagId ?? (letter === "A" ? id : null),
-  };
+  return { ...theme, powerTags: [...theme.powerTags, tag] };
 }
 
 export function addWeaknessTag(theme: Theme, id: string, letter: WeaknessQuestionLetter): Theme {
@@ -92,13 +91,7 @@ export function editWeaknessTag(
 }
 
 export function deletePowerTag(theme: Theme, tagId: string): Theme {
-  return {
-    ...theme,
-    powerTags: theme.powerTags.filter((tag) => tag.id !== tagId),
-    // Deleting the title leaves the theme titleless rather than promoting a tag
-    // the player did not choose. readiness() then says the title is missing.
-    titleTagId: theme.titleTagId === tagId ? null : theme.titleTagId,
-  };
+  return { ...theme, powerTags: theme.powerTags.filter((tag) => tag.id !== tagId) };
 }
 
 export function deleteWeaknessTag(theme: Theme, tagId: string): Theme {

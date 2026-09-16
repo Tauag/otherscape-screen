@@ -47,12 +47,6 @@ export type Theme = {
   type: ThemeType;
   /** Free text, because a homebrew themebook is allowed. */
   themebook: string;
-  /**
-   * The power tag rendered as the title. Held by id, not derived from the first
-   * answer to question A, because reordering tags must not move the title.
-   * Null until question A is answered.
-   */
-  titleTagId: string | null;
   powerTags: PowerTag[];
   weaknessTags: WeaknessTag[];
   /** The Identity, Ritual, or Itch line. The theme type names it. */
