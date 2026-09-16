@@ -82,13 +82,14 @@ export function TagRow({
             tag.burnt ? "line-through" : ""
           }`}
         />
-      </div>
 
-      <div className="flex flex-wrap items-center gap-1">
+
         {power && (
           <BurnButton themeId={themeId} tagId={tag.id} burnt={tag.burnt ?? false} named={named} />
         )}
+      </div>
 
+      <div className="flex flex-wrap items-center gap-1">
         <button
           type="button"
           disabled={index === 0}
