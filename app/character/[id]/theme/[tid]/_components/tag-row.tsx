@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BurnButton, LABEL } from "@/app/character/[id]/_components/parts";
+import { BurnButton } from "@/app/character/[id]/_components/parts";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type { PowerQuestionLetter, WeaknessQuestionLetter } from "@/lib/character/types";
@@ -22,8 +22,6 @@ export function TagRow({
   href,
   index,
   count,
-  isTitle,
-  themeThemebook,
 }: {
   kind: TagKind;
   themeId: string;
@@ -32,10 +30,6 @@ export function TagRow({
   href: string;
   index: number;
   count: number;
-  /** Power tags only: this tag is the one drawn as the theme's title. */
-  isTitle?: boolean;
-  /** Power tags only: the themebook a tag falls back to when it borrows none. */
-  themeThemebook?: string;
 }) {
   const { dispatch } = useCharacter();
 

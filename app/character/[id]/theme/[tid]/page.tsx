@@ -122,8 +122,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
               href={`${here}/tag/${tag.id}`}
               index={index}
               count={theme.powerTags.length}
-              isTitle={tag.id === theme.titleTagId}
-              themeThemebook={theme.themebook}
             />
           ))}
         </ul>
