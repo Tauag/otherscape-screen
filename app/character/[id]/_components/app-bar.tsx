@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCharacter } from "../_hooks/use-character";
 import { initials } from "../_lib/initials";
+import { SheetMenu } from "./menu";
 
 export function AppBar() {
   const { character, dispatch } = useCharacter();
@@ -53,6 +54,8 @@ export function AppBar() {
           )}
         </div>
       </div>
+
+      <SheetMenu />
     </header>
   );
 }

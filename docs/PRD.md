@@ -104,6 +104,10 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
   so the app offers both and the player picks. The book splits them on whether the
   Mythos themes draw on one Source or several, which the player already knows. The
   app does not track Sources. Essence changes when the character replaces themes.
+  Once the mix narrows to exactly one Essence and the character holds all 4
+  starting themes, the app assigns it automatically. A tied mix, or an Essence
+  the player already chose, is left alone; the player can still pick or override
+  one at any time.
 - Essence special: every character has exactly one, set by their Essence. It works
   like a theme special. The app names the Essence. The player writes the special's
   text, because that text belongs to the rulebook.
@@ -270,7 +274,10 @@ triggers that call it.
 
 ### 7.5 Essence — P0
 - Suggest the Essence, or the pair of candidates, from the current theme mix.
-- The player confirms or overrides the suggestion. The app never sets it alone.
+- The player confirms or overrides the suggestion at any time.
+- Once the mix narrows to exactly one Essence and the character holds all 4
+  starting themes, assign it automatically. A tied mix, or an Essence the
+  player already chose, is left alone.
 - Re-suggest when the theme mix changes. Never overwrite the player's choice silently.
 - Hold one free-text Essence special.
 

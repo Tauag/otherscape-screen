@@ -1,5 +1,6 @@
 import { loseTheme } from "@/lib/character/loss";
 import { newTheme } from "@/lib/character/new";
+import { essenceCandidates } from "@/lib/rules/essence";
 import {
   addPowerTag,
   addWeaknessTag,
@@ -103,6 +104,18 @@ const withLoadout = (character: Character, loadout: Partial<Loadout>): Character
   loadout: { ...character.loadout, ...loadout },
 });
 
+/**
+ * PRD 7.5: once the mix narrows to exactly one Essence and the character
+ * holds all 4 starting themes, it assigns itself. A tied mix (Avatar or
+ * Conduit) or an Essence the player already chose is left alone; the sheet
+ * menu's Desired Essence picker covers both.
+ */
+function autoEssence(current: Essence | "", themes: Theme[]): Essence | "" {
+  if (current !== "" || themes.length < STARTING_THEMES) return current;
+  const candidates = essenceCandidates(themes);
+  return candidates.length === 1 ? candidates[0] : current;
+}
+
 export function reduce(character: Character, action: CharacterAction): Character {
   const { loadout } = character;
 
@@ -174,11 +187,13 @@ export function reduce(character: Character, action: CharacterAction): Character
       return inTheme(character, action.themeId, (theme) =>
         markTrack(theme, action.track, action.index),
       );
-    case "addTheme":
+    case "addTheme": {
       // No-op past the cap: the button hides at STARTING_THEMES, but this
       // guards a dispatch that outraces the re-render (e.g. a double click).
       if (character.themes.length >= STARTING_THEMES) return character;
-      return { ...character, themes: [...character.themes, newTheme(action.id, character.essence)] };
+      const themes = [...character.themes, newTheme(action.id, character.essence)];
+      return { ...character, themes, essence: autoEssence(character.essence, themes) };
+    }
     case "loseTheme":
       return loseTheme(character, action.themeId, {
         id: action.id,
