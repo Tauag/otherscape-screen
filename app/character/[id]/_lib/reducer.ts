@@ -103,15 +103,20 @@ const withLoadout = (character: Character, loadout: Partial<Loadout>): Character
 });
 
 /**
- * Once the mix narrows to exactly one Essence and the character
- * holds all 4 starting themes, it assigns itself. A tied mix (Avatar or
- * Conduit) or an Essence the player already chose is left alone; the sheet
- * menu's Desired Essence picker covers both.
+ * Tracks the theme mix until the player picks (PRD 7.5: "Essence changes
+ * when the character replaces themes... Re-suggest when the theme mix
+ * changes."). Once the mix narrows to exactly one Essence and the character
+ * holds all 4 starting themes, it assigns itself; a tied or short mix reads
+ * as unassigned. `setEssence` is the only thing that freezes it.
  */
-function autoEssence(current: Essence | "", themes: Theme[]): Essence | "" {
-  if (current !== "" || themes.length < STARTING_THEMES) return current;
+function autoEssence(
+  character: Pick<Character, "essence" | "essenceChosen">,
+  themes: Theme[],
+): Essence | "" {
+  if (character.essenceChosen) return character.essence;
+  if (themes.length < STARTING_THEMES) return "";
   const candidates = essenceCandidates(themes);
-  return candidates.length === 1 ? candidates[0] : current;
+  return candidates.length === 1 ? candidates[0] : "";
 }
 
 export function reduce(character: Character, action: CharacterAction): Character {
@@ -124,8 +129,13 @@ export function reduce(character: Character, action: CharacterAction): Character
       return { ...character, name: action.name };
     case "setPlayerName":
       return { ...character, playerName: action.playerName };
-    case "setThemeType":
-      return inTheme(character, action.themeId, (theme) => ({ ...theme, type: action.themeType }));
+    case "setThemeType": {
+      const next = inTheme(character, action.themeId, (theme) => ({
+        ...theme,
+        type: action.themeType,
+      }));
+      return { ...next, essence: autoEssence(next, next.themes) };
+    }
     case "setThemebook":
       return inTheme(character, action.themeId, (theme) => ({
         ...theme,
@@ -181,16 +191,23 @@ export function reduce(character: Character, action: CharacterAction): Character
       // guards a dispatch that outraces the re-render (e.g. a double click).
       if (character.themes.length >= STARTING_THEMES) return character;
       const themes = [...character.themes, newTheme(action.id)];
-      return { ...character, themes, essence: autoEssence(character.essence, themes) };
+      return { ...character, themes, essence: autoEssence(character, themes) };
     }
-    case "loseTheme":
-      return loseTheme(character, action.themeId, {
+    case "loseTheme": {
+      const next = loseTheme(character, action.themeId, {
         id: action.id,
         lostAt: action.lostAt,
         reason: action.reason,
       });
-    case "setEssence":
-      return { ...character, essence: action.essence };
+      return { ...next, essence: autoEssence(next, next.themes) };
+    }
+    case "setEssence": {
+      // Picking a candidate the mix already suggests (including breaking a
+      // tie) isn't an override, so it stays live; only a pick outside the
+      // suggestion freezes essenceChosen.
+      const isSuggested = essenceCandidates(character.themes).includes(action.essence);
+      return { ...character, essence: action.essence, essenceChosen: !isSuggested };
+    }
     case "setEssenceSpecial":
       return { ...character, essenceSpecial: action.essenceSpecial };
     case "toggleLoadoutTheme":

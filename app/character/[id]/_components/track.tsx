@@ -176,7 +176,7 @@ function UpgradeDialog({
                 Add theme special
               </Button>
             )}
-            <Dialog.Close className={`${QUIET} self-start`}>Not now</Dialog.Close>
+            <Dialog.Close className={`${QUIET} self-start`}>Cancel</Dialog.Close>
           </div>
         </Dialog.Popup>
       </Dialog.Portal>

@@ -10,6 +10,7 @@ export const sample: Character = {
   schema_version: CURRENT_SCHEMA_VERSION,
   name: "Kira Vance",
   essence: "Nexus",
+  essenceChosen: true,
   playerName: "Ash",
   appearance: "Short grey coat, one chrome eye she never bothers to colour-match.",
   background:

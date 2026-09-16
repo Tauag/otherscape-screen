@@ -38,10 +38,10 @@ export function SheetMenu() {
           <Menu.Positioner side="bottom" align="end" sideOffset={8} className="outline-none">
             <Menu.Popup className={MENU_POPUP}>
               <Menu.Item className={MENU_ITEM} onClick={() => setGhostsOpen(true)}>
-                Ghost memories
+                Ghost Memories
               </Menu.Item>
               <Menu.Item className={MENU_ITEM} onClick={() => setEssenceOpen(true)}>
-                Desired essence
+                Override Essence
               </Menu.Item>
             </Menu.Popup>
           </Menu.Positioner>
@@ -52,7 +52,7 @@ export function SheetMenu() {
         <Dialog.Portal>
           <Dialog.Backdrop className={DIALOG_BACKDROP} />
           <Dialog.Popup className={`${DIALOG_POPUP} max-h-[85vh] overflow-y-auto`}>
-            <Dialog.Title className={HEADING}>Ghost memories</Dialog.Title>
+            <Dialog.Title className={HEADING}>Ghost Memories</Dialog.Title>
             <GhostMemories />
             <Dialog.Close className={`${QUIET} mt-4 self-start`}>Close</Dialog.Close>
           </Dialog.Popup>
@@ -63,7 +63,7 @@ export function SheetMenu() {
         <Dialog.Portal>
           <Dialog.Backdrop className={DIALOG_BACKDROP} />
           <Dialog.Popup className={`${DIALOG_POPUP} max-h-[85vh] overflow-y-auto`}>
-            <Dialog.Title className={HEADING}>Desired essence</Dialog.Title>
+            <Dialog.Title className={HEADING}>Override Essence</Dialog.Title>
             <EssencePicker />
             <Dialog.Close className={`${QUIET} mt-4 self-start`}>Done</Dialog.Close>
           </Dialog.Popup>

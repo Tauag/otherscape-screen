@@ -54,3 +54,121 @@ test("auto-assignment never overrides a choice the player already made", () => {
   }
   assert.equal(character.essence, "Nexus");
 });
+
+test("essence keeps tracking a theme type change until the player picks", () => {
+  let character = newCharacter();
+  for (let i = 0; i < STARTING_THEMES; i++) {
+    character = reduce(character, { type: "addTheme", id: `theme-${i}` });
+  }
+  assert.equal(character.essence, "Real"); // all-self, auto-assigned
+
+  character = reduce(character, {
+    type: "setThemeType",
+    themeId: "theme-0",
+    themeType: "mythos",
+  });
+  assert.equal(character.essence, "Spiritualist"); // mythos+self, still unchosen
+
+  // Every theme mythos: a tie the app can't resolve on its own.
+  for (let i = 1; i < STARTING_THEMES; i++) {
+    character = reduce(character, {
+      type: "setThemeType",
+      themeId: `theme-${i}`,
+      themeType: "mythos",
+    });
+  }
+  assert.equal(character.essence, "");
+});
+
+test("losing a theme drops the auto-assigned essence, gaining one back reassigns it", () => {
+  let character = newCharacter();
+  for (let i = 0; i < STARTING_THEMES; i++) {
+    character = reduce(character, { type: "addTheme", id: `theme-${i}` });
+  }
+  assert.equal(character.essence, "Real");
+
+  character = reduce(character, {
+    type: "loseTheme",
+    themeId: "theme-0",
+    id: "gm-1",
+    lostAt: "2026-09-16T00:00:00.000Z",
+    reason: "test",
+  });
+  assert.equal(character.themes.length, STARTING_THEMES - 1);
+  assert.equal(character.essence, "");
+
+  character = reduce(character, { type: "addTheme", id: "theme-replacement" });
+  assert.equal(character.essence, "Real");
+});
+
+test("a player's chosen essence survives theme edits that would otherwise re-suggest", () => {
+  let character = newCharacter();
+  for (let i = 0; i < STARTING_THEMES; i++) {
+    character = reduce(character, { type: "addTheme", id: `theme-${i}` });
+  }
+  character = reduce(character, { type: "setEssence", essence: "Nexus" });
+
+  for (let i = 0; i < STARTING_THEMES; i++) {
+    character = reduce(character, {
+      type: "setThemeType",
+      themeId: `theme-${i}`,
+      themeType: "mythos",
+    });
+  }
+  assert.equal(character.essence, "Nexus");
+
+  character = reduce(character, {
+    type: "loseTheme",
+    themeId: "theme-0",
+    id: "gm-1",
+    lostAt: "2026-09-16T00:00:00.000Z",
+    reason: "test",
+  });
+  assert.equal(character.essence, "Nexus");
+});
+
+test("breaking a Mythos-only tie picks a candidate without freezing it", () => {
+  let character = newCharacter();
+  for (let i = 0; i < STARTING_THEMES; i++) {
+    character = reduce(character, { type: "addTheme", id: `theme-${i}` });
+    character = reduce(character, {
+      type: "setThemeType",
+      themeId: `theme-${i}`,
+      themeType: "mythos",
+    });
+  }
+  assert.equal(character.essence, ""); // tied: Avatar or Conduit, neither auto-picked
+
+  character = reduce(character, { type: "setEssence", essence: "Avatar" });
+  assert.equal(character.essence, "Avatar");
+  assert.equal(character.essenceChosen, false);
+
+  // Breaking the tie away from Avatar re-suggests instead of overriding.
+  character = reduce(character, {
+    type: "setThemeType",
+    themeId: "theme-0",
+    themeType: "self",
+  });
+  assert.equal(character.essence, "Spiritualist");
+});
+
+test("picking an Essence the mix does not suggest freezes it", () => {
+  let character = newCharacter();
+  for (let i = 0; i < STARTING_THEMES; i++) {
+    character = reduce(character, { type: "addTheme", id: `theme-${i}` });
+    character = reduce(character, {
+      type: "setThemeType",
+      themeId: `theme-${i}`,
+      themeType: "mythos",
+    });
+  }
+  character = reduce(character, { type: "setEssence", essence: "Nexus" });
+  assert.equal(character.essenceChosen, true);
+
+  character = reduce(character, {
+    type: "setThemeType",
+    themeId: "theme-0",
+    themeType: "self",
+  });
+  assert.equal(character.essence, "Nexus"); // frozen, mix now suggests Spiritualist instead
+});

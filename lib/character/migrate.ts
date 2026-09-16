@@ -1,15 +1,22 @@
 import type { Character } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 1;
+export const CURRENT_SCHEMA_VERSION = 2;
 
 type Doc = Record<string, unknown>;
 
 /** A step upgrades a version-n document to version n+1. */
 type Step = (doc: Doc) => Doc;
 
-// Adding version 2 is one entry here plus a bump of CURRENT_SCHEMA_VERSION.
+// Adding a version is one entry here plus a bump of CURRENT_SCHEMA_VERSION.
 // migrate sets schema_version itself, so a step only reshapes fields.
 const steps = new Map<number, Step>();
+
+// v1 predates essenceChosen: reducer.ts's autoEssence overwrote `essence`
+// once, on whichever addTheme first reached 4 themes, then never touched it
+// again - the exact staleness essenceChosen exists to fix. A v1 document's
+// existing value is therefore never a real choice, only the old code's one-shot
+// guess, so it starts unchosen and goes back to tracking the theme mix live.
+steps.set(1, (doc) => ({ ...doc, essenceChosen: false }));
 
 /**
  * Upgrade a document read from the database. This is a trust boundary, so it

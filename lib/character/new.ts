@@ -8,6 +8,7 @@ export function newCharacter(): Character {
     schema_version: CURRENT_SCHEMA_VERSION,
     name: "",
     essence: "",
+    essenceChosen: false,
     playerName: "",
     appearance: "",
     background: "",

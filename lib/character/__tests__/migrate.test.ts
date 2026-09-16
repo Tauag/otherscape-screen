@@ -26,3 +26,13 @@ test("a document newer than this client is rejected, and the error names the ver
   const future = CURRENT_SCHEMA_VERSION + 1;
   assert.throws(() => migrate({ ...sample, schema_version: future }), new RegExp(String(future)));
 });
+
+test("v1 -> v2 starts essenceChosen false, even with an essence already set", () => {
+  const withEssence: Record<string, unknown> = { ...sample, schema_version: 1 };
+  delete withEssence.essenceChosen;
+  assert.deepEqual(migrate(withEssence), { ...sample, essenceChosen: false });
+
+  const blank: Record<string, unknown> = { ...sample, schema_version: 1, essence: "" };
+  delete blank.essenceChosen;
+  assert.deepEqual(migrate(blank), { ...sample, essence: "", essenceChosen: false });
+});

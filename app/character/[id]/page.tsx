@@ -6,6 +6,7 @@ import { use } from "react";
 import { Chip } from "@/app/character/[id]/_components/chip";
 import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
 import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
+import { QUIET } from "@/app/character/[id]/_components/styles";
 import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
@@ -13,6 +14,7 @@ import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
 import { STARTING_THEMES } from "@/lib/rules/constants";
+import { essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
 import { BackLink } from "@/components/back-link";
 
@@ -20,12 +22,37 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
   const { id } = use(params);
   const { character, dispatch } = useCharacter();
   const warning = themeCountWarning(character.themes.length);
+  const { candidates: essenceCandidates, state: essenceState } = essenceSuggestion(
+    character.themes,
+    character.essence,
+  );
+  const essenceTied = essenceState === "unchosen" && essenceCandidates.length > 1;
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3">
       <BackLink href="/" text="Characters" />
 
       {warning && <p className="font-sans text-sm text-negative-text">{warning}</p>}
+
+      {essenceTied && (
+        <div className="flex flex-col gap-2 rounded-md border border-border bg-surface p-3">
+          <p className="font-sans text-sm text-dim">
+            Your themes tie between {essenceCandidates[0]} and {essenceCandidates[1]}. Pick one.
+          </p>
+          <div className="flex gap-2">
+            {essenceCandidates.map((essence) => (
+              <Button
+                key={essence}
+                type="button"
+                onClick={() => dispatch({ type: "setEssence", essence })}
+                className={QUIET}
+              >
+                {essence}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {character.themes.length === 0 ? (
         <p className="font-sans text-sm text-dim">This character has no themes yet.</p>

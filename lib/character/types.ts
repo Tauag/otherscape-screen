@@ -131,6 +131,8 @@ export type Character = {
   name: string;
   /** Top-level: the `characters.essence` generated column reads `data->>'essence'`. Empty until chosen. */
   essence: Essence | "";
+  /** False while `essence` is the app's own derivation, so it keeps tracking the theme mix. True once the player picks via `setEssence`, which freezes it. */
+  essenceChosen: boolean;
   playerName: string;
   appearance: string;
   background: string;
