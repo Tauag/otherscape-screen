@@ -1,6 +1,9 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
+import { Input } from "@base-ui/react/input";
+import { Toggle } from "@base-ui/react/toggle";
 import { useEffect, useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { LoadoutTag, LoadoutTagKind, Theme, ThemeType } from "@/lib/character/types";
@@ -66,15 +69,14 @@ export default function LoadoutPage() {
           <ul className="flex flex-wrap gap-2 pt-2">
             {character.themes.map((theme) => (
               <li key={theme.id}>
-                <button
-                  type="button"
+                <Toggle
                   data-type={theme.type}
-                  aria-pressed={loadout.themeIds.includes(theme.id)}
-                  onClick={() => dispatch({ type: "toggleLoadoutTheme", themeId: theme.id })}
+                  pressed={loadout.themeIds.includes(theme.id)}
+                  onPressedChange={() => dispatch({ type: "toggleLoadoutTheme", themeId: theme.id })}
                   className={`${BUTTON} text-dim aria-pressed:border-[var(--hue)] aria-pressed:text-[var(--hue-text)]`}
                 >
                   {themeName(theme)}
-                </button>
+                </Toggle>
               </li>
             ))}
           </ul>
@@ -144,9 +146,9 @@ export default function LoadoutPage() {
         </div>
         <p className="font-sans text-sm text-dim">Mark a point when you use a loadout flaw.</p>
         {loadout.upgrade === UPGRADE_TRACK_LENGTH && (
-          <button type="button" onClick={() => setOpen(true)} className={BUTTON}>
+          <Button type="button" onClick={() => setOpen(true)} className={BUTTON}>
             Take the Upgrade
-          </button>
+          </Button>
         )}
       </section>
 
@@ -162,20 +164,20 @@ export default function LoadoutPage() {
             </p>
 
             <div className="mt-4 flex flex-col gap-2">
-              <button
+              <Button
                 type="button"
                 onClick={() => take("power")}
                 className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
               >
                 1 more available Power
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => take("special")}
                 className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
               >
                 A loadout special
-              </button>
+              </Button>
             </div>
           </Dialog.Popup>
         </Dialog.Portal>
@@ -218,7 +220,7 @@ function TagSet({
 
       <div className="flex flex-wrap gap-2">
         {kinds.map((kind) => (
-          <button
+          <Button
             key={kind}
             type="button"
             onClick={() =>
@@ -227,7 +229,7 @@ function TagSet({
             className={`${BUTTON} text-dim`}
           >
             + {ADD[kind]}
-          </button>
+          </Button>
         ))}
       </div>
     </section>
@@ -246,7 +248,7 @@ function Row({ tag }: { tag: LoadoutTag }) {
         <span className="font-mono text-[10px] text-[var(--hue,var(--color-dim))]">
           {KIND[tag.kind]}
         </span>
-        <input
+        <Input
           type="text"
           value={tag.text}
           onChange={(event) =>
@@ -256,14 +258,14 @@ function Row({ tag }: { tag: LoadoutTag }) {
         />
       </label>
 
-      <button
+      <Button
         type="button"
         onClick={() => dispatch({ type: "removeLoadoutTag", id: tag.id })}
         className="grid size-11 shrink-0 place-items-center text-dim"
       >
         <span aria-hidden>×</span>
         <span className="sr-only">{`Remove ${KIND[tag.kind].toLowerCase()} ${tag.text}`}</span>
-      </button>
+      </Button>
     </li>
   );
 }

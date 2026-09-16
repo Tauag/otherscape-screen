@@ -1,3 +1,4 @@
+import { Button } from "@base-ui/react/button";
 import type { Metadata } from "next";
 import { signInWithGoogle } from "@/lib/actions";
 
@@ -12,12 +13,12 @@ export default function LoginPage() {
       </div>
 
       <form action={signInWithGoogle} className="w-full max-w-xs">
-        <button
+        <Button
           type="submit"
           className="h-14 w-full rounded-[5px] bg-primary font-display text-base font-bold tracking-[0.12em] text-bg uppercase shadow-[0_0_30px_rgba(255,46,136,0.3)]"
         >
           Continue with Google
-        </button>
+        </Button>
       </form>
     </main>
   );

@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
+import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import {
@@ -51,16 +53,16 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited, su
             }}
           >
             <input type="hidden" name="id" value={id} />
-            <input
+            <Input
               autoFocus
               name="name"
               defaultValue={name}
               aria-label="Character name"
               className="min-h-11 w-full rounded-sm border border-border bg-bg px-2 font-display text-[19px] font-bold tracking-[0.05em]"
             />
-            <button type="submit" className={action}>
+            <Button type="submit" className={action}>
               Save
-            </button>
+            </Button>
           </form>
         ) : (
           <h2
@@ -124,30 +126,30 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited, su
         </p>
 
         <div className="flex items-center">
-          <button
+          <Button
             type="button"
             onClick={() => setRenaming(true)}
             aria-label={`Rename ${label}`}
             className={action}
           >
             Rename
-          </button>
+          </Button>
 
           <form action={copy}>
             <input type="hidden" name="id" value={id} />
-            <button type="submit" aria-label={`Duplicate ${label}`} className={action}>
+            <Button type="submit" aria-label={`Duplicate ${label}`} className={action}>
               Copy
-            </button>
+            </Button>
           </form>
 
-          <button
+          <Button
             type="button"
             onClick={() => setDeleteOpen(true)}
             aria-label={`Delete ${label}`}
             className={action}
           >
             Delete
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -176,12 +178,12 @@ export function CharacterCard({ id, name, essence, shared, updatedAt, edited, su
 
               <form action={remove} onSubmit={() => setDeleteOpen(false)}>
                 <input type="hidden" name="id" value={id} />
-                <button
+                <Button
                   type="submit"
                   className="inline-flex min-h-11 items-center rounded-sm bg-negative px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
                 >
                   Delete
-                </button>
+                </Button>
               </form>
             </div>
           </Dialog.Popup>
@@ -201,7 +203,7 @@ export function NewCharacterBar() {
           filter: "drop-shadow(0 0 14px color-mix(in srgb, var(--color-primary) 35%, transparent))",
         }}
       >
-        <button
+        <Button
           type="submit"
           disabled={pending}
           className="flex h-14 w-full items-center justify-center gap-2 rounded-[5px] bg-primary font-display text-base font-bold tracking-[0.12em] text-bg uppercase [clip-path:polygon(0_0,100%_0,100%_72%,95%_100%,0_100%)]"
@@ -210,7 +212,7 @@ export function NewCharacterBar() {
             +
           </span>
           New character
-        </button>
+        </Button>
       </div>
 
       <p

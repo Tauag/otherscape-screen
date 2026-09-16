@@ -1,5 +1,6 @@
 "use client";
 
+import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useCharacter } from "../_hooks/use-character";
 import { initials } from "../_lib/initials";
@@ -25,7 +26,7 @@ export function AppBar() {
       <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
         <label className="-my-[14px] flex w-full items-center py-[14px]">
           <span className="sr-only">Name</span>
-          <input
+          <Input
             value={character.name}
             onChange={(event) => dispatch({ type: "rename", name: event.target.value })}
             placeholder="Unnamed"

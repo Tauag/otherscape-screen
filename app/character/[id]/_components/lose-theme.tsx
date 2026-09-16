@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
@@ -66,9 +67,9 @@ export function LoseTheme({
             </label>
 
             <div className="flex flex-wrap gap-2">
-              <button type="submit" className={PRIMARY}>
+              <Button type="submit" className={PRIMARY}>
                 Lose the theme
-              </button>
+              </Button>
               <Dialog.Close className={QUIET}>Cancel</Dialog.Close>
             </div>
           </form>

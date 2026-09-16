@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
+import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
@@ -94,7 +96,7 @@ export function BurnButton({
             <form onSubmit={burn} className="mt-4 flex flex-wrap items-end gap-2">
               <label className="flex flex-col gap-1">
                 <span className={LABEL}>Power</span>
-                <input
+                <Input
                   type="number"
                   min={1}
                   step={1}
@@ -104,9 +106,9 @@ export function BurnButton({
                   className="min-h-11 w-20 rounded-sm border border-border bg-bg px-3 font-mono text-base"
                 />
               </label>
-              <button type="submit" className={PRIMARY}>
+              <Button type="submit" className={PRIMARY}>
                 Burn
-              </button>
+              </Button>
               <Dialog.Close className={QUIET}>Cancel</Dialog.Close>
             </form>
           </Dialog.Popup>

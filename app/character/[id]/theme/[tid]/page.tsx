@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use } from "react";
@@ -130,7 +132,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         </ul>
         {/* A new tag starts on question A. Its letter is the way in to the
             question picker, where the player reads the ten and chooses. */}
-        <button
+        <Button
           type="button"
           onClick={() =>
             dispatch({
@@ -143,7 +145,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           className={ADD}
         >
           Add power tag
-        </button>
+        </Button>
       </section>
 
       <section className="flex flex-col gap-2">
@@ -161,7 +163,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
             />
           ))}
         </ul>
-        <button
+        <Button
           type="button"
           onClick={() =>
             dispatch({
@@ -174,12 +176,12 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           className={ADD_WEAKNESS}
         >
           Add weakness tag
-        </button>
+        </Button>
       </section>
 
       <label className="flex flex-col gap-1">
         <span className={LABEL}>{themeLine(theme.type)}</span>
-        <input
+        <Input
           type="text"
           value={theme.quote}
           onChange={(event) =>

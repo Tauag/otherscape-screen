@@ -1,5 +1,6 @@
 "use client";
 
+import { Toggle } from "@base-ui/react/toggle";
 import { use } from "react";
 import {
   MissingTheme,
@@ -64,17 +65,16 @@ export default function SpecialsPicker({
 
               return (
                 <li key={index}>
-                  <button
-                    type="button"
-                    aria-pressed={theme.specials.includes(stored)}
-                    onClick={() => toggle(stored)}
+                  <Toggle
+                    pressed={theme.specials.includes(stored)}
+                    onPressedChange={() => toggle(stored)}
                     className={ROW}
                   >
                     <span className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
                       {special.name}
                     </span>
                     <span className={ROW_TEXT}>{special.text}</span>
-                  </button>
+                  </Toggle>
                 </li>
               );
             })}

@@ -1,3 +1,4 @@
+import { Button } from "@base-ui/react/button";
 import { redirect } from "next/navigation";
 import { signOut } from "@/lib/actions";
 import { CharacterCard, NewCharacterBar } from "@/app/_components/roster-controls";
@@ -44,7 +45,7 @@ export default async function RosterPage() {
         </h1>
 
         <form action={signOut}>
-          <button
+          <Button
             type="submit"
             className="flex min-h-11 items-center gap-2 rounded-[20px] border border-border py-1 pr-3 pl-1.5"
           >
@@ -70,7 +71,7 @@ export default async function RosterPage() {
               <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" />
             </svg>
             <span className="sr-only">Sign out</span>
-          </button>
+          </Button>
         </form>
       </header>
 

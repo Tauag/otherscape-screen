@@ -1,3 +1,5 @@
+import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
@@ -72,7 +74,7 @@ export function TagRow({
           {label}
         </Link>
 
-        <input
+        <Input
           type="text"
           value={tag.text}
           onChange={(event) => setText(event.target.value)}
@@ -90,7 +92,7 @@ export function TagRow({
       </div>
 
       <div className="flex flex-wrap items-center gap-1">
-        <button
+        <Button
           type="button"
           disabled={index === 0}
           onClick={(event) => move(event, "up")}
@@ -98,8 +100,8 @@ export function TagRow({
           className={`${ICON} ml-auto`}
         >
           ↑
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           disabled={index === count - 1}
           onClick={(event) => move(event, "down")}
@@ -107,8 +109,8 @@ export function TagRow({
           className={ICON}
         >
           ↓
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() =>
             dispatch(
@@ -121,7 +123,7 @@ export function TagRow({
           className={ICON}
         >
           ✕
-        </button>
+        </Button>
       </div>
     </li>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
+import { Toggle } from "@base-ui/react/toggle";
 import { use } from "react";
 import { LABEL } from "@/app/character/[id]/_components/styles";
 import {
@@ -79,7 +81,7 @@ export default function QuestionPicker({
       <ul className="flex flex-col gap-2">
         {rows.map((row) => (
           <li key={row.label}>
-            <button type="button" onClick={() => pick(row.action)} className={ROW}>
+            <Button type="button" onClick={() => pick(row.action)} className={ROW}>
               <span className="flex items-baseline gap-2">
                 <span className="font-mono text-[13px] text-[var(--hue)]">{row.label}</span>
                 {row.count > 0 && (
@@ -89,7 +91,7 @@ export default function QuestionPicker({
                 )}
               </span>
               <span className={ROW_TEXT}>{row.text}</span>
-            </button>
+            </Button>
           </li>
         ))}
       </ul>
@@ -108,10 +110,9 @@ export default function QuestionPicker({
           <ul className="flex flex-col gap-2">
             {pack.themebooks.map((candidate) => (
               <li key={candidate.id}>
-                <button
-                  type="button"
-                  aria-pressed={current?.id === candidate.id}
-                  onClick={() =>
+                <Toggle
+                  pressed={current?.id === candidate.id}
+                  onPressedChange={() =>
                     dispatch({
                       type: "editPowerTag",
                       themeId: theme.id,
@@ -125,7 +126,7 @@ export default function QuestionPicker({
                     {candidate.name}
                   </span>
                   <span className={ROW_TEXT}>{candidate.concept}</span>
-                </button>
+                </Toggle>
               </li>
             ))}
           </ul>

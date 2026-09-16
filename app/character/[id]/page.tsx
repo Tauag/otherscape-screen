@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import Link from "next/link";
 import { use } from "react";
 import { Chip } from "@/app/character/[id]/_components/chip";
@@ -35,13 +36,13 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
       )}
 
       {character.themes.length < STARTING_THEMES && (
-        <button
+        <Button
           type="button"
           onClick={() => dispatch({ type: "addTheme", id: crypto.randomUUID() })}
           className="inline-flex min-h-11 items-center self-start rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
         >
           Add a theme
-        </button>
+        </Button>
       )}
     </main>
   );

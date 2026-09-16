@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
+import { Toggle } from "@base-ui/react/toggle";
 import { use, useState } from "react";
 import { LABEL } from "@/app/character/[id]/_components/styles";
 import {
@@ -37,17 +40,16 @@ export default function ThemebookPicker({
       <ul className="flex flex-col gap-2">
         {themebooksOfType(pack, theme.type).map((book) => (
           <li key={book.id}>
-            <button
-              type="button"
-              aria-pressed={chosen?.id === book.id}
-              onClick={() => set(book.name)}
+            <Toggle
+              pressed={chosen?.id === book.id}
+              onPressedChange={() => set(book.name)}
               className={ROW}
             >
               <span className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
                 {book.name}
               </span>
               <span className={ROW_TEXT}>{book.concept}</span>
-            </button>
+            </Toggle>
           </li>
         ))}
       </ul>
@@ -63,7 +65,7 @@ export default function ThemebookPicker({
       >
         <label className="flex flex-col gap-1">
           <span className={LABEL}>Homebrew themebook</span>
-          <input
+          <Input
             type="text"
             value={homebrew}
             onChange={(event) => setHomebrew(event.target.value)}
@@ -71,12 +73,12 @@ export default function ThemebookPicker({
             className="min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base"
           />
         </label>
-        <button
+        <Button
           type="submit"
           className="mt-1 inline-flex min-h-11 items-center self-start rounded-sm border border-[var(--hue)] px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase"
         >
           Use this name
-        </button>
+        </Button>
       </form>
     </PickerFrame>
   );

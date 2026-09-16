@@ -1,3 +1,4 @@
+import { Button } from "@base-ui/react/button";
 import type { Character } from "@/lib/character/types";
 
 type Props = {
@@ -37,20 +38,20 @@ export function Side({
       </details>
 
       <div className="mt-2 flex items-center gap-2">
-        <button
+        <Button
           type="button"
           onClick={onKeep}
           className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
         >
           {action}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => void navigator.clipboard?.writeText(json)}
           className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
         >
           Copy
-        </button>
+        </Button>
       </div>
     </section>
   );

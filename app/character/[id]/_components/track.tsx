@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
+import { Input } from "@base-ui/react/input";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { TrackName } from "@/lib/character/theme";
@@ -73,7 +75,7 @@ export function Track({
           </p>
         )}
 
-        <button
+        <Button
           type="button"
           onClick={mark}
           aria-label={`${name} track, ${marked} of ${length} marked. Click to mark one.`}
@@ -97,7 +99,7 @@ export function Track({
               />
             );
           })}
-        </button>
+        </Button>
       </div>
 
       {track === "upgrade" && (
@@ -147,12 +149,12 @@ function UpgradeDialog({
           </p>
 
           <div className="mt-4 flex flex-col gap-3">
-            <button type="button" onClick={takeTag} className={PRIMARY}>
+            <Button type="button" onClick={takeTag} className={PRIMARY}>
               New power tag
-            </button>
+            </Button>
 
             <form onSubmit={takeSpecial} className="flex flex-wrap items-center gap-2">
-              <input
+              <Input
                 type="text"
                 required
                 value={special}
@@ -161,9 +163,9 @@ function UpgradeDialog({
                 placeholder="A theme special, in your own words"
                 className="min-h-11 min-w-32 flex-1 rounded-sm border border-border bg-bg px-3 font-sans text-base"
               />
-              <button type="submit" className={PRIMARY}>
+              <Button type="submit" className={PRIMARY}>
                 Take special
-              </button>
+              </Button>
             </form>
 
             <Dialog.Close className={`${QUIET} self-start`}>Not now</Dialog.Close>
