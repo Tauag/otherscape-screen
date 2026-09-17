@@ -281,7 +281,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           onChange={(event) =>
             dispatch({ type: "setThemeQuote", themeId: theme.id, quote: event.target.value })
           }
-          placeholder={`One line of ${themeLine(theme.type)}`}
+          placeholder={`Create your ${themeLine(theme.type)}`}
           className={FIELD}
         />
       </label>

@@ -2,6 +2,7 @@
 
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { isNascent } from "@/lib/character/theme";
 import { useCharacter } from "../_hooks/use-character";
 import { initials } from "../_lib/initials";
@@ -9,13 +10,15 @@ import { SheetMenu } from "./menu";
 
 export function AppBar() {
   const { character, dispatch } = useCharacter();
+  const { id } = useParams<{ id: string }>();
 
   return (
     <header className="sticky top-0 mx-auto flex w-full max-w-md items-center gap-[11px] border-b border-edge bg-chrome px-4 pt-[max(13px,env(safe-area-inset-top))] pb-[13px]">
-      {/* The visible box stays 36px, matching Main.dc.html. The negative
-          margin cancels the padding so the 44px hit target does not push the
-          name column over. */}
-      <Link href="/" aria-label="Back to your characters" className="-m-1 flex shrink-0 p-1">
+      <Link
+        href={`/character/${id}`}
+        aria-label="Back to this character"
+        className="-m-1 flex shrink-0 p-1"
+      >
         <span
           aria-hidden="true"
           className="flex size-9 items-center justify-center border border-raised bg-surface font-display text-[13px] font-bold tracking-[0.06em] text-quiet [clip-path:polygon(0_0,100%_0,100%_72%,72%_100%,0_100%)]"
