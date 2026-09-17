@@ -6,10 +6,10 @@ import { LoadoutCard } from "@/app/character/[id]/_components/loadout-card";
 import { QUIET } from "@/app/character/[id]/_components/styles";
 import { ThemeCard } from "@/app/character/[id]/_components/theme-card";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { BackLink } from "@/components/back-link";
 import { STARTING_THEMES } from "@/lib/rules/constants";
 import { essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
-import { BackLink } from "@/components/back-link";
 
 export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 	const { id } = use(params);

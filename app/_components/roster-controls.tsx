@@ -118,6 +118,7 @@ export function CharacterCard({
 					<div aria-hidden="true" className="flex gap-[3px]">
 						{summary.themes.map((theme, index) => (
 							<div
+								// biome-ignore lint/suspicious/noArrayIndexKey: no id, and type/nascent can repeat; order is server-fixed.
 								key={index}
 								data-type={theme.type ?? undefined}
 								style={theme.nascent ? { opacity: 0.28 } : undefined}

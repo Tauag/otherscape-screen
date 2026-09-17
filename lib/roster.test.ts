@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { newCharacter } from "./character/new.ts";
 import { CURRENT_SCHEMA_VERSION, migrate } from "./character/migrate.ts";
+import { newCharacter } from "./character/new.ts";
 import { relativeTime } from "./relative-time.ts";
 import { parseRosterSummary } from "./roster.ts";
 

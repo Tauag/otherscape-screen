@@ -2,14 +2,14 @@
 
 import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { PRIMARY } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { TrackName } from "@/lib/character/theme";
 import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { PRIMARY } from "@/app/character/[id]/_components/styles";
 
 const TRACKS: Record<
 	TrackName,
@@ -97,6 +97,7 @@ export function TrackPips({
 					const lit = index < marked;
 					return (
 						<span
+							// biome-ignore lint/suspicious/noArrayIndexKey: pips are a fixed-length counter with no data of their own; position is the identity.
 							key={index}
 							aria-hidden="true"
 							className={`${PIP_SIZE[size]} ${

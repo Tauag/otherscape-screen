@@ -1,11 +1,11 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
-import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import {
 	REMOVE_BUTTON,
 	SMALL_BUTTON,
 } from "@/app/character/[id]/_components/styles";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { LoadoutSet } from "@/lib/character/types";
 
 const LOAD_TOGGLE = `${SMALL_BUTTON} shrink-0 text-dim data-pressed:border-[var(--hue)] data-pressed:text-[var(--hue-text)] disabled:opacity-40`;

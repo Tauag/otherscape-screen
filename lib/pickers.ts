@@ -3,8 +3,8 @@
 
 import { POWER_LETTERS, WEAKNESS_LETTERS } from "./character/theme.ts";
 import {
-	findThemebook,
 	type ContentPack,
+	findThemebook,
 	type Question,
 	type Special,
 } from "./content/pack.ts";

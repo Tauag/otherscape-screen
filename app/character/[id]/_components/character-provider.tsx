@@ -1,6 +1,5 @@
 "use client";
 
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import {
 	createContext,
 	useCallback,
@@ -10,18 +9,19 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import {
 	parkLocal,
 	readLocal,
 	resolve,
+	type Scheduler,
 	scheduler,
 	writeLocal,
-	type Scheduler,
 } from "@/lib/character/autosave";
 import { migrate } from "@/lib/character/migrate";
 import type { Character } from "@/lib/character/types";
 import { createClient } from "@/lib/supabase/client";
-import { reduce, type CharacterAction } from "../_lib/reducer";
+import { type CharacterAction, reduce } from "../_lib/reducer";
 import { AppBar } from "./app-bar";
 import { Side } from "./conflict-side";
 

@@ -48,6 +48,7 @@ export default function LoadoutSpecialsPicker({
 					// nothing to store yet, so the slot is a line rather than a choice.
 					if (stored === "") {
 						return (
+							// biome-ignore lint/suspicious/noArrayIndexKey: an unloaded pack fills every slot with the same blank special, so index is what the label reads.
 							<li key={index} className={`${ROW} border-dashed`}>
 								<span className={ROW_TEXT}>
 									Loadout special {index + 1}. The content pack has not been
@@ -58,6 +59,7 @@ export default function LoadoutSpecialsPicker({
 					}
 
 					return (
+						// biome-ignore lint/suspicious/noArrayIndexKey: specials come from a fixed content-pack list that is never reordered.
 						<li key={index}>
 							<Toggle
 								pressed={loadout.specials.includes(stored)}

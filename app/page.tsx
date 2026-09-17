@@ -1,10 +1,10 @@
 import { Button } from "@base-ui/react/button";
 import { redirect } from "next/navigation";
-import { signOut } from "@/lib/actions";
 import {
 	CharacterCard,
 	NewCharacterBar,
 } from "@/app/_components/roster-controls";
+import { signOut } from "@/lib/actions";
 import { relativeTime } from "@/lib/relative-time";
 import { parseRosterSummary } from "@/lib/roster";
 import { createClient } from "@/lib/supabase/server";

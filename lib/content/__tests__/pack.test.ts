@@ -8,16 +8,16 @@ import {
 	WEAKNESS_LETTERS,
 } from "../fallback.ts";
 import {
+	type ContentPack,
 	FALLBACK_PACK,
-	PACK_CACHE_KEY,
 	findThemebook,
 	normalize,
+	PACK_CACHE_KEY,
+	type PackStore,
 	questionLabel,
 	readCachedPack,
 	themebooksOfType,
 	writeCachedPack,
-	type ContentPack,
-	type PackStore,
 } from "../pack.ts";
 
 function store(): PackStore & { entry: () => string | null } {

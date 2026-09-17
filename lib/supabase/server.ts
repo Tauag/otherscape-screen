@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { supabaseUrl, supabaseKey } from "@/lib/supabase/env";
+import { supabaseKey, supabaseUrl } from "@/lib/supabase/env";
 
 // For Server Components, Server Actions, and Route Handlers.
 export async function createClient() {
@@ -13,9 +13,9 @@ export async function createClient() {
 			},
 			setAll(cookiesToSet) {
 				try {
-					cookiesToSet.forEach(({ name, value, options }) =>
-						cookieStore.set(name, value, options),
-					);
+					cookiesToSet.forEach(({ name, value, options }) => {
+						cookieStore.set(name, value, options);
+					});
 				} catch {
 					// Called from a Server Component render, where cookies can't be
 					// set. Fine as long as proxy.ts is also refreshing the session.

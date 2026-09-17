@@ -88,11 +88,9 @@ export function SpecialList({
 }) {
 	return (
 		<Accordion.Root render={<ul />} className="flex flex-col gap-1.5">
-			{/* The index keys: the picker takes a special or gives it back whole,
-          and nothing reorders the list. */}
-			{specials.map((special, index) => (
+			{specials.map((special) => (
 				<SpecialCard
-					key={index}
+					key={special}
 					special={special}
 					onRemove={() => onRemove(special)}
 				/>

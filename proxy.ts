@@ -1,10 +1,10 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { type CookieOptions, createServerClient } from "@supabase/ssr";
+import { type NextRequest, NextResponse } from "next/server";
+import { supabaseKey, supabaseUrl } from "@/lib/supabase/env";
 import {
 	decideRoute,
 	isAuthCallbackPath,
 } from "@/lib/supabase/route-decision.mjs";
-import { supabaseUrl, supabaseKey } from "@/lib/supabase/env";
 
 // Next.js 16 renamed the middleware.ts convention to proxy.ts; behavior is
 // unchanged. See node_modules/next/dist/docs/.../proxy.md.
@@ -21,7 +21,9 @@ export async function proxy(request: NextRequest) {
 		cookies: {
 			getAll: () => request.cookies.getAll(),
 			setAll: (cookies) => {
-				cookies.forEach(({ name, value }) => request.cookies.set(name, value));
+				cookies.forEach(({ name, value }) => {
+					request.cookies.set(name, value);
+				});
 				cookiesToSet.push(...cookies);
 			},
 		},
@@ -51,9 +53,9 @@ export async function proxy(request: NextRequest) {
 			? NextResponse.next({ request })
 			: NextResponse.redirect(new URL(redirectPath[route], request.url));
 
-	cookiesToSet.forEach(({ name, value, options }) =>
-		response.cookies.set(name, value, options),
-	);
+	cookiesToSet.forEach(({ name, value, options }) => {
+		response.cookies.set(name, value, options);
+	});
 	return response;
 }
 

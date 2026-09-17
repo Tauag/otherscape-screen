@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { sample } from "./character/__tests__/sample.ts";
 import {
+	type ContentPack,
 	FALLBACK_PACK,
 	questionLabel,
-	type ContentPack,
 } from "./content/pack.ts";
 import {
 	answerCounts,

@@ -101,7 +101,7 @@ export function resolve(
 	local: LocalEntry | null,
 	remoteVersion: number,
 ): "local" | "remote" | "conflict" {
-	if (!local || !local.dirty) return "remote";
+	if (!local?.dirty) return "remote";
 	return local.version >= remoteVersion ? "local" : "conflict";
 }
 

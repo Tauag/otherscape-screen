@@ -1,6 +1,5 @@
 import { loseTheme } from "@/lib/character/loss";
 import { newTheme } from "@/lib/character/new";
-import { essenceCandidates } from "@/lib/rules/essence";
 import {
 	addPowerTag,
 	addWeaknessTag,
@@ -9,12 +8,12 @@ import {
 	deleteWeaknessTag,
 	editPowerTag,
 	editWeaknessTag,
+	type MoveDirection,
 	markTrack,
 	moveTag,
-	unburnTag,
-	type MoveDirection,
 	type TagKind,
 	type TrackName,
+	unburnTag,
 } from "@/lib/character/theme";
 import type {
 	Character,
@@ -47,6 +46,7 @@ import {
 	type UpgradeChoice,
 } from "@/lib/loadout-edit";
 import { STARTING_THEMES } from "@/lib/rules/constants";
+import { essenceCandidates } from "@/lib/rules/essence";
 
 export type CharacterAction =
 	| { type: "replace"; document: Character }

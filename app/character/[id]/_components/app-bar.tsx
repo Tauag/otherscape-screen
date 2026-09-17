@@ -28,6 +28,7 @@ export function AppBar() {
 			</Link>
 
 			<div className="flex min-w-0 flex-1 flex-col gap-[3px]">
+				{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label; biome can't see through the component boundary. */}
 				<label className="-my-[14px] flex w-full items-center py-[14px]">
 					<span className="sr-only">Name</span>
 					<Input

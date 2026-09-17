@@ -5,10 +5,10 @@ import { Dialog } from "@base-ui/react/dialog";
 import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
 import { useState } from "react";
-import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { LABEL, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 const ICON_BUTTON =
 	"grid size-11 shrink-0 place-items-center rounded-sm border border-border text-[var(--hue)]";
@@ -93,6 +93,7 @@ export function BurnButton({
 				cancelLabel={null}
 			>
 				<form onSubmit={burn} className="flex flex-wrap items-end gap-2">
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label; biome can't see through the component boundary. */}
 					<label className="flex flex-col gap-1">
 						<span className={LABEL}>Power</span>
 						<Input

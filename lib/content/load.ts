@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import {
+	type ContentPack,
 	FALLBACK_PACK,
 	normalize,
 	readCachedPack,
 	writeCachedPack,
-	type ContentPack,
 } from "@/lib/content/pack";
+import { createClient } from "@/lib/supabase/client";
 
 const PACK_ID = "themebooks";
 

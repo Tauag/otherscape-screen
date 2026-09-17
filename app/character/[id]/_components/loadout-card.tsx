@@ -160,8 +160,8 @@ export function LoadoutCard({
 
 					{loadout.specials.length > 0 && (
 						<ul className="flex flex-col gap-1">
-							{loadout.specials.map((special, index) => (
-								<li key={index} className="font-sans text-[13px] text-dim">
+							{loadout.specials.map((special) => (
+								<li key={special} className="font-sans text-[13px] text-dim">
 									{specialName(special)}
 								</li>
 							))}

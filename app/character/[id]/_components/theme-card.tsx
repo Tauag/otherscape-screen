@@ -121,8 +121,8 @@ export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 
 					{theme.specials.length > 0 && (
 						<ul className="flex flex-col gap-1">
-							{theme.specials.map((special, index) => (
-								<li key={index} className="font-sans text-[13px] text-dim">
+							{theme.specials.map((special) => (
+								<li key={special} className="font-sans text-[13px] text-dim">
 									{specialName(special)}
 								</li>
 							))}

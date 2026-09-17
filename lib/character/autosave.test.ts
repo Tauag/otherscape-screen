@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { mock, test } from "node:test";
-import { resolve, scheduler, type LocalEntry } from "./autosave.ts";
+import { type LocalEntry, resolve, scheduler } from "./autosave.ts";
 import { newCharacter } from "./new.ts";
 
 test("the scheduler coalesces rapid calls into one run", () => {

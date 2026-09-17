@@ -233,8 +233,8 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
 					</p>
 				)}
 
-				{theme.specials.map((special, index) => (
-					<p key={index} className="pt-1 font-sans text-[13px] text-dim">
+				{theme.specials.map((special) => (
+					<p key={special} className="pt-1 font-sans text-[13px] text-dim">
 						{special}
 					</p>
 				))}
