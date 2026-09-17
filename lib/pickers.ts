@@ -46,3 +46,9 @@ export const formatSpecial = ({ name, text }: Special): string =>
 /** The name half of a stored special, for the theme card, which has no room for the rule. */
 export const specialName = (stored: string): string =>
   stored.split(SPECIAL_SEPARATOR)[0].trim();
+
+/** The rule half of a stored special, empty when the special was saved with no text. */
+export const specialText = (stored: string): string => {
+  const index = stored.indexOf(SPECIAL_SEPARATOR);
+  return index === -1 ? "" : stored.slice(index + SPECIAL_SEPARATOR.length).trim();
+};

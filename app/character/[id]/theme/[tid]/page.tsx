@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { use } from "react";
 import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
 import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
+import { SpecialCard } from "@/app/character/[id]/_components/special-card";
 import { LABEL } from "@/app/character/[id]/_components/styles";
 import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
@@ -189,8 +190,13 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
             {/* The index keys: the picker takes a special or gives it back whole,
                 and nothing reorders the list. */}
             {theme.specials.map((special, index) => (
-              <li key={index} className="font-sans text-sm">
-                {special}
+              <li key={index}>
+                <SpecialCard
+                  special={special}
+                  onRemove={() =>
+                    dispatch({ type: "removeThemeSpecial", themeId: theme.id, special })
+                  }
+                />
               </li>
             ))}
           </ul>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { SpecialCard } from "@/app/character/[id]/_components/special-card";
 import { LABEL, PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
@@ -118,8 +119,11 @@ export default function LoadoutPage({ params }: PageProps<"/character/[id]/loado
             {/* The index keys: the picker takes a special or gives it back
                 whole, and nothing reorders the list. */}
             {loadout.specials.map((special, index) => (
-              <li key={index} className="font-sans text-sm">
-                {special}
+              <li key={index}>
+                <SpecialCard
+                  special={special}
+                  onRemove={() => dispatch({ type: "removeLoadoutSpecial", special })}
+                />
               </li>
             ))}
           </ul>

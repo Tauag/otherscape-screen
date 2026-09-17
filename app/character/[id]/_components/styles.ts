@@ -12,3 +12,5 @@ export const QUIET =
 /** QUIET's compact sibling: a chip-sized outline button for a dense list of rows. */
 export const SMALL_BUTTON =
   "inline-flex min-h-11 items-center rounded-sm border border-border px-3 font-display text-xs font-semibold tracking-[0.08em] uppercase";
+/** A row's own delete action, set off from its sibling by the left border. Add a size (`w-11` in a stretched row, `size-11` in a centered one). */
+export const REMOVE_BUTTON = "grid shrink-0 place-items-center border-l border-border text-dim";

@@ -9,6 +9,7 @@ import {
   powerQuestions,
   specialName,
   specialsOf,
+  specialText,
   weaknessQuestions,
 } from "./pickers.ts";
 
@@ -74,8 +75,11 @@ test("a stored special keeps the name — text convention the sheet already uses
   const stored = formatSpecial(special);
   assert.equal(stored, sample.themes[1].specials[0]);
   assert.equal(specialName(stored), "Borrowed Rites");
+  assert.equal(specialText(stored), special.text);
   // The pack is empty until it is uploaded, and an empty slot stores nothing.
   assert.equal(formatSpecial({ name: "", text: "" }), "");
+  // A name with no rule text stores no separator, so there is no text half to read back.
+  assert.equal(specialText("Deeply Customizable"), "");
 });
 
 test("answered letters count a question answered twice as twice", () => {

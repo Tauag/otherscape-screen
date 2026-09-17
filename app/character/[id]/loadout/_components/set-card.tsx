@@ -2,7 +2,7 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
+import { REMOVE_BUTTON, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import type { LoadoutSet } from "@/lib/character/types";
 
 const LOAD_TOGGLE = `${SMALL_BUTTON} shrink-0 text-dim data-pressed:border-[var(--hue)] data-pressed:text-[var(--hue-text)] disabled:opacity-40`;
@@ -32,9 +32,9 @@ export function SetCard({ set }: { set: LoadoutSet }) {
         <Button
           type="button"
           onClick={() => dispatch({ type: "removeLoadoutSet", setId: set.id })}
-          className="grid size-11 shrink-0 place-items-center text-dim"
+          className={`${REMOVE_BUTTON} size-11`}
         >
-          <span aria-hidden>×</span>
+          <span aria-hidden>✕</span>
           <span className="sr-only">{`Remove loadout set ${set.title}`}</span>
         </Button>
       </div>
@@ -74,9 +74,9 @@ export function SetCard({ set }: { set: LoadoutSet }) {
                 onClick={() =>
                   dispatch({ type: "removeLoadoutFeature", setId: set.id, featureId: feature.id })
                 }
-                className="grid size-11 shrink-0 place-items-center text-dim"
+                className={`${REMOVE_BUTTON} size-11`}
               >
-                <span aria-hidden>×</span>
+                <span aria-hidden>✕</span>
                 <span className="sr-only">{`Remove feature ${feature.text}`}</span>
               </Button>
             </li>
@@ -117,9 +117,9 @@ export function SetCard({ set }: { set: LoadoutSet }) {
                     weaknessId: weakness.id,
                   })
                 }
-                className="grid size-11 shrink-0 place-items-center text-dim"
+                className={`${REMOVE_BUTTON} size-11`}
               >
-                <span aria-hidden>×</span>
+                <span aria-hidden>✕</span>
                 <span className="sr-only">{`Remove weakness ${weakness.text}`}</span>
               </Button>
             </li>
