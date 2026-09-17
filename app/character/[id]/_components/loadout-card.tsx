@@ -100,7 +100,7 @@ export function LoadoutCard({
 						<>
 							{loadedSets.length > 0 && (
 								<div className="flex flex-col gap-3">
-									{loadedSets.map((set, index) => {
+									{loadedSets.map((set) => {
 										const title = set.title.trim();
 										const features = set.features.filter(
 											(feature) => feature.loaded,
@@ -108,9 +108,7 @@ export function LoadoutCard({
 										return (
 											<div
 												key={set.id}
-												className={`flex flex-col gap-1.5 border-l-2 border-[var(--hue)]/40 pl-2.5 ${
-													index > 0 ? "border-t border-t-hairline pt-3" : ""
-												}`}
+												className="flex flex-col gap-1.5 border-l-2 border-[var(--hue)]/40 pl-2.5"
 											>
 												<h3
 													className={`flex items-center gap-1.5 font-display text-[17px] leading-tight font-bold tracking-[0.045em] uppercase ${
