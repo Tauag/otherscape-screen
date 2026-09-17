@@ -85,60 +85,23 @@ run a real session from a phone before starting S8.
 ## S4.5 Design realignment — done
 
 ### T58 Realign the built screens with the artboards - done
-
 ### T59 Fix the loadout page to align with game rules - done
 
 ---
 
-## S5 Content pack
+## S5 Content pack - done
 
 ### T33 Fallback content — done
-`lib/content/fallback.ts` holds the 14 themebook names, their types, and the
-question letters. Every text slot renders empty, and a tag editor shows
-"power tag question B" over a blank field.
-**Done when:** the app runs with no content pack row and no screen breaks.
-**Refs:** sysdesign 6
-
 ### T34 Load and cache the pack — done
-Fetch the `themebooks` row once and cache it in `localStorage`, keyed by
-`updated_at`. A refilled pack changes the key and every device refetches.
-**Done when:** a second page load makes no pack request, and changing the row
-forces one.
-**Depends on:** T33, T05
-**Refs:** sysdesign 6
-
 ### T35 Upload script
-`scripts/upload-pack.ts` writes `content/themebooks.json` into the row, using the
-service role key from the local environment. The file stays out of git.
-**Done when:** running the script fills every slot in the app.
-**Depends on:** T04
-**Refs:** sysdesign 6
 
 ---
 
-## S6 Creation
+## S6 Creation - do not do
 
 ### T36 Guided creation flow
-`/character/[id]/create`, ten steps in the book's order. Every step saves, and a
-half-built character reopens where the player left it. An experienced player skips
-the flow and edits a blank sheet.
-**Done when:** a new player builds a character with no rulebook open for the steps.
-**Depends on:** T31, T32, T34
-**Refs:** PRD 7.1, design.md Create
-
 ### T37 Readiness check
-Show `readiness` output before the first session, and on the desktop sheet. Report
-what is missing. Never block play.
-**Done when:** a half-built character lists its gaps as sentences.
-**Depends on:** T20, T36
-**Refs:** PRD 7.1, design.md 4
-
 ### T38 Crew relationships
-Add, edit, and delete a crew member and their relationship tag. Offer the three
-scenarios from the chosen themebook and the relationship tag each suggests.
-**Done when:** a relationship saves with the scenario that suggested it.
-**Depends on:** T34
-**Refs:** PRD 6, PRD 7.2
 
 ---
 
