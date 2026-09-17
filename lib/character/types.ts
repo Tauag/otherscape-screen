@@ -144,6 +144,26 @@ export type CrewRelationship = {
 	tag: string;
 };
 
+/** Named by the type, on a normal theme; a crew theme has no type to derive it
+ *  from, so the player picks one directly. */
+export type CrewMotivation = "Identity" | "Ritual" | "Itch";
+
+/**
+ * The crew's own theme (core rules, page 75). Every character carries their
+ * copy: same power and weakness tags, Upgrade and Decay tracks, and quote line
+ * as a self/mythos/noise theme, but no type and no themebook - a crew is not
+ * built from one.
+ */
+export type CrewTheme = {
+	powerTags: PowerTag[];
+	weaknessTags: WeaknessTag[];
+	motivation: CrewMotivation;
+	quote: string;
+	specials: string[];
+	upgrade: MarkCount;
+	decay: MarkCount;
+};
+
 /** The fixed Evolution list. Veteran Specials is an x3 box, so it counts. */
 export type Evolutions = {
 	newEssenceType: boolean;
@@ -172,6 +192,7 @@ export type Character = {
 	veteranSpecials: string[];
 	evolutions: Evolutions;
 	crew: CrewRelationship[];
+	crewTheme: CrewTheme;
 	themes: Theme[];
 	loadout: Loadout;
 	ghostMemories: GhostMemory[];

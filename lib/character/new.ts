@@ -23,6 +23,15 @@ export function newCharacter(): Character {
 			totalReconstitution: false,
 		},
 		crew: [],
+		crewTheme: {
+			powerTags: [],
+			weaknessTags: [],
+			motivation: "Identity",
+			quote: "",
+			specials: [],
+			upgrade: 0,
+			decay: 0,
+		},
 		themes: [],
 		loadout: {
 			sets: [],

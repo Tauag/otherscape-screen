@@ -2,6 +2,7 @@
 
 import { Button } from "@base-ui/react/button";
 import { use } from "react";
+import { CrewCard } from "@/app/character/[id]/_components/crew-card";
 import { LoadoutCard } from "@/app/character/[id]/_components/loadout-card";
 import { QUIET } from "@/app/character/[id]/_components/styles";
 import { ThemeCard } from "@/app/character/[id]/_components/theme-card";
@@ -78,6 +79,12 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 			<LoadoutCard
 				loadout={character.loadout}
 				href={`/character/${id}/loadout`}
+			/>
+
+			<CrewCard
+				crew={character.crewTheme}
+				relationships={character.crew}
+				href={`/character/${id}/crew`}
 			/>
 		</main>
 	);

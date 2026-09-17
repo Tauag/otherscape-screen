@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 import {
+	CREW_THEME_SPECIALS_COUNT,
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
 	WEAKNESS_LETTERS,
@@ -51,6 +52,18 @@ const rawPack = () => ({
 		name: "n",
 		text: "t",
 	})),
+	crew_theme: {
+		power_tag_questions: Object.fromEntries(
+			POWER_LETTERS.map((letter) => [letter, "q"]),
+		),
+		weakness_tag_questions: Object.fromEntries(
+			WEAKNESS_LETTERS.map((letter) => [letter, "q"]),
+		),
+		specials: Array.from({ length: CREW_THEME_SPECIALS_COUNT }, () => ({
+			name: "n",
+			text: "t",
+		})),
+	},
 });
 
 /** Every themebook carries the full set of slots, whatever filled them. */
@@ -71,6 +84,15 @@ function assertShape(pack: ContentPack) {
 		assert.equal(book.specials.length, 5);
 	}
 	assert.equal(pack.loadoutSpecials.length, LOADOUT_SPECIALS_COUNT);
+	assert.deepEqual(
+		pack.crewTheme.powerQuestions.map((q) => q.letter),
+		[...POWER_LETTERS],
+	);
+	assert.deepEqual(
+		pack.crewTheme.weaknessQuestions.map((q) => q.letter),
+		[...WEAKNESS_LETTERS],
+	);
+	assert.equal(pack.crewTheme.specials.length, CREW_THEME_SPECIALS_COUNT);
 }
 
 test("the fallback holds the 14 themebooks, with every text slot empty", () => {
@@ -95,6 +117,19 @@ test("the fallback holds the 14 themebooks, with every text slot empty", () => {
 	assert.deepEqual(
 		FALLBACK_PACK.loadoutSpecials,
 		Array.from({ length: LOADOUT_SPECIALS_COUNT }, () => ({
+			name: "",
+			text: "",
+		})),
+	);
+	for (const question of [
+		...FALLBACK_PACK.crewTheme.powerQuestions,
+		...FALLBACK_PACK.crewTheme.weaknessQuestions,
+	]) {
+		assert.equal(question.text, "");
+	}
+	assert.deepEqual(
+		FALLBACK_PACK.crewTheme.specials,
+		Array.from({ length: CREW_THEME_SPECIALS_COUNT }, () => ({
 			name: "",
 			text: "",
 		})),
@@ -162,6 +197,15 @@ test("the real content pack normalizes into the same shape, with text filled", (
 	}
 	for (const special of pack.loadoutSpecials)
 		assert.ok(special.name.length > 0);
+
+	for (const question of [
+		...pack.crewTheme.powerQuestions,
+		...pack.crewTheme.weaknessQuestions,
+	]) {
+		assert.ok(question.text.length > 0, `crew theme ${question.letter}`);
+	}
+	for (const special of pack.crewTheme.specials)
+		assert.ok(special.name.length > 0);
 });
 
 test("a pack missing a question letter or a special is rejected whole", () => {
@@ -188,6 +232,23 @@ test("a pack missing a question letter or a special is rejected whole", () => {
 	>;
 	delete missingLoadoutSpecials.loadout_specials;
 	assert.equal(normalize(missingLoadoutSpecials), null);
+
+	const shortCrewSpecials = rawPack();
+	shortCrewSpecials.crew_theme.specials.pop();
+	assert.equal(normalize(shortCrewSpecials), null);
+
+	const missingCrewQuestion = rawPack();
+	delete (
+		missingCrewQuestion.crew_theme.power_tag_questions as Record<
+			string,
+			unknown
+		>
+	).J;
+	assert.equal(normalize(missingCrewQuestion), null);
+
+	const missingCrewTheme = rawPack() as Partial<ReturnType<typeof rawPack>>;
+	delete missingCrewTheme.crew_theme;
+	assert.equal(normalize(missingCrewTheme), null);
 
 	for (const bad of [null, 7, "{}", {}, { themebooks: [] }])
 		assert.equal(normalize(bad), null);

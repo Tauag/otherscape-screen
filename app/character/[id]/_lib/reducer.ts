@@ -1,3 +1,15 @@
+import {
+	addCrewPowerTag,
+	addCrewWeaknessTag,
+	burnCrewTag,
+	deleteCrewPowerTag,
+	deleteCrewWeaknessTag,
+	editCrewPowerTag,
+	editCrewWeaknessTag,
+	markCrewTrack,
+	moveCrewTag,
+	unburnCrewTag,
+} from "@/lib/character/crew-theme";
 import { loseTheme } from "@/lib/character/loss";
 import { newTheme } from "@/lib/character/new";
 import {
@@ -17,6 +29,9 @@ import {
 } from "@/lib/character/theme";
 import type {
 	Character,
+	CrewMotivation,
+	CrewRelationship,
+	CrewTheme,
 	Essence,
 	Loadout,
 	PowerQuestionLetter,
@@ -134,7 +149,41 @@ export type CharacterAction =
 	| { type: "markLoadoutUpgrade" }
 	| { type: "takeLoadoutUpgrade"; choice: UpgradeChoice }
 	| { type: "addLoadoutSpecial"; special: string }
-	| { type: "removeLoadoutSpecial"; special: string };
+	| { type: "removeLoadoutSpecial"; special: string }
+	| { type: "setCrewMotivation"; motivation: CrewMotivation }
+	| { type: "setCrewQuote"; quote: string }
+	| { type: "addCrewSpecial"; special: string }
+	| { type: "removeCrewSpecial"; special: string }
+	| { type: "addCrewPowerTag"; id: string; letter: PowerQuestionLetter }
+	| { type: "addCrewWeaknessTag"; id: string; letter: WeaknessQuestionLetter }
+	| {
+			type: "editCrewPowerTag";
+			tagId: string;
+			edit: Partial<Pick<PowerTag, "letter" | "text">>;
+	  }
+	| {
+			type: "editCrewWeaknessTag";
+			tagId: string;
+			edit: Partial<Pick<WeaknessTag, "letter" | "text">>;
+	  }
+	| { type: "deleteCrewPowerTag"; tagId: string }
+	| { type: "deleteCrewWeaknessTag"; tagId: string }
+	| {
+			type: "moveCrewTag";
+			kind: TagKind;
+			tagId: string;
+			direction: MoveDirection;
+	  }
+	| { type: "burnCrewTag"; tagId: string; burnValue: number }
+	| { type: "unburnCrewTag"; tagId: string }
+	| { type: "markCrewTrack"; track: TrackName }
+	| { type: "addCrewRelationship"; id: string }
+	| {
+			type: "editCrewRelationship";
+			id: string;
+			edit: Partial<Pick<CrewRelationship, "member" | "tag">>;
+	  }
+	| { type: "removeCrewRelationship"; id: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(
@@ -156,6 +205,14 @@ const withLoadout = (
 ): Character => ({
 	...character,
 	loadout: { ...character.loadout, ...loadout },
+});
+
+const withCrew = (
+	character: Character,
+	edit: (crew: CrewTheme) => CrewTheme,
+): Character => ({
+	...character,
+	crewTheme: edit(character.crewTheme),
 });
 
 function autoEssence(
@@ -389,5 +446,80 @@ export function reduce(
 					(special) => special !== action.special,
 				),
 			});
+		case "setCrewMotivation":
+			return withCrew(character, (crew) => ({
+				...crew,
+				motivation: action.motivation,
+			}));
+		case "setCrewQuote":
+			return withCrew(character, (crew) => ({ ...crew, quote: action.quote }));
+		case "addCrewSpecial":
+			return withCrew(character, (crew) =>
+				crew.specials.includes(action.special)
+					? crew
+					: { ...crew, specials: [...crew.specials, action.special] },
+			);
+		case "removeCrewSpecial":
+			return withCrew(character, (crew) => ({
+				...crew,
+				specials: crew.specials.filter((special) => special !== action.special),
+			}));
+		case "addCrewPowerTag":
+			return withCrew(character, (crew) =>
+				addCrewPowerTag(crew, action.id, action.letter),
+			);
+		case "addCrewWeaknessTag":
+			return withCrew(character, (crew) =>
+				addCrewWeaknessTag(crew, action.id, action.letter),
+			);
+		case "editCrewPowerTag":
+			return withCrew(character, (crew) =>
+				editCrewPowerTag(crew, action.tagId, action.edit),
+			);
+		case "editCrewWeaknessTag":
+			return withCrew(character, (crew) =>
+				editCrewWeaknessTag(crew, action.tagId, action.edit),
+			);
+		case "deleteCrewPowerTag":
+			return withCrew(character, (crew) =>
+				deleteCrewPowerTag(crew, action.tagId),
+			);
+		case "deleteCrewWeaknessTag":
+			return withCrew(character, (crew) =>
+				deleteCrewWeaknessTag(crew, action.tagId),
+			);
+		case "moveCrewTag":
+			return withCrew(character, (crew) =>
+				moveCrewTag(crew, action.kind, action.tagId, action.direction),
+			);
+		case "burnCrewTag":
+			return withCrew(character, (crew) =>
+				burnCrewTag(crew, action.tagId, action.burnValue),
+			);
+		case "unburnCrewTag":
+			return withCrew(character, (crew) => unburnCrewTag(crew, action.tagId));
+		case "markCrewTrack":
+			return withCrew(character, (crew) => markCrewTrack(crew, action.track));
+		case "addCrewRelationship":
+			return {
+				...character,
+				crew: [...character.crew, { id: action.id, member: "", tag: "" }],
+			};
+		case "editCrewRelationship":
+			return {
+				...character,
+				crew: character.crew.map((relationship) =>
+					relationship.id === action.id
+						? { ...relationship, ...action.edit }
+						: relationship,
+				),
+			};
+		case "removeCrewRelationship":
+			return {
+				...character,
+				crew: character.crew.filter(
+					(relationship) => relationship.id !== action.id,
+				),
+			};
 	}
 }

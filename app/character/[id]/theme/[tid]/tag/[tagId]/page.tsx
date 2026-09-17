@@ -10,12 +10,12 @@ import {
 } from "@/app/character/[id]/_components/picker";
 import { LABEL } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { usePick } from "@/app/character/[id]/_hooks/use-pick";
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import {
 	MissingTag,
 	MissingTheme,
 } from "@/app/character/[id]/theme/[tid]/_components/picker";
-import { usePick } from "@/app/character/[id]/theme/[tid]/_hooks/use-pick";
 import { useContentPack } from "@/lib/content/load";
 import { findThemebook, questionLabel } from "@/lib/content/pack";
 import { answerCounts, powerQuestions, weaknessQuestions } from "@/lib/pickers";
@@ -33,7 +33,7 @@ export default function QuestionPicker({
 	const { id, tid, tagId } = use(params);
 	const { character, dispatch } = useCharacter();
 	const pack = useContentPack();
-	const pick = usePick(id, tid);
+	const pick = usePick(`/character/${id}/theme/${tid}`);
 
 	const theme = character.themes.find((candidate) => candidate.id === tid);
 	if (!theme) return <MissingTheme id={id} />;

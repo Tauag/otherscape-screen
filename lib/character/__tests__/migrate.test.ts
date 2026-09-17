@@ -56,6 +56,18 @@ const resetLoadout = {
 	upgrade: sample.loadout.upgrade,
 };
 
+// v3's step always resets the crew theme, so every document that walks
+// through it lands here regardless of what it carried before.
+const blankCrewTheme = {
+	powerTags: [],
+	weaknessTags: [],
+	motivation: "Identity",
+	quote: "",
+	specials: [],
+	upgrade: 0,
+	decay: 0,
+};
+
 test("v1 -> v2 starts essenceChosen false, even with an essence already set", () => {
 	const withEssence: Record<string, unknown> = {
 		...sample,
@@ -67,6 +79,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		...sample,
 		essenceChosen: false,
 		loadout: resetLoadout,
+		crewTheme: blankCrewTheme,
 	});
 
 	const blank: Record<string, unknown> = {
@@ -81,6 +94,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		essence: "",
 		essenceChosen: false,
 		loadout: resetLoadout,
+		crewTheme: blankCrewTheme,
 	});
 });
 
@@ -113,5 +127,13 @@ test("v2 -> v3 resets the loadout to the new shape, keeping the budget fields", 
 			availablePower: 3,
 			upgrade: 2,
 		},
+		crewTheme: blankCrewTheme,
 	});
+});
+
+test("v3 -> v4 adds a blank crew theme", () => {
+	const old: Record<string, unknown> = { ...sample, schema_version: 3 };
+	delete old.crewTheme;
+
+	assert.deepEqual(migrate(old), { ...sample, crewTheme: blankCrewTheme });
 });

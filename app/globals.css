@@ -11,10 +11,12 @@
 	--color-noise: #47d9e8;
 	--color-noise-title: #6fe4f0;
 	--color-noise-text: #a6ecf4;
-	/* The loadout is its own theme, outside the self/mythos/noise trio, so it gets its own hue. */
 	--color-loadout: #8fa3b8;
 	--color-loadout-title: #a8bccf;
 	--color-loadout-text: #c2d2e0;
+	--color-crew: #dad04e;
+	--color-crew-title: #e7e08c;
+	--color-crew-text: #f0ecb8;
 
 	/* Valence: statuses, story tags, weakness tags, warnings. */
 	--color-positive: #5de8a8;
@@ -71,6 +73,11 @@
 	--hue: var(--color-loadout);
 	--hue-title: var(--color-loadout-title);
 	--hue-text: var(--color-loadout-text);
+}
+[data-type="crew"] {
+	--hue: var(--color-crew);
+	--hue-title: var(--color-crew-title);
+	--hue-text: var(--color-crew-text);
 }
 
 [data-valence="positive"] {

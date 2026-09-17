@@ -33,6 +33,32 @@ export const sample: Character = {
 		{ id: "cr-1", member: "Tamsin", tag: "she talked me off a ledge once" },
 		{ id: "cr-2", member: "Oyelaran", tag: "I owe him a body" },
 	],
+	crewTheme: {
+		powerTags: [
+			{
+				id: "cpt-1",
+				themebook: "",
+				letter: "A",
+				text: "the Lantern Street crew",
+				burnt: false,
+			},
+			{
+				id: "cpt-2",
+				themebook: "",
+				letter: "B",
+				text: "a gutted signal tower on the south docks",
+				burnt: false,
+			},
+		],
+		weaknessTags: [
+			{ id: "cwt-1", letter: "A", text: "nobody fully trusts the new ones" },
+		],
+		motivation: "Identity",
+		quote: "We don't leave anyone behind, alive or otherwise.",
+		specials: ["Huddle"],
+		upgrade: 1,
+		decay: 0,
+	},
 	themes: [
 		{
 			id: "th-past",

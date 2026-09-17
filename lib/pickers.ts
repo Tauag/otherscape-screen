@@ -31,6 +31,14 @@ export const specialsOf = (pack: ContentPack, themebook: string): Special[] =>
 export const loadoutSpecialsOf = (pack: ContentPack): Special[] =>
 	pack.loadoutSpecials;
 
+/** The crew theme's own questions and five specials: no themebook to key them by. */
+export const crewPowerQuestions = (pack: ContentPack) =>
+	pack.crewTheme.powerQuestions;
+export const crewWeaknessQuestions = (pack: ContentPack) =>
+	pack.crewTheme.weaknessQuestions;
+export const crewSpecialsOf = (pack: ContentPack): Special[] =>
+	pack.crewTheme.specials;
+
 /**
  * How many tags already answer each letter. It labels a row and never removes
  * one, because a question is never consumed. Counted across the theme rather

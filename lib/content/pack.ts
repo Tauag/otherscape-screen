@@ -4,6 +4,7 @@ import type {
 	WeaknessQuestionLetter,
 } from "../character/types.ts";
 import {
+	CREW_THEME_SPECIALS_COUNT,
 	FALLBACK_THEMEBOOKS,
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
@@ -29,10 +30,21 @@ export type Themebook = {
 	specials: Special[];
 };
 
+/** The crew theme's own content (core rules, page 75): no themebook to hold it. */
+export type CrewThemeContent = {
+	/** Always the ten letters, in order. */
+	powerQuestions: Question<PowerQuestionLetter>[];
+	/** Always the four letters, in order. */
+	weaknessQuestions: Question<WeaknessQuestionLetter>[];
+	/** Always five. */
+	specials: Special[];
+};
+
 export type ContentPack = {
 	themebooks: Themebook[];
 	/** The loadout theme's own specials (core rules, page 134). Always eight. */
 	loadoutSpecials: Special[];
+	crewTheme: CrewThemeContent;
 };
 
 /** What a tag editor prints over a blank field: "power tag question B". */
@@ -66,6 +78,11 @@ export const FALLBACK_PACK: ContentPack = {
 		specials: emptySpecials(SPECIALS_PER_THEMEBOOK),
 	})),
 	loadoutSpecials: emptySpecials(LOADOUT_SPECIALS_COUNT),
+	crewTheme: {
+		powerQuestions: empty(POWER_LETTERS),
+		weaknessQuestions: empty(WEAKNESS_LETTERS),
+		specials: emptySpecials(CREW_THEME_SPECIALS_COUNT),
+	},
 };
 
 /**
@@ -75,7 +92,10 @@ export const FALLBACK_PACK: ContentPack = {
  */
 export function normalize(raw: unknown): ContentPack | null {
 	if (typeof raw !== "object" || raw === null) return null;
-	const { themebooks, loadout_specials } = raw as Record<string, unknown>;
+	const { themebooks, loadout_specials, crew_theme } = raw as Record<
+		string,
+		unknown
+	>;
 	if (!Array.isArray(themebooks) || themebooks.length === 0) return null;
 
 	const normalized: Themebook[] = [];
@@ -91,7 +111,10 @@ export function normalize(raw: unknown): ContentPack | null {
 	);
 	if (!loadoutSpecials) return null;
 
-	return { themebooks: normalized, loadoutSpecials };
+	const crewTheme = normalizeCrewTheme(crew_theme);
+	if (!crewTheme) return null;
+
+	return { themebooks: normalized, loadoutSpecials, crewTheme };
 }
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -141,6 +164,24 @@ function normalizeThemebook(raw: unknown): Themebook | null {
 		weaknessQuestions,
 		specials,
 	};
+}
+
+function normalizeCrewTheme(raw: unknown): CrewThemeContent | null {
+	if (typeof raw !== "object" || raw === null) return null;
+	const crew = raw as Record<string, unknown>;
+
+	const powerQuestions = normalizeQuestions(
+		POWER_LETTERS,
+		crew.power_tag_questions,
+	);
+	const weaknessQuestions = normalizeQuestions(
+		WEAKNESS_LETTERS,
+		crew.weakness_tag_questions,
+	);
+	const specials = normalizeSpecials(crew.specials, CREW_THEME_SPECIALS_COUNT);
+	if (!powerQuestions || !weaknessQuestions || !specials) return null;
+
+	return { powerQuestions, weaknessQuestions, specials };
 }
 
 function normalizeQuestions<L extends string>(

@@ -14,6 +14,7 @@ import {
 import { ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { LABEL } from "@/app/character/[id]/_components/styles";
+import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { BackLink } from "@/components/back-link";
@@ -22,7 +23,7 @@ import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
 import { useContentPack } from "@/lib/content/load";
 import { findThemebook, themebooksOfType } from "@/lib/content/pack";
-import { TagRow } from "./_components/tag-row";
+import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 
@@ -237,11 +238,46 @@ export default function ThemePage({
 						<TagRow
 							key={tag.id}
 							kind="power"
-							themeId={theme.id}
 							tag={tag}
 							href={`${here}/tag/${tag.id}`}
 							index={index}
 							count={theme.powerTags.length}
+							onTextChange={(text) =>
+								dispatch({
+									type: "editPowerTag",
+									themeId: theme.id,
+									tagId: tag.id,
+									edit: { text },
+								})
+							}
+							onMove={(direction) =>
+								dispatch({
+									type: "moveTag",
+									themeId: theme.id,
+									kind: "power",
+									tagId: tag.id,
+									direction,
+								})
+							}
+							onDelete={() =>
+								dispatch({
+									type: "deletePowerTag",
+									themeId: theme.id,
+									tagId: tag.id,
+								})
+							}
+							onBurntChange={(burnt) =>
+								dispatch(
+									burnt
+										? {
+												type: "burnTag",
+												themeId: theme.id,
+												tagId: tag.id,
+												burnValue: DEFAULT_BURN_VALUE,
+											}
+										: { type: "unburnTag", themeId: theme.id, tagId: tag.id },
+								)
+							}
 						/>
 					))}
 				</ul>
@@ -252,11 +288,34 @@ export default function ThemePage({
 						<TagRow
 							key={tag.id}
 							kind="weakness"
-							themeId={theme.id}
 							tag={tag}
 							href={`${here}/tag/${tag.id}`}
 							index={index}
 							count={theme.weaknessTags.length}
+							onTextChange={(text) =>
+								dispatch({
+									type: "editWeaknessTag",
+									themeId: theme.id,
+									tagId: tag.id,
+									edit: { text },
+								})
+							}
+							onMove={(direction) =>
+								dispatch({
+									type: "moveTag",
+									themeId: theme.id,
+									kind: "weakness",
+									tagId: tag.id,
+									direction,
+								})
+							}
+							onDelete={() =>
+								dispatch({
+									type: "deleteWeaknessTag",
+									themeId: theme.id,
+									tagId: tag.id,
+								})
+							}
 						/>
 					))}
 				</ul>

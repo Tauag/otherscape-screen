@@ -8,6 +8,9 @@ import {
 } from "./content/pack.ts";
 import {
 	answerCounts,
+	crewPowerQuestions,
+	crewSpecialsOf,
+	crewWeaknessQuestions,
 	formatSpecial,
 	loadoutSpecialsOf,
 	powerQuestions,
@@ -74,6 +77,7 @@ test("a pack the player has uploaded carries its question text through", () => {
 			},
 		],
 		loadoutSpecials: FALLBACK_PACK.loadoutSpecials,
+		crewTheme: FALLBACK_PACK.crewTheme,
 	};
 	assert.equal(
 		powerQuestions(pack, pack.themebooks[0].name)[2].text,
@@ -87,6 +91,7 @@ test("the loadout's eight specials come straight off the pack, not a themebook",
 		loadoutSpecials: FALLBACK_PACK.loadoutSpecials.map((special, index) =>
 			index === 0 ? { name: "Deeply Customizable", text: "…" } : special,
 		),
+		crewTheme: FALLBACK_PACK.crewTheme,
 	};
 	assert.equal(loadoutSpecialsOf(pack)[0].name, "Deeply Customizable");
 	assert.equal(
@@ -108,6 +113,18 @@ test("a stored special keeps the name — text convention the sheet already uses
 	assert.equal(formatSpecial({ name: "", text: "" }), "");
 	// A name with no rule text stores no separator, so there is no text half to read back.
 	assert.equal(specialText("Deeply Customizable"), "");
+});
+
+test("the crew theme's questions and specials come straight off the pack, keyed by neither theme nor themebook", () => {
+	assert.deepEqual(
+		crewPowerQuestions(FALLBACK_PACK).map((question) => question.letter),
+		["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+	);
+	assert.deepEqual(
+		crewWeaknessQuestions(FALLBACK_PACK).map((question) => question.letter),
+		["A", "B", "C", "D"],
+	);
+	assert.equal(crewSpecialsOf(FALLBACK_PACK).length, 5);
 });
 
 test("answered letters count a question answered twice as twice", () => {

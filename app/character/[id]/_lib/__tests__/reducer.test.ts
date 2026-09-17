@@ -257,6 +257,64 @@ test("a loadout set goes from added, to titled, to loaded, to holding a loaded f
 	assert.deepEqual(character.loadout.sets, []);
 });
 
+test("the crew theme takes a power tag, gets a title, and marks its tracks", () => {
+	let character = newCharacter();
+	character = reduce(character, {
+		type: "addCrewPowerTag",
+		id: "cpt-1",
+		letter: "A",
+	});
+	assert.equal(character.crewTheme.powerTags[0].text, "");
+
+	character = reduce(character, {
+		type: "editCrewPowerTag",
+		tagId: "cpt-1",
+		edit: { text: "the Lantern Street crew" },
+	});
+	assert.equal(
+		character.crewTheme.powerTags[0].text,
+		"the Lantern Street crew",
+	);
+
+	character = reduce(character, {
+		type: "setCrewMotivation",
+		motivation: "Ritual",
+	});
+	assert.equal(character.crewTheme.motivation, "Ritual");
+
+	character = reduce(character, { type: "markCrewTrack", track: "decay" });
+	assert.equal(character.crewTheme.decay, 1);
+
+	// Untouched: the crew theme lives outside themes[], so this stays 0.
+	assert.equal(character.themes.length, 0);
+});
+
+test("a crew relationship is added blank, edited by field, and removed", () => {
+	let character = newCharacter();
+	character = reduce(character, { type: "addCrewRelationship", id: "cr-1" });
+	assert.deepEqual(character.crew, [{ id: "cr-1", member: "", tag: "" }]);
+
+	character = reduce(character, {
+		type: "editCrewRelationship",
+		id: "cr-1",
+		edit: { member: "Tamsin" },
+	});
+	character = reduce(character, {
+		type: "editCrewRelationship",
+		id: "cr-1",
+		edit: { tag: "she talked me off a ledge once" },
+	});
+	assert.deepEqual(character.crew, [
+		{ id: "cr-1", member: "Tamsin", tag: "she talked me off a ledge once" },
+	]);
+
+	character = reduce(character, {
+		type: "removeCrewRelationship",
+		id: "cr-1",
+	});
+	assert.deepEqual(character.crew, []);
+});
+
 test("wildcards increment and decrement, clamped at 0", () => {
 	let character = newCharacter();
 	character = reduce(character, { type: "decrementWildcards" });

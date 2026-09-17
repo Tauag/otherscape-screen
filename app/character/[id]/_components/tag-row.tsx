@@ -2,13 +2,11 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
-import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type {
 	PowerQuestionLetter,
 	WeaknessQuestionLetter,
 } from "@/lib/character/types";
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 const ICON =
 	"grid size-11 shrink-0 place-items-center text-base disabled:text-faint";
@@ -17,39 +15,41 @@ type RowTag = {
 	id: string;
 	letter: PowerQuestionLetter | WeaknessQuestionLetter;
 	text: string;
-	themebook?: string;
 	burnt?: boolean;
 };
 
+/**
+ * A power or weakness tag's row: the question link, its text field, an
+ * optional burn toggle, and reorder/delete. Presentational - a theme's tag
+ * and the crew theme's tag both dispatch differently, so the caller owns
+ * what each callback actually does.
+ */
 export function TagRow({
 	kind,
-	themeId,
 	tag,
 	href,
 	index,
 	count,
+	onTextChange,
+	onMove,
+	onDelete,
+	onBurntChange,
 }: {
 	kind: TagKind;
-	themeId: string;
 	tag: RowTag;
 	/** The question picker for this tag. */
 	href: string;
 	index: number;
 	count: number;
+	onTextChange: (text: string) => void;
+	onMove: (direction: MoveDirection) => void;
+	onDelete: () => void;
+	/** Power tags only: absent leaves the burn toggle off the row. */
+	onBurntChange?: (burnt: boolean) => void;
 }) {
-	const { dispatch } = useCharacter();
-
 	const label = tag.letter;
 	const named = tag.text.trim() || `the blank ${label} tag`;
 	const power = kind === "power";
-
-	function setText(text: string) {
-		dispatch(
-			power
-				? { type: "editPowerTag", themeId, tagId: tag.id, edit: { text } }
-				: { type: "editWeaknessTag", themeId, tagId: tag.id, edit: { text } },
-		);
-	}
 
 	function move(
 		event: React.MouseEvent<HTMLButtonElement>,
@@ -63,7 +63,7 @@ export function TagRow({
 					: event.currentTarget.previousElementSibling;
 			if (twin instanceof HTMLElement) twin.focus();
 		}
-		dispatch({ type: "moveTag", themeId, kind, tagId: tag.id, direction });
+		onMove(direction);
 	}
 
 	return (
@@ -85,7 +85,7 @@ export function TagRow({
 				<Input
 					type="text"
 					value={tag.text}
-					onChange={(event) => setText(event.target.value)}
+					onChange={(event) => onTextChange(event.target.value)}
 					aria-label={`${power ? "Power" : "Weakness"} tag ${label}`}
 					placeholder="Answer the question"
 					className={`min-h-11 min-w-32 flex-1 rounded-sm border border-border bg-bg px-3 font-display text-[15px] tracking-[0.03em] text-[var(--hue-text)] ${
@@ -93,24 +93,13 @@ export function TagRow({
 					}`}
 				/>
 
-				{power && (
+				{power && onBurntChange && (
 					// lazy: burn value picking (3/4/5, theme specials) matters only when
 					// rolling, which isn't built yet (T41). This toggle always burns for
 					// the default.
 					<BurnButton
 						burnt={tag.burnt ?? false}
-						onBurntChange={(burnt) =>
-							dispatch(
-								burnt
-									? {
-											type: "burnTag",
-											themeId,
-											tagId: tag.id,
-											burnValue: DEFAULT_BURN_VALUE,
-										}
-									: { type: "unburnTag", themeId, tagId: tag.id },
-							)
-						}
+						onBurntChange={onBurntChange}
 						named={named}
 					/>
 				)}
@@ -138,13 +127,7 @@ export function TagRow({
 					</Button>
 					<Button
 						type="button"
-						onClick={() =>
-							dispatch(
-								power
-									? { type: "deletePowerTag", themeId, tagId: tag.id }
-									: { type: "deleteWeaknessTag", themeId, tagId: tag.id },
-							)
-						}
+						onClick={onDelete}
 						aria-label={`Delete ${named}`}
 						className={ICON}
 					>

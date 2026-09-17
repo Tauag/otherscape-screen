@@ -1,9 +1,10 @@
 import { DECAY_TRACK_LENGTH } from "../rules/constants.ts";
 import type { Character, GhostMemory, Theme } from "./types.ts";
 
-/** A full track is the warning. Losing the theme stays a player action. */
-export function decayFull(theme: Theme): boolean {
-	return theme.decay >= DECAY_TRACK_LENGTH;
+/** A full track is the warning. Losing the theme stays a player action.
+ *  Takes just the Decay track, so a crew theme (no id or type) reads it too. */
+export function decayFull({ decay }: Pick<Theme, "decay">): boolean {
+	return decay >= DECAY_TRACK_LENGTH;
 }
 
 /**

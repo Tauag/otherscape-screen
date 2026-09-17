@@ -1,6 +1,6 @@
 import type { Character } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 3;
+export const CURRENT_SCHEMA_VERSION = 4;
 
 type Doc = Record<string, unknown>;
 
@@ -36,6 +36,23 @@ steps.set(2, (doc) => {
 		},
 	};
 });
+
+// v3 predates the crew theme: every character now carries their own copy of
+// the crew's theme alongside loadout (constants.ts's STARTING_THEMES comment
+// already carved out the exclusion). A v3 document has none, so this step
+// adds a blank one.
+steps.set(3, (doc) => ({
+	...doc,
+	crewTheme: {
+		powerTags: [],
+		weaknessTags: [],
+		motivation: "Identity",
+		quote: "",
+		specials: [],
+		upgrade: 0,
+		decay: 0,
+	},
+}));
 
 /**
  * Upgrade a document read from the database. This is a trust boundary, so it

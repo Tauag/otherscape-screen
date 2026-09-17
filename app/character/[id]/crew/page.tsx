@@ -1,0 +1,363 @@
+"use client";
+
+import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { use, useState } from "react";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { SpecialList } from "@/app/character/[id]/_components/special-card";
+import {
+	LABEL,
+	PRIMARY,
+	REMOVE_BUTTON,
+} from "@/app/character/[id]/_components/styles";
+import { TagRow } from "@/app/character/[id]/_components/tag-row";
+import { TrackPips } from "@/app/character/[id]/_components/track";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { BackLink } from "@/components/back-link";
+import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
+import { decayFull } from "@/lib/character/loss";
+import type { CrewMotivation } from "@/lib/character/types";
+import {
+	DECAY_TRACK_LENGTH,
+	DEFAULT_BURN_VALUE,
+	UPGRADE_TRACK_LENGTH,
+} from "@/lib/rules/constants";
+
+const FIELD =
+	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
+const BASE =
+	"inline-flex min-h-11 items-center self-start rounded-sm px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
+const ADD = `${BASE} bg-[var(--hue)]`;
+const ADD_WEAKNESS = `${BASE} bg-negative`;
+
+const MOTIVATIONS: CrewMotivation[] = ["Identity", "Ritual", "Itch"];
+
+export default function CrewPage({
+	params,
+}: PageProps<"/character/[id]/crew">) {
+	const { id } = use(params);
+	const { character, dispatch } = useCharacter();
+	const router = useRouter();
+	const crew = character.crewTheme;
+	const title = crewTitle(crew);
+	const nascent = isCrewNascent(crew);
+	const [upgradeOpen, setUpgradeOpen] = useState(false);
+
+	const here = `/character/${id}/crew`;
+
+	function mark() {
+		const willComplete = crew.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
+		dispatch({ type: "markCrewTrack", track: "upgrade" });
+		if (willComplete) setUpgradeOpen(true);
+	}
+
+	function takeTag() {
+		const tagId = crypto.randomUUID();
+		dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
+		setUpgradeOpen(false);
+		router.push(`${here}#tag-${tagId}`);
+	}
+
+	function takeSpecial() {
+		setUpgradeOpen(false);
+		router.push(`${here}/specials`);
+	}
+
+	return (
+		<main
+			data-type="crew"
+			className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3 pb-8"
+		>
+			<BackLink href={`/character/${id}`} text="Sheet" />
+
+			<h1 className="font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
+				{title?.text.trim() || "Untitled crew"}
+			</h1>
+
+			<section className="flex gap-[10px]">
+				<TrackPips
+					name="Upgrade"
+					short="UPG"
+					length={UPGRADE_TRACK_LENGTH}
+					marked={crew.upgrade}
+					size="lg"
+					active
+					onMark={mark}
+				/>
+				<TrackPips
+					name="Decay"
+					short="DEC"
+					length={DECAY_TRACK_LENGTH}
+					marked={crew.decay}
+					size="lg"
+					active={false}
+					onMark={() => dispatch({ type: "markCrewTrack", track: "decay" })}
+				/>
+			</section>
+
+			<ConfirmDialog
+				open={upgradeOpen}
+				onOpenChange={setUpgradeOpen}
+				title="Take an Upgrade"
+				description={
+					nascent
+						? "Three points, one Upgrade. A nascent crew theme takes a new power tag until it has all three."
+						: "Three points, one Upgrade. Take a new power tag, which may answer any question, or a crew theme special."
+				}
+			>
+				<Button type="button" onClick={takeTag} className={PRIMARY}>
+					New power tag
+				</Button>
+				{!nascent && (
+					<Button type="button" onClick={takeSpecial} className={PRIMARY}>
+						New crew theme special
+					</Button>
+				)}
+			</ConfirmDialog>
+
+			<section className="flex flex-col gap-2">
+				<h2 className={LABEL}>Power tags</h2>
+				<ul className="flex flex-col gap-3">
+					{crew.powerTags.map((tag, index) => (
+						<TagRow
+							key={tag.id}
+							kind="power"
+							tag={tag}
+							href={`${here}/tag/${tag.id}`}
+							index={index}
+							count={crew.powerTags.length}
+							onTextChange={(text) =>
+								dispatch({
+									type: "editCrewPowerTag",
+									tagId: tag.id,
+									edit: { text },
+								})
+							}
+							onMove={(direction) =>
+								dispatch({
+									type: "moveCrewTag",
+									kind: "power",
+									tagId: tag.id,
+									direction,
+								})
+							}
+							onDelete={() =>
+								dispatch({ type: "deleteCrewPowerTag", tagId: tag.id })
+							}
+							onBurntChange={(burnt) =>
+								dispatch(
+									burnt
+										? {
+												type: "burnCrewTag",
+												tagId: tag.id,
+												burnValue: DEFAULT_BURN_VALUE,
+											}
+										: { type: "unburnCrewTag", tagId: tag.id },
+								)
+							}
+						/>
+					))}
+				</ul>
+
+				<h2 className={LABEL}>Weakness tags</h2>
+				<ul className="flex flex-col gap-3">
+					{crew.weaknessTags.map((tag, index) => (
+						<TagRow
+							key={tag.id}
+							kind="weakness"
+							tag={tag}
+							href={`${here}/tag/${tag.id}`}
+							index={index}
+							count={crew.weaknessTags.length}
+							onTextChange={(text) =>
+								dispatch({
+									type: "editCrewWeaknessTag",
+									tagId: tag.id,
+									edit: { text },
+								})
+							}
+							onMove={(direction) =>
+								dispatch({
+									type: "moveCrewTag",
+									kind: "weakness",
+									tagId: tag.id,
+									direction,
+								})
+							}
+							onDelete={() =>
+								dispatch({ type: "deleteCrewWeaknessTag", tagId: tag.id })
+							}
+						/>
+					))}
+				</ul>
+			</section>
+
+			<section className="flex flex-row gap-2">
+				<Button
+					type="button"
+					onClick={() =>
+						dispatch({
+							type: "addCrewPowerTag",
+							id: crypto.randomUUID(),
+							letter: "A",
+						})
+					}
+					className={ADD}
+				>
+					New power tag
+				</Button>
+
+				<Button
+					type="button"
+					onClick={() =>
+						dispatch({
+							type: "addCrewWeaknessTag",
+							id: crypto.randomUUID(),
+							letter: "A",
+						})
+					}
+					className={ADD_WEAKNESS}
+				>
+					New weakness tag
+				</Button>
+			</section>
+
+			<fieldset className="flex flex-col gap-1.5">
+				<legend className={LABEL}>Identity, Ritual, or Itch</legend>
+				<div className="flex gap-1.5">
+					{MOTIVATIONS.map((motivation) => (
+						<Button
+							key={motivation}
+							type="button"
+							aria-pressed={crew.motivation === motivation}
+							onClick={() =>
+								dispatch({ type: "setCrewMotivation", motivation })
+							}
+							className={`flex-1 rounded-sm border px-3 py-2 font-display text-sm font-semibold tracking-[0.08em] uppercase ${
+								crew.motivation === motivation
+									? "border-[var(--hue)] text-[var(--hue)]"
+									: "border-border text-dim"
+							}`}
+						>
+							{motivation}
+						</Button>
+					))}
+				</div>
+			</fieldset>
+
+			<label htmlFor="crew-quote" className="flex flex-col gap-1">
+				<span className={LABEL}>{crew.motivation}</span>
+				<Input
+					id="crew-quote"
+					type="text"
+					value={crew.quote}
+					onChange={(event) =>
+						dispatch({ type: "setCrewQuote", quote: event.target.value })
+					}
+					placeholder={`Create your ${crew.motivation}`}
+					className={FIELD}
+				/>
+			</label>
+
+			<section className="flex flex-col gap-1.5">
+				<h2 className={LABEL}>Crew</h2>
+				{character.crew.length === 0 ? (
+					<p className="font-sans text-sm text-dim">
+						No crew relationships yet.
+					</p>
+				) : (
+					<ul className="flex flex-col gap-2">
+						{character.crew.map((relationship) => {
+							const named = relationship.member.trim() || "this crew member";
+							return (
+								<li key={relationship.id} className="flex items-center gap-2">
+									<Input
+										type="text"
+										value={relationship.member}
+										onChange={(event) =>
+											dispatch({
+												type: "editCrewRelationship",
+												id: relationship.id,
+												edit: { member: event.target.value },
+											})
+										}
+										aria-label="Crew member's name"
+										placeholder="Name"
+										className={`${FIELD} w-2/5`}
+									/>
+									<Input
+										type="text"
+										value={relationship.tag}
+										onChange={(event) =>
+											dispatch({
+												type: "editCrewRelationship",
+												id: relationship.id,
+												edit: { tag: event.target.value },
+											})
+										}
+										aria-label={`Relationship tag with ${named}`}
+										placeholder="Relationship tag"
+										className={`${FIELD} flex-1`}
+									/>
+									<Button
+										type="button"
+										onClick={() =>
+											dispatch({
+												type: "removeCrewRelationship",
+												id: relationship.id,
+											})
+										}
+										aria-label={`Remove ${named}`}
+										className={`${REMOVE_BUTTON} size-11`}
+									>
+										<span aria-hidden>✕</span>
+									</Button>
+								</li>
+							);
+						})}
+					</ul>
+				)}
+				<Button
+					type="button"
+					onClick={() =>
+						dispatch({
+							type: "addCrewRelationship",
+							id: crypto.randomUUID(),
+						})
+					}
+					className={`${ADD} mt-1`}
+				>
+					New crew relationship
+				</Button>
+			</section>
+
+			<section className="flex flex-col gap-1.5">
+				<h2 className={LABEL}>Crew theme specials</h2>
+				{crew.specials.length === 0 ? (
+					<p className="font-sans text-sm text-dim">
+						No crew theme specials yet.
+					</p>
+				) : (
+					<SpecialList
+						specials={crew.specials}
+						onRemove={(special) =>
+							dispatch({ type: "removeCrewSpecial", special })
+						}
+					/>
+				)}
+				<Link href={`${here}/specials`} className={`${ADD} mt-1`}>
+					New crew theme special
+				</Link>
+			</section>
+
+			{decayFull(crew) && (
+				<p className="font-sans text-sm text-negative-text">
+					The Decay track is full. Together, decide what this means for the
+					crew.
+				</p>
+			)}
+		</main>
+	);
+}

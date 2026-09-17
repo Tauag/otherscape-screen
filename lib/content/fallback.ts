@@ -30,6 +30,9 @@ export const SPECIALS_PER_THEMEBOOK = 5;
 /** Specials the loadout theme offers, fixed for every pack (core rules, page 134). */
 export const LOADOUT_SPECIALS_COUNT = 8;
 
+/** Specials the crew theme offers, fixed for every pack (core rules, page 75). */
+export const CREW_THEME_SPECIALS_COUNT = 5;
+
 /** The ids match `themebooks.json`, so a pack upload lines up slot for slot. */
 export const FALLBACK_THEMEBOOKS: readonly {
 	id: string;

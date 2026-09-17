@@ -11,8 +11,9 @@ export const ROW_TEXT = "font-sans text-[13px] text-dim";
 
 /**
  * data-type sits on the root, so every row below reads the theme's hue off
- * the cascade. `type` is a theme picker's own; the loadout specials picker
- * leaves it out and every `--hue*` var falls back to the neutral text color.
+ * the cascade. `type` is a theme (or crew theme) picker's own; the loadout
+ * specials picker leaves it out and every `--hue*` var falls back to the
+ * neutral text color.
  */
 export function PickerFrame({
 	backHref,
@@ -23,7 +24,7 @@ export function PickerFrame({
 }: {
 	backHref: string;
 	backLabel: string;
-	type?: ThemeType;
+	type?: ThemeType | "crew";
 	title: string;
 	children: React.ReactNode;
 }) {
