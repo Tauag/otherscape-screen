@@ -81,7 +81,7 @@ export function SheetMenu() {
 				open={essenceOpen}
 				onOpenChange={setEssenceOpen}
 				title="Override Essence"
-				cancelLabel="Done"
+				cancelLabel="Close"
 			>
 				<EssencePicker />
 			</ConfirmDialog>
@@ -148,25 +148,10 @@ function EssencePicker() {
 					<div className="flex flex-wrap gap-2">{others.map(chip)}</div>
 				</div>
 			</fieldset>
-
-			<label className="flex flex-col gap-1">
-				<span className={LABEL}>Essence special</span>
-				<textarea
-					value={character.essenceSpecial}
-					onChange={(event) =>
-						dispatch({
-							type: "setEssenceSpecial",
-							essenceSpecial: event.target.value,
-						})
-					}
-					className="min-h-11 rounded-sm border border-border bg-surface p-3 font-sans text-base field-sizing-content"
-				/>
-			</label>
 		</div>
 	);
 }
 
-/** The archive players read back. Read-only, and never editable. */
 function GhostMemories() {
 	const { character } = useCharacter();
 
@@ -198,14 +183,6 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
 			<h3 className="font-display text-[17px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
 				{title?.text.trim() || "Untitled theme"}
 			</h3>
-			<p className="font-sans text-[13px] text-dim">
-				{/* lazy: the UTC date, because this client component renders on the
-            server too and a locale-formatted time would not survive hydration.
-            Ceiling: a theme lost late at night reads as the next day. Upgrade
-            path: format it in an effect, once the browser has the page. */}
-				Lost <time dateTime={memory.lostAt}>{memory.lostAt.slice(0, 10)}</time>.{" "}
-				{memory.reason.trim() || "No reason was written down."}
-			</p>
 
 			<details>
 				<summary className="min-h-11 cursor-pointer content-center font-mono text-[10px] tracking-[0.08em] text-dim uppercase">
