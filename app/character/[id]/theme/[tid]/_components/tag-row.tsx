@@ -8,6 +8,7 @@ import type {
 	PowerQuestionLetter,
 	WeaknessQuestionLetter,
 } from "@/lib/character/types";
+import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 const ICON =
 	"grid size-11 shrink-0 place-items-center text-base disabled:text-faint";
@@ -93,10 +94,23 @@ export function TagRow({
 				/>
 
 				{power && (
+					// lazy: burn value picking (3/4/5, theme specials) matters only when
+					// rolling, which isn't built yet (T41). This toggle always burns for
+					// the default.
 					<BurnButton
-						themeId={themeId}
-						tagId={tag.id}
 						burnt={tag.burnt ?? false}
+						onBurntChange={(burnt) =>
+							dispatch(
+								burnt
+									? {
+											type: "burnTag",
+											themeId,
+											tagId: tag.id,
+											burnValue: DEFAULT_BURN_VALUE,
+										}
+									: { type: "unburnTag", themeId, tagId: tag.id },
+							)
+						}
 						named={named}
 					/>
 				)}

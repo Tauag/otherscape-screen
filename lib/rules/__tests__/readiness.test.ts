@@ -39,7 +39,7 @@ test("a half-built character names every gap, in reading order", () => {
 		"Theme 1 (Troubled Past) has no weakness tag.",
 		"Theme 1 (Troubled Past) has no Identity line.",
 		"No Essence is chosen.",
-		"The loadout spends 2 Power against 1 available.",
+		"You have 2 out of 1 power available.",
 	]);
 });
 
@@ -95,6 +95,7 @@ test("a complete character reports nothing", () => {
 			id: "ls-1",
 			title: "burner deck",
 			titleLoaded: true,
+			titleBurnt: false,
 			features: [],
 			weaknesses: [],
 		},

@@ -42,7 +42,9 @@ import {
 	removeLoadoutWeakness,
 	takeLoadoutUpgrade,
 	toggleLoadoutFeature,
+	toggleLoadoutFeatureBurnt,
 	toggleLoadoutSetTitle,
+	toggleLoadoutTitleBurnt,
 	type UpgradeChoice,
 } from "@/lib/loadout-edit";
 import { STARTING_THEMES } from "@/lib/rules/constants";
@@ -107,6 +109,7 @@ export type CharacterAction =
 	| { type: "editLoadoutSetTitle"; setId: string; text: string }
 	| { type: "removeLoadoutSet"; setId: string }
 	| { type: "toggleLoadoutSetTitle"; setId: string }
+	| { type: "toggleLoadoutTitleBurnt"; setId: string }
 	| { type: "addLoadoutFeature"; setId: string; id: string }
 	| {
 			type: "editLoadoutFeature";
@@ -116,6 +119,7 @@ export type CharacterAction =
 	  }
 	| { type: "removeLoadoutFeature"; setId: string; featureId: string }
 	| { type: "toggleLoadoutFeature"; setId: string; featureId: string }
+	| { type: "toggleLoadoutFeatureBurnt"; setId: string; featureId: string }
 	| { type: "addLoadoutWeakness"; setId: string; id: string }
 	| {
 			type: "editLoadoutWeakness";
@@ -294,6 +298,11 @@ export function reduce(
 				...character,
 				loadout: toggleLoadoutSetTitle(loadout, action.setId),
 			};
+		case "toggleLoadoutTitleBurnt":
+			return {
+				...character,
+				loadout: toggleLoadoutTitleBurnt(loadout, action.setId),
+			};
 		case "addLoadoutFeature":
 			return {
 				...character,
@@ -318,6 +327,15 @@ export function reduce(
 			return {
 				...character,
 				loadout: toggleLoadoutFeature(loadout, action.setId, action.featureId),
+			};
+		case "toggleLoadoutFeatureBurnt":
+			return {
+				...character,
+				loadout: toggleLoadoutFeatureBurnt(
+					loadout,
+					action.setId,
+					action.featureId,
+				),
 			};
 		case "addLoadoutWeakness":
 			return {

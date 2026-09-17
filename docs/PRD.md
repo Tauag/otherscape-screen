@@ -262,6 +262,9 @@ and edits a blank sheet directly.
   character that already held more than 4 before this cap keeps them, with a
   warning instead of a block.
 - Burn a power tag, and un-burn it. A burnt tag shows as burnt everywhere.
+  Burning here is a plain toggle to the default value; picking a non-default
+  burn value (4 or 5, from a theme special) happens at roll time, in the roll
+  builder (7.8), not here.
 
 ### 7.4 Losing and replacing themes — P1
 Losing a theme is one action with many triggers. Build the action first, then the
@@ -330,7 +333,8 @@ This is what a player uses while a session runs.
 - Compute Power: each relevant positive tag adds 1, each negative tag subtracts 1.
   Only the highest positive status tier and the highest negative status tier count.
   A burnt power tag contributes 3 instead of 1. Theme specials change that number,
-  so treat 3 as the default and let the player set it per burn.
+  so treat 3 as the default and let the player override it here, per burn, when
+  building the roll.
 - Support rolling with Self, Mythos, or Noise: when the action is generally
   about that domain, Power comes from the count of themes of that type instead
   of the counted tags. Negative tags and statuses still count, and the player

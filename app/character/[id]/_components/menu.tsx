@@ -219,7 +219,6 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
 							label={tag.letter}
 							text={tag.text}
 							burnt={tag.burnt}
-							burnValue={tag.burnValue}
 						/>
 					))}
 					{theme.weaknessTags.map((tag) => (

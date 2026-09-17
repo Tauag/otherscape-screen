@@ -113,25 +113,35 @@ export function LoadoutCard({
 												}`}
 											>
 												<h3
-													className={`font-display text-[17px] leading-tight font-bold tracking-[0.045em] uppercase ${
-														title ? "text-[var(--hue-title)]" : "text-dim"
+													className={`flex items-center gap-1.5 font-display text-[17px] leading-tight font-bold tracking-[0.045em] uppercase ${
+														set.titleBurnt
+															? "text-muted line-through"
+															: title
+																? "text-[var(--hue-title)]"
+																: "text-dim"
 													}`}
 												>
 													{title || "Untitled set"}
+													{set.titleBurnt && (
+														<span className="bg-badge text-burnt px-1 py-0.5 font-mono text-[8px] font-normal tracking-[0.08em] no-underline">
+															BURNT
+														</span>
+													)}
 												</h3>
 												{(features.length > 0 || set.weaknesses.length > 0) && (
 													<ul className="flex flex-wrap gap-1.5">
 														{features.map((feature) => (
 															<Chip
 																key={feature.id}
-																label="◆"
+																label="+"
 																text={feature.text}
+																burnt={feature.burnt}
 															/>
 														))}
 														{set.weaknesses.map((weakness) => (
 															<Chip
 																key={weakness.id}
-																label="⚠"
+																label="!"
 																text={weakness.text}
 																negative
 															/>

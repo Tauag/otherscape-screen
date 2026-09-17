@@ -71,6 +71,8 @@ export type LoadoutFeatureTag = {
 	text: string;
 	/** Loading it costs Power. It can't load before its set's title does. */
 	loaded: boolean;
+	/** Only a loaded feature can burn. Unloading it clears this automatically. */
+	burnt: boolean;
 };
 
 /** Loads for free the instant its set's title loads. No cost, no toggle. */
@@ -87,6 +89,8 @@ export type LoadoutSet = {
 	id: string;
 	title: string;
 	titleLoaded: boolean;
+	/** Only a loaded title can burn. Unloading it clears this automatically. */
+	titleBurnt: boolean;
 	features: LoadoutFeatureTag[];
 	weaknesses: LoadoutWeaknessTag[];
 };

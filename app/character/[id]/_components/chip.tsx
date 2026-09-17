@@ -1,12 +1,7 @@
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
-
-/** Not a control, so unlike Track's mark button this carries no touch target of its own.
- *  Shared by the sheet's theme cards and the menu's ghost memory entries. */
 export function Chip({
 	label,
 	text,
 	burnt,
-	burnValue,
 	negative,
 }: {
 	label: string;
@@ -37,7 +32,7 @@ export function Chip({
 			</span>
 			{burnt && (
 				<span className="bg-badge text-burnt px-1 py-0.5 font-mono text-[8px] font-bold tracking-[0.08em]">
-					BURNT {burnValue ?? DEFAULT_BURN_VALUE}P
+					BURNT
 				</span>
 			)}
 		</li>

@@ -80,9 +80,6 @@ run a real session from a phone before starting S8.
 ### T31 Essence — done
 ### T32 Loadout screen — done
 
-**Reopened by S4.5:** T21 to T23 closed without matching their artboards. T58
-finishes that.
-
 ---
 
 ## S4.5 Design realignment — done
@@ -165,7 +162,9 @@ Add, scratch, and delete an ongoing story tag, positive or negative.
 Select the tags and statuses that apply. No effect is asked for. Print the
 breakdown above the total. Show an outranked status selected and struck through.
 Support the manual modifier and rolling with a theme type. Selection is throwaway
-state in the layout provider, never saved.
+state in the layout provider, never saved. Let the player override a burnt
+tag's Power value (4 or 5, from a theme special) here, per burn; the sheet's
+burn toggle (T26) always uses the default.
 **Done when:** the screen matches the Roll artboard and the total agrees with
 `power`.
 **Depends on:** T17, T40

@@ -18,7 +18,14 @@ export function addLoadoutSet(loadout: Loadout, id: string): Loadout {
 		...loadout,
 		sets: [
 			...loadout.sets,
-			{ id, title: "", titleLoaded: false, features: [], weaknesses: [] },
+			{
+				id,
+				title: "",
+				titleLoaded: false,
+				titleBurnt: false,
+				features: [],
+				weaknesses: [],
+			},
 		],
 	};
 }
@@ -37,7 +44,9 @@ export function removeLoadoutSet(loadout: Loadout, setId: string): Loadout {
 
 /**
  * A feature can't stay loaded without its title, so turning the title off
- * unloads every feature in the same stroke.
+ * unloads every feature in the same stroke. A burnt tag can't outlive its
+ * load either, so unloading the title also un-burns the title and every
+ * feature.
  */
 export function toggleLoadoutSetTitle(
 	loadout: Loadout,
@@ -48,9 +57,10 @@ export function toggleLoadoutSetTitle(
 		return {
 			...set,
 			titleLoaded,
+			titleBurnt: titleLoaded ? set.titleBurnt : false,
 			features: titleLoaded
 				? set.features
-				: set.features.map((f) => ({ ...f, loaded: false })),
+				: set.features.map((f) => ({ ...f, loaded: false, burnt: false })),
 		};
 	});
 }
@@ -62,7 +72,7 @@ export function addLoadoutFeature(
 ): Loadout {
 	return inSet(loadout, setId, (set) => ({
 		...set,
-		features: [...set.features, { id, text: "", loaded: false }],
+		features: [...set.features, { id, text: "", loaded: false, burnt: false }],
 	}));
 }
 
@@ -91,7 +101,10 @@ export function removeLoadoutFeature(
 	}));
 }
 
-/** A no-op while the title isn't loaded: a feature can never load ahead of it. */
+/**
+ * A no-op while the title isn't loaded: a feature can never load ahead of it.
+ * Unloading a burnt feature un-burns it in the same stroke.
+ */
 export function toggleLoadoutFeature(
 	loadout: Loadout,
 	setId: string,
@@ -99,9 +112,37 @@ export function toggleLoadoutFeature(
 ): Loadout {
 	return inSet(loadout, setId, (set) => ({
 		...set,
+		features: set.features.map((f) => {
+			if (f.id !== featureId || !(f.loaded || set.titleLoaded)) return f;
+			const loaded = !f.loaded;
+			return { ...f, loaded, burnt: loaded ? f.burnt : false };
+		}),
+	}));
+}
+
+/** A no-op unless the title is loaded or already burnt, so it can only turn on while loaded. */
+export function toggleLoadoutTitleBurnt(
+	loadout: Loadout,
+	setId: string,
+): Loadout {
+	return inSet(loadout, setId, (set) =>
+		set.titleLoaded || set.titleBurnt
+			? { ...set, titleBurnt: !set.titleBurnt }
+			: set,
+	);
+}
+
+/** A no-op unless the feature is loaded or already burnt, so it can only turn on while loaded. */
+export function toggleLoadoutFeatureBurnt(
+	loadout: Loadout,
+	setId: string,
+	featureId: string,
+): Loadout {
+	return inSet(loadout, setId, (set) => ({
+		...set,
 		features: set.features.map((f) =>
-			f.id === featureId && (f.loaded || set.titleLoaded)
-				? { ...f, loaded: !f.loaded }
+			f.id === featureId && (f.loaded || f.burnt)
+				? { ...f, burnt: !f.burnt }
 				: f,
 		),
 	}));

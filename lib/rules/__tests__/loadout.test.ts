@@ -8,6 +8,7 @@ function set(overrides: Partial<LoadoutSet> = {}): LoadoutSet {
 		id: "ls-1",
 		title: "kit",
 		titleLoaded: false,
+		titleBurnt: false,
 		features: [],
 		weaknesses: [],
 		...overrides,
@@ -42,7 +43,7 @@ test("an unloaded title and an unloaded feature cost nothing", () => {
 		sets: [
 			set({
 				titleLoaded: false,
-				features: [{ id: "lf-1", text: "a", loaded: false }],
+				features: [{ id: "lf-1", text: "a", loaded: false, burnt: false }],
 			}),
 		],
 	});
@@ -55,8 +56,8 @@ test("a loaded title costs 1, and a loaded feature costs 1 more", () => {
 			set({
 				titleLoaded: true,
 				features: [
-					{ id: "lf-1", text: "a", loaded: true },
-					{ id: "lf-2", text: "b", loaded: false },
+					{ id: "lf-1", text: "a", loaded: true, burnt: false },
+					{ id: "lf-2", text: "b", loaded: false, burnt: false },
 				],
 			}),
 		],
@@ -91,6 +92,6 @@ test("an over-budget loadout reports the gap as a sentence", () => {
 		spent: 4,
 		available: 1,
 		over: 3,
-		warning: "The loadout spends 4 Power against 1 available.",
+		warning: "You have 4 out of 1 power available.",
 	});
 });

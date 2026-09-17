@@ -57,7 +57,7 @@ export default function LoadoutPage({
 						<span className="font-display text-2xl leading-none font-bold text-primary">
 							{spend.spent}
 						</span>{" "}
-						spent of {spend.available} available
+						/ {spend.available} Spent
 					</p>
 					<Button
 						type="button"

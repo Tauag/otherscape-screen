@@ -16,7 +16,9 @@ import {
 	removeLoadoutSet,
 	takeLoadoutUpgrade,
 	toggleLoadoutFeature,
+	toggleLoadoutFeatureBurnt,
 	toggleLoadoutSetTitle,
+	toggleLoadoutTitleBurnt,
 } from "./loadout-edit.ts";
 import { loadoutSpend } from "./rules/loadout.ts";
 
@@ -65,6 +67,60 @@ test("loading a title costs Power; unloading it cascades to every loaded feature
 		false,
 		"the feature can't outlive its title",
 	);
+});
+
+test("a title tag can only burn while loaded; unburning always works", () => {
+	// ls-2's title starts unloaded.
+	const attempted = toggleLoadoutTitleBurnt(loadout, "ls-2");
+	assert.equal(
+		attempted.sets[1].titleBurnt,
+		false,
+		"can't burn while unloaded",
+	);
+
+	// ls-1's title starts loaded.
+	const burned = toggleLoadoutTitleBurnt(loadout, "ls-1");
+	assert.equal(burned.sets[0].titleBurnt, true);
+
+	const unburned = toggleLoadoutTitleBurnt(burned, "ls-1");
+	assert.equal(unburned.sets[0].titleBurnt, false);
+});
+
+test("unloading a burnt title un-burns it, and cascades to every burnt feature", () => {
+	// ls-1's title and its first feature both start loaded.
+	const burned = toggleLoadoutFeatureBurnt(
+		toggleLoadoutTitleBurnt(loadout, "ls-1"),
+		"ls-1",
+		"lf-1",
+	);
+	assert.equal(burned.sets[0].titleBurnt, true);
+	assert.equal(burned.sets[0].features[0].burnt, true);
+
+	const unloaded = toggleLoadoutSetTitle(burned, "ls-1");
+	assert.equal(unloaded.sets[0].titleLoaded, false);
+	assert.equal(unloaded.sets[0].titleBurnt, false);
+	assert.equal(
+		unloaded.sets[0].features[0].burnt,
+		false,
+		"a burnt feature can't outlive its load",
+	);
+});
+
+test("a feature can only burn while loaded; unloading it un-burns it", () => {
+	// ls-1's first feature starts loaded.
+	const attempted = toggleLoadoutFeatureBurnt(loadout, "ls-2", "lf-3");
+	assert.equal(
+		attempted.sets[1].features[0].burnt,
+		false,
+		"can't burn while unloaded",
+	);
+
+	const burned = toggleLoadoutFeatureBurnt(loadout, "ls-1", "lf-1");
+	assert.equal(burned.sets[0].features[0].burnt, true);
+
+	const unloaded = toggleLoadoutFeature(burned, "ls-1", "lf-1");
+	assert.equal(unloaded.sets[0].features[0].loaded, false);
+	assert.equal(unloaded.sets[0].features[0].burnt, false);
 });
 
 test("a feature cannot load before its set's title does", () => {

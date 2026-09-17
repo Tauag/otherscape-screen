@@ -209,7 +209,7 @@ export function CharacterCard({
 								<input type="hidden" name="id" value={id} />
 								<Button
 									type="submit"
-									className="inline-flex min-h-11 items-center rounded-sm bg-negative px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
+									className="inline-flex min-h-11 items-center rounded-sm bg-danger px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
 								>
 									Delete
 								</Button>

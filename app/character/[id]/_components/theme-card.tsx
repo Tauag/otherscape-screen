@@ -99,7 +99,6 @@ export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 									label={tag.letter}
 									text={tag.text}
 									burnt={tag.burnt}
-									burnValue={tag.burnValue}
 								/>
 							))}
 

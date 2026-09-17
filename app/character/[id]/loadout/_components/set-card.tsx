@@ -1,6 +1,7 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
+import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import {
 	REMOVE_BUTTON,
 	SMALL_BUTTON,
@@ -36,7 +37,17 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 							text: event.target.value,
 						})
 					}
-					className="min-h-11 w-full rounded-sm bg-bg px-2 font-display text-[15px] tracking-[0.03em] text-text uppercase"
+					className={`min-h-11 w-full rounded-sm bg-bg px-2 font-display text-[15px] tracking-[0.03em] text-text uppercase ${
+						set.titleBurnt ? "line-through" : ""
+					}`}
+				/>
+				<BurnButton
+					burnt={set.titleBurnt}
+					disabled={!set.titleLoaded && !set.titleBurnt}
+					onBurntChange={() =>
+						dispatch({ type: "toggleLoadoutTitleBurnt", setId: set.id })
+					}
+					named={set.title.trim() || "the title tag"}
 				/>
 				<Button
 					type="button"
@@ -80,7 +91,21 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 										text: event.target.value,
 									})
 								}
-								className="min-h-11 w-full rounded-sm bg-bg px-2 font-display text-[15px] tracking-[0.03em] text-[var(--hue-text,var(--color-text))]"
+								className={`min-h-11 w-full rounded-sm bg-bg px-2 font-display text-[15px] tracking-[0.03em] text-[var(--hue-text,var(--color-text))] ${
+									feature.burnt ? "line-through" : ""
+								}`}
+							/>
+							<BurnButton
+								burnt={feature.burnt}
+								disabled={!feature.loaded && !feature.burnt}
+								onBurntChange={() =>
+									dispatch({
+										type: "toggleLoadoutFeatureBurnt",
+										setId: set.id,
+										featureId: feature.id,
+									})
+								}
+								named={feature.text.trim() || "the feature tag"}
 							/>
 							<Button
 								type="button"
