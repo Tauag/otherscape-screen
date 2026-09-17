@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Chip } from "@/app/character/[id]/_components/chip";
 import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
 import {
 	LoseThemeButton,
 	LoseThemeDialog,
 } from "@/app/character/[id]/_components/lose-theme";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
+import { Chip } from "@/components/chip";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";

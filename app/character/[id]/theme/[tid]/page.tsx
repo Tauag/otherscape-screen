@@ -13,11 +13,11 @@ import {
 } from "@/app/character/[id]/_components/lose-theme";
 import { ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import { LABEL } from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { BackLink } from "@/components/back-link";
+import { LABEL } from "@/components/styles";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";

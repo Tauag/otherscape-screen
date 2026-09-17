@@ -6,15 +6,12 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import {
-	LABEL,
-	PRIMARY,
-	SMALL_BUTTON,
-} from "@/app/character/[id]/_components/styles";
+import { PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
 import { BackLink } from "@/components/back-link";
+import { LABEL } from "@/components/styles";
 import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";

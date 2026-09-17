@@ -16,11 +16,16 @@ export default async function CharacterLayout({
 
 	const { data: row, error } = await supabase
 		.from("characters")
-		.select("data, version, updated_at")
+		.select("data, version, updated_at, share_token")
 		.eq("id", id)
 		.maybeSingle()
 		.overrideTypes<
-			{ data: unknown; version: number; updated_at: string },
+			{
+				data: unknown;
+				version: number;
+				updated_at: string;
+				share_token: string | null;
+			},
 			{ merge: false }
 		>();
 
@@ -32,6 +37,7 @@ export default async function CharacterLayout({
 			document={migrate(row.data)}
 			version={row.version}
 			updatedAt={row.updated_at}
+			shareToken={row.share_token}
 			bar={<TabBar key={`tab-bar-${id}`} id={id} />}
 		>
 			{children}

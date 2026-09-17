@@ -7,11 +7,11 @@ import {
 	ROW,
 	ROW_TEXT,
 } from "@/app/character/[id]/_components/picker";
-import { LABEL } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { usePick } from "@/app/character/[id]/_hooks/use-pick";
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import { MissingCrewTag } from "@/app/character/[id]/crew/_components/picker";
+import { LABEL } from "@/components/styles";
 import { useContentPack } from "@/lib/content/load";
 import { questionLabel } from "@/lib/content/pack";
 import {

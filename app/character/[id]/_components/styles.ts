@@ -1,7 +1,5 @@
-// Shared style tokens for the sheet and theme screen's dialogs and labels.
+// Shared style tokens for the sheet and theme screen's dialogs and buttons.
 
-export const LABEL =
-	"font-mono text-[10px] tracking-[0.08em] text-faint uppercase";
 export const DIALOG_BACKDROP = "fixed inset-0 bg-bg/80";
 export const DIALOG_POPUP =
 	"fixed inset-0 m-auto h-fit max-h-[85vh] w-[90vw] max-w-[420px] overflow-y-auto rounded-md border border-border bg-surface p-5 text-text";

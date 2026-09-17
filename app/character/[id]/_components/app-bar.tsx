@@ -8,7 +8,7 @@ import { useCharacter } from "../_hooks/use-character";
 import { initials } from "../_lib/initials";
 import { SheetMenu } from "./menu";
 
-export function AppBar() {
+export function AppBar({ shareToken }: { shareToken: string | null }) {
 	const { character, dispatch } = useCharacter();
 	const { id } = useParams<{ id: string }>();
 
@@ -63,7 +63,7 @@ export function AppBar() {
 				</div>
 			</div>
 
-			<SheetMenu />
+			<SheetMenu shareToken={shareToken} id={id} />
 		</header>
 	);
 }

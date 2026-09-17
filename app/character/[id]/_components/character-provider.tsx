@@ -54,6 +54,7 @@ type Props = {
 	document: Character;
 	version: number;
 	updatedAt: string;
+	shareToken: string | null;
 	/** The tab bar, built by the layout. One sticky element holds both, so the
 	 *  save line and the bar cannot pin to the same edge and overlap. */
 	bar: React.ReactNode;
@@ -65,6 +66,7 @@ export function CharacterProvider({
 	document: server,
 	version,
 	updatedAt,
+	shareToken,
 	bar,
 	children,
 }: Props) {
@@ -295,7 +297,7 @@ export function CharacterProvider({
 
 	return (
 		<CharacterContext.Provider value={value}>
-			<AppBar />
+			<AppBar shareToken={shareToken} />
 			{children}
 
 			<div className="relative sticky bottom-0 mx-auto w-full max-w-md bg-bg pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">

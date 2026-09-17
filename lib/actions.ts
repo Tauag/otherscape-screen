@@ -136,3 +136,40 @@ export async function deleteCharacter(
 	revalidatePath("/");
 	return null;
 }
+
+export type ShareState = { token: string | null; error: string | null };
+
+export async function generateShareLink(
+	_previous: ShareState,
+	form: FormData,
+): Promise<ShareState> {
+	const id = String(form.get("id") ?? "");
+	const { supabase } = await session();
+	const token = crypto.randomUUID();
+
+	const { error } = await supabase
+		.from("characters")
+		.update({ share_token: token })
+		.eq("id", id);
+	if (error) return { token: null, error: "Could not create the link." };
+
+	revalidatePath("/");
+	return { token, error: null };
+}
+
+export async function revokeShareLink(
+	_previous: ShareState,
+	form: FormData,
+): Promise<ShareState> {
+	const id = String(form.get("id") ?? "");
+	const { supabase } = await session();
+
+	const { error } = await supabase
+		.from("characters")
+		.update({ share_token: null })
+		.eq("id", id);
+	if (error) return { token: null, error: "Could not revoke the link." };
+
+	revalidatePath("/");
+	return { token: null, error: null };
+}

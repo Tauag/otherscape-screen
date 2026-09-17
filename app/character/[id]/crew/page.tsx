@@ -8,7 +8,6 @@ import { use, useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import {
-	LABEL,
 	PRIMARY,
 	REMOVE_BUTTON,
 } from "@/app/character/[id]/_components/styles";
@@ -16,6 +15,7 @@ import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { BackLink } from "@/components/back-link";
+import { LABEL } from "@/components/styles";
 import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
 import type { CrewMotivation } from "@/lib/character/types";

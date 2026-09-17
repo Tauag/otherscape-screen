@@ -4,20 +4,18 @@ import { Button } from "@base-ui/react/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Chip } from "@/app/character/[id]/_components/chip";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { LABEL, PRIMARY } from "@/app/character/[id]/_components/styles";
+import { PRIMARY } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { Chip } from "@/components/chip";
+import { LABEL } from "@/components/styles";
 import type { Loadout } from "@/lib/character/types";
 import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { specialName } from "@/lib/pickers";
 import { UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
 
-/** The sheet's summary of the loadout, mirroring ThemeCard: a read-only card
- *  that links to the full loadout screen. Only the Upgrade track is markable
- *  here, the same way a theme's tracks mark from its own card. */
 export function LoadoutCard({
 	loadout,
 	href,

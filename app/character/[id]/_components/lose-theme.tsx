@@ -4,8 +4,9 @@ import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
 import { useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { DANGER, LABEL, QUIET } from "@/app/character/[id]/_components/styles";
+import { DANGER, QUIET } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { LABEL } from "@/components/styles";
 
 /** Split from its dialog so the sheet's card can keep the button inside its
  *  Link and put the dialog outside: a dialog under that Link portals out of

@@ -1,11 +1,19 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { useState } from "react";
-import { Chip } from "@/app/character/[id]/_components/chip";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { LABEL } from "@/app/character/[id]/_components/styles";
+import {
+	DANGER,
+	PRIMARY,
+	SMALL_BUTTON,
+} from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { Chip } from "@/components/chip";
+import { LABEL } from "@/components/styles";
+import { generateShareLink, revokeShareLink } from "@/lib/actions";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Essence, GhostMemory } from "@/lib/character/types";
 import {
@@ -19,9 +27,16 @@ const MENU_POPUP =
 const MENU_ITEM =
 	"flex min-h-11 cursor-pointer items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] uppercase outline-none select-none data-[highlighted]:bg-primary/10 data-[highlighted]:text-primary";
 
-export function SheetMenu() {
+export function SheetMenu({
+	shareToken,
+	id,
+}: {
+	shareToken: string | null;
+	id: string;
+}) {
 	const [ghostsOpen, setGhostsOpen] = useState(false);
 	const [essenceOpen, setEssenceOpen] = useState(false);
+	const [shareOpen, setShareOpen] = useState(false);
 
 	return (
 		<>
@@ -63,6 +78,12 @@ export function SheetMenu() {
 							>
 								Override Essence
 							</Menu.Item>
+							<Menu.Item
+								className={MENU_ITEM}
+								onClick={() => setShareOpen(true)}
+							>
+								Share
+							</Menu.Item>
 						</Menu.Popup>
 					</Menu.Positioner>
 				</Menu.Portal>
@@ -85,7 +106,123 @@ export function SheetMenu() {
 			>
 				<EssencePicker />
 			</ConfirmDialog>
+
+			<ConfirmDialog
+				open={shareOpen}
+				onOpenChange={setShareOpen}
+				title="Share"
+				cancelLabel="Close"
+			>
+				<ShareControls id={id} initialToken={shareToken} />
+			</ConfirmDialog>
 		</>
+	);
+}
+
+/** A read-only link, generated on demand and revocable at any time. Re-sharing
+ *  issues a new token, so an old link dies (sysdesign 4). */
+function ShareControls({
+	id,
+	initialToken,
+}: {
+	id: string;
+	initialToken: string | null;
+}) {
+	const [token, setToken] = useState(initialToken);
+	const [pending, setPending] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [copied, setCopied] = useState(false);
+
+	const link =
+		token && typeof window !== "undefined"
+			? `${window.location.origin}/s/${token}`
+			: null;
+
+	async function withPending(
+		action: () => Promise<{
+			token: string | null;
+			error: string | null;
+		}>,
+	) {
+		setPending(true);
+		setError(null);
+		setCopied(false);
+		const result = await action();
+		setPending(false);
+		if (result.error) setError(result.error);
+		else setToken(result.token);
+	}
+
+	function generate() {
+		const form = new FormData();
+		form.set("id", id);
+		void withPending(() =>
+			generateShareLink({ token: null, error: null }, form),
+		);
+	}
+
+	function revoke() {
+		const form = new FormData();
+		form.set("id", id);
+		void withPending(() => revokeShareLink({ token: null, error: null }, form));
+	}
+
+	async function copy() {
+		if (!link) return;
+		await navigator.clipboard.writeText(link);
+		setCopied(true);
+	}
+
+	return (
+		<div className="flex flex-col gap-3">
+			<p className="font-sans text-sm text-dim">
+				{link
+					? "Anyone with this link opens a read-only copy of this sheet. No account needed, and they cannot edit it."
+					: "Generate a read-only link for this character. Nobody can edit through it."}
+			</p>
+
+			{link && (
+				<div className="flex items-center gap-2">
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label. */}
+					<label className="flex min-h-11 w-full items-center">
+						<span className="sr-only">Share link</span>
+						<Input
+							readOnly
+							value={link}
+							onFocus={(event) => event.target.select()}
+							className="w-full min-w-0 rounded-sm border border-border bg-bg px-2 font-mono text-xs text-dim"
+						/>
+					</label>
+					<Button type="button" onClick={copy} className={SMALL_BUTTON}>
+						{copied ? "Copied" : "Copy"}
+					</Button>
+				</div>
+			)}
+
+			{error && <p className="font-sans text-sm text-negative-text">{error}</p>}
+
+			<div className="flex gap-2">
+				{link ? (
+					<Button
+						type="button"
+						onClick={revoke}
+						disabled={pending}
+						className={DANGER}
+					>
+						Revoke link
+					</Button>
+				) : (
+					<Button
+						type="button"
+						onClick={generate}
+						disabled={pending}
+						className={PRIMARY}
+					>
+						Generate link
+					</Button>
+				)}
+			</div>
+		</div>
 	);
 }
 
