@@ -30,28 +30,34 @@ export default function LoadoutPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-6">
-      {loadout.sets.length === 0 ? (
-        <p className="font-sans text-sm text-dim">
-          No loadout sets yet. A set holds a title tag, its feature tags, and any weakness tags.
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-6 pb-8">
+      <section>
+        <p className={LABEL}>Loadout Power</p>
+        <p className="pt-1 font-mono text-sm text-dim">
+          <span className="font-display text-2xl leading-none font-bold text-primary">
+            {spend.spent}
+          </span>{" "}
+          spent of {spend.available} available
         </p>
-      ) : (
-        loadout.sets.map((set) => <SetCard key={set.id} set={set} />)
-      )}
+        {spend.warning && (
+          <p className="pt-1 font-sans text-sm text-negative-text">{spend.warning}</p>
+        )}
+      </section>
 
-      <Button
-        type="button"
-        onClick={() => dispatch({ type: "addLoadoutSet", id: crypto.randomUUID() })}
-        className={`${SMALL_BUTTON} self-start text-dim`}
-      >
-        + Loadout set
-      </Button>
+      <section className="flex flex-col gap-2 pb-2">
+        <TrackPips
+          name="Upgrade"
+          short="UPG"
+          length={UPGRADE_TRACK_LENGTH}
+          marked={loadout.upgrade}
+          size="lg"
+          active
+          onMark={mark}
+        />
+      </section>
 
-      <section className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
+       <section className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
         <p className={LABEL}>Wildcards</p>
-        <p className="font-sans text-sm text-dim">
-          Reserve the right to load a tag mid-session, outside Loading Up.
-        </p>
         <div className="flex items-center gap-3 pt-1">
           <Button
             type="button"
@@ -77,17 +83,23 @@ export default function LoadoutPage() {
         </div>
       </section>
 
-      <section>
-        <p className={LABEL}>Power</p>
-        <p className="pt-1 font-mono text-sm text-dim">
-          <span className="font-display text-2xl leading-none font-bold text-primary">
-            {spend.spent}
-          </span>{" "}
-          spent of {spend.available} available
-        </p>
-        {spend.warning && (
-          <p className="pt-1 font-sans text-sm text-negative-text">{spend.warning}</p>
+      <section className="flex flex-col gap-2">
+         <p className={LABEL}>Loadout Sets</p>
+        {loadout.sets.length === 0 ? (
+          <p className="font-sans text-sm text-dim">
+            No loadout sets yet. A set holds a title tag, its feature tags, and any weakness tags.
+          </p>
+        ) : (
+          loadout.sets.map((set) => <SetCard key={set.id} set={set} />)
         )}
+
+        <Button
+          type="button"
+          onClick={() => dispatch({ type: "addLoadoutSet", id: crypto.randomUUID() })}
+          className={`${SMALL_BUTTON} self-start text-dim`}
+        >
+          + Loadout set
+        </Button>
       </section>
 
       <section className="flex flex-col gap-2">
@@ -97,7 +109,6 @@ export default function LoadoutPage() {
         ) : (
           loadout.specials.map((text, index) => (
             <textarea
-              // The specials keep their order, so the index is the identity.
               key={index}
               value={text}
               aria-label={`Loadout special ${index + 1}`}
@@ -108,19 +119,6 @@ export default function LoadoutPage() {
             />
           ))
         )}
-      </section>
-
-      <section className="flex flex-col gap-2 pb-2">
-        <TrackPips
-          name="Upgrade"
-          short="UPG"
-          length={UPGRADE_TRACK_LENGTH}
-          marked={loadout.upgrade}
-          size="lg"
-          active
-          onMark={mark}
-        />
-        <p className="font-sans text-sm text-dim">Mark a point when you use a loadout weakness.</p>
       </section>
 
       <ConfirmDialog

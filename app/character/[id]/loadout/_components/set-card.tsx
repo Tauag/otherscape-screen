@@ -4,7 +4,6 @@ import { Toggle } from "@base-ui/react/toggle";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import type { LoadoutSet } from "@/lib/character/types";
-import { LOADOUT_TAG_COST } from "@/lib/rules/constants";
 
 const LOAD_TOGGLE = `${SMALL_BUTTON} shrink-0 text-dim data-pressed:border-[var(--hue)] data-pressed:text-[var(--hue-text)] disabled:opacity-40`;
 
@@ -19,7 +18,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
           onPressedChange={() => dispatch({ type: "toggleLoadoutSetTitle", setId: set.id })}
           className={LOAD_TOGGLE}
         >
-          {set.titleLoaded ? "Loaded" : `Load ${LOADOUT_TAG_COST}P`}
+          {set.titleLoaded ? "Loaded" : "Load"}
         </Toggle>
         <Input
           type="text"
@@ -55,7 +54,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
                 }
                 className={LOAD_TOGGLE}
               >
-                {feature.loaded ? "Loaded" : `Load ${LOADOUT_TAG_COST}P`}
+                {feature.loaded ? "Loaded" : "Load"}
               </Toggle>
               <Input
                 type="text"
@@ -136,7 +135,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
           }
           className={`${SMALL_BUTTON} text-dim`}
         >
-          + Feature {LOADOUT_TAG_COST}P
+          + Feature
         </Button>
         <Button
           type="button"

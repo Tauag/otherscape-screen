@@ -55,7 +55,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
   return (
     <main
       data-type={theme.type}
-      className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3"
+      className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3 pb-8"
     >
       <BackLink href={back} text="Sheet" />
 

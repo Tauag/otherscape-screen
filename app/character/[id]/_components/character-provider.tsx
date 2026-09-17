@@ -114,8 +114,6 @@ export function CharacterProvider({
       return;
     }
 
-    // Zero rows: another device saved first. Read what it wrote so the player
-    // can compare the two documents.
     const { data: row } = await supabase
       .from("characters")
       .select("data, version, updated_at")
@@ -138,8 +136,6 @@ export function CharacterProvider({
         theirVersion: row.version,
       });
     } catch {
-      // A newer build of the app wrote that row, so this one cannot read it.
-      // Park the local edits where they survive and stop saving over it.
       setParked(
         parkLocal(id, { version: versionRef.current, dirty: true, savedAt: now, document: snapshot }),
       );
@@ -152,8 +148,6 @@ export function CharacterProvider({
     saveRef.current = save;
   }, [save]);
 
-  // The scheduler is built in an effect, not in render, because it closes over
-  // refs. Declared before the effects that use it, so it exists when they run.
   const saver = useRef<Scheduler | null>(null);
   useEffect(() => {
     const pending = scheduler(() => void saveRef.current(), SAVE_DELAY);
@@ -221,9 +215,7 @@ export function CharacterProvider({
     });
     show("conflict");
   }, [id, server, version, updatedAt, show]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
-  // Every dispatch: replace in memory, write localStorage, schedule the save.
   useEffect(() => {
     characterRef.current = character;
     if (handled.current === character) return;
@@ -299,8 +291,6 @@ export function CharacterProvider({
       {children}
 
       <div className="relative sticky bottom-0 mx-auto w-full max-w-md bg-bg pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        {/* Fades the scrolling content into this block's own background,
-            rather than letting it stop dead under the save line and the bar. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-full h-[46px] bg-gradient-to-b from-transparent to-bg"
@@ -325,14 +315,9 @@ export function CharacterProvider({
           )}
         </div>
 
-        {/* Full-bleed: the bar reaches the screen edges, unlike the save line
-            above it. */}
         {bar}
       </div>
 
-      {/* Controlled by `conflict`, not by a Trigger: the only way out is
-          keepMine/keepTheirs, so every Base UI-initiated close attempt
-          (Escape, outside press) is canceled. */}
       <ConfirmDialog
         open={conflict !== null}
         onOpenChange={(open, eventDetails) => {

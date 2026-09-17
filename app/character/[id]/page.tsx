@@ -21,7 +21,7 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
   const essenceTied = essenceState === "unchosen" && essenceCandidates.length > 1;
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3">
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3 pb-8">
       <BackLink href="/" text="Characters" />
 
       {warning && <p className="font-sans text-sm text-negative-text">{warning}</p>}
