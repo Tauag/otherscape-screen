@@ -101,6 +101,36 @@ test("losing a theme drops the auto-assigned essence, gaining one back reassigns
   assert.equal(character.essence, "Real");
 });
 
+test("changing a theme's type clears its themebook, since a themebook belongs to one type", () => {
+  let character = newCharacter();
+  character = reduce(character, { type: "addTheme", id: "theme-0" });
+  character = reduce(character, {
+    type: "setThemebook",
+    themeId: "theme-0",
+    themebook: "Affiliation",
+  });
+
+  character = reduce(character, {
+    type: "setThemeType",
+    themeId: "theme-0",
+    themeType: "mythos",
+  });
+  assert.equal(character.themes[0].themebook, "");
+
+  // Re-picking the type it already has is not a change: leave the choice alone.
+  character = reduce(character, {
+    type: "setThemebook",
+    themeId: "theme-0",
+    themebook: "Artifact",
+  });
+  character = reduce(character, {
+    type: "setThemeType",
+    themeId: "theme-0",
+    themeType: "mythos",
+  });
+  assert.equal(character.themes[0].themebook, "Artifact");
+});
+
 test("a player's chosen essence survives theme edits that would otherwise re-suggest", () => {
   let character = newCharacter();
   for (let i = 0; i < STARTING_THEMES; i++) {

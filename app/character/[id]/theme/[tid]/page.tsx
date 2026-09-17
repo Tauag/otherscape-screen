@@ -2,17 +2,21 @@
 
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
+import { Select } from "@base-ui/react/select";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { use } from "react";
+import { use, useState } from "react";
 import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
 import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
+import { ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
 import { SpecialCard } from "@/app/character/[id]/_components/special-card";
 import { LABEL } from "@/app/character/[id]/_components/styles";
 import { Track } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
+import { useContentPack } from "@/lib/content/load";
+import { findThemebook, themebooksOfType } from "@/lib/content/pack";
 import type { ThemeType } from "@/lib/character/types";
 import { TagRow } from "./_components/tag-row";
 import { BackLink } from "@/components/back-link";
@@ -24,14 +28,28 @@ const BASE = "inline-flex min-h-11 items-center self-start rounded-sm border px-
 const ADD = `${BASE} border-[var(--hue)] text-[var(--hue)]`;
 const ADD_WEAKNESS = `${BASE} border-negative text-negative`;
 
+const POPUP =
+  "z-40 max-h-[70vh] w-[var(--anchor-width)] overflow-y-auto rounded-sm border border-border bg-surface p-1.5 outline-none";
+const TYPE_ITEM =
+  "flex min-h-11 cursor-default items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] text-dim uppercase outline-none data-[highlighted]:bg-bg data-[selected]:text-[var(--hue)]";
+const THEMEBOOK_TRIGGER =
+  "col-span-2 flex min-h-11 items-center justify-between gap-2 rounded-sm border border-border bg-bg px-3 text-left";
+const THEMEBOOK_POPUP =
+  "z-40 max-h-[75vh] w-[min(92vw,380px)] overflow-y-auto rounded-sm border border-border bg-surface p-2 outline-none";
+const THEMEBOOK_ITEM = `${ROW} cursor-default outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)]`;
+
 export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[tid]">) {
   const { id, tid } = use(params);
   const { character, dispatch } = useCharacter();
   const router = useRouter();
+  const pack = useContentPack();
 
   const theme = character.themes.find((candidate) => candidate.id === tid);
+  const chosenBook = theme ? findThemebook(pack, theme.themebook) : null;
+  const [themebookOpen, setThemebookOpen] = useState(false);
+  const [homebrew, setHomebrew] = useState("");
+
   const back = `/character/${id}`;
-  /** This screen, and the root of the three picker routes that return to it. */
   const here = `${back}/theme/${tid}`;
 
   if (!theme) {
@@ -60,39 +78,107 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
     >
       <BackLink href={back} text="Sheet" />
 
-      <fieldset className="flex flex-col gap-1">
-        <div className="flex gap-1">
-          {THEME_TYPES.map((value) => (
-            <label key={value} data-type={value} className="flex-1">
-              <input
-                type="radio"
-                name="theme-type"
-                value={value}
-                checked={theme.type === value}
-                onChange={() =>
-                  dispatch({ type: "setThemeType", themeId: theme.id, themeType: value })
-                }
-                className="peer sr-only"
-              />
-              <span className="grid min-h-11 place-items-center rounded-sm border border-border font-display text-sm font-semibold tracking-[0.08em] text-dim uppercase peer-checked:border-[var(--hue)] peer-checked:text-[var(--hue)] peer-focus-visible:outline-2 peer-focus-visible:outline-primary">
-                {value}
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <div className="flex flex-col gap-1">
-        <span className={LABEL}>Themebook</span>
-        <Link
-          href={`${here}/themebook`}
-          aria-label={`Themebook: ${theme.themebook.trim() || "none yet"}`}
-          className={`${FIELD} flex items-center`}
+      <div className="grid grid-cols-3 gap-1.5">
+        <Select.Root
+          value={theme.type}
+          onValueChange={(themeType) => {
+            if (themeType) dispatch({ type: "setThemeType", themeId: theme.id, themeType });
+          }}
         >
-          <span className={theme.themebook.trim() ? undefined : "text-dim"}>
-            {theme.themebook.trim() || "Choose a themebook"}
-          </span>
-        </Link>
+          <Select.Trigger className="col-span-1 flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-[var(--hue)] px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase">
+            {theme.type}
+            <Select.Icon aria-hidden className="text-xs">
+              ▾
+            </Select.Icon>
+          </Select.Trigger>
+          <Select.Portal>
+            <Select.Positioner sideOffset={4} align="start">
+              <Select.Popup className={POPUP}>
+                <Select.List>
+                  {THEME_TYPES.map((value) => (
+                    <Select.Item key={value} value={value} className={TYPE_ITEM}>
+                      <Select.ItemText>{value}</Select.ItemText>
+                    </Select.Item>
+                  ))}
+                </Select.List>
+              </Select.Popup>
+            </Select.Positioner>
+          </Select.Portal>
+        </Select.Root>
+
+        <Select.Root
+          open={themebookOpen}
+          onOpenChange={(open) => {
+            setThemebookOpen(open);
+            if (open) setHomebrew(chosenBook ? "" : theme.themebook);
+          }}
+          value={chosenBook?.name ?? null}
+          onValueChange={(themebook) => {
+            if (themebook) dispatch({ type: "setThemebook", themeId: theme.id, themebook });
+          }}
+        >
+          <Select.Trigger
+            aria-label={`Themebook: ${theme.themebook.trim() || "none yet"}. Tap to change.`}
+            className={THEMEBOOK_TRIGGER}
+          >
+            <span
+              className={
+                theme.themebook.trim()
+                  ? "truncate font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase"
+                  : "font-sans text-base text-dim"
+              }
+            >
+              {theme.themebook.trim() || "Choose a themebook"}
+            </span>
+            <Select.Icon aria-hidden className="shrink-0 text-xs text-dim">
+              ▾
+            </Select.Icon>
+          </Select.Trigger>
+          <Select.Portal>
+            <Select.Positioner sideOffset={4} align="start">
+              <Select.Popup className={THEMEBOOK_POPUP}>
+                <Select.List className="flex flex-col gap-1.5">
+                  {themebooksOfType(pack, theme.type).map((book) => (
+                    <Select.Item key={book.id} value={book.name} className={THEMEBOOK_ITEM}>
+                      <Select.ItemText className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
+                        {book.name}
+                      </Select.ItemText>
+                      <span className={ROW_TEXT}>{book.concept}</span>
+                    </Select.Item>
+                  ))}
+                </Select.List>
+
+                {/* Free text, so it isn't a Select.Item: nothing to match against a
+                    fixed list. Closes the popup itself since picking it isn't an
+                    item press the Select would otherwise treat as a selection. */}
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    dispatch({
+                      type: "setThemebook",
+                      themeId: theme.id,
+                      themebook: homebrew.trim(),
+                    });
+                    setThemebookOpen(false);
+                  }}
+                  className="mt-2 flex flex-col gap-1 border-t border-border pt-2"
+                >
+                  <span className={LABEL}>Homebrew themebook</span>
+                  <Input
+                    type="text"
+                    value={homebrew}
+                    onChange={(event) => setHomebrew(event.target.value)}
+                    placeholder="A themebook of your own"
+                    className={FIELD}
+                  />
+                  <Button type="submit" className={`${ADD} mt-1`}>
+                    Use this name
+                  </Button>
+                </form>
+              </Select.Popup>
+            </Select.Positioner>
+          </Select.Portal>
+        </Select.Root>
       </div>
 
       <h1
@@ -138,25 +224,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
             />
           ))}
         </ul>
-        {/* A new tag starts on question A. Its letter is the way in to the
-            question picker, where the player reads the ten and chooses. */}
-        <Button
-          type="button"
-          onClick={() =>
-            dispatch({
-              type: "addPowerTag",
-              themeId: theme.id,
-              id: crypto.randomUUID(),
-              letter: "A",
-            })
-          }
-          className={ADD}
-        >
-          Add power tag
-        </Button>
-      </section>
 
-      <section className="flex flex-col gap-2">
         <h2 className={LABEL}>Weakness tags</h2>
         <ul className="flex flex-col gap-3">
           {theme.weaknessTags.map((tag, index) => (
@@ -171,6 +239,24 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
             />
           ))}
         </ul>
+      </section>
+
+      <section className="flex flex-row gap-2">
+        <Button
+          type="button"
+          onClick={() =>
+            dispatch({
+              type: "addPowerTag",
+              themeId: theme.id,
+              id: crypto.randomUUID(),
+              letter: "A",
+            })
+          }
+          className={ADD}
+        >
+          Add power tag
+        </Button>
+        
         <Button
           type="button"
           onClick={() =>
@@ -206,8 +292,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           <p className="font-sans text-sm text-dim">No theme specials yet.</p>
         ) : (
           <ul className="flex flex-col gap-1.5">
-            {/* The index keys: the picker takes a special or gives it back whole,
-                and nothing reorders the list. */}
             {theme.specials.map((special, index) => (
               <li key={index}>
                 <SpecialCard

@@ -47,12 +47,7 @@ import {
 } from "@/lib/loadout-edit";
 import { STARTING_THEMES } from "@/lib/rules/constants";
 
-/**
- * Domain verbs, never generic setters. A new verb is one more case below, so
- * S3 to S7 add burnTag, markUpgrade, raiseStatus and loseTheme here without a
- * refactor. `replace` is the exception: it is how a whole document arrives,
- * from the offline copy on mount or from a resolved conflict.
- */
+
 export type CharacterAction =
   | { type: "replace"; document: Character }
   | { type: "rename"; name: string }
@@ -123,13 +118,6 @@ const withLoadout = (character: Character, loadout: Partial<Loadout>): Character
   loadout: { ...character.loadout, ...loadout },
 });
 
-/**
- * Tracks the theme mix until the player picks (PRD 7.5: "Essence changes
- * when the character replaces themes... Re-suggest when the theme mix
- * changes."). Once the mix narrows to exactly one Essence and the character
- * holds all 4 starting themes, it assigns itself; a tied or short mix reads
- * as unassigned. `setEssence` is the only thing that freezes it.
- */
 function autoEssence(
   character: Pick<Character, "essence" | "essenceChosen">,
   themes: Theme[],
@@ -151,9 +139,12 @@ export function reduce(character: Character, action: CharacterAction): Character
     case "setPlayerName":
       return { ...character, playerName: action.playerName };
     case "setThemeType": {
+      // A themebook belongs to one type, so a stale choice from the old type
+      // would otherwise linger, matching nothing in the new type's list.
       const next = inTheme(character, action.themeId, (theme) => ({
         ...theme,
         type: action.themeType,
+        themebook: theme.type === action.themeType ? theme.themebook : "",
       }));
       return { ...next, essence: autoEssence(next, next.themes) };
     }
