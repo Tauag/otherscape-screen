@@ -88,14 +88,14 @@ export default function CrewQuestionPicker({
 								<span className="font-mono text-[13px] text-[var(--hue)]">
 									{row.label}
 								</span>
-								{row.count > 0 && (
-									<span className={LABEL}>
-										Already answered by {row.count}{" "}
-										{row.count === 1 ? "tag" : "tags"}
-									</span>
-								)}
+								<span className={ROW_TEXT}>{row.text}</span>
 							</span>
-							<span className={ROW_TEXT}>{row.text}</span>
+							{row.count > 0 && (
+								<span className={LABEL}>
+									Already answered by {row.count}{" "}
+									{row.count === 1 ? "tag" : "tags"}
+								</span>
+							)}
 						</Button>
 					</li>
 				))}
