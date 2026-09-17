@@ -24,9 +24,9 @@ import { BackLink } from "@/components/back-link";
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 
 const FIELD = "min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
-const BASE = "inline-flex min-h-11 items-center self-start rounded-sm border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase";
-const ADD = `${BASE} border-[var(--hue)] text-[var(--hue)]`;
-const ADD_WEAKNESS = `${BASE} border-negative text-negative`;
+const BASE = "inline-flex min-h-11 items-center self-start rounded-sm px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
+const ADD = `${BASE} bg-[var(--hue)]`;
+const ADD_WEAKNESS = `${BASE} bg-negative`;
 
 const POPUP =
   "z-40 max-h-[70vh] w-[var(--anchor-width)] overflow-y-auto rounded-sm border border-border bg-surface p-1.5 outline-none";

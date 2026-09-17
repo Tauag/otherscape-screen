@@ -9,7 +9,7 @@ export const PRIMARY =
   "inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
 /** PRIMARY's destructive sibling, for an irreversible action like losing a theme. */
 export const DANGER =
-  "inline-flex min-h-11 items-center rounded-sm bg-danger px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
+  "inline-flex min-h-11 items-center rounded-sm text-danger border border-danger px-4 font-display text-sm font-bold tracking-[0.08em] uppercase";
 export const QUIET =
   "inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase";
 /** QUIET's compact sibling: a chip-sized outline button for a dense list of rows. */
