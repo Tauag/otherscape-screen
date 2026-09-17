@@ -78,6 +78,7 @@ test("a pack the player has uploaded carries its question text through", () => {
 		],
 		loadoutSpecials: FALLBACK_PACK.loadoutSpecials,
 		crewTheme: FALLBACK_PACK.crewTheme,
+		reference: FALLBACK_PACK.reference,
 	};
 	assert.equal(
 		powerQuestions(pack, pack.themebooks[0].name)[2].text,
@@ -92,6 +93,7 @@ test("the loadout's eight specials come straight off the pack, not a themebook",
 			index === 0 ? { name: "Deeply Customizable", text: "…" } : special,
 		),
 		crewTheme: FALLBACK_PACK.crewTheme,
+		reference: FALLBACK_PACK.reference,
 	};
 	assert.equal(loadoutSpecialsOf(pack)[0].name, "Deeply Customizable");
 	assert.equal(

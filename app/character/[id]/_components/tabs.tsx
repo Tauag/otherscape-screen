@@ -49,6 +49,16 @@ export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 				</>
 			),
 		},
+		{
+			label: "Ref",
+			segment: "/reference",
+			icon: (
+				<>
+					<path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2z" />
+					<path d="M8 3v18" />
+				</>
+			),
+		},
 	];
 
 const KEY =

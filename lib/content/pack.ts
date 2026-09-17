@@ -5,9 +5,12 @@ import type {
 } from "../character/types.ts";
 import {
 	CREW_THEME_SPECIALS_COUNT,
+	EFFECT_NAMES,
 	FALLBACK_THEMEBOOKS,
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
+	POWER_OPTION_NAMES,
+	ROLL_STEP_NAMES,
 	SPECIALS_PER_THEMEBOOK,
 	WEAKNESS_LETTERS,
 } from "./fallback.ts";
@@ -40,11 +43,26 @@ export type CrewThemeContent = {
 	specials: Special[];
 };
 
+/** A Special that also carries a Power price: an effect, or a mitigation. */
+export type Priced = Special & { cost: string };
+
+/** The cheatsheet the Reference screen prints (PRD 7.10). */
+export type Reference = {
+	/** Always the twelve effects, in order. */
+	effects: Priced[];
+	mitigation: Priced[];
+	/** One row per Scale step. The pack decides how many; the fallback knows none. */
+	scale: Special[];
+	makingARoll: Special[];
+	powerOptions: Special[];
+};
+
 export type ContentPack = {
 	themebooks: Themebook[];
 	/** The loadout theme's own specials (core rules, page 134). Always eight. */
 	loadoutSpecials: Special[];
 	crewTheme: CrewThemeContent;
+	reference: Reference;
 };
 
 /** What a tag editor prints over a blank field: "power tag question B". */
@@ -68,6 +86,19 @@ const empty = <L>(letters: readonly L[]): Question<L>[] =>
 const emptySpecials = (count: number): Special[] =>
 	Array.from({ length: count }, () => ({ name: "", text: "" }));
 
+/**
+ * Names only. The costs, the Scale steps, and every rule sentence live in the
+ * printed CHEATSHEET, so the pack carries them and the screen shows the blank
+ * slots until it does (design.md, interface decision 5).
+ */
+export const FALLBACK_REFERENCE: Reference = {
+	effects: EFFECT_NAMES.map((name) => ({ name, cost: "", text: "" })),
+	mitigation: [],
+	scale: [],
+	makingARoll: ROLL_STEP_NAMES.map((name) => ({ name, text: "" })),
+	powerOptions: POWER_OPTION_NAMES.map((name) => ({ name, text: "" })),
+};
+
 export const FALLBACK_PACK: ContentPack = {
 	themebooks: FALLBACK_THEMEBOOKS.map((book) => ({
 		...book,
@@ -83,6 +114,7 @@ export const FALLBACK_PACK: ContentPack = {
 		weaknessQuestions: empty(WEAKNESS_LETTERS),
 		specials: emptySpecials(CREW_THEME_SPECIALS_COUNT),
 	},
+	reference: FALLBACK_REFERENCE,
 };
 
 /**
@@ -92,7 +124,7 @@ export const FALLBACK_PACK: ContentPack = {
  */
 export function normalize(raw: unknown): ContentPack | null {
 	if (typeof raw !== "object" || raw === null) return null;
-	const { themebooks, loadout_specials, crew_theme } = raw as Record<
+	const { themebooks, loadout_specials, crew_theme, reference } = raw as Record<
 		string,
 		unknown
 	>;
@@ -114,7 +146,12 @@ export function normalize(raw: unknown): ContentPack | null {
 	const crewTheme = normalizeCrewTheme(crew_theme);
 	if (!crewTheme) return null;
 
-	return { themebooks: normalized, loadoutSpecials, crewTheme };
+	return {
+		themebooks: normalized,
+		loadoutSpecials,
+		crewTheme,
+		reference: normalizeReference(reference),
+	};
 }
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -125,6 +162,56 @@ function normalizeSpecials(raw: unknown, count: number): Special[] | null {
 		const { name, text: rule } = (special ?? {}) as Record<string, unknown>;
 		return { name: text(name), text: text(rule) };
 	});
+}
+
+const pricedRow = (row: Record<string, unknown>): Priced => ({
+	name: text(row.name),
+	cost: text(row.cost),
+	text: text(row.text),
+});
+
+const plainRow = (row: Record<string, unknown>): Special => ({
+	name: text(row.name),
+	text: text(row.text),
+});
+
+const rows = <T>(
+	raw: unknown,
+	row: (entry: Record<string, unknown>) => T,
+	fallback: T[],
+): T[] =>
+	Array.isArray(raw)
+		? raw.map((entry) => row((entry ?? {}) as Record<string, unknown>))
+		: fallback;
+
+/**
+ * Never null, unlike every other section: the cheatsheet is text a player reads,
+ * so a pack that predates it, or fills it in part, still loads every themebook.
+ * A missing section falls back to its names with the slots left blank.
+ */
+function normalizeReference(raw: unknown): Reference {
+	if (typeof raw !== "object" || raw === null) return FALLBACK_REFERENCE;
+	const section = raw as Record<string, unknown>;
+
+	return {
+		effects: rows(section.effects, pricedRow, FALLBACK_REFERENCE.effects),
+		mitigation: rows(
+			section.mitigation,
+			pricedRow,
+			FALLBACK_REFERENCE.mitigation,
+		),
+		scale: rows(section.scale, plainRow, FALLBACK_REFERENCE.scale),
+		makingARoll: rows(
+			section.making_a_roll,
+			plainRow,
+			FALLBACK_REFERENCE.makingARoll,
+		),
+		powerOptions: rows(
+			section.power_options,
+			plainRow,
+			FALLBACK_REFERENCE.powerOptions,
+		),
+	};
 }
 
 const isThemeType = (value: string): value is ThemeType =>

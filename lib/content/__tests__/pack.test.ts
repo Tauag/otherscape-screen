@@ -4,8 +4,11 @@ import { join } from "node:path";
 import { test } from "node:test";
 import {
 	CREW_THEME_SPECIALS_COUNT,
+	EFFECT_NAMES,
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
+	POWER_OPTION_NAMES,
+	ROLL_STEP_NAMES,
 	WEAKNESS_LETTERS,
 } from "../fallback.ts";
 import {
@@ -134,6 +137,64 @@ test("the fallback holds the 14 themebooks, with every text slot empty", () => {
 			text: "",
 		})),
 	);
+});
+
+test("the fallback reference holds the names it knows, and nothing it does not", () => {
+	const { reference } = FALLBACK_PACK;
+
+	assert.deepEqual(
+		reference.effects,
+		EFFECT_NAMES.map((name) => ({ name, cost: "", text: "" })),
+	);
+	assert.deepEqual(
+		reference.makingARoll,
+		ROLL_STEP_NAMES.map((name) => ({ name, text: "" })),
+	);
+	assert.deepEqual(
+		reference.powerOptions,
+		POWER_OPTION_NAMES.map((name) => ({ name, text: "" })),
+	);
+
+	// The mitigation rows and the Scale steps are in the printed cheatsheet
+	// alone, so the fallback does not even know how many there are.
+	assert.deepEqual(reference.mitigation, []);
+	assert.deepEqual(reference.scale, []);
+});
+
+test("a pack with no reference section loads, and keeps the fallback names", () => {
+	const pack = normalize(rawPack());
+	assert.deepEqual(pack?.reference, FALLBACK_PACK.reference);
+
+	const partial = rawPack() as ReturnType<typeof rawPack> & {
+		reference: unknown;
+	};
+	partial.reference = {
+		effects: [{ name: "Attack", cost: "1 Power", text: "Inflict a status." }],
+		scale: [{ name: "Same scale", text: "No change." }],
+	};
+
+	const filled = normalize(partial);
+	assert.deepEqual(filled?.reference.effects, [
+		{ name: "Attack", cost: "1 Power", text: "Inflict a status." },
+	]);
+	assert.deepEqual(filled?.reference.scale, [
+		{ name: "Same scale", text: "No change." },
+	]);
+	// A section the pack leaves out keeps its names and its blank slots.
+	assert.deepEqual(
+		filled?.reference.powerOptions,
+		FALLBACK_PACK.reference.powerOptions,
+	);
+
+	// A row missing a field reads as a blank slot, never as a dropped pack.
+	const sparse = rawPack() as ReturnType<typeof rawPack> & {
+		reference: unknown;
+	};
+	sparse.reference = { effects: [{ name: "Attack" }, null] };
+	assert.deepEqual(normalize(sparse)?.reference.effects, [
+		{ name: "Attack", cost: "", text: "" },
+		{ name: "", cost: "", text: "" },
+	]);
 });
 
 test("the themebooks split 6 self, 4 mythos, 4 noise", () => {
