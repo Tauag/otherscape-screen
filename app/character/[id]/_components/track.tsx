@@ -205,11 +205,11 @@ function UpgradeDialog({
       }
     >
       <Button type="button" onClick={takeTag} className={PRIMARY}>
-        Add power tag
+        New power tag
       </Button>
       {!nascent && (
         <Button type="button" onClick={takeSpecial} className={PRIMARY}>
-          Add theme special
+          New theme special
         </Button>
       )}
     </ConfirmDialog>

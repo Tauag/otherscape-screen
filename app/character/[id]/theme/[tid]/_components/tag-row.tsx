@@ -6,8 +6,7 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type { PowerQuestionLetter, WeaknessQuestionLetter } from "@/lib/character/types";
 
-const ICON =
-  "grid size-11 shrink-0 place-items-center rounded-sm border border-border text-base disabled:opacity-30";
+const ICON = "grid size-11 shrink-0 place-items-center text-base disabled:text-faint";
 
 type RowTag = {
   id: string;
@@ -92,39 +91,41 @@ export function TagRow({
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-1">
-        <Button
-          type="button"
-          disabled={index === 0}
-          onClick={(event) => move(event, "up")}
-          aria-label={`Move ${named} up`}
-          className={`${ICON} ml-auto`}
-        >
-          ↑
-        </Button>
-        <Button
-          type="button"
-          disabled={index === count - 1}
-          onClick={(event) => move(event, "down")}
-          aria-label={`Move ${named} down`}
-          className={ICON}
-        >
-          ↓
-        </Button>
-        <Button
-          type="button"
-          onClick={() =>
-            dispatch(
-              power
-                ? { type: "deletePowerTag", themeId, tagId: tag.id }
-                : { type: "deleteWeaknessTag", themeId, tagId: tag.id },
-            )
-          }
-          aria-label={`Delete ${named}`}
-          className={ICON}
-        >
-          ✕
-        </Button>
+      <div className="flex flex-wrap items-center">
+        <div className="ml-auto flex divide-x divide-border overflow-hidden rounded-sm border border-border">
+          <Button
+            type="button"
+            disabled={index === 0}
+            onClick={(event) => move(event, "up")}
+            aria-label={`Move ${named} up`}
+            className={ICON}
+          >
+            ↑
+          </Button>
+          <Button
+            type="button"
+            disabled={index === count - 1}
+            onClick={(event) => move(event, "down")}
+            aria-label={`Move ${named} down`}
+            className={ICON}
+          >
+            ↓
+          </Button>
+          <Button
+            type="button"
+            onClick={() =>
+              dispatch(
+                power
+                  ? { type: "deletePowerTag", themeId, tagId: tag.id }
+                  : { type: "deleteWeaknessTag", themeId, tagId: tag.id },
+              )
+            }
+            aria-label={`Delete ${named}`}
+            className={ICON}
+          >
+            ✕
+          </Button>
+        </div>
       </div>
     </li>
   );

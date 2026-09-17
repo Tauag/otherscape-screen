@@ -251,7 +251,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           }
           className={ADD}
         >
-          Add power tag
+          New power tag
         </Button>
         
         <Button
@@ -266,7 +266,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           }
           className={ADD_WEAKNESS}
         >
-          Add weakness tag
+          New weakness tag
         </Button>
       </section>
 

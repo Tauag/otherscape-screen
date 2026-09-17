@@ -95,7 +95,7 @@ function EssencePicker() {
             {candidates.length === 0
               ? "Add a theme and the sheet suggests an Essence. Until then, choose one yourself."
               : candidates.length === 1
-                ? "Your themes suggest this. It assigns itself once you hold 4 themes, unless you choose first."
+                ? "Your themes suggest this. It assigns itself once you have 4 theme cards, unless you choose first."
                 : "Your themes suggest one of these. The mix ties, so choose one yourself."}
           </p>
 

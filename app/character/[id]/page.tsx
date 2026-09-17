@@ -60,7 +60,7 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
           onClick={() => dispatch({ type: "addTheme", id: crypto.randomUUID() })}
           className="inline-flex min-h-11 items-center self-start rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
         >
-          Add a theme
+          New theme
         </Button>
       )}
     </main>
