@@ -7,11 +7,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
-import { LoseTheme } from "@/app/character/[id]/_components/lose-theme";
+import { LoseThemeButton, LoseThemeDialog } from "@/app/character/[id]/_components/lose-theme";
 import { ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
-import { SpecialCard } from "@/app/character/[id]/_components/special-card";
+import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { LABEL } from "@/app/character/[id]/_components/styles";
-import { Track } from "@/app/character/[id]/_components/track";
+import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
@@ -48,6 +48,8 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
   const chosenBook = theme ? findThemebook(pack, theme.themebook) : null;
   const [themebookOpen, setThemebookOpen] = useState(false);
   const [homebrew, setHomebrew] = useState("");
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [loseOpen, setLoseOpen] = useState(false);
 
   const back = `/character/${id}`;
   const here = `${back}/theme/${tid}`;
@@ -190,21 +192,21 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
       <section className="flex gap-[10px]">
         <Track
           themeId={theme.id}
-          themeHref={here}
-          nascent={nascent}
           track="upgrade"
           marked={theme.upgrade}
           size="lg"
+          onComplete={() => setUpgradeOpen(true)}
         />
-        <Track
-          themeId={theme.id}
-          themeHref={here}
-          nascent={nascent}
-          track="decay"
-          marked={theme.decay}
-          size="lg"
-        />
+        <Track themeId={theme.id} track="decay" marked={theme.decay} size="lg" />
       </section>
+
+      <UpgradeDialog
+        themeId={theme.id}
+        themeHref={here}
+        nascent={nascent}
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+      />
 
       <section className="flex flex-col gap-2">
         <h2 className={LABEL}>Power tags</h2>
@@ -288,29 +290,29 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         {theme.specials.length === 0 ? (
           <p className="font-sans text-sm text-dim">No theme specials yet.</p>
         ) : (
-          <ul className="flex flex-col gap-1.5">
-            {theme.specials.map((special, index) => (
-              <li key={index}>
-                <SpecialCard
-                  special={special}
-                  onRemove={() =>
-                    dispatch({ type: "removeThemeSpecial", themeId: theme.id, special })
-                  }
-                />
-              </li>
-            ))}
-          </ul>
+          <SpecialList
+            specials={theme.specials}
+            onRemove={(special) =>
+              dispatch({ type: "removeThemeSpecial", themeId: theme.id, special })
+            }
+          />
         )}
         <Link href={`${here}/specials`} className={`${ADD} mt-1`}>
-          Choose theme specials
+          New theme special
         </Link>
       </section>
 
       <section className="flex flex-col gap-2 pb-2">
         {decayFull(theme) && <DecayWarning />}
-        <LoseTheme
+        <LoseThemeButton
+          named={title?.text.trim() || "this theme"}
+          onOpen={() => setLoseOpen(true)}
+        />
+        <LoseThemeDialog
           themeId={theme.id}
           named={title?.text.trim() || "this theme"}
+          open={loseOpen}
+          onOpenChange={setLoseOpen}
           onLost={() => router.replace(back)}
         />
       </section>

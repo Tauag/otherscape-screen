@@ -109,12 +109,10 @@ export function decrementWildcards(loadout: Loadout): Loadout {
   return { ...loadout, wildcards: Math.max(0, loadout.wildcards - 1) };
 }
 
-/**
- * One click, one more box - the same rule as a theme's Upgrade track
- * (lib/character/theme.ts's markTrack). A full track clears itself in the
- * same click, so the caller opens the Upgrade-choice dialog right then,
- * from the pre-click count, not by watching for a track that stays full.
- */
+export function adjustLoadoutPower(loadout: Loadout, delta: number): Loadout {
+  return { ...loadout, availablePower: Math.max(0, loadout.availablePower + delta) };
+}
+
 export function markLoadoutUpgrade(loadout: Loadout): Loadout {
   const { upgrade } = loadout;
   const next = upgrade >= UPGRADE_TRACK_LENGTH ? 0 : ((upgrade + 1) as MarkCount);
@@ -123,11 +121,6 @@ export function markLoadoutUpgrade(loadout: Loadout): Loadout {
 
 export type UpgradeChoice = "power" | "special";
 
-/**
- * The full track clears, and the player takes one of the two. A "special"
- * choice adds nothing here - the caller sends the player to the loadout
- * specials picker, same as a theme's Upgrade dialog does for a theme special.
- */
 export function takeLoadoutUpgrade(loadout: Loadout, choice: UpgradeChoice): Loadout {
   return {
     ...loadout,

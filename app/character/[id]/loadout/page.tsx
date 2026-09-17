@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { SpecialCard } from "@/app/character/[id]/_components/special-card";
+import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { LABEL, PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
@@ -15,6 +15,8 @@ import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
 
 const ADD = `${SMALL_BUTTON} self-start text-dim`;
+const STEP =
+  "grid size-11 place-items-center rounded-sm border border-border text-dim disabled:opacity-40";
 
 export default function LoadoutPage({ params }: PageProps<"/character/[id]/loadout">) {
   const { id } = use(params);
@@ -41,12 +43,31 @@ export default function LoadoutPage({ params }: PageProps<"/character/[id]/loado
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-6 pb-8">
       <section>
         <p className={LABEL}>Loadout Power</p>
-        <p className="pt-1 font-mono text-sm text-dim">
-          <span className="font-display text-2xl leading-none font-bold text-primary">
-            {spend.spent}
-          </span>{" "}
-          spent of {spend.available} available
-        </p>
+        <div className="flex items-center gap-3 pt-1">
+          <p className="font-mono text-sm text-dim">
+            <span className="font-display text-2xl leading-none font-bold text-primary">
+              {spend.spent}
+            </span>{" "}
+            spent of {spend.available} available
+          </p>
+          <Button
+            type="button"
+            onClick={() => dispatch({ type: "adjustLoadoutPower", delta: -1 })}
+            disabled={spend.available === 0}
+            className={STEP}
+            aria-label="Remove one available Power"
+          >
+            −
+          </Button>
+          <Button
+            type="button"
+            onClick={() => dispatch({ type: "adjustLoadoutPower", delta: 1 })}
+            className={STEP}
+            aria-label="Add one available Power"
+          >
+            +
+          </Button>
+        </div>
         {spend.warning && (
           <p className="pt-1 font-sans text-sm text-negative-text">{spend.warning}</p>
         )}
@@ -71,7 +92,7 @@ export default function LoadoutPage({ params }: PageProps<"/character/[id]/loado
             type="button"
             onClick={() => dispatch({ type: "decrementWildcards" })}
             disabled={loadout.wildcards === 0}
-            className="grid size-11 place-items-center rounded-sm border border-border text-dim disabled:opacity-40"
+            className={STEP}
             aria-label="Remove a wildcard"
           >
             −
@@ -82,7 +103,7 @@ export default function LoadoutPage({ params }: PageProps<"/character/[id]/loado
           <Button
             type="button"
             onClick={() => dispatch({ type: "incrementWildcards" })}
-            className="grid size-11 place-items-center rounded-sm border border-border text-dim"
+            className={STEP}
             aria-label="Add a wildcard"
           >
             +
@@ -115,18 +136,10 @@ export default function LoadoutPage({ params }: PageProps<"/character/[id]/loado
         {loadout.specials.length === 0 ? (
           <p className="font-sans text-sm text-dim">No loadout specials yet.</p>
         ) : (
-          <ul className="flex flex-col gap-1.5">
-            {/* The index keys: the picker takes a special or gives it back
-                whole, and nothing reorders the list. */}
-            {loadout.specials.map((special, index) => (
-              <li key={index}>
-                <SpecialCard
-                  special={special}
-                  onRemove={() => dispatch({ type: "removeLoadoutSpecial", special })}
-                />
-              </li>
-            ))}
-          </ul>
+          <SpecialList
+            specials={loadout.specials}
+            onRemove={(special) => dispatch({ type: "removeLoadoutSpecial", special })}
+          />
         )}
         <Link href={`/character/${id}/loadout/specials`} className={`${ADD} mt-1`}>
           Choose loadout specials

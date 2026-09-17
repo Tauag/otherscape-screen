@@ -2,7 +2,6 @@
 
 import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { TrackName } from "@/lib/character/theme";
 import { DECAY_TRACK_LENGTH, UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
@@ -104,30 +103,19 @@ export function TrackPips({
   );
 }
 
-/** The same track on both screens, so either one can mark it. `size` picks the
- *  sheet's small header-row pips or the theme screen's large panel pips; the
- *  control and its accessibility markup are identical either way. */
-export function Track({
-  themeId,
-  themeHref,
-  nascent,
-  track,
-  marked,
-  size,
-}: {
-  themeId: string;
-  /** The theme screen's own URL, so a completed Upgrade can land there. */
-  themeHref: string;
-  /** A nascent theme upgrades toward its missing power tags first, so the
-   *  Upgrade dialog offers only that until the theme is full. */
-  nascent: boolean;
-  track: TrackName;
-  marked: number;
-  size: TrackSize;
-}) {
+/** Required on the Upgrade track and rejected on Decay, so a caller that
+ *  forgets to open UpgradeDialog fails to compile rather than silently doing
+ *  nothing. The caller owns that dialog so it can sit outside a card's
+ *  wrapping Link: a dialog rendered under the Link portals out of the DOM but
+ *  stays in the React tree, so its clicks bubble into the Link and navigate. */
+type TrackProps = { themeId: string; marked: number; size: TrackSize } & (
+  | { track: "upgrade"; onComplete: () => void }
+  | { track: "decay"; onComplete?: never }
+);
+
+export function Track({ themeId, track, marked, size, onComplete }: TrackProps) {
   const { dispatch } = useCharacter();
   const { name, short, length } = TRACKS[track];
-  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   function mark(event: React.MouseEvent<HTMLButtonElement>) {
     // The sheet's card is a single Link to the theme screen; preventDefault stops
@@ -135,35 +123,23 @@ export function Track({
     event.preventDefault();
     const willComplete = track === "upgrade" && marked + 1 >= length;
     dispatch({ type: "markTrack", themeId, track });
-    if (willComplete) setUpgradeOpen(true);
+    if (willComplete) onComplete?.();
   }
 
   return (
-    <>
-      <TrackPips
-        name={name}
-        short={short}
-        length={length}
-        marked={marked}
-        size={size}
-        active={track === "upgrade"}
-        onMark={mark}
-      />
-
-      {track === "upgrade" && (
-        <UpgradeDialog
-          themeId={themeId}
-          themeHref={themeHref}
-          nascent={nascent}
-          open={upgradeOpen}
-          onOpenChange={setUpgradeOpen}
-        />
-      )}
-    </>
+    <TrackPips
+      name={name}
+      short={short}
+      length={length}
+      marked={marked}
+      size={size}
+      active={track === "upgrade"}
+      onMark={mark}
+    />
   );
 }
 
-function UpgradeDialog({
+export function UpgradeDialog({
   themeId,
   themeHref,
   nascent,

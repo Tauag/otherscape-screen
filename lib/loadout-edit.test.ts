@@ -6,6 +6,7 @@ import {
   addLoadoutFeature,
   addLoadoutSet,
   addLoadoutWeakness,
+  adjustLoadoutPower,
   decrementWildcards,
   editLoadoutFeature,
   editLoadoutSetTitle,
@@ -93,6 +94,14 @@ test("wildcards are a plain count, clamped at 0", () => {
 
   const zero: Loadout = { ...loadout, wildcards: 0 };
   assert.equal(decrementWildcards(zero).wildcards, 0);
+});
+
+test("available Power adjusts by hand, clamped at 0", () => {
+  assert.equal(adjustLoadoutPower(loadout, 1).availablePower, loadout.availablePower + 1);
+
+  const one: Loadout = { ...loadout, availablePower: 1 };
+  assert.equal(adjustLoadoutPower(one, -1).availablePower, 0);
+  assert.equal(adjustLoadoutPower(one, -5).availablePower, 0);
 });
 
 test("one click, one more box, wrapping back to empty once it fills", () => {

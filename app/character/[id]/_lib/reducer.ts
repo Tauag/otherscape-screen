@@ -31,6 +31,7 @@ import {
   addLoadoutFeature,
   addLoadoutSet,
   addLoadoutWeakness,
+  adjustLoadoutPower,
   decrementWildcards,
   editLoadoutFeature,
   editLoadoutSetTitle,
@@ -100,6 +101,7 @@ export type CharacterAction =
   | { type: "removeLoadoutWeakness"; setId: string; weaknessId: string }
   | { type: "incrementWildcards" }
   | { type: "decrementWildcards" }
+  | { type: "adjustLoadoutPower"; delta: number }
   | { type: "markLoadoutUpgrade" }
   | { type: "takeLoadoutUpgrade"; choice: UpgradeChoice }
   | { type: "addLoadoutSpecial"; special: string }
@@ -263,6 +265,8 @@ export function reduce(character: Character, action: CharacterAction): Character
       return { ...character, loadout: incrementWildcards(loadout) };
     case "decrementWildcards":
       return { ...character, loadout: decrementWildcards(loadout) };
+    case "adjustLoadoutPower":
+      return { ...character, loadout: adjustLoadoutPower(loadout, action.delta) };
     case "markLoadoutUpgrade":
       return { ...character, loadout: markLoadoutUpgrade(loadout) };
     case "takeLoadoutUpgrade":

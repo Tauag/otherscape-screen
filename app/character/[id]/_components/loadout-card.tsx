@@ -82,6 +82,7 @@ export function LoadoutCard({ loadout, href }: { loadout: Loadout; href: string 
             />
           </div>
 
+
           {spend.warning && (
             <p className="font-sans text-sm text-negative-text">{spend.warning}</p>
           )}
@@ -126,16 +127,9 @@ export function LoadoutCard({ loadout, href }: { loadout: Loadout; href: string 
               )}
 
               {loadout.wildcards > 0 && (
-                <ul className="flex flex-wrap gap-1.5">
-                  {Array.from({ length: loadout.wildcards }, (_, index) => (
-                    <li
-                      key={index}
-                      className="border border-dashed border-pip px-[5px] py-0.5 font-mono text-[8px] font-bold tracking-[0.1em] text-dim"
-                    >
-                      WILDCARD
-                    </li>
-                  ))}
-                </ul>
+                <p className="self-start border border-dashed border-pip px-[5px] py-0.5 font-mono text-[8px] font-bold tracking-[0.1em] text-dim">
+                  WILDCARD{loadout.wildcards > 1 && ` ×${loadout.wildcards}`}
+                </p>
               )}
             </>
           )}
