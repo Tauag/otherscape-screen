@@ -13,8 +13,8 @@ type Props = {
 	text: string;
 	/** The signed Power this chip carries, absent while it is not selected. */
 	value?: string;
-	/** BURNT on a burnt tag; outranked or scratched on a chip that adds nothing. */
-	badge?: "BURNT" | "outranked" | "scratched";
+	/** BURNT on a burnt tag; outranked or crispy on a chip that adds nothing to spend. */
+	badge?: "BURNT" | "outranked" | "crispy";
 	type?: ThemeType | "crew" | "loadout";
 	valence?: Valence;
 	burnt?: boolean;

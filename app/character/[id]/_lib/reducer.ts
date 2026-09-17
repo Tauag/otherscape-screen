@@ -65,9 +65,18 @@ import {
 	toggleLoadoutTitleBurnt,
 	type UpgradeChoice,
 } from "@/lib/loadout-edit";
-import { STARTING_THEMES } from "@/lib/rules/constants";
+import {
+	DEFAULT_BURN_VALUE,
+	DEFAULT_STATUS_LIMIT,
+	STARTING_THEMES,
+} from "@/lib/rules/constants";
 import { essenceCandidates } from "@/lib/rules/essence";
-import { lowerStatus, raiseStatus } from "@/lib/rules/status";
+import {
+	clearStatusTier,
+	lowerStatus,
+	raiseStatus,
+	resizeStatusLimit,
+} from "@/lib/rules/status";
 
 export type CharacterAction =
 	| { type: "replace"; document: Character }
@@ -192,14 +201,17 @@ export type CharacterAction =
 	| { type: "renameStatus"; id: string; name: string }
 	| { type: "raiseStatus"; id: string }
 	| { type: "lowerStatus"; id: string }
+	| { type: "markStatusTier"; id: string; tier: number }
+	| { type: "clearStatusTier"; id: string; tier: number }
+	| { type: "setStatusLimit"; id: string; limit: number }
 	| { type: "setStatusValence"; id: string; valence: Valence }
-	| { type: "toggleStatusOwner"; id: string }
-	| { type: "toggleStatusOut"; id: string }
 	| { type: "removeStatus"; id: string }
 	| { type: "addStoryTag"; id: string; valence: Valence }
 	| { type: "renameStoryTag"; id: string; name: string }
 	| { type: "setStoryTagValence"; id: string; valence: Valence }
-	| { type: "toggleStoryTagScratched"; id: string }
+	| { type: "burnStoryTag"; id: string; burnValue: number }
+	| { type: "unburnStoryTag"; id: string }
+	| { type: "toggleStoryTagCrispy"; id: string }
 	| { type: "removeStoryTag"; id: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
@@ -366,9 +378,6 @@ export function reduce(
 			return { ...next, essence: autoEssence(next, next.themes) };
 		}
 		case "setEssence": {
-			// Picking a candidate the mix already suggests (including breaking a
-			// tie) isn't an override, so it stays live; only a pick outside the
-			// suggestion freezes essenceChosen.
 			const isSuggested = essenceCandidates(character.themes).includes(
 				action.essence,
 			);
@@ -569,31 +578,28 @@ export function reduce(
 						id: action.id,
 						name: "",
 						valence: action.valence,
-						tiers: [true, false, false, false, false, false],
-						owner: "mine",
-						out: false,
+						tiers: resizeStatusLimit([true], DEFAULT_STATUS_LIMIT),
+						limit: DEFAULT_STATUS_LIMIT,
 					},
 				],
 			};
 		case "renameStatus":
+			// The rulebook's shorthand is always lowercase kebab-case (exhausted-2,
+			// amped-up-2), so a status name is normalized as it's typed.
 			return inStatus(character, action.id, (status) => ({
 				...status,
-				name: action.name,
+				name: action.name.toLowerCase().replaceAll(" ", "-"),
 			}));
 		case "raiseStatus":
-			// A raise re-applies the status at the tier it already shows, and the
-			// stacking rule carries the mark one tier up. Asking for tier + 1
-			// instead would throw on a tier-6 status, which simply stands.
 			return inStatus(character, action.id, (status) => ({
 				...status,
 				tiers: raiseStatus(
 					status.tiers,
 					Math.max(1, status.tiers.lastIndexOf(true) + 1),
+					status.limit,
 				),
 			}));
 		case "lowerStatus": {
-			// The removal rule: every mark shifts down a tier, and a status left
-			// with no mark is off the table.
 			const lowered = character.statuses.map((status) =>
 				status.id === action.id
 					? { ...status, tiers: lowerStatus(status.tiers, 1) }
@@ -606,20 +612,32 @@ export function reduce(
 				),
 			};
 		}
+		case "markStatusTier":
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				tiers: raiseStatus(status.tiers, action.tier, status.limit),
+			}));
+		case "clearStatusTier":
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				tiers: clearStatusTier(status.tiers, action.tier),
+			}));
+		case "setStatusLimit": {
+			if (!Number.isInteger(action.limit) || action.limit < 1) {
+				throw new Error(
+					`Status limit must be a positive integer (got ${action.limit}).`,
+				);
+			}
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				tiers: resizeStatusLimit(status.tiers, action.limit),
+				limit: action.limit,
+			}));
+		}
 		case "setStatusValence":
 			return inStatus(character, action.id, (status) => ({
 				...status,
 				valence: action.valence,
-			}));
-		case "toggleStatusOwner":
-			return inStatus(character, action.id, (status) => ({
-				...status,
-				owner: status.owner === "mine" ? "mc" : "mine",
-			}));
-		case "toggleStatusOut":
-			return inStatus(character, action.id, (status) => ({
-				...status,
-				out: !status.out,
 			}));
 		case "removeStatus":
 			return {
@@ -637,7 +655,8 @@ export function reduce(
 						id: action.id,
 						name: "",
 						valence: action.valence,
-						scratched: false,
+						burnt: false,
+						crispy: false,
 					},
 				],
 			};
@@ -651,11 +670,35 @@ export function reduce(
 				...tag,
 				valence: action.valence,
 			}));
-		case "toggleStoryTagScratched":
-			return inStoryTag(character, action.id, (tag) => ({
-				...tag,
-				scratched: !tag.scratched,
-			}));
+		case "burnStoryTag":
+			// A crispy tag is one-time and never burns; a negative tag doesn't
+			// either, same as a weakness tag never does.
+			return inStoryTag(character, action.id, (tag) => {
+				if (tag.crispy || tag.valence === "negative") return tag;
+				const next: StoryTag = {
+					...tag,
+					burnt: true,
+					burnValue: action.burnValue,
+				};
+				// theme.ts's PowerTag does the same: an untouched default stays
+				// absent, so a later change to DEFAULT_BURN_VALUE still reaches it.
+				if (action.burnValue === DEFAULT_BURN_VALUE) delete next.burnValue;
+				return next;
+			});
+		case "unburnStoryTag":
+			return inStoryTag(character, action.id, (tag) => {
+				const next = { ...tag, burnt: false };
+				delete next.burnValue;
+				return next;
+			});
+		case "toggleStoryTagCrispy":
+			return inStoryTag(character, action.id, (tag) => {
+				if (tag.crispy) return { ...tag, crispy: false };
+				// Crispy and burnt can't both hold: going crispy un-burns it.
+				const next = { ...tag, crispy: true, burnt: false };
+				delete next.burnValue;
+				return next;
+			});
 		case "removeStoryTag":
 			return {
 				...character,

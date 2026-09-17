@@ -6,7 +6,7 @@ import type {
 	Character,
 	LoadoutSet,
 	PowerTag,
-	Status,
+	StoryTag,
 	ThemeType,
 	Valence,
 } from "@/lib/character/types";
@@ -73,6 +73,19 @@ function weaknessTag(tag: { id: string; text: string }): RollTag {
 	return { id: tag.id, text: tag.text, valence: "negative", burnValue: null };
 }
 
+/** A story tag burns like a power tag, but only on its positive side, and
+ * never once it is crispy - a crispy tag is one-time and never spends Power
+ * to burn. */
+export function storyRollTag(tag: StoryTag): RollTag {
+	return {
+		id: tag.id,
+		text: tag.name,
+		valence: tag.valence,
+		burnValue:
+			tag.valence === "positive" && !tag.crispy ? burnValueOf(tag) : null,
+	};
+}
+
 /** A loaded set's title, its loaded features, and the weaknesses that came free with the title. */
 function loadoutTags(set: LoadoutSet): RollTag[] {
 	return [
@@ -129,11 +142,6 @@ export function rollGroups(character: Character): RollGroup[] {
 	return groups.filter((group) => group.tags.length > 0);
 }
 
-/** A status marked out is a spent card, so it never reaches a roll. */
-export function rollStatuses(character: Character): Status[] {
-	return character.statuses.filter((status) => !status.out);
-}
-
 type TagEntry = { id: string; tag: SelectedTag };
 type StatusEntry = { id: string; status: SelectedStatus };
 
@@ -160,16 +168,22 @@ function picked(
 			},
 		}));
 
-	// A scratched story tag is out of play, so it cannot enter the selection
-	// even when its id is still in the pick.
 	const storyTags: TagEntry[] = character.storyTags
-		.filter((tag) => !tag.scratched && chosen(tag.id))
+		.filter((tag) => chosen(tag.id))
+		.map(storyRollTag)
 		.map((tag) => ({
 			id: tag.id,
-			tag: { label: tag.name, valence: tag.valence },
+			tag: {
+				label: tag.text,
+				valence: tag.valence,
+				burnValue:
+					tag.burnValue === null
+						? null
+						: (pick.burnValues[tag.id] ?? tag.burnValue),
+			},
 		}));
 
-	const statuses: StatusEntry[] = rollStatuses(character)
+	const statuses: StatusEntry[] = character.statuses
 		.filter((status) => chosen(status.id))
 		.map((status) => ({
 			id: status.id,

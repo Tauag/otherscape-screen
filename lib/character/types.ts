@@ -116,27 +116,30 @@ export type GhostMemory = {
 };
 
 /**
- * One box per tier, 1 to 6. An array rather than a count, because the stacking
- * and removal rules mark and shift individual tiers.
+ * One box per tier, 1 to `limit`. An array rather than a count, because the
+ * stacking and removal rules mark and shift individual tiers, and a tier can
+ * be marked out of order (tier 4 marked while tier 3 is not).
  */
-export type TierMarks = [boolean, boolean, boolean, boolean, boolean, boolean];
+export type TierMarks = boolean[];
 
 export type Status = {
 	id: string;
 	name: string;
 	valence: Valence;
 	tiers: TierMarks;
-	owner: "mine" | "mc";
-	/** A spent card, kept on the table. */
-	out: boolean;
+	/** Tiers past this are unreachable. Typically 6; a player can raise it for the rare status built larger. */
+	limit: number;
 };
 
 export type StoryTag = {
 	id: string;
 	name: string;
 	valence: Valence;
-	/** Used up. A scratched tag is out of play, so it never enters a roll selection. */
-	scratched: boolean;
+	burnt: boolean;
+	/** The Power a burn is worth. Absent reads as the default. Positive tags only. */
+	burnValue?: number;
+	/** One-time use: cannot burn, and is deleted once it is used in a roll. */
+	crispy: boolean;
 };
 
 export type CrewRelationship = {

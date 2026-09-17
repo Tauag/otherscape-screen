@@ -39,8 +39,8 @@ export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 			),
 		},
 		{
-			label: "Loadout",
-			segment: "/loadout",
+			label: "Placeholder",
+			segment: "/404",
 			icon: (
 				<>
 					<path d="M4 7h16v13H4z" />

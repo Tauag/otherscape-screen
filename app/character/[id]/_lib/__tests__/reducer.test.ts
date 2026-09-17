@@ -329,10 +329,10 @@ test("wildcards increment and decrement, clamped at 0", () => {
 	assert.equal(character.loadout.wildcards, 1);
 });
 
-/** "1,3" reads as tiers 1 and 3 marked. */
+/** "1,3" reads as tiers 1 and 3 marked, over a 6-tier track. */
 function marks(tiers: string): TierMarks {
 	const wanted = new Set(tiers.split(",").filter(Boolean).map(Number));
-	return [1, 2, 3, 4, 5, 6].map((tier) => wanted.has(tier)) as TierMarks;
+	return [1, 2, 3, 4, 5, 6].map((tier) => wanted.has(tier));
 }
 
 /** A character carrying one status, marked at the given tiers. */
@@ -348,7 +348,7 @@ function withStatus(tiers: string): Character {
 	};
 }
 
-test("a status is added at tier 1, mine, and in play", () => {
+test("a status is added at tier 1, on the sheet, and in play", () => {
 	const character = reduce(newCharacter(), {
 		type: "addStatus",
 		id: "st-1",
@@ -360,8 +360,7 @@ test("a status is added at tier 1, mine, and in play", () => {
 			name: "",
 			valence: "positive",
 			tiers: marks("1"),
-			owner: "mine",
-			out: false,
+			limit: 6,
 		},
 	]);
 });
@@ -417,8 +416,7 @@ test("a lower leaves every other status alone", () => {
 				name: "shaken",
 				valence: "negative",
 				tiers: marks("2"),
-				owner: "mc",
-				out: false,
+				limit: 6,
 			},
 		],
 	};
@@ -431,19 +429,87 @@ test("a lower leaves every other status alone", () => {
 	assert.deepEqual(character.statuses[0].tiers, marks("2"));
 });
 
-test("the out and MC toggles round-trip", () => {
-	let character = reduce(withStatus("2"), {
-		type: "toggleStatusOut",
+test("marking a tier directly applies the stacking rule at that tier alone", () => {
+	// Tiers 2 and 4 already marked; an effect targets tier 3 specifically.
+	const character = reduce(withStatus("2,4"), {
+		type: "markStatusTier",
 		id: "st-1",
+		tier: 3,
 	});
-	assert.equal(character.statuses[0].out, true);
-	character = reduce(character, { type: "toggleStatusOut", id: "st-1" });
-	assert.equal(character.statuses[0].out, false);
+	assert.deepEqual(character.statuses[0].tiers, marks("2,3,4"));
+});
 
-	character = reduce(character, { type: "toggleStatusOwner", id: "st-1" });
-	assert.equal(character.statuses[0].owner, "mc");
-	character = reduce(character, { type: "toggleStatusOwner", id: "st-1" });
-	assert.equal(character.statuses[0].owner, "mine");
+test("marking an already-marked tier cascades to the next open one", () => {
+	const character = reduce(withStatus("2,3"), {
+		type: "markStatusTier",
+		id: "st-1",
+		tier: 2,
+	});
+	assert.deepEqual(character.statuses[0].tiers, marks("2,3,4"));
+});
+
+test("clearing a tier erases only that one mark, no shifting", () => {
+	const character = reduce(withStatus("2,4"), {
+		type: "clearStatusTier",
+		id: "st-1",
+		tier: 2,
+	});
+	assert.deepEqual(character.statuses[0].tiers, marks("4"));
+});
+
+test("raising a status's limit pads the track without disturbing its marks", () => {
+	const character = reduce(withStatus("2,4"), {
+		type: "setStatusLimit",
+		id: "st-1",
+		limit: 8,
+	});
+	assert.equal(character.statuses[0].limit, 8);
+	assert.deepEqual(character.statuses[0].tiers, [
+		false,
+		true,
+		false,
+		true,
+		false,
+		false,
+		false,
+		false,
+	]);
+});
+
+test("lowering a status's limit truncates marks above it", () => {
+	const character = reduce(withStatus("2,4"), {
+		type: "setStatusLimit",
+		id: "st-1",
+		limit: 3,
+	});
+	assert.equal(character.statuses[0].limit, 3);
+	assert.deepEqual(character.statuses[0].tiers, [false, true, false]);
+});
+
+test("a bad limit throws, naming the value", () => {
+	assert.throws(
+		() =>
+			reduce(withStatus("1"), { type: "setStatusLimit", id: "st-1", limit: 0 }),
+		/got 0/,
+	);
+	assert.throws(
+		() =>
+			reduce(withStatus("1"), {
+				type: "setStatusLimit",
+				id: "st-1",
+				limit: 1.5,
+			}),
+		/got 1.5/,
+	);
+});
+
+test("a status name is lowercased and kebab-cased as it's typed", () => {
+	const character = reduce(withStatus("2"), {
+		type: "renameStatus",
+		id: "st-1",
+		name: "Amped Up",
+	});
+	assert.equal(character.statuses[0].name, "amped-up");
 });
 
 test("a status is renamed, re-valenced, and deleted", () => {
@@ -465,14 +531,20 @@ test("a status is renamed, re-valenced, and deleted", () => {
 	assert.deepEqual(character.statuses, []);
 });
 
-test("a story tag is added unscratched, then named", () => {
+test("a story tag is added unburnt and not crispy, then named", () => {
 	let character = reduce(newCharacter(), {
 		type: "addStoryTag",
 		id: "sg-1",
 		valence: "positive",
 	});
 	assert.deepEqual(character.storyTags, [
-		{ id: "sg-1", name: "", valence: "positive", scratched: false },
+		{
+			id: "sg-1",
+			name: "",
+			valence: "positive",
+			burnt: false,
+			crispy: false,
+		},
 	]);
 
 	character = reduce(character, {
@@ -483,7 +555,7 @@ test("a story tag is added unscratched, then named", () => {
 	assert.equal(character.storyTags[0].name, "hole in the fence");
 });
 
-test("scratching a story tag is reversible", () => {
+test("burning a story tag is reversible", () => {
 	let character = reduce(newCharacter(), {
 		type: "addStoryTag",
 		id: "sg-1",
@@ -491,16 +563,47 @@ test("scratching a story tag is reversible", () => {
 	});
 
 	character = reduce(character, {
-		type: "toggleStoryTagScratched",
+		type: "burnStoryTag",
 		id: "sg-1",
+		burnValue: 3,
 	});
-	assert.equal(character.storyTags[0].scratched, true);
+	assert.equal(character.storyTags[0].burnt, true);
+	assert.equal(character.storyTags[0].burnValue, undefined); // 3 is the default, so it stays absent.
+
+	character = reduce(character, { type: "unburnStoryTag", id: "sg-1" });
+	assert.equal(character.storyTags[0].burnt, false);
+	assert.equal(character.storyTags[0].burnValue, undefined);
+});
+
+test("a crispy story tag cannot be burnt", () => {
+	let character = reduce(newCharacter(), {
+		type: "addStoryTag",
+		id: "sg-1",
+		valence: "positive",
+	});
+	character = reduce(character, { type: "toggleStoryTagCrispy", id: "sg-1" });
+	assert.equal(character.storyTags[0].crispy, true);
 
 	character = reduce(character, {
-		type: "toggleStoryTagScratched",
+		type: "burnStoryTag",
 		id: "sg-1",
+		burnValue: 3,
 	});
-	assert.equal(character.storyTags[0].scratched, false);
+	assert.equal(character.storyTags[0].burnt, false);
+});
+
+test("a negative story tag cannot be burnt", () => {
+	let character = reduce(newCharacter(), {
+		type: "addStoryTag",
+		id: "sg-1",
+		valence: "negative",
+	});
+	character = reduce(character, {
+		type: "burnStoryTag",
+		id: "sg-1",
+		burnValue: 3,
+	});
+	assert.equal(character.storyTags[0].burnt, false);
 });
 
 test("a story tag changes valence and is deleted", () => {
@@ -531,15 +634,16 @@ test("a story tag verb leaves every other tag alone", () => {
 	character = reduce(character, {
 		type: "addStoryTag",
 		id: "sg-2",
-		valence: "negative",
+		valence: "positive",
 	});
 
 	character = reduce(character, {
-		type: "toggleStoryTagScratched",
+		type: "burnStoryTag",
 		id: "sg-2",
+		burnValue: 3,
 	});
-	assert.equal(character.storyTags[0].scratched, false);
-	assert.equal(character.storyTags[1].scratched, true);
+	assert.equal(character.storyTags[0].burnt, false);
+	assert.equal(character.storyTags[1].burnt, true);
 
 	character = reduce(character, { type: "removeStoryTag", id: "sg-2" });
 	assert.deepEqual(

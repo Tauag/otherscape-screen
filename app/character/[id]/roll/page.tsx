@@ -4,15 +4,15 @@ import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import {
 	type RollTag,
 	rollGroups,
 	rollOrder,
-	rollStatuses,
 	signed,
+	storyRollTag,
 	toRollSelection,
 } from "@/app/character/[id]/_lib/roll-selection";
-import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { BurnOverride } from "@/app/character/[id]/roll/_components/burn-override";
 import { RollChip } from "@/app/character/[id]/roll/_components/roll-chip";
 import { RollControls } from "@/app/character/[id]/roll/_components/roll-controls";
@@ -138,11 +138,11 @@ export default function RollPage() {
 							Highest tier each side counts
 						</p>
 					</div>
-					{rollStatuses(character).length === 0 ? (
+					{character.statuses.length === 0 ? (
 						<p className="font-sans text-sm text-dim">Nothing on the table.</p>
 					) : (
 						<ul className="flex flex-wrap gap-1.5">
-							{rollStatuses(character).map((status) => {
+							{character.statuses.map((status) => {
 								const line = lineOf.get(status.id);
 								const tier = status.tiers.lastIndexOf(true) + 1;
 								return (
@@ -169,19 +169,23 @@ export default function RollPage() {
 					) : (
 						<ul className="flex flex-wrap gap-1.5">
 							{character.storyTags.map((tag) => {
+								const rollTag = storyRollTag(tag);
 								const line = lineOf.get(tag.id);
+								const burnt = burnValueOfPick(rollTag) !== null;
 								return (
 									<RollChip
 										key={tag.id}
 										text={tag.name}
-										valence={tag.scratched ? undefined : tag.valence}
+										valence={tag.valence}
+										burnt={burnt}
 										selected={line !== undefined}
 										counted={line?.counted ?? false}
 										value={line && signed(line.value)}
-										badge={tag.scratched ? "scratched" : undefined}
-										// A scratched tag is spent (T40), so it gets no control
-										// to press rather than a control that refuses.
-										onToggle={tag.scratched ? undefined : () => toggle(tag.id)}
+										badge={burnt ? "BURNT" : tag.crispy ? "crispy" : undefined}
+										onToggle={() => toggle(tag.id)}
+										onValueClick={
+											line && burnt ? () => setOverriding(rollTag) : undefined
+										}
 									/>
 								);
 							})}

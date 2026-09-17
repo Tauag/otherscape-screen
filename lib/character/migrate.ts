@@ -1,6 +1,7 @@
+import { DEFAULT_STATUS_LIMIT } from "../rules/constants.ts";
 import type { Character } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 4;
+export const CURRENT_SCHEMA_VERSION = 6;
 
 type Doc = Record<string, unknown>;
 
@@ -53,6 +54,44 @@ steps.set(3, (doc) => ({
 		decay: 0,
 	},
 }));
+
+// v4 predates two rule fixes: a status's owner (mine/MC) never belonged on the
+// character sheet at all - a status is the character's, full stop, and MC
+// ownership is a session-level concern for later GM tooling (PRD 10) - so it
+// is dropped rather than converted. And a story tag's scratched flag conflated
+// "spent" with "out of play forever"; it is replaced by burnt (like a power
+// tag, reversible) and crispy (one-time, deletes itself on use). A v4 tag that
+// was scratched has no equivalent state to carry forward, so it comes back
+// as a normal, usable tag.
+steps.set(4, (doc) => {
+	const statuses = (doc.statuses ?? []) as Record<string, unknown>[];
+	const storyTags = (doc.storyTags ?? []) as Record<string, unknown>[];
+	return {
+		...doc,
+		statuses: statuses.map((status) => {
+			const { owner: _owner, ...rest } = status;
+			return { ...rest, limit: DEFAULT_STATUS_LIMIT };
+		}),
+		storyTags: storyTags.map((tag) => {
+			const { scratched: _scratched, ...rest } = tag;
+			return { ...rest, burnt: false, crispy: false };
+		}),
+	};
+});
+
+// v5 drops a status's "out" flag: marking a status merely inactive, rather
+// than lowering or deleting it, turned out not to earn its keep as a
+// separate state, so there is nothing to carry forward.
+steps.set(5, (doc) => {
+	const statuses = (doc.statuses ?? []) as Record<string, unknown>[];
+	return {
+		...doc,
+		statuses: statuses.map((status) => {
+			const { out: _out, ...rest } = status;
+			return rest;
+		}),
+	};
+});
 
 /**
  * Upgrade a document read from the database. This is a trust boundary, so it

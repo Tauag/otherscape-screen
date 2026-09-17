@@ -50,25 +50,15 @@ test("only the highest tier each side counts, and the outranked one stays visibl
 	assert.equal(power(selection).total, -6);
 });
 
-test("a scratched story tag cannot enter the selection, even with its id picked", () => {
-	const selection = toRollSelection(sample, pick({ ids: ["sg-1", "sg-2"] }));
-	assert.deepEqual(
-		selection.tags.map((tag) => tag.label),
-		["rain-slicked rooftops"],
-	);
+test("a burnt story tag carries its burn value into the selection", () => {
+	// sg-1 is burnt in the sample, at the default value.
+	const selection = toRollSelection(sample, pick({ ids: ["sg-1"] }));
+	assert.equal(selection.tags[0].burnValue, DEFAULT_BURN_VALUE);
 });
 
-test("a status marked out cannot enter the selection", () => {
-	const out = {
-		...sample,
-		statuses: sample.statuses.map((status) =>
-			status.id === "st-2" ? { ...status, out: true } : status,
-		),
-	};
-	assert.equal(
-		toRollSelection(out, pick({ ids: ["st-2"] })).statuses.length,
-		0,
-	);
+test("a negative story tag never carries a burn value", () => {
+	const selection = toRollSelection(sample, pick({ ids: ["sg-2"] }));
+	assert.equal(selection.tags[0].burnValue, null);
 });
 
 test("rolling with a theme type carries the count of themes of that type", () => {
