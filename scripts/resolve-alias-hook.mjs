@@ -10,14 +10,14 @@ const root = pathToFileURL(`${path.resolve(import.meta.dirname, "..")}/`);
 const EXTENSIONS = ["", ".ts", ".tsx"];
 
 export async function resolve(specifier, context, nextResolve) {
-  if (!specifier.startsWith("@/")) return nextResolve(specifier, context);
+	if (!specifier.startsWith("@/")) return nextResolve(specifier, context);
 
-  const target = new URL(specifier.slice(2), root).href;
-  for (const extension of EXTENSIONS) {
-    try {
-      return await nextResolve(target + extension, context);
-    } catch (error) {
-      if (extension === EXTENSIONS[EXTENSIONS.length - 1]) throw error;
-    }
-  }
+	const target = new URL(specifier.slice(2), root).href;
+	for (const extension of EXTENSIONS) {
+		try {
+			return await nextResolve(target + extension, context);
+		} catch (error) {
+			if (extension === EXTENSIONS[EXTENSIONS.length - 1]) throw error;
+		}
+	}
 }

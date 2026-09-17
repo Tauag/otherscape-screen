@@ -12,42 +12,48 @@ import { DIALOG_BACKDROP, DIALOG_POPUP, HEADING, QUIET } from "./styles";
  * action (a form's own Cancel button, or a dialog with no way out).
  */
 export function ConfirmDialog({
-  open,
-  onOpenChange,
-  title,
-  description,
-  cancelLabel = "Cancel",
-  popupClassName,
-  children,
+	open,
+	onOpenChange,
+	title,
+	description,
+	cancelLabel = "Cancel",
+	popupClassName,
+	children,
 }: {
-  open: boolean;
-  onOpenChange: Dialog.Root.Props["onOpenChange"];
-  title: ReactNode;
-  description?: ReactNode;
-  cancelLabel?: string | null;
-  /** Extra classes for the popup, e.g. a scroll cap for long content. */
-  popupClassName?: string;
-  children?: ReactNode;
+	open: boolean;
+	onOpenChange: Dialog.Root.Props["onOpenChange"];
+	title: ReactNode;
+	description?: ReactNode;
+	cancelLabel?: string | null;
+	/** Extra classes for the popup, e.g. a scroll cap for long content. */
+	popupClassName?: string;
+	children?: ReactNode;
 }) {
-  return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Backdrop className={DIALOG_BACKDROP} />
-        <Dialog.Popup
-          className={popupClassName ? `${DIALOG_POPUP} ${popupClassName}` : DIALOG_POPUP}
-        >
-          <Dialog.Title className={HEADING}>{title}</Dialog.Title>
-          {description && <p className="mt-2 font-sans text-sm text-dim">{description}</p>}
-          {(children || cancelLabel) && (
-            <div className="mt-4 flex flex-col gap-3">
-              {children}
-              {cancelLabel && (
-                <Dialog.Close className={`${QUIET} self-start`}>{cancelLabel}</Dialog.Close>
-              )}
-            </div>
-          )}
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog.Root>
-  );
+	return (
+		<Dialog.Root open={open} onOpenChange={onOpenChange}>
+			<Dialog.Portal>
+				<Dialog.Backdrop className={DIALOG_BACKDROP} />
+				<Dialog.Popup
+					className={
+						popupClassName ? `${DIALOG_POPUP} ${popupClassName}` : DIALOG_POPUP
+					}
+				>
+					<Dialog.Title className={HEADING}>{title}</Dialog.Title>
+					{description && (
+						<p className="mt-2 font-sans text-sm text-dim">{description}</p>
+					)}
+					{(children || cancelLabel) && (
+						<div className="mt-4 flex flex-col gap-3">
+							{children}
+							{cancelLabel && (
+								<Dialog.Close className={`${QUIET} self-start`}>
+									{cancelLabel}
+								</Dialog.Close>
+							)}
+						</div>
+					)}
+				</Dialog.Popup>
+			</Dialog.Portal>
+		</Dialog.Root>
+	);
 }

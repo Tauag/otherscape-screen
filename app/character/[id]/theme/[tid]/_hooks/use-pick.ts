@@ -10,11 +10,11 @@ import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
  * `replace`, not `push`, so the back button leaves the picker behind.
  */
 export function usePick(id: string, tid: string) {
-  const { dispatch } = useCharacter();
-  const router = useRouter();
+	const { dispatch } = useCharacter();
+	const router = useRouter();
 
-  return (action: CharacterAction) => {
-    dispatch(action);
-    router.replace(`/character/${id}/theme/${tid}`);
-  };
+	return (action: CharacterAction) => {
+		dispatch(action);
+		router.replace(`/character/${id}/theme/${tid}`);
+	};
 }

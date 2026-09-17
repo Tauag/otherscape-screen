@@ -4,8 +4,8 @@ import { STARTING_THEMES } from "./constants.ts";
 import { loadoutSpend } from "./loadout.ts";
 
 function themeName(theme: Theme, index: number): string {
-  const themebook = theme.themebook.trim();
-  return themebook ? `Theme ${index + 1} (${themebook})` : `Theme ${index + 1}`;
+	const themebook = theme.themebook.trim();
+	return themebook ? `Theme ${index + 1} (${themebook})` : `Theme ${index + 1}`;
 }
 
 /**
@@ -13,40 +13,42 @@ function themeName(theme: Theme, index: number): string {
  * blocks. The sheet prints this sentence too, so it lives in one place.
  */
 export function themeCountWarning(count: number): string | null {
-  if (count <= STARTING_THEMES) return null;
-  return `The character has ${count} themes, more than the ${STARTING_THEMES} it starts with.`;
+	if (count <= STARTING_THEMES) return null;
+	return `The character has ${count} themes, more than the ${STARTING_THEMES} it starts with.`;
 }
 
 /** One plain sentence per gap, in reading order. Empty means ready. */
 export function readiness(character: Character): string[] {
-  const { themes } = character;
-  const gaps: string[] = [];
+	const { themes } = character;
+	const gaps: string[] = [];
 
-  themes.forEach((theme, index) => {
-    if (!themeTitle(theme)) {
-      gaps.push(`${themeName(theme, index)} has no title tag.`);
-    }
-  });
+	themes.forEach((theme, index) => {
+		if (!themeTitle(theme)) {
+			gaps.push(`${themeName(theme, index)} has no title tag.`);
+		}
+	});
 
-  themes.forEach((theme, index) => {
-    if (theme.weaknessTags.length === 0) {
-      gaps.push(`${themeName(theme, index)} has no weakness tag.`);
-    }
-  });
+	themes.forEach((theme, index) => {
+		if (theme.weaknessTags.length === 0) {
+			gaps.push(`${themeName(theme, index)} has no weakness tag.`);
+		}
+	});
 
-  themes.forEach((theme, index) => {
-    if (theme.quote.trim() === "") {
-      gaps.push(`${themeName(theme, index)} has no ${themeLine(theme.type)} line.`);
-    }
-  });
+	themes.forEach((theme, index) => {
+		if (theme.quote.trim() === "") {
+			gaps.push(
+				`${themeName(theme, index)} has no ${themeLine(theme.type)} line.`,
+			);
+		}
+	});
 
-  if (character.essence === "") gaps.push("No Essence is chosen.");
+	if (character.essence === "") gaps.push("No Essence is chosen.");
 
-  const { warning } = loadoutSpend(character.loadout);
-  if (warning) gaps.push(warning);
+	const { warning } = loadoutSpend(character.loadout);
+	if (warning) gaps.push(warning);
 
-  const count = themeCountWarning(themes.length);
-  if (count) gaps.push(count);
+	const count = themeCountWarning(themes.length);
+	if (count) gaps.push(count);
 
-  return gaps;
+	return gaps;
 }

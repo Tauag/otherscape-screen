@@ -3,7 +3,7 @@ import type { Character, GhostMemory, Theme } from "./types.ts";
 
 /** A full track is the warning. Losing the theme stays a player action. */
 export function decayFull(theme: Theme): boolean {
-  return theme.decay >= DECAY_TRACK_LENGTH;
+	return theme.decay >= DECAY_TRACK_LENGTH;
 }
 
 /**
@@ -17,17 +17,17 @@ export function decayFull(theme: Theme): boolean {
  * theme specials each call this with their own reason.
  */
 export function loseTheme(
-  character: Character,
-  themeId: string,
-  memory: Omit<GhostMemory, "theme">,
+	character: Character,
+	themeId: string,
+	memory: Omit<GhostMemory, "theme">,
 ): Character {
-  const lost = character.themes.find((theme) => theme.id === themeId);
-  if (!lost) return character;
+	const lost = character.themes.find((theme) => theme.id === themeId);
+	if (!lost) return character;
 
-  return {
-    ...character,
-    themes: character.themes.filter((theme) => theme.id !== themeId),
-    // The theme object itself, since the archive reads the snapshot back whole.
-    ghostMemories: [...character.ghostMemories, { ...memory, theme: lost }],
-  };
+	return {
+		...character,
+		themes: character.themes.filter((theme) => theme.id !== themeId),
+		// The theme object itself, since the archive reads the snapshot back whole.
+		ghostMemories: [...character.ghostMemories, { ...memory, theme: lost }],
+	};
 }
