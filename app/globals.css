@@ -22,6 +22,10 @@
   --color-burnt: #c9c6da;
   --color-primary: #ff2e88;
 
+  /* Destructive actions: irreversible loss, not the negative valence above. */
+  --color-danger: #e8474a;
+  --color-danger-text: #f0989a;
+
   /* Ground. */
   --color-bg: #0a0a0f;
   --color-surface: #12121b;

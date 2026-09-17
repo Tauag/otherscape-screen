@@ -31,12 +31,12 @@ const ADD_WEAKNESS = `${BASE} border-negative text-negative`;
 const POPUP =
   "z-40 max-h-[70vh] w-[var(--anchor-width)] overflow-y-auto rounded-sm border border-border bg-surface p-1.5 outline-none";
 const TYPE_ITEM =
-  "flex min-h-11 cursor-default items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] text-dim uppercase outline-none data-[highlighted]:bg-bg data-[selected]:text-[var(--hue)]";
+  "flex min-h-11 cursor-pointer items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] text-dim uppercase outline-none data-[highlighted]:bg-bg data-[selected]:text-[var(--hue)]";
 const THEMEBOOK_TRIGGER =
   "col-span-2 flex min-h-11 items-center justify-between gap-2 rounded-sm border border-border bg-bg px-3 text-left";
 const THEMEBOOK_POPUP =
   "z-40 max-h-[75vh] w-[min(92vw,380px)] overflow-y-auto rounded-sm border border-border bg-surface p-2 outline-none";
-const THEMEBOOK_ITEM = `${ROW} cursor-default outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)]`;
+const THEMEBOOK_ITEM = `${ROW} cursor-pointer outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)]`;
 
 export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[tid]">) {
   const { id, tid } = use(params);
@@ -78,7 +78,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
     >
       <BackLink href={back} text="Sheet" />
 
-      <div className="grid grid-cols-3 gap-1.5">
+      <section className="grid grid-cols-3 gap-1.5">
         <Select.Root
           value={theme.type}
           onValueChange={(themeType) => {
@@ -148,9 +148,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
                   ))}
                 </Select.List>
 
-                {/* Free text, so it isn't a Select.Item: nothing to match against a
-                    fixed list. Closes the popup itself since picking it isn't an
-                    item press the Select would otherwise treat as a selection. */}
                 <form
                   onSubmit={(event) => {
                     event.preventDefault();
@@ -179,7 +176,7 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
             </Select.Positioner>
           </Select.Portal>
         </Select.Root>
-      </div>
+      </section>
 
       <h1
         data-burnt={title?.burnt ? "true" : undefined}

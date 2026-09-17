@@ -5,7 +5,7 @@ import { Dialog } from "@base-ui/react/dialog";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { LABEL, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
+import { DANGER, LABEL, PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
 
 export function LoseTheme({
   themeId,
@@ -48,7 +48,7 @@ export function LoseTheme({
           event.preventDefault();
           setOpen(true);
         }}
-        className={`${QUIET} self-start border-negative text-negative-text`}
+        className={`${DANGER} self-start`}
       >
         Lose this theme
       </Button>
