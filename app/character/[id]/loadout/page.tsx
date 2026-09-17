@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { use, useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { LABEL, PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
@@ -11,10 +13,14 @@ import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
 
-export default function LoadoutPage() {
+const ADD = `${SMALL_BUTTON} self-start text-dim`;
+
+export default function LoadoutPage({ params }: PageProps<"/character/[id]/loadout">) {
+  const { id } = use(params);
   const { character, dispatch } = useCharacter();
   const { loadout } = character;
   const spend = loadoutSpend(loadout);
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
 
@@ -27,6 +33,7 @@ export default function LoadoutPage() {
   function take(choice: UpgradeChoice) {
     dispatch({ type: "takeLoadoutUpgrade", choice });
     setOpen(false);
+    if (choice === "special") router.push(`/character/${id}/loadout/specials`);
   }
 
   return (
@@ -102,23 +109,24 @@ export default function LoadoutPage() {
         </Button>
       </section>
 
-      <section className="flex flex-col gap-2">
+      <section className="flex flex-col gap-1.5">
         <p className={LABEL}>Loadout specials</p>
         {loadout.specials.length === 0 ? (
-          <p className="font-sans text-sm text-dim">None yet. A loadout Upgrade can take one.</p>
+          <p className="font-sans text-sm text-dim">No loadout specials yet.</p>
         ) : (
-          loadout.specials.map((text, index) => (
-            <textarea
-              key={index}
-              value={text}
-              aria-label={`Loadout special ${index + 1}`}
-              onChange={(event) =>
-                dispatch({ type: "editLoadoutSpecial", index, text: event.target.value })
-              }
-              className="field-sizing-content min-h-11 rounded-sm border border-border bg-surface px-3 py-2.5 font-sans text-base"
-            />
-          ))
+          <ul className="flex flex-col gap-1.5">
+            {/* The index keys: the picker takes a special or gives it back
+                whole, and nothing reorders the list. */}
+            {loadout.specials.map((special, index) => (
+              <li key={index} className="font-sans text-sm">
+                {special}
+              </li>
+            ))}
+          </ul>
         )}
+        <Link href={`/character/${id}/loadout/specials`} className={`${ADD} mt-1`}>
+          Choose loadout specials
+        </Link>
       </section>
 
       <ConfirmDialog

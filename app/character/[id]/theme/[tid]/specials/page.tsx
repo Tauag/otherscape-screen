@@ -2,12 +2,8 @@
 
 import { Toggle } from "@base-ui/react/toggle";
 import { use } from "react";
-import {
-  MissingTheme,
-  PickerFrame,
-  ROW,
-  ROW_TEXT,
-} from "@/app/character/[id]/theme/[tid]/_components/picker";
+import { PickerFrame, ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
+import { MissingTheme } from "@/app/character/[id]/theme/[tid]/_components/picker";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
 import { formatSpecial, specialsOf } from "@/lib/pickers";
@@ -33,7 +29,12 @@ export default function SpecialsPicker({
     );
 
   return (
-    <PickerFrame id={id} tid={tid} type={theme.type} title="Theme specials">
+    <PickerFrame
+      backHref={`/character/${id}/theme/${tid}`}
+      backLabel="Theme"
+      type={theme.type}
+      title="Theme specials"
+    >
       {specials.length === 0 ? (
         <p className="font-sans text-sm text-dim">
           {theme.themebook.trim()
@@ -51,8 +52,6 @@ export default function SpecialsPicker({
             {specials.map((special, index) => {
               const stored = formatSpecial(special);
 
-              // design.md 4.5: an empty pack slot stays visible. There is nothing
-              // to store yet, so the slot is a line rather than a choice.
               if (stored === "") {
                 return (
                   <li key={index} className={`${ROW} border-dashed`}>

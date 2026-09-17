@@ -22,6 +22,9 @@ export const weaknessQuestions = (pack: ContentPack, themebook: string) =>
 export const specialsOf = (pack: ContentPack, themebook: string): Special[] =>
   findThemebook(pack, themebook)?.specials ?? [];
 
+/** The loadout theme's own eight, fixed rather than per-themebook. */
+export const loadoutSpecialsOf = (pack: ContentPack): Special[] => pack.loadoutSpecials;
+
 /**
  * How many tags already answer each letter. It labels a row and never removes
  * one, because a question is never consumed. Counted across the theme rather

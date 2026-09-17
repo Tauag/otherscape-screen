@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import { POWER_LETTERS, WEAKNESS_LETTERS } from "../fallback.ts";
+import { LOADOUT_SPECIALS_COUNT, POWER_LETTERS, WEAKNESS_LETTERS } from "../fallback.ts";
 import {
   FALLBACK_PACK,
   PACK_CACHE_KEY,
@@ -39,6 +39,10 @@ const rawPack = () => ({
       specials: Array.from({ length: 5 }, () => ({ name: "n", text: "t" })),
     },
   ],
+  loadout_specials: Array.from({ length: LOADOUT_SPECIALS_COUNT }, () => ({
+    name: "n",
+    text: "t",
+  })),
 });
 
 /** Every themebook carries the full set of slots, whatever filled them. */
@@ -55,6 +59,7 @@ function assertShape(pack: ContentPack) {
     );
     assert.equal(book.specials.length, 5);
   }
+  assert.equal(pack.loadoutSpecials.length, LOADOUT_SPECIALS_COUNT);
 }
 
 test("the fallback holds the 14 themebooks, with every text slot empty", () => {
@@ -70,6 +75,10 @@ test("the fallback holds the 14 themebooks, with every text slot empty", () => {
     }
     assert.deepEqual(book.specials, Array.from({ length: 5 }, () => ({ name: "", text: "" })));
   }
+  assert.deepEqual(
+    FALLBACK_PACK.loadoutSpecials,
+    Array.from({ length: LOADOUT_SPECIALS_COUNT }, () => ({ name: "", text: "" })),
+  );
 });
 
 test("the themebooks split 6 self, 4 mythos, 4 noise", () => {
@@ -119,6 +128,7 @@ test("the real content pack normalizes into the same shape, with text filled", (
     }
     for (const special of book.specials) assert.ok(special.name.length > 0);
   }
+  for (const special of pack.loadoutSpecials) assert.ok(special.name.length > 0);
 });
 
 test("a pack missing a question letter or a special is rejected whole", () => {
@@ -135,6 +145,14 @@ test("a pack missing a question letter or a special is rejected whole", () => {
   const unknownType = rawPack();
   unknownType.themebooks[0].type = "Crew";
   assert.equal(normalize(unknownType), null);
+
+  const shortLoadoutSpecials = rawPack();
+  shortLoadoutSpecials.loadout_specials.pop();
+  assert.equal(normalize(shortLoadoutSpecials), null);
+
+  const missingLoadoutSpecials = rawPack() as Partial<ReturnType<typeof rawPack>>;
+  delete missingLoadoutSpecials.loadout_specials;
+  assert.equal(normalize(missingLoadoutSpecials), null);
 
   for (const bad of [null, 7, "{}", {}, { themebooks: [] }]) assert.equal(normalize(bad), null);
 });

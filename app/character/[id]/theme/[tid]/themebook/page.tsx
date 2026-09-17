@@ -4,13 +4,9 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
 import { use, useState } from "react";
+import { PickerFrame, ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
 import { LABEL } from "@/app/character/[id]/_components/styles";
-import {
-  MissingTheme,
-  PickerFrame,
-  ROW,
-  ROW_TEXT,
-} from "@/app/character/[id]/theme/[tid]/_components/picker";
+import { MissingTheme } from "@/app/character/[id]/theme/[tid]/_components/picker";
 import { usePick } from "@/app/character/[id]/theme/[tid]/_hooks/use-pick";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
@@ -32,7 +28,12 @@ export default function ThemebookPicker({
   const set = (themebook: string) => pick({ type: "setThemebook", themeId: theme.id, themebook });
 
   return (
-    <PickerFrame id={id} tid={tid} type={theme.type} title="Themebook">
+    <PickerFrame
+      backHref={`/character/${id}/theme/${tid}`}
+      backLabel="Theme"
+      type={theme.type}
+      title="Themebook"
+    >
       <p className="font-sans text-sm text-dim">
         Every {theme.type} themebook, and the concept it covers.
       </p>

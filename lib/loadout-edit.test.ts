@@ -117,12 +117,14 @@ test("taking the Upgrade as Power clears the track and adds 1 available Power", 
   assert.equal(loadoutSpend(taken).available, loadoutSpend(loadout).available + 1);
 });
 
-test("taking the Upgrade as a special clears the track and appends an empty special", () => {
+test("taking the Upgrade as a special clears the track and leaves specials alone", () => {
+  // Picking one is the loadout specials picker's job, same as a theme
+  // special: the Upgrade choice itself only clears the track.
   const full: Loadout = { ...loadout, upgrade: 2 };
   const taken = takeLoadoutUpgrade(full, "special");
 
   assert.equal(taken.upgrade, 0);
-  assert.deepEqual(taken.specials, [...loadout.specials, ""]);
+  assert.deepEqual(taken.specials, loadout.specials);
   assert.equal(taken.availablePower, loadout.availablePower);
 });
 

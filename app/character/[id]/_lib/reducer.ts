@@ -107,7 +107,8 @@ export type CharacterAction =
   | { type: "decrementWildcards" }
   | { type: "markLoadoutUpgrade" }
   | { type: "takeLoadoutUpgrade"; choice: UpgradeChoice }
-  | { type: "editLoadoutSpecial"; index: number; text: string };
+  | { type: "addLoadoutSpecial"; special: string }
+  | { type: "removeLoadoutSpecial"; special: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(character: Character, themeId: string, edit: (theme: Theme) => Theme): Character {
@@ -275,11 +276,13 @@ export function reduce(character: Character, action: CharacterAction): Character
       return { ...character, loadout: markLoadoutUpgrade(loadout) };
     case "takeLoadoutUpgrade":
       return { ...character, loadout: takeLoadoutUpgrade(loadout, action.choice) };
-    case "editLoadoutSpecial":
+    case "addLoadoutSpecial":
+      return loadout.specials.includes(action.special)
+        ? character
+        : withLoadout(character, { specials: [...loadout.specials, action.special] });
+    case "removeLoadoutSpecial":
       return withLoadout(character, {
-        specials: loadout.specials.map((text, index) =>
-          index === action.index ? action.text : text,
-        ),
+        specials: loadout.specials.filter((special) => special !== action.special),
       });
   }
 }

@@ -123,13 +123,15 @@ export function markLoadoutUpgrade(loadout: Loadout): Loadout {
 
 export type UpgradeChoice = "power" | "special";
 
-/** The full track clears, and the player takes one of the two. */
+/**
+ * The full track clears, and the player takes one of the two. A "special"
+ * choice adds nothing here - the caller sends the player to the loadout
+ * specials picker, same as a theme's Upgrade dialog does for a theme special.
+ */
 export function takeLoadoutUpgrade(loadout: Loadout, choice: UpgradeChoice): Loadout {
   return {
     ...loadout,
     upgrade: 0,
     availablePower: loadout.availablePower + (choice === "power" ? 1 : 0),
-    // Empty, because the player writes the special in the textarea it adds.
-    specials: choice === "special" ? [...loadout.specials, ""] : loadout.specials,
   };
 }

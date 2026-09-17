@@ -3,14 +3,9 @@
 import { Button } from "@base-ui/react/button";
 import { Toggle } from "@base-ui/react/toggle";
 import { use } from "react";
+import { PickerFrame, ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
 import { LABEL } from "@/app/character/[id]/_components/styles";
-import {
-  MissingTag,
-  MissingTheme,
-  PickerFrame,
-  ROW,
-  ROW_TEXT,
-} from "@/app/character/[id]/theme/[tid]/_components/picker";
+import { MissingTag, MissingTheme } from "@/app/character/[id]/theme/[tid]/_components/picker";
 import { usePick } from "@/app/character/[id]/theme/[tid]/_hooks/use-pick";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
@@ -68,8 +63,8 @@ export default function QuestionPicker({
 
   return (
     <PickerFrame
-      id={id}
-      tid={tid}
+      backHref={`/character/${id}/theme/${tid}`}
+      backLabel="Theme"
       type={theme.type}
       title={power ? "Power tag question" : "Weakness tag question"}
     >

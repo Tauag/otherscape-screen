@@ -5,6 +5,7 @@ import { FALLBACK_PACK, questionLabel, type ContentPack } from "./content/pack.t
 import {
   answerCounts,
   formatSpecial,
+  loadoutSpecialsOf,
   powerQuestions,
   specialName,
   specialsOf,
@@ -49,8 +50,20 @@ test("a pack the player has uploaded carries its question text through", () => {
         })),
       },
     ],
+    loadoutSpecials: FALLBACK_PACK.loadoutSpecials,
   };
   assert.equal(powerQuestions(pack, pack.themebooks[0].name)[2].text, "Question C?");
+});
+
+test("the loadout's eight specials come straight off the pack, not a themebook", () => {
+  const pack: ContentPack = {
+    themebooks: FALLBACK_PACK.themebooks,
+    loadoutSpecials: FALLBACK_PACK.loadoutSpecials.map((special, index) =>
+      index === 0 ? { name: "Deeply Customizable", text: "…" } : special,
+    ),
+  };
+  assert.equal(loadoutSpecialsOf(pack)[0].name, "Deeply Customizable");
+  assert.equal(loadoutSpecialsOf(pack).length, FALLBACK_PACK.loadoutSpecials.length);
 });
 
 test("a stored special keeps the name — text convention the sheet already uses", () => {

@@ -1,6 +1,7 @@
 import type { PowerQuestionLetter, ThemeType, WeaknessQuestionLetter } from "../character/types.ts";
 import {
   FALLBACK_THEMEBOOKS,
+  LOADOUT_SPECIALS_COUNT,
   POWER_LETTERS,
   SPECIALS_PER_THEMEBOOK,
   WEAKNESS_LETTERS,
@@ -24,7 +25,11 @@ export type Themebook = {
   specials: Special[];
 };
 
-export type ContentPack = { themebooks: Themebook[] };
+export type ContentPack = {
+  themebooks: Themebook[];
+  /** The loadout theme's own specials (core rules, page 134). Always eight. */
+  loadoutSpecials: Special[];
+};
 
 /** What a tag editor prints over a blank field: "power tag question B". */
 export const questionLabel = (kind: "power" | "weakness", letter: string) =>
@@ -43,6 +48,9 @@ export const findThemebook = (pack: ContentPack, idOrName: string) =>
 const empty = <L,>(letters: readonly L[]): Question<L>[] =>
   letters.map((letter) => ({ letter, text: "" }));
 
+const emptySpecials = (count: number): Special[] =>
+  Array.from({ length: count }, () => ({ name: "", text: "" }));
+
 export const FALLBACK_PACK: ContentPack = {
   themebooks: FALLBACK_THEMEBOOKS.map((book) => ({
     ...book,
@@ -50,8 +58,9 @@ export const FALLBACK_PACK: ContentPack = {
     concept: "",
     powerQuestions: empty(POWER_LETTERS),
     weaknessQuestions: empty(WEAKNESS_LETTERS),
-    specials: Array.from({ length: SPECIALS_PER_THEMEBOOK }, () => ({ name: "", text: "" })),
+    specials: emptySpecials(SPECIALS_PER_THEMEBOOK),
   })),
+  loadoutSpecials: emptySpecials(LOADOUT_SPECIALS_COUNT),
 };
 
 /**
@@ -61,7 +70,7 @@ export const FALLBACK_PACK: ContentPack = {
  */
 export function normalize(raw: unknown): ContentPack | null {
   if (typeof raw !== "object" || raw === null) return null;
-  const { themebooks } = raw as Record<string, unknown>;
+  const { themebooks, loadout_specials } = raw as Record<string, unknown>;
   if (!Array.isArray(themebooks) || themebooks.length === 0) return null;
 
   const normalized: Themebook[] = [];
@@ -70,10 +79,22 @@ export function normalize(raw: unknown): ContentPack | null {
     if (!book) return null;
     normalized.push(book);
   }
-  return { themebooks: normalized };
+
+  const loadoutSpecials = normalizeSpecials(loadout_specials, LOADOUT_SPECIALS_COUNT);
+  if (!loadoutSpecials) return null;
+
+  return { themebooks: normalized, loadoutSpecials };
 }
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
+
+function normalizeSpecials(raw: unknown, count: number): Special[] | null {
+  if (!Array.isArray(raw) || raw.length !== count) return null;
+  return raw.map((special) => {
+    const { name, text: rule } = (special ?? {}) as Record<string, unknown>;
+    return { name: text(name), text: text(rule) };
+  });
+}
 
 const isThemeType = (value: string): value is ThemeType =>
   value === "self" || value === "mythos" || value === "noise";
@@ -88,15 +109,8 @@ function normalizeThemebook(raw: unknown): Themebook | null {
 
   const powerQuestions = normalizeQuestions(POWER_LETTERS, book.power_tag_questions);
   const weaknessQuestions = normalizeQuestions(WEAKNESS_LETTERS, book.weakness_tag_questions);
-  const { specials } = book;
-  if (
-    !powerQuestions ||
-    !weaknessQuestions ||
-    !Array.isArray(specials) ||
-    specials.length !== SPECIALS_PER_THEMEBOOK
-  ) {
-    return null;
-  }
+  const specials = normalizeSpecials(book.specials, SPECIALS_PER_THEMEBOOK);
+  if (!powerQuestions || !weaknessQuestions || !specials) return null;
 
   return {
     id: book.id,
@@ -106,10 +120,7 @@ function normalizeThemebook(raw: unknown): Themebook | null {
     concept: text(book.concept),
     powerQuestions,
     weaknessQuestions,
-    specials: specials.map((special) => {
-      const { name, text: rule } = (special ?? {}) as Record<string, unknown>;
-      return { name: text(name), text: text(rule) };
-    }),
+    specials,
   };
 }
 
