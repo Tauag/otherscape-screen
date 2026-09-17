@@ -7,6 +7,8 @@ import { useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import {
 	DANGER,
+	MENU_ITEM,
+	MENU_POPUP,
 	PRIMARY,
 	SMALL_BUTTON,
 } from "@/app/character/[id]/_components/styles";
@@ -21,11 +23,6 @@ import {
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
 import { ESSENCES, essenceSuggestion } from "@/lib/rules/essence-suggestion";
-
-const MENU_POPUP =
-	"min-w-[190px] rounded-md border border-border bg-surface p-1 text-text shadow-lg outline-none";
-const MENU_ITEM =
-	"flex min-h-11 cursor-pointer items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] uppercase outline-none select-none data-[highlighted]:bg-primary/10 data-[highlighted]:text-primary";
 
 export function SheetMenu({
 	shareToken,

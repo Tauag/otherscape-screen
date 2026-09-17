@@ -36,8 +36,10 @@ import type {
 	Loadout,
 	PowerQuestionLetter,
 	PowerTag,
+	Status,
 	Theme,
 	ThemeType,
+	Valence,
 	WeaknessQuestionLetter,
 	WeaknessTag,
 } from "@/lib/character/types";
@@ -64,6 +66,7 @@ import {
 } from "@/lib/loadout-edit";
 import { STARTING_THEMES } from "@/lib/rules/constants";
 import { essenceCandidates } from "@/lib/rules/essence";
+import { lowerStatus, raiseStatus } from "@/lib/rules/status";
 
 export type CharacterAction =
 	| { type: "replace"; document: Character }
@@ -183,7 +186,15 @@ export type CharacterAction =
 			id: string;
 			edit: Partial<Pick<CrewRelationship, "member" | "tag">>;
 	  }
-	| { type: "removeCrewRelationship"; id: string };
+	| { type: "removeCrewRelationship"; id: string }
+	| { type: "addStatus"; id: string; valence: Valence }
+	| { type: "renameStatus"; id: string; name: string }
+	| { type: "raiseStatus"; id: string }
+	| { type: "lowerStatus"; id: string }
+	| { type: "setStatusValence"; id: string; valence: Valence }
+	| { type: "toggleStatusOwner"; id: string }
+	| { type: "toggleStatusOut"; id: string }
+	| { type: "removeStatus"; id: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(
@@ -205,6 +216,17 @@ const withLoadout = (
 ): Character => ({
 	...character,
 	loadout: { ...character.loadout, ...loadout },
+});
+
+const inStatus = (
+	character: Character,
+	id: string,
+	edit: (status: Status) => Status,
+): Character => ({
+	...character,
+	statuses: character.statuses.map((status) =>
+		status.id === id ? edit(status) : status,
+	),
 });
 
 const withCrew = (
@@ -519,6 +541,74 @@ export function reduce(
 				...character,
 				crew: character.crew.filter(
 					(relationship) => relationship.id !== action.id,
+				),
+			};
+		case "addStatus":
+			return {
+				...character,
+				statuses: [
+					...character.statuses,
+					{
+						id: action.id,
+						name: "",
+						valence: action.valence,
+						tiers: [true, false, false, false, false, false],
+						owner: "mine",
+						out: false,
+					},
+				],
+			};
+		case "renameStatus":
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				name: action.name,
+			}));
+		case "raiseStatus":
+			// A raise re-applies the status at the tier it already shows, and the
+			// stacking rule carries the mark one tier up. Asking for tier + 1
+			// instead would throw on a tier-6 status, which simply stands.
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				tiers: raiseStatus(
+					status.tiers,
+					Math.max(1, status.tiers.lastIndexOf(true) + 1),
+				),
+			}));
+		case "lowerStatus": {
+			// The removal rule: every mark shifts down a tier, and a status left
+			// with no mark is off the table.
+			const lowered = character.statuses.map((status) =>
+				status.id === action.id
+					? { ...status, tiers: lowerStatus(status.tiers, 1) }
+					: status,
+			);
+			return {
+				...character,
+				statuses: lowered.filter(
+					(status) => status.id !== action.id || status.tiers.some(Boolean),
+				),
+			};
+		}
+		case "setStatusValence":
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				valence: action.valence,
+			}));
+		case "toggleStatusOwner":
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				owner: status.owner === "mine" ? "mc" : "mine",
+			}));
+		case "toggleStatusOut":
+			return inStatus(character, action.id, (status) => ({
+				...status,
+				out: !status.out,
+			}));
+		case "removeStatus":
+			return {
+				...character,
+				statuses: character.statuses.filter(
+					(status) => status.id !== action.id,
 				),
 			};
 	}

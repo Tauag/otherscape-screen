@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { newCharacter } from "@/lib/character/new";
+import type { Character, TierMarks } from "@/lib/character/types";
 import { STARTING_THEMES } from "@/lib/rules/constants";
 import { reduce } from "../reducer.ts";
 
@@ -326,4 +327,140 @@ test("wildcards increment and decrement, clamped at 0", () => {
 
 	character = reduce(character, { type: "decrementWildcards" });
 	assert.equal(character.loadout.wildcards, 1);
+});
+
+/** "1,3" reads as tiers 1 and 3 marked. */
+function marks(tiers: string): TierMarks {
+	const wanted = new Set(tiers.split(",").filter(Boolean).map(Number));
+	return [1, 2, 3, 4, 5, 6].map((tier) => wanted.has(tier)) as TierMarks;
+}
+
+/** A character carrying one status, marked at the given tiers. */
+function withStatus(tiers: string): Character {
+	const character = reduce(newCharacter(), {
+		type: "addStatus",
+		id: "st-1",
+		valence: "negative",
+	});
+	return {
+		...character,
+		statuses: [{ ...character.statuses[0], tiers: marks(tiers) }],
+	};
+}
+
+test("a status is added at tier 1, mine, and in play", () => {
+	const character = reduce(newCharacter(), {
+		type: "addStatus",
+		id: "st-1",
+		valence: "positive",
+	});
+	assert.deepEqual(character.statuses, [
+		{
+			id: "st-1",
+			name: "",
+			valence: "positive",
+			tiers: marks("1"),
+			owner: "mine",
+			out: false,
+		},
+	]);
+});
+
+test("a raise moves the status one tier up", () => {
+	const character = reduce(withStatus("1"), {
+		type: "raiseStatus",
+		id: "st-1",
+	});
+	assert.deepEqual(character.statuses[0].tiers, marks("1,2"));
+});
+
+test("a raise onto an occupied tier lands one tier higher again", () => {
+	const character = reduce(withStatus("1,2"), {
+		type: "raiseStatus",
+		id: "st-1",
+	});
+	assert.deepEqual(character.statuses[0].tiers, marks("1,2,3"));
+});
+
+test("a raise at tier 6 leaves the status as it was", () => {
+	const character = reduce(withStatus("6"), {
+		type: "raiseStatus",
+		id: "st-1",
+	});
+	assert.deepEqual(character.statuses[0].tiers, marks("6"));
+});
+
+test("a lower moves every mark one tier down", () => {
+	const character = reduce(withStatus("1,3"), {
+		type: "lowerStatus",
+		id: "st-1",
+	});
+	assert.deepEqual(character.statuses[0].tiers, marks("2"));
+});
+
+test("lowering a tier-1 status takes it off the table", () => {
+	const character = reduce(withStatus("1"), {
+		type: "lowerStatus",
+		id: "st-1",
+	});
+	assert.deepEqual(character.statuses, []);
+});
+
+test("a lower leaves every other status alone", () => {
+	const one = withStatus("1");
+	const two: Character = {
+		...one,
+		statuses: [
+			...one.statuses,
+			{
+				id: "st-2",
+				name: "shaken",
+				valence: "negative",
+				tiers: marks("2"),
+				owner: "mc",
+				out: false,
+			},
+		],
+	};
+
+	const character = reduce(two, { type: "lowerStatus", id: "st-1" });
+	assert.deepEqual(
+		character.statuses.map((status) => status.id),
+		["st-2"],
+	);
+	assert.deepEqual(character.statuses[0].tiers, marks("2"));
+});
+
+test("the out and MC toggles round-trip", () => {
+	let character = reduce(withStatus("2"), {
+		type: "toggleStatusOut",
+		id: "st-1",
+	});
+	assert.equal(character.statuses[0].out, true);
+	character = reduce(character, { type: "toggleStatusOut", id: "st-1" });
+	assert.equal(character.statuses[0].out, false);
+
+	character = reduce(character, { type: "toggleStatusOwner", id: "st-1" });
+	assert.equal(character.statuses[0].owner, "mc");
+	character = reduce(character, { type: "toggleStatusOwner", id: "st-1" });
+	assert.equal(character.statuses[0].owner, "mine");
+});
+
+test("a status is renamed, re-valenced, and deleted", () => {
+	let character = reduce(withStatus("2"), {
+		type: "renameStatus",
+		id: "st-1",
+		name: "exhausted",
+	});
+	assert.equal(character.statuses[0].name, "exhausted");
+
+	character = reduce(character, {
+		type: "setStatusValence",
+		id: "st-1",
+		valence: "positive",
+	});
+	assert.equal(character.statuses[0].valence, "positive");
+
+	character = reduce(character, { type: "removeStatus", id: "st-1" });
+	assert.deepEqual(character.statuses, []);
 });
