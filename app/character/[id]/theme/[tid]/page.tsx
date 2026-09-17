@@ -60,15 +60,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
     >
       <BackLink href={back} text="Sheet" />
 
-      <h1
-        data-burnt={title?.burnt ? "true" : undefined}
-        className={`font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
-          title?.burnt ? "line-through" : ""
-        }`}
-      >
-        {title?.text.trim() || "Untitled theme"}
-      </h1>
-
       <fieldset className="flex flex-col gap-1">
         <div className="flex gap-1">
           {THEME_TYPES.map((value) => (
@@ -103,6 +94,34 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
           </span>
         </Link>
       </div>
+
+      <h1
+        data-burnt={title?.burnt ? "true" : undefined}
+        className={`font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
+          title?.burnt ? "line-through" : ""
+        }`}
+      >
+        {title?.text.trim() || "Untitled theme"}
+      </h1>
+
+      <section className="flex gap-[10px]">
+        <Track
+          themeId={theme.id}
+          themeHref={here}
+          nascent={nascent}
+          track="upgrade"
+          marked={theme.upgrade}
+          size="lg"
+        />
+        <Track
+          themeId={theme.id}
+          themeHref={here}
+          nascent={nascent}
+          track="decay"
+          marked={theme.decay}
+          size="lg"
+        />
+      </section>
 
       <section className="flex flex-col gap-2">
         <h2 className={LABEL}>Power tags</h2>
@@ -206,27 +225,6 @@ export default function ThemePage({ params }: PageProps<"/character/[id]/theme/[
         </Link>
       </section>
 
-      <div className="flex gap-[10px]">
-        <Track
-          themeId={theme.id}
-          themeHref={here}
-          nascent={nascent}
-          track="upgrade"
-          marked={theme.upgrade}
-          size="lg"
-        />
-        <Track
-          themeId={theme.id}
-          themeHref={here}
-          nascent={nascent}
-          track="decay"
-          marked={theme.decay}
-          size="lg"
-        />
-      </div>
-
-      {/* Losing a theme is offered here whatever the Decay track says.
-          replace, not push: back would land on a route whose theme is gone. */}
       <section className="flex flex-col gap-2 pb-2">
         {decayFull(theme) && <DecayWarning />}
         <LoseTheme
