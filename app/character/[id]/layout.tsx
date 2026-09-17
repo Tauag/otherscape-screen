@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { CharacterProvider } from "@/app/character/[id]/_components/character-provider";
+import { RollSelectionProvider } from "@/app/character/[id]/_components/roll-selection";
 import { TabBar } from "@/app/character/[id]/_components/tabs";
 import { migrate } from "@/lib/character/migrate";
 import { createClient } from "@/lib/supabase/server";
@@ -31,16 +32,20 @@ export default async function CharacterLayout({
 
 	if (error || !row) notFound();
 
+	// Above CharacterProvider, so the tab bar's centre key reads the same live
+	// selection the roll screen edits.
 	return (
-		<CharacterProvider
-			id={id}
-			document={migrate(row.data)}
-			version={row.version}
-			updatedAt={row.updated_at}
-			shareToken={row.share_token}
-			bar={<TabBar key={`tab-bar-${id}`} id={id} />}
-		>
-			{children}
-		</CharacterProvider>
+		<RollSelectionProvider>
+			<CharacterProvider
+				id={id}
+				document={migrate(row.data)}
+				version={row.version}
+				updatedAt={row.updated_at}
+				shareToken={row.share_token}
+				bar={<TabBar key={`tab-bar-${id}`} id={id} />}
+			>
+				{children}
+			</CharacterProvider>
+		</RollSelectionProvider>
 	);
 }
