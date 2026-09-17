@@ -9,6 +9,7 @@
 		"lint": "biome lint --write",
 		"format": "biome format --write",
 		"test": "node --experimental-loader ./scripts/resolve-alias-hook.mjs --test",
+		"upload-content": "node --env-file=.env.local scripts/upload-content.mjs",
 		"prepare": "git config core.hooksPath .githooks"
 	},
 	"dependencies": {
