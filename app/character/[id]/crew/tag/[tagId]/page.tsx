@@ -72,8 +72,8 @@ export default function CrewQuestionPicker({
 			title={power ? "Power tag question" : "Weakness tag question"}
 		>
 			<p className="font-sans text-sm text-dim">
-				The crew theme's own questions. Every one stays on offer, so a question
-				may be answered more than once.
+				The crew theme's own questions. Most questions may be answered more than
+				once.
 			</p>
 
 			<ul className="flex flex-col gap-2">
