@@ -23,6 +23,16 @@ export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 			),
 		},
 		{
+			label: "Play",
+			segment: "/play",
+			icon: (
+				<>
+					<rect x="3" y="6" width="18" height="12" rx="2" />
+					<path d="M7 10v4M17 10v4M12 9v6" />
+				</>
+			),
+		},
+		{
 			label: "Loadout",
 			segment: "/loadout",
 			icon: (
