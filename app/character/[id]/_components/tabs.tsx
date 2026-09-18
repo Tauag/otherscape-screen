@@ -16,12 +16,6 @@ import {
 } from "@/app/character/[id]/_lib/roll-selection";
 import { power } from "@/lib/rules/power";
 
-/**
- * The keys of the bottom bar, in reading order, as segments under
- * /character/[id]. A later ticket adds its screen here in one line. A route
- * that does not exist yet stays out, because a key that 404s is worse than a
- * key that is missing. The roll is not in this list: it is the centre key.
- */
 export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 	[
 		{
@@ -36,7 +30,7 @@ export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 		},
 		{
 			label: "Placeholder",
-			segment: "",
+			segment: "/",
 			icon: <TabPlaceholderIcon />,
 		},
 		{

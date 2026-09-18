@@ -3,6 +3,7 @@
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
+import { ChipBadge } from "@/app/character/[id]/_components/chip-badge";
 import { MENU_ITEM } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { RowMenu } from "@/app/character/[id]/play/_components/row-menu";
@@ -51,11 +52,7 @@ export function StoryTagChip({
 				}`}
 			/>
 
-			{tag.crispy && (
-				<span className="shrink-0 border border-badge px-1.5 py-[3px] font-mono text-[8px] font-bold tracking-[0.1em] text-muted">
-					1x
-				</span>
-			)}
+			{tag.crispy && <ChipBadge>crispy</ChipBadge>}
 
 			{canBurn && (
 				<BurnButton

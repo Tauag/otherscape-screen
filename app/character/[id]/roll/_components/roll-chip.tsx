@@ -3,11 +3,9 @@
 import { Button } from "@base-ui/react/button";
 import { Toggle } from "@base-ui/react/toggle";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
+import { ChipBadge } from "@/app/character/[id]/_components/chip-badge";
 import type { ThemeType, Valence } from "@/lib/character/types";
 
-const BADGE =
-	"shrink-0 bg-badge text-burnt px-1 py-0.5 font-mono text-[8px] font-bold tracking-[0.08em] no-underline";
-const NOTE = "shrink-0 font-mono text-[9px] text-faint no-underline";
 const VALUE = "shrink-0 font-mono text-[11px] font-bold";
 
 type Props = {
@@ -56,19 +54,17 @@ export function RollChip({
 		? "border-pip bg-recess"
 		: selected
 			? `border-[var(--hue)] bg-[var(--hue)]/16 ${burnt ? "" : "shadow-[0_0_14px_color-mix(in_oklab,var(--hue)_22%,transparent)]"}`
-			: "border-border";
+			: "border-[var(--hue)]/30";
 	const ink = spent
 		? "text-faint line-through"
 		: selected
 			? "text-[var(--hue-text)]"
-			: "text-muted";
+			: "text-[var(--hue-text)]/70";
 
 	const body = (
 		<>
 			<span className={`font-display text-[13px] ${ink}`}>{named}</span>
-			{badge && (
-				<span className={badge === "BURNT" ? BADGE : NOTE}>{badge}</span>
-			)}
+			{badge && <ChipBadge>{badge}</ChipBadge>}
 			{value !== undefined && !onValueClick && (
 				<span className={`${VALUE} ${ink}`}>{value}</span>
 			)}

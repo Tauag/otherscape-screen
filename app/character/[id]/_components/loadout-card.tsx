@@ -4,6 +4,7 @@ import { Button } from "@base-ui/react/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ChipBadge } from "@/app/character/[id]/_components/chip-badge";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { PRIMARY } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
@@ -118,11 +119,7 @@ export function LoadoutCard({
 													}`}
 												>
 													{title || "Untitled set"}
-													{set.titleBurnt && (
-														<span className="bg-badge text-burnt px-1 py-0.5 font-mono text-[8px] font-normal tracking-[0.08em] no-underline">
-															BURNT
-														</span>
-													)}
+													{set.titleBurnt && <ChipBadge>BURNT</ChipBadge>}
 												</h3>
 												{(features.length > 0 || set.weaknesses.length > 0) && (
 													<ul className="flex flex-wrap gap-1.5">
