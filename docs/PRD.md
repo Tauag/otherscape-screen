@@ -373,7 +373,6 @@ reads the effect costs here after the roll, when they decide how to spend Power.
   Enhance, Restore, Advance, Set Back, Discover, Extra Feat.
 - Mitigation costs.
 - The Scale table.
-- Making a roll, choosing Effects, and the Rule of Minimum One.
 - Power options: burning a tag, pushing a 10+, Going Out In a Blaze.
 
 ### 7.11 Account and sharing — P0

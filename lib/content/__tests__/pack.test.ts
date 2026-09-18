@@ -8,7 +8,6 @@ import {
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
 	POWER_OPTION_NAMES,
-	ROLL_STEP_NAMES,
 	WEAKNESS_LETTERS,
 } from "../fallback.ts";
 import {
@@ -145,10 +144,6 @@ test("the fallback reference holds the names it knows, and nothing it does not",
 	assert.deepEqual(
 		reference.effects,
 		EFFECT_NAMES.map((name) => ({ name, cost: "", text: "" })),
-	);
-	assert.deepEqual(
-		reference.makingARoll,
-		ROLL_STEP_NAMES.map((name) => ({ name, text: "" })),
 	);
 	assert.deepEqual(
 		reference.powerOptions,

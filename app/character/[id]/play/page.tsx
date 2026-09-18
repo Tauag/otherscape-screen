@@ -2,6 +2,7 @@
 
 import { Button } from "@base-ui/react/button";
 import { useState } from "react";
+import { PlusIcon } from "@/app/character/[id]/_components/icons";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { StatusCard } from "@/app/character/[id]/play/_components/status-card";
 import { StoryTagChip } from "@/app/character/[id]/play/_components/story-tag-chip";
@@ -9,21 +10,6 @@ import { LABEL } from "@/components/styles";
 
 const ADD =
 	"inline-flex min-h-11 items-center gap-[5px] font-display text-[11px] font-semibold tracking-[0.1em] text-noise uppercase";
-
-const PLUS = (
-	<svg
-		aria-hidden="true"
-		width="13"
-		height="13"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		strokeWidth="2.2"
-		strokeLinecap="round"
-	>
-		<path d="M12 5v14M5 12h14" />
-	</svg>
-);
 
 export default function PlayPage() {
 	const { character, dispatch } = useCharacter();
@@ -48,7 +34,7 @@ export default function PlayPage() {
 				<div className="flex items-baseline justify-between">
 					<h2 className={LABEL}>Statuses</h2>
 					<Button type="button" onClick={addStatus} className={ADD}>
-						{PLUS}
+						<PlusIcon />
 						Status
 					</Button>
 				</div>
@@ -74,7 +60,7 @@ export default function PlayPage() {
 				<div className="flex items-baseline justify-between">
 					<h2 className={LABEL}>Story tags</h2>
 					<Button type="button" onClick={addStoryTag} className={ADD}>
-						{PLUS}
+						<PlusIcon />
 						Tag
 					</Button>
 				</div>

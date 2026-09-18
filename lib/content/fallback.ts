@@ -49,13 +49,6 @@ export const EFFECT_NAMES = [
 	"Extra Feat",
 ] as const;
 
-/** The three parts of the roll the cheatsheet explains (PRD 7.10). */
-export const ROLL_STEP_NAMES = [
-	"Making a roll",
-	"Choosing Effects",
-	"The Rule of Minimum One",
-] as const;
-
 /** The three ways to spend or gain Power the cheatsheet lists (PRD 7.10). */
 export const POWER_OPTION_NAMES = [
 	"Burning a tag",

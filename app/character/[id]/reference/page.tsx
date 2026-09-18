@@ -2,6 +2,7 @@
 
 import { Input } from "@base-ui/react/input";
 import { useState } from "react";
+import { SearchIcon } from "@/app/character/[id]/_components/icons";
 import { HEADING } from "@/app/character/[id]/_components/styles";
 import { ReferenceRow } from "@/app/character/[id]/reference/_components/reference-row";
 import { filter, sections } from "@/app/character/[id]/reference/_lib/sections";
@@ -26,28 +27,15 @@ export default function ReferencePage() {
 			</p>
 
 			{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label; biome can't see through the component boundary. */}
-			<label className="flex items-center gap-2 rounded-sm border border-border bg-bg px-3">
+			<label className="flex items-center gap-2 rounded-sm border border-border bg-bg px-3 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary">
 				<span className="sr-only">Search the reference</span>
-				<svg
-					aria-hidden="true"
-					width="15"
-					height="15"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.9"
-					strokeLinecap="round"
-					className="shrink-0 text-muted"
-				>
-					<circle cx="11" cy="11" r="6" />
-					<path d="M16 16l4 4" />
-				</svg>
+				<SearchIcon className="shrink-0 text-muted" />
 				<Input
 					type="search"
 					value={query}
-					onChange={(event) => setQuery(event.target.value)}
+					onValueChange={setQuery}
 					placeholder="Search"
-					className="min-h-11 w-full min-w-0 bg-transparent font-sans text-base placeholder:text-faint"
+					className="min-h-11 w-full min-w-0 bg-transparent font-sans text-base placeholder:text-faint focus:outline-none"
 				/>
 			</label>
 

@@ -10,7 +10,6 @@ import {
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
 	POWER_OPTION_NAMES,
-	ROLL_STEP_NAMES,
 	SPECIALS_PER_THEMEBOOK,
 	WEAKNESS_LETTERS,
 } from "./fallback.ts";
@@ -53,7 +52,6 @@ export type Reference = {
 	mitigation: Priced[];
 	/** One row per Scale step. The pack decides how many; the fallback knows none. */
 	scale: Special[];
-	makingARoll: Special[];
 	powerOptions: Special[];
 };
 
@@ -95,7 +93,6 @@ export const FALLBACK_REFERENCE: Reference = {
 	effects: EFFECT_NAMES.map((name) => ({ name, cost: "", text: "" })),
 	mitigation: [],
 	scale: [],
-	makingARoll: ROLL_STEP_NAMES.map((name) => ({ name, text: "" })),
 	powerOptions: POWER_OPTION_NAMES.map((name) => ({ name, text: "" })),
 };
 
@@ -201,11 +198,6 @@ function normalizeReference(raw: unknown): Reference {
 			FALLBACK_REFERENCE.mitigation,
 		),
 		scale: rows(section.scale, plainRow, FALLBACK_REFERENCE.scale),
-		makingARoll: rows(
-			section.making_a_roll,
-			plainRow,
-			FALLBACK_REFERENCE.makingARoll,
-		),
 		powerOptions: rows(
 			section.power_options,
 			plainRow,

@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
@@ -22,17 +20,11 @@ import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
 
 export default function RollPage() {
-	const router = useRouter();
 	const { character } = useCharacter();
 	const { pick, setPick } = useRollSelection();
 	const [overriding, setOverriding] = useState<RollTag | null>(null);
-
 	const selection = toRollSelection(character, pick);
 	const breakdown = power(selection);
-
-	// `power()` lines its tags up in the order the projection feeds them, after
-	// the rollWith line. Zipping them here keeps one call the source of every
-	// value on screen, chips and total alike.
 	const offset = selection.rollWith ? 1 : 0;
 	const lineOf = new Map(
 		rollOrder(character, pick).map((id, index) => [
@@ -73,38 +65,7 @@ export default function RollPage() {
 	};
 
 	return (
-		<main className="mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col">
-			<div className="flex shrink-0 items-center gap-2.5 border-b border-edge px-5 py-2">
-				<div className="flex flex-1 flex-col gap-[3px]">
-					<h1 className="font-display text-[15px] font-bold tracking-[0.14em] text-text uppercase">
-						Build roll
-					</h1>
-					<p className="font-sans text-[11px] text-muted">
-						Pick everything that applies. Effects get chosen after.
-					</p>
-				</div>
-
-				<Button
-					type="button"
-					onClick={() => router.back()}
-					aria-label="Close the roll builder"
-					className="-mr-2.5 grid size-11 shrink-0 place-items-center text-muted"
-				>
-					<svg
-						aria-hidden="true"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="1.8"
-						strokeLinecap="round"
-					>
-						<path d="M6 6l12 12M18 6L6 18" />
-					</svg>
-				</Button>
-			</div>
-
+		<main className="mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col pb-8">
 			<div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto px-5 py-3.5">
 				{rollGroups(character).map((group) => {
 					const subtotal = group.tags.reduce((sum, tag) => {
@@ -196,7 +157,7 @@ export default function RollPage() {
 				<RollControls />
 			</div>
 
-			<RollTotal {...breakdown} />
+			<RollTotal total={breakdown.total} modifier={pick.modifier} />
 
 			{overriding && (
 				<BurnOverride

@@ -159,7 +159,6 @@ function picked(
 		.map((tag) => ({
 			id: tag.id,
 			tag: {
-				label: tag.text,
 				valence: tag.valence,
 				burnValue:
 					tag.burnValue === null
@@ -174,7 +173,6 @@ function picked(
 		.map((tag) => ({
 			id: tag.id,
 			tag: {
-				label: tag.text,
 				valence: tag.valence,
 				burnValue:
 					tag.burnValue === null
@@ -188,7 +186,6 @@ function picked(
 		.map((status) => ({
 			id: status.id,
 			status: {
-				label: status.name,
 				valence: status.valence,
 				tier: status.tiers.lastIndexOf(true) + 1,
 			},
