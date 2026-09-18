@@ -55,7 +55,7 @@ export type WeaknessTag = {
 export type Theme = {
 	id: string;
 	type: ThemeType;
-	/** Free text, because a homebrew themebook is allowed. */
+	/** A themebook's name, or empty before one is chosen. */
 	themebook: string;
 	powerTags: PowerTag[];
 	weaknessTags: WeaknessTag[];

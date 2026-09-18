@@ -145,8 +145,7 @@ Derived from the existing sheet (tabs: PC SHEET, LOADOUT SETS, TEMPLATES, CHEATS
   Every themebook has the same shape: a concept, one opening question, 10 power tag
   questions (A to J), 4 weakness tag questions (A to D), guidance for the
   Identity, Ritual, or Itch, 3 crew relationship scenarios each with a suggested
-  relationship tag, and 5 theme specials. Allow a typed-in name for a homebrew
-  themebook.
+  relationship tag, and 5 theme specials.
 - Title tag: the first power tag that answers question A. Every theme has one. The
   sheet renders it in capitals. A later answer to A is a normal power tag.
 - Nascent flag. A nascent theme hides its locked rows and shows fewer tags.
@@ -255,7 +254,7 @@ and edits a blank sheet directly.
 
 ### 7.3 Themes — P0
 - Add a theme, choose its type, then choose its themebook from the themebooks of
-  that type. Allow a typed-in name for a homebrew themebook.
+  that type.
 - Choose theme specials from that themebook's five.
 - Record which themebook and which question letter a power tag answers, including
   when a special sends the player to another themebook's question.

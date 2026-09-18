@@ -11,7 +11,7 @@ import {
 	LoseThemeButton,
 	LoseThemeDialog,
 } from "@/app/character/[id]/_components/lose-theme";
-import { ROW, ROW_TEXT } from "@/app/character/[id]/_components/picker";
+import { ROW } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
@@ -31,7 +31,7 @@ const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
 const BASE =
 	"inline-flex min-h-11 items-center self-start rounded-sm px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
-const ADD = `${BASE} bg-[var(--hue)]`;
+const ADD = `${BASE}`;
 const ADD_WEAKNESS = `${BASE} bg-negative`;
 
 const POPUP =
@@ -42,7 +42,7 @@ const THEMEBOOK_TRIGGER =
 	"col-span-2 flex min-h-11 items-center justify-between gap-2 rounded-sm border border-border bg-bg px-3 text-left";
 const THEMEBOOK_POPUP =
 	"z-40 max-h-[75vh] w-[min(92vw,380px)] overflow-y-auto rounded-sm border border-border bg-surface p-2 outline-none";
-const THEMEBOOK_ITEM = `${ROW} cursor-pointer outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)]`;
+const THEMEBOOK_ITEM = `${ROW} cursor-pointer outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)] border-[var(--hue)]`;
 
 export default function ThemePage({
 	params,
@@ -55,7 +55,6 @@ export default function ThemePage({
 	const theme = character.themes.find((candidate) => candidate.id === tid);
 	const chosenBook = theme ? findThemebook(pack, theme.themebook) : null;
 	const [themebookOpen, setThemebookOpen] = useState(false);
-	const [homebrew, setHomebrew] = useState("");
 	const [upgradeOpen, setUpgradeOpen] = useState(false);
 	const [loseOpen, setLoseOpen] = useState(false);
 
@@ -125,7 +124,6 @@ export default function ThemePage({
 					open={themebookOpen}
 					onOpenChange={(open) => {
 						setThemebookOpen(open);
-						if (open) setHomebrew(chosenBook ? "" : theme.themebook);
 					}}
 					value={chosenBook?.name ?? null}
 					onValueChange={(themebook) => {
@@ -163,35 +161,9 @@ export default function ThemePage({
 											<Select.ItemText className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
 												{book.name}
 											</Select.ItemText>
-											<span className={ROW_TEXT}>{book.concept}</span>
 										</Select.Item>
 									))}
 								</Select.List>
-
-								<form
-									onSubmit={(event) => {
-										event.preventDefault();
-										dispatch({
-											type: "setThemebook",
-											themeId: theme.id,
-											themebook: homebrew.trim(),
-										});
-										setThemebookOpen(false);
-									}}
-									className="mt-2 flex flex-col gap-1 border-t border-border pt-2"
-								>
-									<span className={LABEL}>Homebrew themebook</span>
-									<Input
-										type="text"
-										value={homebrew}
-										onChange={(event) => setHomebrew(event.target.value)}
-										placeholder="A themebook of your own"
-										className={FIELD}
-									/>
-									<Button type="submit" className={`${ADD} mt-1`}>
-										Use this name
-									</Button>
-								</form>
 							</Select.Popup>
 						</Select.Positioner>
 					</Select.Portal>

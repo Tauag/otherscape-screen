@@ -44,18 +44,15 @@ test("every weakness letter stays offered too", () => {
 	);
 });
 
-test("a homebrew themebook offers the whole range with no text, and no specials", () => {
-	const questions = powerQuestions(FALLBACK_PACK, "The Dog That Follows Me");
+test("a theme with no themebook chosen yet offers the whole range with no text, and no specials", () => {
+	const questions = powerQuestions(FALLBACK_PACK, "");
 	assert.equal(questions.length, 10);
 	assert.deepEqual(
 		[...new Set(questions.map((question) => question.text))],
 		[""],
 	);
-	assert.equal(
-		weaknessQuestions(FALLBACK_PACK, "The Dog That Follows Me").length,
-		4,
-	);
-	assert.deepEqual(specialsOf(FALLBACK_PACK, "The Dog That Follows Me"), []);
+	assert.equal(weaknessQuestions(FALLBACK_PACK, "").length, 4);
+	assert.deepEqual(specialsOf(FALLBACK_PACK, ""), []);
 	// A blank question row is readable only because the label names it.
 	assert.equal(
 		questionLabel("power", questions[1].letter),

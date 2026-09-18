@@ -1,6 +1,3 @@
-// What the themebook, question, and specials pickers read out of a content pack.
-// No React here, so node --test can run it.
-
 import { POWER_LETTERS, WEAKNESS_LETTERS } from "./character/theme.ts";
 import {
 	type ContentPack,
@@ -14,7 +11,7 @@ const blank = <L>(letters: readonly L[]): Question<L>[] =>
 
 /**
  * The full A to J range, always. sysdesign 2 never retires a question, and a
- * homebrew themebook the pack cannot resolve still answers ten of them.
+ * theme with no themebook chosen yet still answers ten of them.
  */
 export const powerQuestions = (pack: ContentPack, themebook: string) =>
 	findThemebook(pack, themebook)?.powerQuestions ?? blank(POWER_LETTERS);
@@ -23,7 +20,7 @@ export const powerQuestions = (pack: ContentPack, themebook: string) =>
 export const weaknessQuestions = (pack: ContentPack, themebook: string) =>
 	findThemebook(pack, themebook)?.weaknessQuestions ?? blank(WEAKNESS_LETTERS);
 
-/** Five for a themebook the pack holds, none for a homebrew one. */
+/** Five once a themebook is chosen, none before then. */
 export const specialsOf = (pack: ContentPack, themebook: string): Special[] =>
 	findThemebook(pack, themebook)?.specials ?? [];
 
