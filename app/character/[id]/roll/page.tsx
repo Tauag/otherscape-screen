@@ -46,10 +46,7 @@ export default function RollPage() {
 	const burnValueOfPick = (tag: RollTag) =>
 		tag.burnValue === null ? null : (pick.burnValues[tag.id] ?? tag.burnValue);
 
-	// Only one tag may burn per roll, so every other tag's burn control
-	// disappears while this one is set.
 	const burning = burningTagId(character, pick);
-
 	const setBurnt = (tagId: string, burnt: boolean) => {
 		const action = burnToggleAction(character, tagId, burnt);
 		if (action) dispatch(action);
