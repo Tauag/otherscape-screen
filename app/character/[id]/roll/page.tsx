@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import {
+	burningTagId,
+	burnToggleAction,
 	type RollTag,
 	rollGroups,
 	rollOrder,
-	rollStatuses,
 	signed,
+	storyRollTag,
 	toRollSelection,
 } from "@/app/character/[id]/_lib/roll-selection";
-import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { BurnOverride } from "@/app/character/[id]/roll/_components/burn-override";
 import { RollChip } from "@/app/character/[id]/roll/_components/roll-chip";
 import { RollControls } from "@/app/character/[id]/roll/_components/roll-controls";
@@ -22,17 +22,11 @@ import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
 
 export default function RollPage() {
-	const router = useRouter();
-	const { character } = useCharacter();
+	const { character, dispatch } = useCharacter();
 	const { pick, setPick } = useRollSelection();
 	const [overriding, setOverriding] = useState<RollTag | null>(null);
-
 	const selection = toRollSelection(character, pick);
 	const breakdown = power(selection);
-
-	// `power()` lines its tags up in the order the projection feeds them, after
-	// the rollWith line. Zipping them here keeps one call the source of every
-	// value on screen, chips and total alike.
 	const offset = selection.rollWith ? 1 : 0;
 	const lineOf = new Map(
 		rollOrder(character, pick).map((id, index) => [
@@ -52,9 +46,22 @@ export default function RollPage() {
 	const burnValueOfPick = (tag: RollTag) =>
 		tag.burnValue === null ? null : (pick.burnValues[tag.id] ?? tag.burnValue);
 
+	// Only one tag may burn per roll, so every other tag's burn control
+	// disappears while this one is set.
+	const burning = burningTagId(character, pick);
+
+	const setBurnt = (tagId: string, burnt: boolean) => {
+		const action = burnToggleAction(character, tagId, burnt);
+		if (action) dispatch(action);
+	};
+
 	const tagChip = (tag: RollTag, hue?: string) => {
 		const line = lineOf.get(tag.id);
-		const burnt = burnValueOfPick(tag) !== null;
+		const selected = line !== undefined;
+		// Already burnt on the sheet: spent, so it can't be picked for a roll.
+		const burnt = tag.burnValue !== null;
+		const canBurnControl =
+			selected && (burnt || (tag.canBurn && burning === null));
 		return (
 			<RollChip
 				key={tag.id}
@@ -62,49 +69,21 @@ export default function RollPage() {
 				type={tag.valence === "positive" ? (hue as never) : undefined}
 				valence={tag.valence === "negative" ? "negative" : undefined}
 				burnt={burnt}
-				selected={line !== undefined}
+				selected={selected}
 				counted={line?.counted ?? false}
 				value={line && signed(line.value)}
 				badge={burnt ? "BURNT" : undefined}
-				onToggle={() => toggle(tag.id)}
-				onValueClick={line && burnt ? () => setOverriding(tag) : undefined}
+				onToggle={burnt ? undefined : () => toggle(tag.id)}
+				onValueClick={selected && burnt ? () => setOverriding(tag) : undefined}
+				onBurntChange={
+					canBurnControl ? (next) => setBurnt(tag.id, next) : undefined
+				}
 			/>
 		);
 	};
 
 	return (
-		<main className="mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col">
-			<div className="flex shrink-0 items-center gap-2.5 border-b border-edge px-5 py-2">
-				<div className="flex flex-1 flex-col gap-[3px]">
-					<h1 className="font-display text-[15px] font-bold tracking-[0.14em] text-text uppercase">
-						Build roll
-					</h1>
-					<p className="font-sans text-[11px] text-muted">
-						Pick everything that applies. Effects get chosen after.
-					</p>
-				</div>
-
-				<Button
-					type="button"
-					onClick={() => router.back()}
-					aria-label="Close the roll builder"
-					className="-mr-2.5 grid size-11 shrink-0 place-items-center text-muted"
-				>
-					<svg
-						aria-hidden="true"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="1.8"
-						strokeLinecap="round"
-					>
-						<path d="M6 6l12 12M18 6L6 18" />
-					</svg>
-				</Button>
-			</div>
-
+		<main className="mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col pb-8">
 			<div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto px-5 py-3.5">
 				{rollGroups(character).map((group) => {
 					const subtotal = group.tags.reduce((sum, tag) => {
@@ -138,11 +117,11 @@ export default function RollPage() {
 							Highest tier each side counts
 						</p>
 					</div>
-					{rollStatuses(character).length === 0 ? (
+					{character.statuses.length === 0 ? (
 						<p className="font-sans text-sm text-dim">Nothing on the table.</p>
 					) : (
 						<ul className="flex flex-wrap gap-1.5">
-							{rollStatuses(character).map((status) => {
+							{character.statuses.map((status) => {
 								const line = lineOf.get(status.id);
 								const tier = status.tiers.lastIndexOf(true) + 1;
 								return (
@@ -169,19 +148,33 @@ export default function RollPage() {
 					) : (
 						<ul className="flex flex-wrap gap-1.5">
 							{character.storyTags.map((tag) => {
+								const rollTag = storyRollTag(tag);
 								const line = lineOf.get(tag.id);
+								const selected = line !== undefined;
+								const burnt = rollTag.burnValue !== null;
+								const canBurnControl =
+									selected && (burnt || (rollTag.canBurn && burning === null));
 								return (
 									<RollChip
 										key={tag.id}
 										text={tag.name}
-										valence={tag.scratched ? undefined : tag.valence}
-										selected={line !== undefined}
+										valence={tag.valence}
+										burnt={burnt}
+										selected={selected}
 										counted={line?.counted ?? false}
 										value={line && signed(line.value)}
-										badge={tag.scratched ? "scratched" : undefined}
-										// A scratched tag is spent (T40), so it gets no control
-										// to press rather than a control that refuses.
-										onToggle={tag.scratched ? undefined : () => toggle(tag.id)}
+										badge={burnt ? "BURNT" : tag.crispy ? "crispy" : undefined}
+										onToggle={burnt ? undefined : () => toggle(tag.id)}
+										onValueClick={
+											selected && burnt
+												? () => setOverriding(rollTag)
+												: undefined
+										}
+										onBurntChange={
+											canBurnControl
+												? (next) => setBurnt(tag.id, next)
+												: undefined
+										}
 									/>
 								);
 							})}
@@ -192,7 +185,7 @@ export default function RollPage() {
 				<RollControls />
 			</div>
 
-			<RollTotal {...breakdown} />
+			<RollTotal total={breakdown.total} modifier={pick.modifier} />
 
 			{overriding && (
 				<BurnOverride

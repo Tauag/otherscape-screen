@@ -108,16 +108,23 @@ run a real session from a phone before starting S8.
 ## S7 Play
 
 ### T39 Statuses
-Add a status with a name, type, and starting tier. Raise and lower by a tier,
-applying the stacking and removal rules. Delete a status, mark it as the MC's, and
-mark it out.
+Add a status with a name, type, and starting tier. Mark or clear an individual
+tier directly, applying the stacking rule automatically - no separate step
+control. Delete a status. Every status belongs to the character - no mine/MC
+split, and no "out" flag. Raise or lower a status's tier limit (typically 6)
+from a tucked-away setting.
 **Done when:** the screen matches the Play artboard and every change takes one tap.
 **Depends on:** T18, T21
 **Refs:** PRD 7.7, design.md Play
 
 ### T40 Story tags
-Add, scratch, and delete an ongoing story tag, positive or negative.
-**Done when:** a scratched tag reads as scratched and stops counting in a roll.
+Add and delete an ongoing story tag, positive or negative. Burn a positive one
+for Power, like a power tag, and un-burn it. Mark one crispy (one-time): it
+can't burn. Deleting a crispy tag once a roll actually uses it needs a
+committed roll to hook into, which doesn't exist before T52, so that part
+ships there instead.
+**Done when:** a burnt tag reads as burnt, and a crispy tag reads as one-time
+and refuses to burn.
 **Depends on:** T39
 **Refs:** PRD 7.7
 
@@ -218,8 +225,11 @@ project pauses after seven days, and a fortnightly campaign hits that.
 
 ### T52 Dice roller
 Roll 2d6, add Power, and report 10+, 7-9, or 6-. Snake eyes always misses and
-boxcars always hits strongly. Keep a per-session roll log.
-**Done when:** tests cover both fixed results.
+boxcars always hits strongly. Keep a per-session roll log. This is the first
+point a roll is actually committed, so it is also where a crispy story tag in
+the roll gets deleted (T40).
+**Done when:** tests cover both fixed results, and a crispy tag in the roll is
+gone afterward.
 **Depends on:** T41
 **Refs:** PRD 7.9
 

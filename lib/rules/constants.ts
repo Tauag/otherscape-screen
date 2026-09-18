@@ -23,8 +23,8 @@ export const STARTING_LOADOUT_POWER = 1;
 /** Power a burnt tag adds. Theme specials raise it to 4 or 5 per burn. */
 export const DEFAULT_BURN_VALUE = 3;
 
-/** Highest status tier. A mark pushed past it is dropped. */
-export const MAX_STATUS_TIER = 6;
+/** A status's tier limit, unless the player raises it for a rare edge case. */
+export const DEFAULT_STATUS_LIMIT = 6;
 
 /** Loadout Power a tag costs, and a wildcard tag. A flaw costs nothing. */
 export const LOADOUT_TAG_COST = 1;

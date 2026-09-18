@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+	TabPlaceholderIcon,
+	TabPlayIcon,
+	TabReferenceIcon,
+	TabSheetIcon,
+} from "@/app/character/[id]/_components/icons";
 import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import {
@@ -21,33 +27,22 @@ export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 		{
 			label: "Sheet",
 			segment: "",
-			icon: (
-				<>
-					<path d="M5 3h11l4 4v14H5z" />
-					<path d="M9 9h7M9 13h7M9 17h4" />
-				</>
-			),
+			icon: <TabSheetIcon />,
 		},
 		{
 			label: "Play",
 			segment: "/play",
-			icon: (
-				<>
-					<rect x="3" y="6" width="18" height="12" rx="2" />
-					<path d="M7 10v4M17 10v4M12 9v6" />
-				</>
-			),
+			icon: <TabPlayIcon />,
 		},
 		{
-			label: "Loadout",
-			segment: "/loadout",
-			icon: (
-				<>
-					<path d="M4 7h16v13H4z" />
-					<path d="M9 7V4h6v3" />
-					<path d="M4 12h16" />
-				</>
-			),
+			label: "Placeholder",
+			segment: "",
+			icon: <TabPlaceholderIcon />,
+		},
+		{
+			label: "Ref",
+			segment: "/reference",
+			icon: <TabReferenceIcon />,
 		},
 	];
 
@@ -60,10 +55,6 @@ export function TabBar({ id }: { id: string }) {
 	const { pick } = useRollSelection();
 
 	const roll = `/character/${id}/roll`;
-
-	// The roll screen is the centre key opened, so it closes with its own X
-	// instead of carrying the bar that leads back to it.
-	if (pathname === roll) return null;
 
 	const key = (tab: (typeof TABS)[number]) => {
 		const href = `/character/${id}${tab.segment}`;

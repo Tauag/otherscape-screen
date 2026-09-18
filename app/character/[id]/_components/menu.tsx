@@ -5,6 +5,7 @@ import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
+import { MoreIcon } from "@/app/character/[id]/_components/icons";
 import {
 	DANGER,
 	MENU_ITEM,
@@ -42,17 +43,7 @@ export function SheetMenu({
 					aria-label="Sheet menu"
 					className="-m-1 flex size-11 shrink-0 items-center justify-center p-1 text-dim"
 				>
-					<svg
-						aria-hidden="true"
-						width="4"
-						height="18"
-						viewBox="0 0 4 18"
-						fill="currentColor"
-					>
-						<circle cx="2" cy="2" r="2" />
-						<circle cx="2" cy="9" r="2" />
-						<circle cx="2" cy="16" r="2" />
-					</svg>
+					<MoreIcon />
 				</Menu.Trigger>
 
 				<Menu.Portal>

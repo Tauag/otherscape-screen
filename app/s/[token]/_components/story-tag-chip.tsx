@@ -5,9 +5,9 @@ export function StoryTagChip({ tag }: { tag: StoryTag }) {
 	return (
 		<span data-valence={tag.valence}>
 			<Chip
-				label="story"
+				label={tag.crispy ? "story · 1x" : "story"}
 				text={tag.name}
-				burnt={tag.scratched}
+				burnt={tag.burnt}
 				negative={tag.valence === "negative"}
 			/>
 		</span>

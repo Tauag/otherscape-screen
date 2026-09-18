@@ -2,15 +2,15 @@
 
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
+import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import { MENU_ITEM } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { RowMenu } from "@/app/character/[id]/play/_components/row-menu";
 import type { StoryTag } from "@/lib/character/types";
+import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
-// lazy: field-sizing keeps each chip as wide as its tag. Where a browser lacks
-// it the chips take the input's default width, so they wrap sooner.
 const NAME =
-	"min-h-11 min-w-[8ch] max-w-full bg-transparent font-display text-sm placeholder:text-dim field-sizing-content";
+	"min-h-11 min-w-[8ch] max-w-full bg-transparent font-display text-sm placeholder:text-dim field-sizing-content pr-3";
 
 export function StoryTagChip({
 	tag,
@@ -22,14 +22,14 @@ export function StoryTagChip({
 }) {
 	const { dispatch } = useCharacter();
 	const named = tag.name.trim() || "this tag";
+	const canBurn = tag.valence === "positive" && !tag.crispy;
 
 	return (
 		<li
-			// A scratched tag is spent, so it drops its valence and reads neutral.
-			data-valence={tag.scratched ? undefined : tag.valence}
+			data-valence={tag.valence}
 			className={`flex items-center rounded-sm border pr-1 pl-3 ${
-				tag.scratched
-					? "border-border"
+				tag.burnt
+					? "border-dashed border-pip"
 					: "border-[var(--hue)]/40 bg-[var(--hue)]/7"
 			}`}
 		>
@@ -45,21 +45,37 @@ export function StoryTagChip({
 					})
 				}
 				aria-label="Story tag"
-				placeholder="Name it"
+				placeholder="Name this tag"
 				className={`${NAME} ${
-					tag.scratched ? "text-faint line-through" : "text-[var(--hue-text)]"
+					tag.burnt ? "text-muted line-through" : "text-[var(--hue-text)]"
 				}`}
 			/>
 
-			<RowMenu label={`Menu for ${named}`}>
-				<Menu.Item
-					className={MENU_ITEM}
-					onClick={() =>
-						dispatch({ type: "toggleStoryTagScratched", id: tag.id })
+			{tag.crispy && (
+				<span className="shrink-0 border border-badge px-1.5 py-[3px] font-mono text-[8px] font-bold tracking-[0.1em] text-muted">
+					1x
+				</span>
+			)}
+
+			{canBurn && (
+				<BurnButton
+					burnt={tag.burnt}
+					onBurntChange={(burnt) =>
+						dispatch(
+							burnt
+								? {
+										type: "burnStoryTag",
+										id: tag.id,
+										burnValue: DEFAULT_BURN_VALUE,
+									}
+								: { type: "unburnStoryTag", id: tag.id },
+						)
 					}
-				>
-					{tag.scratched ? "Bring it back" : "Scratch it"}
-				</Menu.Item>
+					named={named}
+				/>
+			)}
+
+			<RowMenu label={`Menu for ${named}`}>
 				<Menu.Item
 					className={MENU_ITEM}
 					onClick={() =>
@@ -71,6 +87,12 @@ export function StoryTagChip({
 					}
 				>
 					{tag.valence === "positive" ? "Make it negative" : "Make it positive"}
+				</Menu.Item>
+				<Menu.Item
+					className={MENU_ITEM}
+					onClick={() => dispatch({ type: "toggleStoryTagCrispy", id: tag.id })}
+				>
+					{tag.crispy ? "Make it reusable" : "Make it crispy"}
 				</Menu.Item>
 				<Menu.Item
 					className={MENU_ITEM}

@@ -2,11 +2,12 @@
 // plus the character document into the `RollSelection` that `power()` reads.
 // Pure: no React, so the projection is testable on its own.
 
+import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import type {
 	Character,
 	LoadoutSet,
 	PowerTag,
-	Status,
+	StoryTag,
 	ThemeType,
 	Valence,
 } from "@/lib/character/types";
@@ -16,6 +17,7 @@ import {
 	type SelectedStatus,
 	type SelectedTag,
 } from "@/lib/rules/power";
+import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 /** What the player has tapped for the roll in front of them. Never saved. */
 export type RollPick = {
@@ -50,6 +52,8 @@ export type RollTag = {
 	valence: Valence;
 	/** The Power a burn is worth, or null when the tag is not burnt. */
 	burnValue: number | null;
+	/** Whether this tag can be burnt at all, burnt or not yet. */
+	canBurn: boolean;
 };
 
 export type RollGroup = {
@@ -66,11 +70,32 @@ function powerTag(tag: PowerTag): RollTag {
 		text: tag.text,
 		valence: "positive",
 		burnValue: burnValueOf(tag),
+		canBurn: true,
 	};
 }
 
 function weaknessTag(tag: { id: string; text: string }): RollTag {
-	return { id: tag.id, text: tag.text, valence: "negative", burnValue: null };
+	return {
+		id: tag.id,
+		text: tag.text,
+		valence: "negative",
+		burnValue: null,
+		canBurn: false,
+	};
+}
+
+/** A story tag burns like a power tag, but only on its positive side, and
+ * never once it is crispy - a crispy tag is one-time and never spends Power
+ * to burn. */
+export function storyRollTag(tag: StoryTag): RollTag {
+	const canBurn = tag.valence === "positive" && !tag.crispy;
+	return {
+		id: tag.id,
+		text: tag.name,
+		valence: tag.valence,
+		burnValue: canBurn ? burnValueOf(tag) : null,
+		canBurn,
+	};
 }
 
 /** A loaded set's title, its loaded features, and the weaknesses that came free with the title. */
@@ -81,6 +106,7 @@ function loadoutTags(set: LoadoutSet): RollTag[] {
 			text: set.title,
 			valence: "positive",
 			burnValue: burnValueOf({ burnt: set.titleBurnt }),
+			canBurn: true,
 		},
 		...set.features
 			.filter((feature) => feature.loaded)
@@ -89,9 +115,77 @@ function loadoutTags(set: LoadoutSet): RollTag[] {
 				text: feature.text,
 				valence: "positive" as Valence,
 				burnValue: burnValueOf({ burnt: feature.burnt }),
+				canBurn: true,
 			})),
 		...set.weaknesses.map(weaknessTag),
 	];
+}
+
+/**
+ * The dispatch action that burns or un-burns a tag for Power, wherever on
+ * the sheet it lives. A burn always starts at the default value; a theme
+ * special's higher value is set for this roll alone, via the burn value
+ * override once the tag is burnt.
+ */
+export function burnToggleAction(
+	character: Character,
+	tagId: string,
+	burn: boolean,
+): CharacterAction | null {
+	for (const theme of character.themes) {
+		if (theme.powerTags.some((tag) => tag.id === tagId)) {
+			return burn
+				? {
+						type: "burnTag",
+						themeId: theme.id,
+						tagId,
+						burnValue: DEFAULT_BURN_VALUE,
+					}
+				: { type: "unburnTag", themeId: theme.id, tagId };
+		}
+	}
+	if (character.crewTheme.powerTags.some((tag) => tag.id === tagId)) {
+		return burn
+			? { type: "burnCrewTag", tagId, burnValue: DEFAULT_BURN_VALUE }
+			: { type: "unburnCrewTag", tagId };
+	}
+	if (character.storyTags.some((tag) => tag.id === tagId)) {
+		return burn
+			? { type: "burnStoryTag", id: tagId, burnValue: DEFAULT_BURN_VALUE }
+			: { type: "unburnStoryTag", id: tagId };
+	}
+	for (const set of character.loadout.sets) {
+		if (set.id === tagId) {
+			return { type: "toggleLoadoutTitleBurnt", setId: set.id };
+		}
+		if (set.features.some((feature) => feature.id === tagId)) {
+			return {
+				type: "toggleLoadoutFeatureBurnt",
+				setId: set.id,
+				featureId: tagId,
+			};
+		}
+	}
+	return null;
+}
+
+/**
+ * The one tag currently burning for this roll, if any. Only one tag may
+ * burn per roll, so the roll page hides the burn control on every other
+ * selected tag while this one is set.
+ */
+export function burningTagId(
+	character: Character,
+	pick: RollPick,
+): string | null {
+	const tags = [
+		...rollGroups(character).flatMap((group) => group.tags),
+		...character.storyTags.map(storyRollTag),
+	];
+	return (
+		tags.find((tag) => tag.burnValue !== null && pick.ids.includes(tag.id))
+			?.id ?? null
+	);
 }
 
 /** Every tag that can reach a roll, grouped as the screen prints them. */
@@ -129,11 +223,6 @@ export function rollGroups(character: Character): RollGroup[] {
 	return groups.filter((group) => group.tags.length > 0);
 }
 
-/** A status marked out is a spent card, so it never reaches a roll. */
-export function rollStatuses(character: Character): Status[] {
-	return character.statuses.filter((status) => !status.out);
-}
-
 type TagEntry = { id: string; tag: SelectedTag };
 type StatusEntry = { id: string; status: SelectedStatus };
 
@@ -151,7 +240,6 @@ function picked(
 		.map((tag) => ({
 			id: tag.id,
 			tag: {
-				label: tag.text,
 				valence: tag.valence,
 				burnValue:
 					tag.burnValue === null
@@ -160,21 +248,25 @@ function picked(
 			},
 		}));
 
-	// A scratched story tag is out of play, so it cannot enter the selection
-	// even when its id is still in the pick.
 	const storyTags: TagEntry[] = character.storyTags
-		.filter((tag) => !tag.scratched && chosen(tag.id))
+		.filter((tag) => chosen(tag.id))
+		.map(storyRollTag)
 		.map((tag) => ({
 			id: tag.id,
-			tag: { label: tag.name, valence: tag.valence },
+			tag: {
+				valence: tag.valence,
+				burnValue:
+					tag.burnValue === null
+						? null
+						: (pick.burnValues[tag.id] ?? tag.burnValue),
+			},
 		}));
 
-	const statuses: StatusEntry[] = rollStatuses(character)
+	const statuses: StatusEntry[] = character.statuses
 		.filter((status) => chosen(status.id))
 		.map((status) => ({
 			id: status.id,
 			status: {
-				label: status.name,
 				valence: status.valence,
 				tier: status.tiers.lastIndexOf(true) + 1,
 			},

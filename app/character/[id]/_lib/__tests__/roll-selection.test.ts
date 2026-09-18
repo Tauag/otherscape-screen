@@ -3,7 +3,12 @@ import { test } from "node:test";
 import { sample } from "@/lib/character/__tests__/sample";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
-import { NO_PICK, toRollSelection } from "../roll-selection.ts";
+import {
+	burningTagId,
+	burnToggleAction,
+	NO_PICK,
+	toRollSelection,
+} from "../roll-selection.ts";
 
 const pick = (over: Partial<typeof NO_PICK>) => ({ ...NO_PICK, ...over });
 
@@ -50,25 +55,15 @@ test("only the highest tier each side counts, and the outranked one stays visibl
 	assert.equal(power(selection).total, -6);
 });
 
-test("a scratched story tag cannot enter the selection, even with its id picked", () => {
-	const selection = toRollSelection(sample, pick({ ids: ["sg-1", "sg-2"] }));
-	assert.deepEqual(
-		selection.tags.map((tag) => tag.label),
-		["rain-slicked rooftops"],
-	);
+test("a burnt story tag carries its burn value into the selection", () => {
+	// sg-1 is burnt in the sample, at the default value.
+	const selection = toRollSelection(sample, pick({ ids: ["sg-1"] }));
+	assert.equal(selection.tags[0].burnValue, DEFAULT_BURN_VALUE);
 });
 
-test("a status marked out cannot enter the selection", () => {
-	const out = {
-		...sample,
-		statuses: sample.statuses.map((status) =>
-			status.id === "st-2" ? { ...status, out: true } : status,
-		),
-	};
-	assert.equal(
-		toRollSelection(out, pick({ ids: ["st-2"] })).statuses.length,
-		0,
-	);
+test("a negative story tag never carries a burn value", () => {
+	const selection = toRollSelection(sample, pick({ ids: ["sg-2"] }));
+	assert.equal(selection.tags[0].burnValue, null);
 });
 
 test("rolling with a theme type carries the count of themes of that type", () => {
@@ -93,4 +88,50 @@ test("the modifier rides through untouched", () => {
 
 test("an empty pick totals zero", () => {
 	assert.equal(power(toRollSelection(sample, NO_PICK)).total, 0);
+});
+
+test("burnToggleAction finds a theme power tag by id", () => {
+	assert.deepEqual(burnToggleAction(sample, "pt-1", true), {
+		type: "burnTag",
+		themeId: "th-past",
+		tagId: "pt-1",
+		burnValue: DEFAULT_BURN_VALUE,
+	});
+	assert.deepEqual(burnToggleAction(sample, "pt-1", false), {
+		type: "unburnTag",
+		themeId: "th-past",
+		tagId: "pt-1",
+	});
+});
+
+test("burnToggleAction finds a crew power tag, a story tag, and a loadout feature", () => {
+	assert.deepEqual(burnToggleAction(sample, "cpt-1", true), {
+		type: "burnCrewTag",
+		tagId: "cpt-1",
+		burnValue: DEFAULT_BURN_VALUE,
+	});
+	assert.deepEqual(burnToggleAction(sample, "sg-2", true), {
+		type: "burnStoryTag",
+		id: "sg-2",
+		burnValue: DEFAULT_BURN_VALUE,
+	});
+	assert.deepEqual(burnToggleAction(sample, "lf-1", true), {
+		type: "toggleLoadoutFeatureBurnt",
+		setId: "ls-1",
+		featureId: "lf-1",
+	});
+});
+
+test("burnToggleAction reads null for an id off the sheet", () => {
+	assert.equal(burnToggleAction(sample, "not-a-tag", true), null);
+});
+
+test("burningTagId reads the one selected tag that is already burnt", () => {
+	// pt-3 is burnt in the sample; pt-1 is not.
+	assert.equal(burningTagId(sample, NO_PICK), null);
+	assert.equal(burningTagId(sample, { ...NO_PICK, ids: ["pt-1"] }), null);
+	assert.equal(
+		burningTagId(sample, { ...NO_PICK, ids: ["pt-1", "pt-3"] }),
+		"pt-3",
+	);
 });

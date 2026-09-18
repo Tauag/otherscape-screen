@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu } from "@base-ui/react/menu";
+import { MoreIcon } from "@/app/character/[id]/_components/icons";
 import { MENU_POPUP } from "@/app/character/[id]/_components/styles";
 
 /**
@@ -23,17 +24,7 @@ export function RowMenu({
 				aria-label={label}
 				className={`-my-3 -mr-1 flex size-11 shrink-0 items-center justify-center text-dim ${className}`}
 			>
-				<svg
-					aria-hidden="true"
-					width="4"
-					height="18"
-					viewBox="0 0 4 18"
-					fill="currentColor"
-				>
-					<circle cx="2" cy="2" r="2" />
-					<circle cx="2" cy="9" r="2" />
-					<circle cx="2" cy="16" r="2" />
-				</svg>
+				<MoreIcon />
 			</Menu.Trigger>
 
 			<Menu.Portal>

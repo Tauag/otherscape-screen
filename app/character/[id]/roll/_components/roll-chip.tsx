@@ -2,6 +2,7 @@
 
 import { Button } from "@base-ui/react/button";
 import { Toggle } from "@base-ui/react/toggle";
+import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import type { ThemeType, Valence } from "@/lib/character/types";
 
 const BADGE =
@@ -13,8 +14,8 @@ type Props = {
 	text: string;
 	/** The signed Power this chip carries, absent while it is not selected. */
 	value?: string;
-	/** BURNT on a burnt tag; outranked or scratched on a chip that adds nothing. */
-	badge?: "BURNT" | "outranked" | "scratched";
+	/** BURNT on a burnt tag; outranked or crispy on a chip that adds nothing to spend. */
+	badge?: "BURNT" | "outranked" | "crispy";
 	type?: ThemeType | "crew" | "loadout";
 	valence?: Valence;
 	burnt?: boolean;
@@ -25,6 +26,11 @@ type Props = {
 	onToggle?: () => void;
 	/** Set on a selected burnt tag, to open the burn value override. */
 	onValueClick?: () => void;
+	/**
+	 * Set on a selected tag that can burn: burnt already (to un-burn, undoing
+	 * a misclick) or not yet and free to (only one tag burns per roll).
+	 */
+	onBurntChange?: (burnt: boolean) => void;
 };
 
 export function RollChip({
@@ -38,11 +44,14 @@ export function RollChip({
 	counted,
 	onToggle,
 	onValueClick,
+	onBurntChange,
 }: Props) {
 	const named = text.trim() || "Unnamed";
 
-	// Out of play, or selected and outranked: one spent look either way.
-	const spent = onToggle === undefined || (selected && !counted);
+	// Out of play and not part of this roll, or selected and outranked: one
+	// spent look either way. A burnt tag still in this roll's pick keeps the
+	// normal selected look, so burning mid-roll doesn't grey out its own chip.
+	const spent = (onToggle === undefined && !selected) || (selected && !counted);
 	const tone = spent
 		? "border-pip bg-recess"
 		: selected
@@ -97,6 +106,14 @@ export function RollChip({
 				>
 					{value}
 				</Button>
+			)}
+
+			{onBurntChange && (
+				<BurnButton
+					burnt={!!burnt}
+					onBurntChange={onBurntChange}
+					named={named}
+				/>
 			)}
 		</li>
 	);

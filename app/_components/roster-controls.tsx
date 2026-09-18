@@ -5,6 +5,7 @@ import { Dialog } from "@base-ui/react/dialog";
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useActionState, useState } from "react";
+import { LinkIcon } from "@/app/_components/icons";
 import {
 	createCharacter,
 	deleteCharacter,
@@ -96,17 +97,7 @@ export function CharacterCard({
 
 				{shared && (
 					<span className="flex shrink-0 items-center gap-1 rounded-[3px] border border-border px-1.5 py-0.5 font-mono text-[9px] tracking-[0.08em] text-positive-text uppercase">
-						<svg
-							aria-hidden="true"
-							viewBox="0 0 24 24"
-							fill="none"
-							strokeWidth={2.5}
-							strokeLinecap="round"
-							className="size-2.5 stroke-positive"
-						>
-							<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" />
-							<path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
-						</svg>
+						<LinkIcon className="size-2.5 stroke-positive" />
 						Shared
 					</span>
 				)}

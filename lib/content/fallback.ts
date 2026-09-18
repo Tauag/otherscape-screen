@@ -33,6 +33,29 @@ export const LOADOUT_SPECIALS_COUNT = 8;
 /** Specials the crew theme offers, fixed for every pack (core rules, page 75). */
 export const CREW_THEME_SPECIALS_COUNT = 5;
 
+/** The twelve effects, in the order the cheatsheet prints them (PRD 7.10). */
+export const EFFECT_NAMES = [
+	"Attack",
+	"Disrupt",
+	"Influence",
+	"Weaken",
+	"Bestow",
+	"Create",
+	"Enhance",
+	"Restore",
+	"Advance",
+	"Set Back",
+	"Discover",
+	"Extra Feat",
+] as const;
+
+/** The three ways to spend or gain Power the cheatsheet lists (PRD 7.10). */
+export const POWER_OPTION_NAMES = [
+	"Burning a tag",
+	"Pushing a 10+",
+	"Going Out In a Blaze",
+] as const;
+
 /** The ids match `themebooks.json`, so a pack upload lines up slot for slot. */
 export const FALLBACK_THEMEBOOKS: readonly {
 	id: string;

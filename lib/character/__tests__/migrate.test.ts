@@ -68,6 +68,14 @@ const blankCrewTheme = {
 	decay: 0,
 };
 
+// v4's step can't know a pre-v5 story tag was burnt - that field didn't exist
+// yet - so every document walking through it lands unburnt, same as sample's
+// sg-2 already is. sg-1 is the one difference from `sample` past this step.
+const resetStoryTags = sample.storyTags.map((tag) => ({
+	...tag,
+	burnt: false,
+}));
+
 test("v1 -> v2 starts essenceChosen false, even with an essence already set", () => {
 	const withEssence: Record<string, unknown> = {
 		...sample,
@@ -80,6 +88,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		essenceChosen: false,
 		loadout: resetLoadout,
 		crewTheme: blankCrewTheme,
+		storyTags: resetStoryTags,
 	});
 
 	const blank: Record<string, unknown> = {
@@ -95,6 +104,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		essenceChosen: false,
 		loadout: resetLoadout,
 		crewTheme: blankCrewTheme,
+		storyTags: resetStoryTags,
 	});
 });
 
@@ -128,6 +138,7 @@ test("v2 -> v3 resets the loadout to the new shape, keeping the budget fields", 
 			upgrade: 2,
 		},
 		crewTheme: blankCrewTheme,
+		storyTags: resetStoryTags,
 	});
 });
 
@@ -135,5 +146,38 @@ test("v3 -> v4 adds a blank crew theme", () => {
 	const old: Record<string, unknown> = { ...sample, schema_version: 3 };
 	delete old.crewTheme;
 
-	assert.deepEqual(migrate(old), { ...sample, crewTheme: blankCrewTheme });
+	assert.deepEqual(migrate(old), {
+		...sample,
+		crewTheme: blankCrewTheme,
+		storyTags: resetStoryTags,
+	});
+});
+
+test("v4 -> v5 drops a status's owner and a story tag's scratched flag", () => {
+	const old: Record<string, unknown> = {
+		...sample,
+		schema_version: 4,
+		statuses: sample.statuses.map((status) => {
+			const { limit: _limit, ...rest } = status;
+			return { ...rest, owner: "mine" };
+		}),
+		// v4 has no burnt/crispy concept for a story tag, only scratched, so a
+		// v4 document can't have encoded sg-1's burn - the migration resets it.
+		storyTags: sample.storyTags.map((tag) => {
+			const { burnt: _burnt, crispy: _crispy, ...rest } = tag;
+			return { ...rest, scratched: false };
+		}),
+	};
+
+	assert.deepEqual(migrate(old), { ...sample, storyTags: resetStoryTags });
+});
+
+test("v5 -> v6 drops a status's out flag", () => {
+	const old: Record<string, unknown> = {
+		...sample,
+		schema_version: 5,
+		statuses: sample.statuses.map((status) => ({ ...status, out: false })),
+	};
+
+	assert.deepEqual(migrate(old), sample);
 });

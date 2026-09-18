@@ -5,7 +5,7 @@ import type { Character } from "../types.ts";
 // it exercises every corner of the document: mixed theme types, a burnt tag, one
 // question answered twice, a cross-themebook tag, a nascent replacement theme
 // with its ghost memory, a loadout at budget, non-contiguous status tiers, and a
-// scratched story tag.
+// burnt story tag.
 export const sample: Character = {
 	schema_version: CURRENT_SCHEMA_VERSION,
 	name: "Kira Vance",
@@ -273,24 +273,21 @@ export const sample: Character = {
 			name: "exhausted",
 			valence: "negative",
 			tiers: [false, true, false, true, false, false],
-			owner: "mine",
-			out: false,
+			limit: 6,
 		},
 		{
 			id: "st-2",
 			name: "amped-up",
 			valence: "positive",
 			tiers: [false, false, true, false, false, false],
-			owner: "mine",
-			out: false,
+			limit: 6,
 		},
 		{
 			id: "st-3",
 			name: "hunted-by-the-syndicate",
 			valence: "negative",
 			tiers: [false, false, false, false, false, true],
-			owner: "mc",
-			out: false,
+			limit: 6,
 		},
 	],
 	storyTags: [
@@ -298,13 +295,15 @@ export const sample: Character = {
 			id: "sg-1",
 			name: "rain-slicked rooftops",
 			valence: "positive",
-			scratched: false,
+			burnt: true,
+			crispy: false,
 		},
 		{
 			id: "sg-2",
 			name: "the alarm is live",
 			valence: "negative",
-			scratched: true,
+			burnt: false,
+			crispy: false,
 		},
 	],
 	creationStep: null,

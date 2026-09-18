@@ -195,16 +195,27 @@ It carries its own Upgrade track of 3 points, and it has no Decay track.
 - Name
 - Written as name-tier, for example exhausted-2 or amped-up-2. The rulebook and the
   themebooks both use this shorthand.
-- Tier marks, 1 to 6, each box marked or not
-- Type: positive or negative
-- Owner flag: mine, or MC. Plus an "out" flag for a spent card.
-- Stacking rule: mark the new tier. If that tier is already marked, mark one
-  tier higher, and repeat.
+- Tier marks, 1 to a limit, each box marked or not, individually. The limit is
+  typically 6; a player can raise or lower it, a rare edge case for the
+  unusual status built larger. Every status belongs to the character - there
+  is no owner flag. (GM-owned statuses, shared into a session, are later GM
+  tooling; see section 10.)
+- Type: positive or negative.
+- Stacking rule: mark the target tier. If that tier is already marked, mark
+  one tier higher, and repeat, up to the limit.
 - Removal rule: move all marked tiers one box left per tier removed. A mark
   pushed below tier 1 is erased.
+- Only the highest marked positive tier and the highest marked negative tier
+  on a character apply to a roll's Power (7.8). The table decides which
+  statuses are relevant; the app warns rather than choosing for them if more
+  than one status of the same valence is applied to one roll.
 
 ### Story tag
-- Name, positive or negative, scratched flag.
+- Name, positive or negative.
+- Burnt flag, like a power tag: burning it for Power is reversible, and only
+  a positive story tag burns.
+- Crispy flag: one-time use. A crispy tag cannot burn, and is deleted once it
+  is used in a roll.
 
 ## 7. Requirements
 
@@ -318,11 +329,15 @@ narrow, separate mechanic and isn't built yet.
 
 ### 7.7 Play state — P0
 This is what a player uses while a session runs.
-- Add a status. Set its name, type, and starting tier.
-- Raise a status by a tier, applying the stacking rule automatically.
-- Lower a status by a tier, applying the removal rule automatically.
-- Delete a status. Mark it as the MC's.
-- Add, scratch, and delete ongoing story tags.
+- Add a status. Set its name, type, and starting tier. Delete it.
+- Mark an individual tier directly, applying the stacking rule automatically
+  (mark one tier higher if the target is already marked, and repeat). Clear a
+  marked tier directly. Both are single taps, so there is no separate
+  "raise"/"lower the whole status a step" control.
+- Raise or lower a status's tier limit, tucked away as a rare edge case.
+- Add and delete ongoing story tags. Burn a positive one for Power, like a
+  power tag, and un-burn it. Mark one crispy (one-time); it can't burn, and
+  is removed once it is used in a roll.
 - A player changes any status or story tag without losing sight of their tags.
 - Play actions are quick enough to do mid-conversation, without interrupting the table.
 
@@ -331,10 +346,11 @@ This is what a player uses while a session runs.
   One action can land several effects at once, and the player chooses them after
   the roll, when they spend the Power. The builder totals an action, nothing more.
 - Compute Power: each relevant positive tag adds 1, each negative tag subtracts 1.
-  Only the highest positive status tier and the highest negative status tier count.
-  A burnt power tag contributes 3 instead of 1. Theme specials change that number,
-  so treat 3 as the default and let the player override it here, per burn, when
-  building the roll.
+  Only the highest positive status tier and the highest negative status tier count;
+  the table decides which statuses apply, and the app marks the outranked one
+  rather than refusing it. A burnt power tag contributes 3 instead of 1. Theme
+  specials change that number, so treat 3 as the default and let the player
+  override it here, per burn, when building the roll.
 - Support rolling with Self, Mythos, or Noise: when the action is generally
   about that domain, Power comes from the count of themes of that type instead
   of the counted tags. Negative tags and statuses still count, and the player
@@ -357,7 +373,6 @@ reads the effect costs here after the roll, when they decide how to spend Power.
   Enhance, Restore, Advance, Set Back, Discover, Extra Feat.
 - Mitigation costs.
 - The Scale table.
-- Making a roll, choosing Effects, and the Rule of Minimum One.
 - Power options: burning a tag, pushing a 10+, Going Out In a Blaze.
 
 ### 7.11 Account and sharing — P0
