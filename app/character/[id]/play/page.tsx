@@ -4,6 +4,7 @@ import { Button } from "@base-ui/react/button";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { StatusCard } from "@/app/character/[id]/play/_components/status-card";
+import { StoryTagChip } from "@/app/character/[id]/play/_components/story-tag-chip";
 import { LABEL } from "@/components/styles";
 
 const ADD =
@@ -35,6 +36,12 @@ export default function PlayPage() {
 	function addStatus() {
 		const id = crypto.randomUUID();
 		dispatch({ type: "addStatus", id, valence: "positive" });
+		setAdded(id);
+	}
+
+	function addStoryTag() {
+		const id = crypto.randomUUID();
+		dispatch({ type: "addStoryTag", id, valence: "positive" });
 		setAdded(id);
 	}
 
@@ -72,6 +79,33 @@ export default function PlayPage() {
 					<ul className="flex flex-col gap-2">{mc.map(card)}</ul>
 				</section>
 			)}
+
+			<section className="flex flex-col gap-2">
+				<div className="flex items-baseline justify-between">
+					<h2 className={LABEL}>Story tags</h2>
+					<Button type="button" onClick={addStoryTag} className={ADD}>
+						{PLUS}
+						Tag
+					</Button>
+				</div>
+
+				{character.storyTags.length === 0 ? (
+					<p className="font-sans text-sm text-dim">
+						No story tags. Add one as the scene gives you something to work
+						with.
+					</p>
+				) : (
+					<ul className="flex flex-wrap gap-[7px]">
+						{character.storyTags.map((tag) => (
+							<StoryTagChip
+								key={tag.id}
+								tag={tag}
+								autoFocus={tag.id === added}
+							/>
+						))}
+					</ul>
+				)}
+			</section>
 		</main>
 	);
 }

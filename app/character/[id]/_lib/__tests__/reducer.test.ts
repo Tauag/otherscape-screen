@@ -464,3 +464,86 @@ test("a status is renamed, re-valenced, and deleted", () => {
 	character = reduce(character, { type: "removeStatus", id: "st-1" });
 	assert.deepEqual(character.statuses, []);
 });
+
+test("a story tag is added unscratched, then named", () => {
+	let character = reduce(newCharacter(), {
+		type: "addStoryTag",
+		id: "sg-1",
+		valence: "positive",
+	});
+	assert.deepEqual(character.storyTags, [
+		{ id: "sg-1", name: "", valence: "positive", scratched: false },
+	]);
+
+	character = reduce(character, {
+		type: "renameStoryTag",
+		id: "sg-1",
+		name: "hole in the fence",
+	});
+	assert.equal(character.storyTags[0].name, "hole in the fence");
+});
+
+test("scratching a story tag is reversible", () => {
+	let character = reduce(newCharacter(), {
+		type: "addStoryTag",
+		id: "sg-1",
+		valence: "positive",
+	});
+
+	character = reduce(character, {
+		type: "toggleStoryTagScratched",
+		id: "sg-1",
+	});
+	assert.equal(character.storyTags[0].scratched, true);
+
+	character = reduce(character, {
+		type: "toggleStoryTagScratched",
+		id: "sg-1",
+	});
+	assert.equal(character.storyTags[0].scratched, false);
+});
+
+test("a story tag changes valence and is deleted", () => {
+	let character = reduce(newCharacter(), {
+		type: "addStoryTag",
+		id: "sg-1",
+		valence: "positive",
+	});
+
+	character = reduce(character, {
+		type: "setStoryTagValence",
+		id: "sg-1",
+		valence: "negative",
+	});
+	assert.equal(character.storyTags[0].valence, "negative");
+
+	character = reduce(character, { type: "removeStoryTag", id: "sg-1" });
+	assert.deepEqual(character.storyTags, []);
+});
+
+test("a story tag verb leaves every other tag alone", () => {
+	let character = newCharacter();
+	character = reduce(character, {
+		type: "addStoryTag",
+		id: "sg-1",
+		valence: "positive",
+	});
+	character = reduce(character, {
+		type: "addStoryTag",
+		id: "sg-2",
+		valence: "negative",
+	});
+
+	character = reduce(character, {
+		type: "toggleStoryTagScratched",
+		id: "sg-2",
+	});
+	assert.equal(character.storyTags[0].scratched, false);
+	assert.equal(character.storyTags[1].scratched, true);
+
+	character = reduce(character, { type: "removeStoryTag", id: "sg-2" });
+	assert.deepEqual(
+		character.storyTags.map((tag) => tag.id),
+		["sg-1"],
+	);
+});

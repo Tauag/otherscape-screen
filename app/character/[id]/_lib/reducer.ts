@@ -37,6 +37,7 @@ import type {
 	PowerQuestionLetter,
 	PowerTag,
 	Status,
+	StoryTag,
 	Theme,
 	ThemeType,
 	Valence,
@@ -194,7 +195,12 @@ export type CharacterAction =
 	| { type: "setStatusValence"; id: string; valence: Valence }
 	| { type: "toggleStatusOwner"; id: string }
 	| { type: "toggleStatusOut"; id: string }
-	| { type: "removeStatus"; id: string };
+	| { type: "removeStatus"; id: string }
+	| { type: "addStoryTag"; id: string; valence: Valence }
+	| { type: "renameStoryTag"; id: string; name: string }
+	| { type: "setStoryTagValence"; id: string; valence: Valence }
+	| { type: "toggleStoryTagScratched"; id: string }
+	| { type: "removeStoryTag"; id: string };
 
 /** Every theme verb below edits one theme and leaves the rest alone. */
 function inTheme(
@@ -226,6 +232,17 @@ const inStatus = (
 	...character,
 	statuses: character.statuses.map((status) =>
 		status.id === id ? edit(status) : status,
+	),
+});
+
+const inStoryTag = (
+	character: Character,
+	id: string,
+	edit: (tag: StoryTag) => StoryTag,
+): Character => ({
+	...character,
+	storyTags: character.storyTags.map((tag) =>
+		tag.id === id ? edit(tag) : tag,
 	),
 });
 
@@ -610,6 +627,39 @@ export function reduce(
 				statuses: character.statuses.filter(
 					(status) => status.id !== action.id,
 				),
+			};
+		case "addStoryTag":
+			return {
+				...character,
+				storyTags: [
+					...character.storyTags,
+					{
+						id: action.id,
+						name: "",
+						valence: action.valence,
+						scratched: false,
+					},
+				],
+			};
+		case "renameStoryTag":
+			return inStoryTag(character, action.id, (tag) => ({
+				...tag,
+				name: action.name,
+			}));
+		case "setStoryTagValence":
+			return inStoryTag(character, action.id, (tag) => ({
+				...tag,
+				valence: action.valence,
+			}));
+		case "toggleStoryTagScratched":
+			return inStoryTag(character, action.id, (tag) => ({
+				...tag,
+				scratched: !tag.scratched,
+			}));
+		case "removeStoryTag":
+			return {
+				...character,
+				storyTags: character.storyTags.filter((tag) => tag.id !== action.id),
 			};
 	}
 }

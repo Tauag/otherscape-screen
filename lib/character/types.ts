@@ -135,6 +135,7 @@ export type StoryTag = {
 	id: string;
 	name: string;
 	valence: Valence;
+	/** Used up. A scratched tag is out of play, so it never enters a roll selection. */
 	scratched: boolean;
 };
 
