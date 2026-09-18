@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Barlow, Chakra_Petch, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -22,6 +22,12 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
 	title: "Otherscape",
 	description: "A character sheet and play companion for Metro:Otherscape.",
+};
+
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
+	viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
