@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import {
+	burningTagId,
+	burnToggleAction,
 	type RollTag,
 	rollGroups,
 	rollOrder,
@@ -20,7 +22,7 @@ import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
 
 export default function RollPage() {
-	const { character } = useCharacter();
+	const { character, dispatch } = useCharacter();
 	const { pick, setPick } = useRollSelection();
 	const [overriding, setOverriding] = useState<RollTag | null>(null);
 	const selection = toRollSelection(character, pick);
@@ -44,9 +46,22 @@ export default function RollPage() {
 	const burnValueOfPick = (tag: RollTag) =>
 		tag.burnValue === null ? null : (pick.burnValues[tag.id] ?? tag.burnValue);
 
+	// Only one tag may burn per roll, so every other tag's burn control
+	// disappears while this one is set.
+	const burning = burningTagId(character, pick);
+
+	const setBurnt = (tagId: string, burnt: boolean) => {
+		const action = burnToggleAction(character, tagId, burnt);
+		if (action) dispatch(action);
+	};
+
 	const tagChip = (tag: RollTag, hue?: string) => {
 		const line = lineOf.get(tag.id);
-		const burnt = burnValueOfPick(tag) !== null;
+		const selected = line !== undefined;
+		// Already burnt on the sheet: spent, so it can't be picked for a roll.
+		const burnt = tag.burnValue !== null;
+		const canBurnControl =
+			selected && (burnt || (tag.canBurn && burning === null));
 		return (
 			<RollChip
 				key={tag.id}
@@ -54,12 +69,15 @@ export default function RollPage() {
 				type={tag.valence === "positive" ? (hue as never) : undefined}
 				valence={tag.valence === "negative" ? "negative" : undefined}
 				burnt={burnt}
-				selected={line !== undefined}
+				selected={selected}
 				counted={line?.counted ?? false}
 				value={line && signed(line.value)}
 				badge={burnt ? "BURNT" : undefined}
-				onToggle={() => toggle(tag.id)}
-				onValueClick={line && burnt ? () => setOverriding(tag) : undefined}
+				onToggle={burnt ? undefined : () => toggle(tag.id)}
+				onValueClick={selected && burnt ? () => setOverriding(tag) : undefined}
+				onBurntChange={
+					canBurnControl ? (next) => setBurnt(tag.id, next) : undefined
+				}
 			/>
 		);
 	};
@@ -132,20 +150,30 @@ export default function RollPage() {
 							{character.storyTags.map((tag) => {
 								const rollTag = storyRollTag(tag);
 								const line = lineOf.get(tag.id);
-								const burnt = burnValueOfPick(rollTag) !== null;
+								const selected = line !== undefined;
+								const burnt = rollTag.burnValue !== null;
+								const canBurnControl =
+									selected && (burnt || (rollTag.canBurn && burning === null));
 								return (
 									<RollChip
 										key={tag.id}
 										text={tag.name}
 										valence={tag.valence}
 										burnt={burnt}
-										selected={line !== undefined}
+										selected={selected}
 										counted={line?.counted ?? false}
 										value={line && signed(line.value)}
 										badge={burnt ? "BURNT" : tag.crispy ? "crispy" : undefined}
-										onToggle={() => toggle(tag.id)}
+										onToggle={burnt ? undefined : () => toggle(tag.id)}
 										onValueClick={
-											line && burnt ? () => setOverriding(rollTag) : undefined
+											selected && burnt
+												? () => setOverriding(rollTag)
+												: undefined
+										}
+										onBurntChange={
+											canBurnControl
+												? (next) => setBurnt(tag.id, next)
+												: undefined
 										}
 									/>
 								);

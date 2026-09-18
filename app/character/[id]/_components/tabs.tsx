@@ -36,7 +36,7 @@ export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 		},
 		{
 			label: "Placeholder",
-			segment: "/404",
+			segment: "",
 			icon: <TabPlaceholderIcon />,
 		},
 		{
