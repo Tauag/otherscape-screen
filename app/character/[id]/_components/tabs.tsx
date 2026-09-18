@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import {
+	signed,
+	toRollSelection,
+} from "@/app/character/[id]/_lib/roll-selection";
 import { power } from "@/lib/rules/power";
 
 /**
@@ -50,6 +56,14 @@ const KEY =
 
 export function TabBar({ id }: { id: string }) {
 	const pathname = usePathname();
+	const { character } = useCharacter();
+	const { pick } = useRollSelection();
+
+	const roll = `/character/${id}/roll`;
+
+	// The roll screen is the centre key opened, so it closes with its own X
+	// instead of carrying the bar that leads back to it.
+	if (pathname === roll) return null;
 
 	const key = (tab: (typeof TABS)[number]) => {
 		const href = `/character/${id}${tab.segment}`;
@@ -91,18 +105,20 @@ export function TabBar({ id }: { id: string }) {
 		>
 			{TABS.slice(0, half).map(key)}
 
-			<p className="flex items-center justify-center">
+			<Link
+				href={roll}
+				aria-label="Build a roll"
+				className="flex items-center justify-center"
+			>
 				<span className="flex size-[54px] flex-col items-center justify-center gap-px rounded-[4px] bg-primary text-bg shadow-[0_0_26px_rgba(255,46,136,0.45)] [clip-path:polygon(0_0,100%_0,100%_78%,78%_100%,0_100%)]">
 					<span className="font-display text-[20px] leading-none font-bold">
-						{/* T41 replaces this argument once a roll selection exists. It
-                reads 0 on purpose until then. */}
-						{power({ tags: [], statuses: [], modifier: 0 }).total}
+						{signed(power(toRollSelection(character, pick)).total)}
 					</span>
 					<span className="font-display text-[8px] font-bold tracking-[0.14em]">
 						ROLL
 					</span>
 				</span>
-			</p>
+			</Link>
 
 			{TABS.slice(half).map(key)}
 		</nav>
