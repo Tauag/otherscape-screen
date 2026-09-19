@@ -150,10 +150,12 @@ test("the fallback reference holds the names it knows, and nothing it does not",
 		POWER_OPTION_NAMES.map((name) => ({ name, text: "" })),
 	);
 
-	// The mitigation rows and the Scale steps are in the printed cheatsheet
-	// alone, so the fallback does not even know how many there are.
+	// The mitigation rows, the Scale steps, and the Going Out In a Blaze rules
+	// are in the printed cheatsheet alone, so the fallback does not even know
+	// how many there are.
 	assert.deepEqual(reference.mitigation, []);
 	assert.deepEqual(reference.scale, []);
+	assert.deepEqual(reference.blaze, []);
 });
 
 test("a pack with no reference section loads, and keeps the fallback names", () => {

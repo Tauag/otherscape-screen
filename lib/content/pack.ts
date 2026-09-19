@@ -53,6 +53,8 @@ export type Reference = {
 	/** One row per Scale step. The pack decides how many; the fallback knows none. */
 	scale: Special[];
 	powerOptions: Special[];
+	/** The rolling rules and the degree-of-sacrifice chart for Going Out In a Blaze. */
+	blaze: Special[];
 };
 
 export type ContentPack = {
@@ -94,6 +96,7 @@ export const FALLBACK_REFERENCE: Reference = {
 	mitigation: [],
 	scale: [],
 	powerOptions: POWER_OPTION_NAMES.map((name) => ({ name, text: "" })),
+	blaze: [],
 };
 
 export const FALLBACK_PACK: ContentPack = {
@@ -203,6 +206,7 @@ function normalizeReference(raw: unknown): Reference {
 			plainRow,
 			FALLBACK_REFERENCE.powerOptions,
 		),
+		blaze: rows(section.blaze, plainRow, FALLBACK_REFERENCE.blaze),
 	};
 }
 

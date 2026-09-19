@@ -10,6 +10,7 @@ export const sections = (reference: Reference): Section[] => [
 	{ title: "Mitigation", rows: reference.mitigation },
 	{ title: "Scale", rows: reference.scale },
 	{ title: "Power options", rows: reference.powerOptions },
+	{ title: "Going Out In a Blaze", rows: reference.blaze },
 ];
 
 /**
