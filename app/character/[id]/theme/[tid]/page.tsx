@@ -333,6 +333,7 @@ export default function ThemePage({
 				<Input
 					id={`theme-quote-${theme.id}`}
 					type="text"
+					autoComplete="off"
 					value={theme.quote}
 					onChange={(event) =>
 						dispatch({

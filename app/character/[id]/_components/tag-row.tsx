@@ -84,6 +84,7 @@ export function TagRow({
 
 				<Input
 					type="text"
+					autoComplete="off"
 					value={tag.text}
 					onChange={(event) => onTextChange(event.target.value)}
 					aria-label={`${power ? "Power" : "Weakness"} tag ${label}`}

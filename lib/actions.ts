@@ -22,6 +22,22 @@ export async function signInWithGoogle() {
 	redirect(data.url);
 }
 
+export async function signInWithDiscord() {
+	const origin = process.env.URL ?? (await headers()).get("origin");
+	const supabase = await createClient();
+
+	const { data, error } = await supabase.auth.signInWithOAuth({
+		provider: "discord",
+		options: { redirectTo: `${origin}/auth/callback` },
+	});
+
+	if (error || !data.url) {
+		throw new Error(error?.message ?? "Could not start sign-in");
+	}
+
+	redirect(data.url);
+}
+
 export async function signOut() {
 	const supabase = await createClient();
 	await supabase.auth.signOut();

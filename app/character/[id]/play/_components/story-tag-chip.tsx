@@ -36,6 +36,7 @@ export function StoryTagChip({
 		>
 			<Input
 				type="text"
+				autoComplete="off"
 				value={tag.name}
 				autoFocus={autoFocus}
 				onChange={(event) =>

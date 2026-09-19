@@ -31,6 +31,7 @@ export function StatusCard({
 	const name = (className: string) => (
 		<Input
 			type="text"
+			autoComplete="off"
 			value={status.name}
 			autoFocus={autoFocus}
 			onChange={(event) =>

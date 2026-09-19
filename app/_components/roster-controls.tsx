@@ -73,6 +73,7 @@ export function CharacterCard({
 						<input type="hidden" name="id" value={id} />
 						<Input
 							autoFocus
+							autoComplete="off"
 							name="name"
 							defaultValue={name}
 							aria-label="Character name"

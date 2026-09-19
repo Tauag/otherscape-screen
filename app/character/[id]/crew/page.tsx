@@ -252,6 +252,7 @@ export default function CrewPage({
 				<Input
 					id="crew-quote"
 					type="text"
+					autoComplete="off"
 					value={crew.quote}
 					onChange={(event) =>
 						dispatch({ type: "setCrewQuote", quote: event.target.value })
@@ -275,6 +276,7 @@ export default function CrewPage({
 								<li key={relationship.id} className="flex items-center gap-2">
 									<Input
 										type="text"
+										autoComplete="off"
 										value={relationship.member}
 										onChange={(event) =>
 											dispatch({
@@ -289,6 +291,7 @@ export default function CrewPage({
 									/>
 									<Input
 										type="text"
+										autoComplete="off"
 										value={relationship.tag}
 										onChange={(event) =>
 											dispatch({

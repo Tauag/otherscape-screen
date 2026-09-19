@@ -44,6 +44,7 @@ export function StatusLimitDialog({
 			<Input
 				id={inputId}
 				type="number"
+				autoComplete="off"
 				min={1}
 				value={value}
 				onChange={(event) => setValue(event.target.value)}

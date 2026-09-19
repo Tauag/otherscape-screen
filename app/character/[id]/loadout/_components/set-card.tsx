@@ -28,6 +28,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 				</Toggle>
 				<Input
 					type="text"
+					autoComplete="off"
 					value={set.title}
 					placeholder="Title tag"
 					onChange={(event) =>
@@ -82,6 +83,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 							</Toggle>
 							<Input
 								type="text"
+								autoComplete="off"
 								value={feature.text}
 								onChange={(event) =>
 									dispatch({
@@ -139,6 +141,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 							</span>
 							<Input
 								type="text"
+								autoComplete="off"
 								value={weakness.text}
 								onChange={(event) =>
 									dispatch({

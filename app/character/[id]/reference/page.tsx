@@ -32,6 +32,7 @@ export default function ReferencePage() {
 				<SearchIcon className="shrink-0 text-muted" />
 				<Input
 					type="search"
+					autoComplete="off"
 					value={query}
 					onValueChange={setQuery}
 					placeholder="Search"

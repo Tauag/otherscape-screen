@@ -176,6 +176,7 @@ function ShareControls({
 						<span className="sr-only">Share link</span>
 						<Input
 							readOnly
+							autoComplete="off"
 							value={link}
 							onFocus={(event) => event.target.select()}
 							className="w-full min-w-0 rounded-sm border border-border bg-bg px-2 font-mono text-xs text-dim"

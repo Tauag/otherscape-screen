@@ -33,6 +33,7 @@ export function AppBar({ shareToken }: { shareToken: string | null }) {
 					<span className="sr-only">Name</span>
 					<Input
 						value={character.name}
+						autoComplete="off"
 						onChange={(event) =>
 							dispatch({ type: "rename", name: event.target.value })
 						}
