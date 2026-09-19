@@ -5,6 +5,7 @@ import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
+import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import {
@@ -302,7 +303,24 @@ export default function CrewPage({
 										}
 										aria-label={`Relationship tag with ${named}`}
 										placeholder="Relationship tag"
-										className={`${FIELD} flex-1`}
+										className={`${FIELD} flex-1 ${relationship.burnt ? "line-through" : ""}`}
+									/>
+									<BurnButton
+										burnt={relationship.burnt}
+										onBurntChange={(burnt) =>
+											dispatch(
+												burnt
+													? {
+															type: "burnCrewRelationship",
+															id: relationship.id,
+														}
+													: {
+															type: "unburnCrewRelationship",
+															id: relationship.id,
+														},
+											)
+										}
+										named={`the relationship with ${named}`}
 									/>
 									<Button
 										type="button"

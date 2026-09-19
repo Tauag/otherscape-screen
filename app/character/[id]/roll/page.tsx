@@ -53,6 +53,23 @@ export default function RollPage() {
 				dispatch({ type: "removeStoryTag", id: tag.id });
 			}
 		}
+		// A crew tag is crispy too, but reversible: rolling it in just burns it,
+		// same as a manual burn, so it can't be picked again until unburnt by
+		// hand at the end of the session.
+		for (const tag of character.crewTheme.powerTags) {
+			if (!tag.burnt && pick.ids.includes(tag.id)) {
+				dispatch({
+					type: "burnCrewTag",
+					tagId: tag.id,
+					burnValue: DEFAULT_BURN_VALUE,
+				});
+			}
+		}
+		for (const relationship of character.crew) {
+			if (!relationship.burnt && pick.ids.includes(relationship.id)) {
+				dispatch({ type: "burnCrewRelationship", id: relationship.id });
+			}
+		}
 		setPick((current) => ({ ...current, ids: [], burnValues: {} }));
 	};
 
@@ -79,7 +96,7 @@ export default function RollPage() {
 				selected={selected}
 				counted={line?.counted ?? false}
 				value={line && signed(line.value)}
-				badge={burnt ? "BURNT" : undefined}
+				badge={burnt ? "BURNT" : tag.crispy ? "crispy" : undefined}
 				onToggle={burnt ? undefined : () => toggle(tag.id)}
 				onValueClick={selected && burnt ? () => setOverriding(tag) : undefined}
 				onBurntChange={

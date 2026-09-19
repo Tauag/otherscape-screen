@@ -83,7 +83,7 @@ export function CrewBlock({
 						{relationships.map((relationship) => (
 							<li
 								key={relationship.id}
-								className="font-sans text-[13px] text-dim"
+								className={`font-sans text-[13px] text-dim ${relationship.burnt ? "line-through" : ""}`}
 							>
 								<span className="text-[var(--hue-text)]">
 									{relationship.member.trim() || "Unnamed"}

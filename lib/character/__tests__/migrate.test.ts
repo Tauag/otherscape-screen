@@ -76,6 +76,15 @@ const resetStoryTags = sample.storyTags.map((tag) => ({
 	burnt: false,
 }));
 
+// v6's step always resets every crew relationship's burnt flag, since it
+// didn't exist before, so every document that walks through it lands here
+// regardless of what it carried before. cr-2 is burnt in `sample`, so this
+// is the one difference from `sample` past this step.
+const resetCrew = sample.crew.map((relationship) => ({
+	...relationship,
+	burnt: false,
+}));
+
 test("v1 -> v2 starts essenceChosen false, even with an essence already set", () => {
 	const withEssence: Record<string, unknown> = {
 		...sample,
@@ -89,6 +98,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		loadout: resetLoadout,
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
+		crew: resetCrew,
 	});
 
 	const blank: Record<string, unknown> = {
@@ -105,6 +115,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		loadout: resetLoadout,
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
+		crew: resetCrew,
 	});
 });
 
@@ -139,6 +150,7 @@ test("v2 -> v3 resets the loadout to the new shape, keeping the budget fields", 
 		},
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
+		crew: resetCrew,
 	});
 });
 
@@ -150,6 +162,7 @@ test("v3 -> v4 adds a blank crew theme", () => {
 		...sample,
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
+		crew: resetCrew,
 	});
 });
 
@@ -169,7 +182,11 @@ test("v4 -> v5 drops a status's owner and a story tag's scratched flag", () => {
 		}),
 	};
 
-	assert.deepEqual(migrate(old), { ...sample, storyTags: resetStoryTags });
+	assert.deepEqual(migrate(old), {
+		...sample,
+		storyTags: resetStoryTags,
+		crew: resetCrew,
+	});
 });
 
 test("v5 -> v6 drops a status's out flag", () => {
@@ -179,5 +196,18 @@ test("v5 -> v6 drops a status's out flag", () => {
 		statuses: sample.statuses.map((status) => ({ ...status, out: false })),
 	};
 
-	assert.deepEqual(migrate(old), sample);
+	assert.deepEqual(migrate(old), { ...sample, crew: resetCrew });
+});
+
+test("v6 -> v7 adds burnt to a crew relationship", () => {
+	const old: Record<string, unknown> = {
+		...sample,
+		schema_version: 6,
+		crew: sample.crew.map((relationship) => {
+			const { burnt: _burnt, ...rest } = relationship;
+			return rest;
+		}),
+	};
+
+	assert.deepEqual(migrate(old), { ...sample, crew: resetCrew });
 });

@@ -7,6 +7,7 @@ import {
 	burningTagId,
 	burnToggleAction,
 	NO_PICK,
+	rollGroups,
 	toRollSelection,
 } from "../roll-selection.ts";
 
@@ -134,4 +135,42 @@ test("burningTagId reads the one selected tag that is already burnt", () => {
 		burningTagId(sample, { ...NO_PICK, ids: ["pt-1", "pt-3"] }),
 		"pt-3",
 	);
+});
+
+test("the crew group carries the crew's power tags and its relationship tags", () => {
+	const crew = rollGroups(sample).find((group) => group.id === "crew");
+	const ids = crew?.tags.map((tag) => tag.id);
+	// cpt-1, cpt-2 are the crew theme's power tags; cr-1, cr-2 are relationships.
+	assert.deepEqual(ids, ["cpt-1", "cpt-2", "cr-1", "cr-2", "cwt-1"]);
+});
+
+test("a crew power tag and a crew relationship are always crispy: positive, but never burnable", () => {
+	const crew = rollGroups(sample).find((group) => group.id === "crew");
+	const cpt1 = crew?.tags.find((tag) => tag.id === "cpt-1");
+	const cr1 = crew?.tags.find((tag) => tag.id === "cr-1");
+	assert.deepEqual(
+		[cpt1?.valence, cpt1?.canBurn, cpt1?.crispy],
+		["positive", false, true],
+	);
+	assert.deepEqual(
+		[cr1?.valence, cr1?.canBurn, cr1?.crispy],
+		["positive", false, true],
+	);
+});
+
+test("a crew relationship's chip reads as the member's name and their tag", () => {
+	const crew = rollGroups(sample).find((group) => group.id === "crew");
+	const cr1 = crew?.tags.find((tag) => tag.id === "cr-1");
+	assert.equal(cr1?.text, "Tamsin — she talked me off a ledge once");
+});
+
+test("an unburnt crew relationship contributes the plain +1, and a burnt one is already spent", () => {
+	// cr-1 is unburnt in the sample; cr-2 is burnt.
+	const selection = toRollSelection(sample, pick({ ids: ["cr-1"] }));
+	assert.equal(selection.tags[0].burnValue, null);
+	assert.equal(power(selection).total, 1);
+
+	const crew = rollGroups(sample).find((group) => group.id === "crew");
+	const cr2 = crew?.tags.find((tag) => tag.id === "cr-2");
+	assert.notEqual(cr2?.burnValue, null);
 });

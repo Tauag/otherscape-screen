@@ -1,7 +1,7 @@
 import { DEFAULT_STATUS_LIMIT } from "../rules/constants.ts";
 import type { Character } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 6;
+export const CURRENT_SCHEMA_VERSION = 7;
 
 type Doc = Record<string, unknown>;
 
@@ -90,6 +90,18 @@ steps.set(5, (doc) => {
 			const { out: _out, ...rest } = status;
 			return rest;
 		}),
+	};
+});
+
+// v6 predates a crew relationship's burnt flag: a relationship tag can now
+// carry Power in a roll, crispy like every other crew tag, so it needs the
+// same reversible burnt state a crew power tag already has. A v6 document's
+// relationships were never burnt, since nothing could burn them yet.
+steps.set(6, (doc) => {
+	const crew = (doc.crew ?? []) as Record<string, unknown>[];
+	return {
+		...doc,
+		crew: crew.map((relationship) => ({ ...relationship, burnt: false })),
 	};
 });
 

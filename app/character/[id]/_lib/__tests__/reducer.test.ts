@@ -293,7 +293,9 @@ test("the crew theme takes a power tag, gets a title, and marks its tracks", () 
 test("a crew relationship is added blank, edited by field, and removed", () => {
 	let character = newCharacter();
 	character = reduce(character, { type: "addCrewRelationship", id: "cr-1" });
-	assert.deepEqual(character.crew, [{ id: "cr-1", member: "", tag: "" }]);
+	assert.deepEqual(character.crew, [
+		{ id: "cr-1", member: "", tag: "", burnt: false },
+	]);
 
 	character = reduce(character, {
 		type: "editCrewRelationship",
@@ -306,7 +308,12 @@ test("a crew relationship is added blank, edited by field, and removed", () => {
 		edit: { tag: "she talked me off a ledge once" },
 	});
 	assert.deepEqual(character.crew, [
-		{ id: "cr-1", member: "Tamsin", tag: "she talked me off a ledge once" },
+		{
+			id: "cr-1",
+			member: "Tamsin",
+			tag: "she talked me off a ledge once",
+			burnt: false,
+		},
 	]);
 
 	character = reduce(character, {
@@ -314,6 +321,23 @@ test("a crew relationship is added blank, edited by field, and removed", () => {
 		id: "cr-1",
 	});
 	assert.deepEqual(character.crew, []);
+});
+
+test("a crew relationship burns and un-burns, reversibly and without a burn value", () => {
+	let character = newCharacter();
+	character = reduce(character, { type: "addCrewRelationship", id: "cr-1" });
+
+	character = reduce(character, {
+		type: "burnCrewRelationship",
+		id: "cr-1",
+	});
+	assert.equal(character.crew[0].burnt, true);
+
+	character = reduce(character, {
+		type: "unburnCrewRelationship",
+		id: "cr-1",
+	});
+	assert.equal(character.crew[0].burnt, false);
 });
 
 test("wildcards increment and decrement, clamped at 0", () => {

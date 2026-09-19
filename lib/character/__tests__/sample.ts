@@ -30,8 +30,13 @@ export const sample: Character = {
 		totalReconstitution: false,
 	},
 	crew: [
-		{ id: "cr-1", member: "Tamsin", tag: "she talked me off a ledge once" },
-		{ id: "cr-2", member: "Oyelaran", tag: "I owe him a body" },
+		{
+			id: "cr-1",
+			member: "Tamsin",
+			tag: "she talked me off a ledge once",
+			burnt: false,
+		},
+		{ id: "cr-2", member: "Oyelaran", tag: "I owe him a body", burnt: true },
 	],
 	crewTheme: {
 		powerTags: [

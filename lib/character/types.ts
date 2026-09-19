@@ -146,6 +146,9 @@ export type CrewRelationship = {
 	id: string;
 	member: string;
 	tag: string;
+	/** Crispy like every crew tag: burning it never spends Power. Reversible,
+	 *  and meant to clear at the end of the session, same as a crew power tag. */
+	burnt: boolean;
 };
 
 /** Named by the type, on a normal theme; a crew theme has no type to derive it

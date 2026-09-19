@@ -5,6 +5,7 @@
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import type {
 	Character,
+	CrewRelationship,
 	LoadoutSet,
 	PowerTag,
 	StoryTag,
@@ -54,6 +55,9 @@ export type RollTag = {
 	burnValue: number | null;
 	/** Whether this tag can be burnt at all, burnt or not yet. */
 	canBurn: boolean;
+	/** Never burns for extra Power, so it never competes with the one other
+	 *  tag a roll may burn. */
+	crispy: boolean;
 };
 
 export type RollGroup = {
@@ -64,13 +68,16 @@ export type RollGroup = {
 	tags: RollTag[];
 };
 
-function powerTag(tag: PowerTag): RollTag {
+/** `crispy` is for a crew power tag: it never burns for extra Power, so its
+ *  `burnValue` only ever marks it spent, never a bonus. */
+function powerTag(tag: PowerTag, crispy = false): RollTag {
 	return {
 		id: tag.id,
 		text: tag.text,
 		valence: "positive",
 		burnValue: burnValueOf(tag),
-		canBurn: true,
+		canBurn: !crispy,
+		crispy,
 	};
 }
 
@@ -81,6 +88,7 @@ function weaknessTag(tag: { id: string; text: string }): RollTag {
 		valence: "negative",
 		burnValue: null,
 		canBurn: false,
+		crispy: false,
 	};
 }
 
@@ -95,6 +103,22 @@ export function storyRollTag(tag: StoryTag): RollTag {
 		valence: tag.valence,
 		burnValue: canBurn ? burnValueOf(tag) : null,
 		canBurn,
+		crispy: tag.crispy,
+	};
+}
+
+/** A crew relationship reads as a positive tag, crispy like every crew tag:
+ *  it can carry Power in a roll, but burning it never does, so being used at
+ *  all is what marks it spent (roll/page.tsx burns it on finalize). */
+function relationshipTag(relationship: CrewRelationship): RollTag {
+	const named = relationship.member.trim() || "Unnamed";
+	return {
+		id: relationship.id,
+		text: `${named} — ${relationship.tag}`,
+		valence: "positive",
+		burnValue: burnValueOf(relationship),
+		canBurn: false,
+		crispy: true,
 	};
 }
 
@@ -107,6 +131,7 @@ function loadoutTags(set: LoadoutSet): RollTag[] {
 			valence: "positive",
 			burnValue: burnValueOf({ burnt: set.titleBurnt }),
 			canBurn: true,
+			crispy: false,
 		},
 		...set.features
 			.filter((feature) => feature.loaded)
@@ -116,6 +141,7 @@ function loadoutTags(set: LoadoutSet): RollTag[] {
 				valence: "positive" as Valence,
 				burnValue: burnValueOf({ burnt: feature.burnt }),
 				canBurn: true,
+				crispy: false,
 			})),
 		...set.weaknesses.map(weaknessTag),
 	];
@@ -195,7 +221,7 @@ export function rollGroups(character: Character): RollGroup[] {
 		hue: theme.type,
 		label: `${theme.type} · ${theme.themebook.trim() || "No themebook"}`,
 		tags: [
-			...theme.powerTags.map(powerTag),
+			...theme.powerTags.map((tag) => powerTag(tag)),
 			...theme.weaknessTags.map(weaknessTag),
 		],
 	}));
@@ -205,7 +231,10 @@ export function rollGroups(character: Character): RollGroup[] {
 		hue: "crew",
 		label: `crew · ${character.crewTheme.motivation}`,
 		tags: [
-			...character.crewTheme.powerTags.map(powerTag),
+			// A crew's power and relationship tags are always crispy (core rules,
+			// p. 75): burning either never spends Power, unlike a theme's tags.
+			...character.crewTheme.powerTags.map((tag) => powerTag(tag, true)),
+			...character.crew.map(relationshipTag),
 			...character.crewTheme.weaknessTags.map(weaknessTag),
 		],
 	});

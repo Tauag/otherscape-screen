@@ -197,6 +197,8 @@ export type CharacterAction =
 			edit: Partial<Pick<CrewRelationship, "member" | "tag">>;
 	  }
 	| { type: "removeCrewRelationship"; id: string }
+	| { type: "burnCrewRelationship"; id: string }
+	| { type: "unburnCrewRelationship"; id: string }
 	| { type: "addStatus"; id: string; valence: Valence }
 	| { type: "renameStatus"; id: string; name: string }
 	| { type: "raiseStatus"; id: string }
@@ -551,7 +553,10 @@ export function reduce(
 		case "addCrewRelationship":
 			return {
 				...character,
-				crew: [...character.crew, { id: action.id, member: "", tag: "" }],
+				crew: [
+					...character.crew,
+					{ id: action.id, member: "", tag: "", burnt: false },
+				],
 			};
 		case "editCrewRelationship":
 			return {
@@ -567,6 +572,24 @@ export function reduce(
 				...character,
 				crew: character.crew.filter(
 					(relationship) => relationship.id !== action.id,
+				),
+			};
+		case "burnCrewRelationship":
+			return {
+				...character,
+				crew: character.crew.map((relationship) =>
+					relationship.id === action.id
+						? { ...relationship, burnt: true }
+						: relationship,
+				),
+			};
+		case "unburnCrewRelationship":
+			return {
+				...character,
+				crew: character.crew.map((relationship) =>
+					relationship.id === action.id
+						? { ...relationship, burnt: false }
+						: relationship,
 				),
 			};
 		case "addStatus":
