@@ -46,6 +46,9 @@ export default function RollPage() {
 	const burnValueOfPick = (tag: RollTag) =>
 		tag.burnValue === null ? null : (pick.burnValues[tag.id] ?? tag.burnValue);
 
+	const finalizeTagSelection = () =>
+		setPick((current) => ({ ...current, ids: [], burnValues: {} }));
+
 	const burning = burningTagId(character, pick);
 	const setBurnt = (tagId: string, burnt: boolean) => {
 		const action = burnToggleAction(character, tagId, burnt);
@@ -182,7 +185,11 @@ export default function RollPage() {
 				<RollControls />
 			</div>
 
-			<RollTotal total={breakdown.total} modifier={pick.modifier} />
+			<RollTotal
+				total={breakdown.total}
+				modifier={pick.modifier}
+				onRoll={finalizeTagSelection}
+			/>
 
 			{overriding && (
 				<BurnOverride

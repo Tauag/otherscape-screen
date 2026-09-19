@@ -17,13 +17,18 @@ function rollCommand(total: number): string {
 export function RollTotal({
 	total,
 	modifier,
+	onRoll,
 }: {
 	total: number;
 	modifier: number;
+	/** Called when the player commits to this roll, to clear the picked tags. */
+	onRoll: () => void;
 }) {
 	const [open, setOpen] = useState(false);
 	const [copied, setCopied] = useState(false);
-	const command = rollCommand(total);
+	// Snapshot on roll, so clearing the tag selection right after doesn't
+	// change the command this dialog is already showing.
+	const [command, setCommand] = useState(rollCommand(total));
 
 	async function copy() {
 		await navigator.clipboard.writeText(command);
@@ -36,8 +41,10 @@ export function RollTotal({
 				<Button
 					type="button"
 					onClick={() => {
+						setCommand(rollCommand(total));
 						setCopied(false);
 						setOpen(true);
+						onRoll();
 					}}
 					className="flex flex-1 flex-col items-center justify-center rounded-[5px] bg-primary font-display text-[19px] font-bold tracking-[0.1em] text-bg uppercase [clip-path:polygon(0_0,100%_0,100%_74%,92%_100%,0_100%)]"
 				>
