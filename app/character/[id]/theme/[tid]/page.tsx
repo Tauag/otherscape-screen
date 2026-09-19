@@ -31,7 +31,7 @@ const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
 const BASE =
 	"inline-flex min-h-11 items-center self-start rounded-sm px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
-const ADD = `${BASE}`;
+const ADD = `${BASE} bg-[var(--hue)]`;
 const ADD_WEAKNESS = `${BASE} bg-negative`;
 
 const POPUP =
@@ -39,10 +39,10 @@ const POPUP =
 const TYPE_ITEM =
 	"flex min-h-11 cursor-pointer items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] text-dim uppercase outline-none data-[highlighted]:bg-bg data-[selected]:text-[var(--hue)]";
 const THEMEBOOK_TRIGGER =
-	"col-span-2 flex min-h-11 items-center justify-between gap-2 rounded-sm border border-border bg-bg px-3 text-left";
+	"flex min-h-11 flex-1 items-center justify-between gap-2 bg-bg px-3 text-left";
 const THEMEBOOK_POPUP =
 	"z-40 max-h-[75vh] w-[min(92vw,380px)] overflow-y-auto rounded-sm border border-border bg-surface p-2 outline-none";
-const THEMEBOOK_ITEM = `${ROW} cursor-pointer outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)] border-[var(--hue)]`;
+const THEMEBOOK_ITEM = `${ROW} cursor-pointer border-[var(--hue)] outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)]`;
 
 export default function ThemePage({
 	params,
@@ -87,7 +87,7 @@ export default function ThemePage({
 		>
 			<BackLink href={back} text="Sheet" />
 
-			<section className="grid grid-cols-3 gap-1.5">
+			<section className="flex divide-x divide-[var(--hue)] overflow-hidden rounded-sm border border-[var(--hue)]">
 				<Select.Root
 					value={theme.type}
 					onValueChange={(themeType) => {
@@ -95,7 +95,7 @@ export default function ThemePage({
 							dispatch({ type: "setThemeType", themeId: theme.id, themeType });
 					}}
 				>
-					<Select.Trigger className="col-span-1 flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-[var(--hue)] px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase">
+					<Select.Trigger className="flex min-h-11 shrink-0 items-center justify-center gap-1.5 bg-bg px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase">
 						{theme.type}
 						<Select.Icon aria-hidden className="text-xs">
 							▾
