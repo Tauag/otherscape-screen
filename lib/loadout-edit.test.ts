@@ -19,6 +19,7 @@ import {
 	toggleLoadoutFeatureBurnt,
 	toggleLoadoutSetTitle,
 	toggleLoadoutTitleBurnt,
+	unloadAllLoadout,
 } from "./loadout-edit.ts";
 import { loadoutSpend } from "./rules/loadout.ts";
 
@@ -150,6 +151,20 @@ test("adding, editing, and removing a feature touches only that set", () => {
 
 	const removed = removeLoadoutFeature(edited, "ls-1", "lf-new");
 	assert.deepEqual(removed.sets[0].features, loadout.sets[0].features);
+});
+
+test("unloading all clears every title and feature's loaded and burnt flags, leaving text and weaknesses alone", () => {
+	const next = unloadAllLoadout(loadout);
+	for (const set of next.sets) {
+		assert.equal(set.titleLoaded, false);
+		assert.equal(set.titleBurnt, false);
+		for (const feature of set.features) {
+			assert.equal(feature.loaded, false);
+			assert.equal(feature.burnt, false);
+		}
+	}
+	assert.equal(next.sets[0].title, loadout.sets[0].title);
+	assert.deepEqual(next.sets[0].weaknesses, loadout.sets[0].weaknesses);
 });
 
 test("adding a weakness starts it blank; it never carries a loaded flag", () => {

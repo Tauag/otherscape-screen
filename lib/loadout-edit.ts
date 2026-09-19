@@ -184,6 +184,18 @@ export function removeLoadoutWeakness(
 	}));
 }
 
+export function unloadAllLoadout(loadout: Loadout): Loadout {
+	return {
+		...loadout,
+		sets: loadout.sets.map((set) => ({
+			...set,
+			titleLoaded: false,
+			titleBurnt: false,
+			features: set.features.map((f) => ({ ...f, loaded: false, burnt: false })),
+		})),
+	};
+}
+
 export function incrementWildcards(loadout: Loadout): Loadout {
 	return { ...loadout, wildcards: loadout.wildcards + 1 };
 }

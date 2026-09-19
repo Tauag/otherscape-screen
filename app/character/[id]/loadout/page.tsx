@@ -73,6 +73,13 @@ export default function LoadoutPage({
 					>
 						+
 					</Button>
+					<Button
+						type="button"
+						onClick={() => dispatch({ type: "unloadAllLoadout" })}
+						className={`${SMALL_BUTTON} self-end text-dim`}
+					>
+						Unload all
+					</Button>
 				</div>
 				{spend.warning && (
 					<p className="pt-1 font-sans text-sm text-negative-text">

@@ -63,6 +63,7 @@ import {
 	toggleLoadoutFeatureBurnt,
 	toggleLoadoutSetTitle,
 	toggleLoadoutTitleBurnt,
+	unloadAllLoadout,
 	type UpgradeChoice,
 } from "@/lib/loadout-edit";
 import {
@@ -160,6 +161,7 @@ export type CharacterAction =
 	| { type: "decrementWildcards" }
 	| { type: "adjustLoadoutPower"; delta: number }
 	| { type: "markLoadoutUpgrade" }
+	| { type: "unloadAllLoadout" }
 	| { type: "takeLoadoutUpgrade"; choice: UpgradeChoice }
 	| { type: "addLoadoutSpecial"; special: string }
 	| { type: "removeLoadoutSpecial"; special: string }
@@ -479,6 +481,8 @@ export function reduce(
 			};
 		case "markLoadoutUpgrade":
 			return { ...character, loadout: markLoadoutUpgrade(loadout) };
+		case "unloadAllLoadout":
+			return { ...character, loadout: unloadAllLoadout(loadout) };
 		case "takeLoadoutUpgrade":
 			return {
 				...character,
