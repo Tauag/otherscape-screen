@@ -46,8 +46,15 @@ export default function RollPage() {
 	const burnValueOfPick = (tag: RollTag) =>
 		tag.burnValue === null ? null : (pick.burnValues[tag.id] ?? tag.burnValue);
 
-	const finalizeTagSelection = () =>
+	const finalizeTagSelection = () => {
+		// A crispy story tag is one-time: rolling it in spends it for good.
+		for (const tag of character.storyTags) {
+			if (tag.crispy && pick.ids.includes(tag.id)) {
+				dispatch({ type: "removeStoryTag", id: tag.id });
+			}
+		}
 		setPick((current) => ({ ...current, ids: [], burnValues: {} }));
+	};
 
 	const burning = burningTagId(character, pick);
 	const setBurnt = (tagId: string, burnt: boolean) => {
