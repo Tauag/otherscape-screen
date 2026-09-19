@@ -7,7 +7,7 @@ import { newCharacter } from "@/lib/character/new";
 import { createClient } from "@/lib/supabase/server";
 
 export async function signInWithGoogle() {
-	const origin = (await headers()).get("origin");
+	const origin = process.env.URL ?? (await headers()).get("origin");
 	const supabase = await createClient();
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
