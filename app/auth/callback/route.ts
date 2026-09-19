@@ -5,7 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 // or with ?error=... if the provider or Supabase Auth rejected the request
 // before a code was ever issued (e.g. the redirect URL isn't allow-listed).
 export async function GET(request: Request) {
-	const { searchParams, origin } = new URL(request.url);
+	const { searchParams, origin: requestOrigin } = new URL(request.url);
+	// Same Netlify quirk as signInWithGoogle: request.url can reflect the
+	// per-deploy alias instead of the public domain, so prefer Netlify's
+	// stable site URL and only fall back locally.
+	const origin = process.env.URL ?? requestOrigin;
 	const code = searchParams.get("code");
 	const providerError =
 		searchParams.get("error_description") ?? searchParams.get("error");
