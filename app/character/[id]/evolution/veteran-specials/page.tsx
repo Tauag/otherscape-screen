@@ -1,7 +1,6 @@
 "use client";
 
 import { Toggle } from "@base-ui/react/toggle";
-import { use } from "react";
 import {
 	PickerFrame,
 	ROW,
@@ -11,10 +10,7 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
 import { formatSpecial, veteranSpecialsOf } from "@/lib/pickers";
 
-export default function VeteranSpecialsPicker({
-	params,
-}: PageProps<"/character/[id]/evolution/veteran-specials">) {
-	const { id } = use(params);
+export default function VeteranSpecialsPicker() {
 	const { character, dispatch } = useCharacter();
 	const pack = useContentPack();
 	const specials = veteranSpecialsOf(pack);

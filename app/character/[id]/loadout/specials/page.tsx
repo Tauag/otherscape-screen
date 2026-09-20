@@ -1,7 +1,6 @@
 "use client";
 
 import { Toggle } from "@base-ui/react/toggle";
-import { use } from "react";
 import {
 	PickerFrame,
 	ROW,
@@ -11,10 +10,7 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
 import { formatSpecial, loadoutSpecialsOf } from "@/lib/pickers";
 
-export default function LoadoutSpecialsPicker({
-	params,
-}: PageProps<"/character/[id]/loadout/specials">) {
-	const { id } = use(params);
+export default function LoadoutSpecialsPicker() {
 	const { character, dispatch } = useCharacter();
 	const { loadout } = character;
 	const pack = useContentPack();

@@ -1,7 +1,6 @@
 "use client";
 
 import { Toggle } from "@base-ui/react/toggle";
-import { use } from "react";
 import {
 	PickerFrame,
 	ROW,
@@ -11,10 +10,7 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
 import { crewSpecialsOf, formatSpecial } from "@/lib/pickers";
 
-export default function CrewSpecialsPicker({
-	params,
-}: PageProps<"/character/[id]/crew/specials">) {
-	const { id } = use(params);
+export default function CrewSpecialsPicker() {
 	const { character, dispatch } = useCharacter();
 	const { crewTheme: crew } = character;
 	const pack = useContentPack();
