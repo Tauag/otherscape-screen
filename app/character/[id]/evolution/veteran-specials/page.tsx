@@ -9,45 +9,34 @@ import {
 } from "@/app/character/[id]/_components/picker";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useContentPack } from "@/lib/content/load";
-import { crewSpecialsOf, formatSpecial } from "@/lib/pickers";
+import { formatSpecial, veteranSpecialsOf } from "@/lib/pickers";
 
-export default function CrewSpecialsPicker({
+export default function VeteranSpecialsPicker({
 	params,
-}: PageProps<"/character/[id]/crew/specials">) {
+}: PageProps<"/character/[id]/evolution/veteran-specials">) {
 	const { id } = use(params);
 	const { character, dispatch } = useCharacter();
-	const { crewTheme: crew } = character;
 	const pack = useContentPack();
-	const specials = crewSpecialsOf(pack);
-
-	// Taken one at a time and given back the same way, so a mis-tap is not
-	// final - the same rule as the theme specials picker this flow reuses.
+	const specials = veteranSpecialsOf(pack);
 	const toggle = (special: string) =>
 		dispatch(
-			crew.specials.includes(special)
-				? { type: "removeCrewSpecial", special }
-				: { type: "addCrewSpecial", special },
+			character.veteranSpecials.includes(special)
+				? { type: "removeVeteranSpecial", special }
+				: { type: "addVeteranSpecial", special },
 		);
 
 	return (
-		<PickerFrame type="crew" title="Crew theme specials">
-			<p className="font-sans text-sm text-dim">
-				The five crew theme specials. Tap one to take it, and tap it again to
-				give it back.
-			</p>
-
+		<PickerFrame title="Veteran specials">
 			<ul className="flex flex-col gap-2">
 				{specials.map((special, index) => {
 					const stored = formatSpecial(special);
 
-					// An empty pack slot stays visible, same as a theme special: there is
-					// nothing to store yet, so the slot is a line rather than a choice.
 					if (stored === "") {
 						return (
 							// biome-ignore lint/suspicious/noArrayIndexKey: an unloaded pack fills every slot with the same blank special, so index is what the label reads.
 							<li key={index} className={`${ROW} border-dashed`}>
 								<span className={ROW_TEXT}>
-									Crew theme special {index + 1}. The content pack has not been
+									Veteran special {index + 1}. The content pack has not been
 									uploaded.
 								</span>
 							</li>
@@ -58,11 +47,11 @@ export default function CrewSpecialsPicker({
 						// biome-ignore lint/suspicious/noArrayIndexKey: specials come from a fixed content-pack list that is never reordered.
 						<li key={index}>
 							<Toggle
-								pressed={crew.specials.includes(stored)}
+								pressed={character.veteranSpecials.includes(stored)}
 								onPressedChange={() => toggle(stored)}
 								className={ROW}
 							>
-								<span className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title,var(--color-text))] uppercase">
+								<span className="font-display text-[15px] font-semibold tracking-[0.03em] text-text uppercase">
 									{special.name}
 								</span>
 								<span className={ROW_TEXT}>{special.text}</span>

@@ -340,6 +340,68 @@ test("a crew relationship burns and un-burns, reversibly and without a burn valu
 	assert.equal(character.crew[0].burnt, false);
 });
 
+test("marking Evolution points cycles 0 to 5 and wraps, never granting a Moment itself", () => {
+	let character = newCharacter();
+	for (let i = 0; i < 5; i++) {
+		character = reduce(character, { type: "markEvolutionPoints" });
+	}
+	assert.equal(character.evolutionPoints, 5);
+	assert.deepEqual(character.evolutions, newCharacter().evolutions);
+
+	character = reduce(character, { type: "markEvolutionPoints" });
+	assert.equal(character.evolutionPoints, 0);
+});
+
+test("toggling a Moment of Evolution flips only that one field", () => {
+	let character = newCharacter();
+	character = reduce(character, {
+		type: "toggleEvolutionMoment",
+		moment: "sunderTheCosmology",
+	});
+	assert.deepEqual(character.evolutions, {
+		...newCharacter().evolutions,
+		sunderTheCosmology: true,
+	});
+
+	character = reduce(character, {
+		type: "toggleEvolutionMoment",
+		moment: "sunderTheCosmology",
+	});
+	assert.deepEqual(character.evolutions, newCharacter().evolutions);
+});
+
+test("Gain a Veteran Special cycles 0 to 3 and wraps", () => {
+	let character = newCharacter();
+	for (let i = 0; i < 3; i++) {
+		character = reduce(character, { type: "markVeteranSpecialsMoment" });
+	}
+	assert.equal(character.evolutions.veteranSpecials, 3);
+
+	character = reduce(character, { type: "markVeteranSpecialsMoment" });
+	assert.equal(character.evolutions.veteranSpecials, 0);
+});
+
+test("a veteran special is added once and removed by name", () => {
+	let character = newCharacter();
+	character = reduce(character, {
+		type: "addVeteranSpecial",
+		special: "Backpack Beast — wildcards cost 1 Power.",
+	});
+	character = reduce(character, {
+		type: "addVeteranSpecial",
+		special: "Backpack Beast — wildcards cost 1 Power.",
+	});
+	assert.deepEqual(character.veteranSpecials, [
+		"Backpack Beast — wildcards cost 1 Power.",
+	]);
+
+	character = reduce(character, {
+		type: "removeVeteranSpecial",
+		special: "Backpack Beast — wildcards cost 1 Power.",
+	});
+	assert.deepEqual(character.veteranSpecials, []);
+});
+
 test("wildcards increment and decrement, clamped at 0", () => {
 	let character = newCharacter();
 	character = reduce(character, { type: "decrementWildcards" });

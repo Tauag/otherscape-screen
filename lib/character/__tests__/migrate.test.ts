@@ -99,6 +99,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
 		crew: resetCrew,
+		evolutionPoints: 0,
 	});
 
 	const blank: Record<string, unknown> = {
@@ -116,6 +117,7 @@ test("v1 -> v2 starts essenceChosen false, even with an essence already set", ()
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
 		crew: resetCrew,
+		evolutionPoints: 0,
 	});
 });
 
@@ -151,6 +153,7 @@ test("v2 -> v3 resets the loadout to the new shape, keeping the budget fields", 
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
 		crew: resetCrew,
+		evolutionPoints: 0,
 	});
 });
 
@@ -163,6 +166,7 @@ test("v3 -> v4 adds a blank crew theme", () => {
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
 		crew: resetCrew,
+		evolutionPoints: 0,
 	});
 });
 
@@ -186,6 +190,7 @@ test("v4 -> v5 drops a status's owner and a story tag's scratched flag", () => {
 		...sample,
 		storyTags: resetStoryTags,
 		crew: resetCrew,
+		evolutionPoints: 0,
 	});
 });
 
@@ -196,7 +201,11 @@ test("v5 -> v6 drops a status's out flag", () => {
 		statuses: sample.statuses.map((status) => ({ ...status, out: false })),
 	};
 
-	assert.deepEqual(migrate(old), { ...sample, crew: resetCrew });
+	assert.deepEqual(migrate(old), {
+		...sample,
+		crew: resetCrew,
+		evolutionPoints: 0,
+	});
 });
 
 test("v6 -> v7 adds burnt to a crew relationship", () => {
@@ -209,5 +218,16 @@ test("v6 -> v7 adds burnt to a crew relationship", () => {
 		}),
 	};
 
-	assert.deepEqual(migrate(old), { ...sample, crew: resetCrew });
+	assert.deepEqual(migrate(old), {
+		...sample,
+		crew: resetCrew,
+		evolutionPoints: 0,
+	});
+});
+
+test("v7 -> v8 starts the Evolution track empty", () => {
+	const old: Record<string, unknown> = { ...sample, schema_version: 7 };
+	delete old.evolutionPoints;
+
+	assert.deepEqual(migrate(old), { ...sample, evolutionPoints: 0 });
 });

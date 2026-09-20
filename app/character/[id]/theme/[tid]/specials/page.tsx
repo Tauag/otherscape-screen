@@ -33,12 +33,7 @@ export default function SpecialsPicker({
 		);
 
 	return (
-		<PickerFrame
-			backHref={`/character/${id}/theme/${tid}`}
-			backLabel="Theme"
-			type={theme.type}
-			title="Theme specials"
-		>
+		<PickerFrame type={theme.type} title="Theme specials">
 			{specials.length === 0 ? (
 				<p className="font-sans text-sm text-dim">
 					{theme.themebook.trim()

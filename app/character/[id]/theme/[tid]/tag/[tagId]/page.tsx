@@ -84,8 +84,6 @@ export default function QuestionPicker({
 
 	return (
 		<PickerFrame
-			backHref={`/character/${id}/theme/${tid}`}
-			backLabel="Theme"
 			type={theme.type}
 			title={power ? "Power tag question" : "Weakness tag question"}
 		>

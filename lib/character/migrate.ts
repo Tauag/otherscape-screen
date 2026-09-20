@@ -1,7 +1,7 @@
 import { DEFAULT_STATUS_LIMIT } from "../rules/constants.ts";
 import type { Character } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 7;
+export const CURRENT_SCHEMA_VERSION = 8;
 
 type Doc = Record<string, unknown>;
 
@@ -104,6 +104,11 @@ steps.set(6, (doc) => {
 		crew: crew.map((relationship) => ({ ...relationship, burnt: false })),
 	};
 });
+
+// v7 predates the Evolution track's five circles: a v7 document has Moments
+// of Evolution but nothing counting the points that build toward one, so this
+// step starts the track empty.
+steps.set(7, (doc) => ({ ...doc, evolutionPoints: 0 }));
 
 /**
  * Upgrade a document read from the database. This is a trust boundary, so it

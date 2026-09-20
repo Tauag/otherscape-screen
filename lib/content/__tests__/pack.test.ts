@@ -5,9 +5,11 @@ import { test } from "node:test";
 import {
 	CREW_THEME_SPECIALS_COUNT,
 	EFFECT_NAMES,
+	EVOLUTION_MOMENT_NAMES,
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
 	POWER_OPTION_NAMES,
+	VETERAN_SPECIALS_COUNT,
 	WEAKNESS_LETTERS,
 } from "../fallback.ts";
 import {
@@ -192,6 +194,44 @@ test("a pack with no reference section loads, and keeps the fallback names", () 
 		{ name: "Attack", cost: "", text: "" },
 		{ name: "", cost: "", text: "" },
 	]);
+});
+
+test("the fallback evolution section holds the Moment names it knows, and nothing it does not", () => {
+	const { evolution } = FALLBACK_PACK;
+
+	assert.deepEqual(
+		evolution.moments,
+		EVOLUTION_MOMENT_NAMES.map((name) => ({ name, text: "" })),
+	);
+	assert.deepEqual(
+		evolution.veteranSpecials,
+		Array.from({ length: VETERAN_SPECIALS_COUNT }, () => ({
+			name: "",
+			text: "",
+		})),
+	);
+});
+
+test("a pack with no evolution section loads, and keeps the fallback Moment names", () => {
+	const pack = normalize(rawPack());
+	assert.deepEqual(pack?.evolution, FALLBACK_PACK.evolution);
+
+	const partial = rawPack() as ReturnType<typeof rawPack> & {
+		evolution: unknown;
+	};
+	partial.evolution = {
+		moments: [{ name: "Create a new type of Essence", text: "As written." }],
+	};
+
+	const filled = normalize(partial);
+	assert.deepEqual(filled?.evolution.moments, [
+		{ name: "Create a new type of Essence", text: "As written." },
+	]);
+	// A section the pack leaves out keeps its fallback slots.
+	assert.deepEqual(
+		filled?.evolution.veteranSpecials,
+		FALLBACK_PACK.evolution.veteranSpecials,
+	);
 });
 
 test("the themebooks split 6 self, 4 mythos, 4 noise", () => {

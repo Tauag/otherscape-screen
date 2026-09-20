@@ -33,6 +33,24 @@ export const LOADOUT_SPECIALS_COUNT = 8;
 /** Specials the crew theme offers, fixed for every pack (core rules, page 75). */
 export const CREW_THEME_SPECIALS_COUNT = 5;
 
+/** The six Moments of Evolution, in the fixed order the sheet and the Evolution
+ *  screen both track them in (core rules, page 191). Gain a Veteran Special's
+ *  own list of named specials is VETERAN_SPECIALS_COUNT below, not part of
+ *  this array's rule text. */
+export const EVOLUTION_MOMENT_NAMES = [
+	"Create a new type of Essence",
+	"Create another broad power tag",
+	"Gain a Veteran Special",
+	"Ride off into the sunset",
+	"Sunder the cosmology",
+	"Total Reconstitution",
+] as const;
+
+/** The corebook's own named Veteran Specials, offered as inspiration when a
+ *  character gains one (core rules, page 192). A supplement's further ones
+ *  are out of scope. */
+export const VETERAN_SPECIALS_COUNT = 14;
+
 /** The twelve effects, in the order the cheatsheet prints them (PRD 7.10). */
 export const EFFECT_NAMES = [
 	"Attack",

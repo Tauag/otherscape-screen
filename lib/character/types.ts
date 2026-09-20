@@ -183,6 +183,11 @@ export type Evolutions = {
 	totalReconstitution: boolean;
 };
 
+/** The Evolution track's five circles. Filling the fifth is the player's cue
+ *  to take a Moment of Evolution and clear the track themselves; nothing
+ *  here grants a Moment or resets the count automatically. */
+export type EvolutionPoints = 0 | 1 | 2 | 3 | 4 | 5;
+
 export type Character = {
 	/** Snake case because the whole document versions on this one key. */
 	schema_version: number;
@@ -200,6 +205,7 @@ export type Character = {
 	/** Up to 3. The app warns past that, never blocks. */
 	veteranSpecials: string[];
 	evolutions: Evolutions;
+	evolutionPoints: EvolutionPoints;
 	crew: CrewRelationship[];
 	crewTheme: CrewTheme;
 	themes: Theme[];

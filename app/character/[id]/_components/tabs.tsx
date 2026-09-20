@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-	TabPlaceholderIcon,
+	TabEvolutionIcon,
 	TabPlayIcon,
 	TabReferenceIcon,
 	TabSheetIcon,
@@ -29,9 +29,9 @@ export const TABS: { label: string; segment: string; icon: React.ReactNode }[] =
 			icon: <TabPlayIcon />,
 		},
 		{
-			label: "Placeholder",
-			segment: "/",
-			icon: <TabPlaceholderIcon />,
+			label: "Evolution",
+			segment: "/evolution",
+			icon: <TabEvolutionIcon />,
 		},
 		{
 			label: "Ref",

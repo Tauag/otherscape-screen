@@ -13,6 +13,10 @@ import {
 } from "@/app/character/[id]/_components/lose-theme";
 import { ROW } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
+import {
+	FILLED,
+	FILLED_NEGATIVE,
+} from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
@@ -28,10 +32,6 @@ const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 
 const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
-const BASE =
-	"inline-flex min-h-11 items-center self-start rounded-sm px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
-const ADD = `${BASE} bg-[var(--hue)]`;
-const ADD_WEAKNESS = `${BASE} bg-negative`;
 
 const POPUP =
 	"z-40 max-h-[70vh] w-[var(--anchor-width)] overflow-y-auto rounded-sm border border-border bg-surface p-1.5 outline-none";
@@ -308,9 +308,9 @@ export default function ThemePage({
 							letter: "A",
 						})
 					}
-					className={ADD}
+					className={FILLED}
 				>
-					New power tag
+					+ power tag
 				</Button>
 
 				<Button
@@ -323,9 +323,9 @@ export default function ThemePage({
 							letter: "A",
 						})
 					}
-					className={ADD_WEAKNESS}
+					className={FILLED_NEGATIVE}
 				>
-					New weakness tag
+					+ weakness tag
 				</Button>
 			</section>
 
@@ -367,8 +367,8 @@ export default function ThemePage({
 						}
 					/>
 				)}
-				<Link href={`${here}/specials`} className={`${ADD} mt-1`}>
-					New theme special
+				<Link href={`${here}/specials`} className={`${FILLED} mt-1`}>
+					+ theme special
 				</Link>
 			</section>
 

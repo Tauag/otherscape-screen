@@ -199,11 +199,11 @@ export function UpgradeDialog({
 			}
 		>
 			<Button type="button" onClick={takeTag} className={PRIMARY}>
-				New power tag
+				+ power tag
 			</Button>
 			{!nascent && (
 				<Button type="button" onClick={takeSpecial} className={PRIMARY}>
-					New theme special
+					+ theme special
 				</Button>
 			)}
 		</ConfirmDialog>

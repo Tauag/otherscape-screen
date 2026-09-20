@@ -4,6 +4,12 @@ export const UPGRADE_TRACK_LENGTH = 3;
 /** Boxes on a theme's Decay track. */
 export const DECAY_TRACK_LENGTH = 3;
 
+/** Circles on the Evolution track. */
+export const EVOLUTION_POINTS_TRACK_LENGTH = 5;
+
+/** Boxes on the Gain a Veteran Special Moment: it may be taken up to 3 times. */
+export const VETERAN_SPECIALS_MOMENT_LENGTH = 3;
+
 /** Themes a character starts with, loadout and crew theme excluded. */
 export const STARTING_THEMES = 4;
 

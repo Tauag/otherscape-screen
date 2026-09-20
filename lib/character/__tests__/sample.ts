@@ -29,6 +29,7 @@ export const sample: Character = {
 		sunderTheCosmology: false,
 		totalReconstitution: false,
 	},
+	evolutionPoints: 3,
 	crew: [
 		{
 			id: "cr-1",

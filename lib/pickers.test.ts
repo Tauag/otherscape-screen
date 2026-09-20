@@ -11,12 +11,14 @@ import {
 	crewPowerQuestions,
 	crewSpecialsOf,
 	crewWeaknessQuestions,
+	evolutionMomentsOf,
 	formatSpecial,
 	loadoutSpecialsOf,
 	powerQuestions,
 	specialName,
 	specialsOf,
 	specialText,
+	veteranSpecialsOf,
 	weaknessQuestions,
 } from "./pickers.ts";
 
@@ -76,6 +78,7 @@ test("a pack the player has uploaded carries its question text through", () => {
 		loadoutSpecials: FALLBACK_PACK.loadoutSpecials,
 		crewTheme: FALLBACK_PACK.crewTheme,
 		reference: FALLBACK_PACK.reference,
+		evolution: FALLBACK_PACK.evolution,
 	};
 	assert.equal(
 		powerQuestions(pack, pack.themebooks[0].name)[2].text,
@@ -91,6 +94,7 @@ test("the loadout's eight specials come straight off the pack, not a themebook",
 		),
 		crewTheme: FALLBACK_PACK.crewTheme,
 		reference: FALLBACK_PACK.reference,
+		evolution: FALLBACK_PACK.evolution,
 	};
 	assert.equal(loadoutSpecialsOf(pack)[0].name, "Deeply Customizable");
 	assert.equal(
@@ -124,6 +128,11 @@ test("the crew theme's questions and specials come straight off the pack, keyed 
 		["A", "B", "C", "D"],
 	);
 	assert.equal(crewSpecialsOf(FALLBACK_PACK).length, 5);
+});
+
+test("the Evolution screen's moments and Veteran Specials come straight off the pack", () => {
+	assert.equal(evolutionMomentsOf(FALLBACK_PACK).length, 6);
+	assert.equal(veteranSpecialsOf(FALLBACK_PACK).length, 14);
 });
 
 test("answered letters count a question answered twice as twice", () => {

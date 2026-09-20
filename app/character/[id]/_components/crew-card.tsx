@@ -210,11 +210,11 @@ export function CrewCard({
 				}
 			>
 				<Button type="button" onClick={takeTag} className={PRIMARY}>
-					New power tag
+					+ power tag
 				</Button>
 				{!nascent && (
 					<Button type="button" onClick={takeSpecial} className={PRIMARY}>
-						New crew theme special
+						+ crew theme special
 					</Button>
 				)}
 			</ConfirmDialog>

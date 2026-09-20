@@ -66,8 +66,6 @@ export default function CrewQuestionPicker({
 
 	return (
 		<PickerFrame
-			backHref={`/character/${id}/crew`}
-			backLabel="Crew theme"
 			type="crew"
 			title={power ? "Power tag question" : "Weakness tag question"}
 		>

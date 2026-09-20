@@ -30,11 +30,7 @@ export default function LoadoutSpecialsPicker({
 		);
 
 	return (
-		<PickerFrame
-			backHref={`/character/${id}/loadout`}
-			backLabel="Loadout"
-			title="Loadout specials"
-		>
+		<PickerFrame title="Loadout specials">
 			<p className="font-sans text-sm text-dim">
 				The eight loadout specials. Tap one to take it, and tap it again to give
 				it back.

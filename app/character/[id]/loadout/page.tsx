@@ -6,7 +6,11 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import { PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
+import {
+	FILLED,
+	PRIMARY,
+	SMALL_BUTTON,
+} from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
@@ -15,7 +19,6 @@ import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
 
-const ADD = `${SMALL_BUTTON} self-start text-dim`;
 const STEP =
 	"grid size-11 place-items-center rounded-sm border border-border text-dim disabled:opacity-40";
 
@@ -142,7 +145,7 @@ export default function LoadoutPage({
 					onClick={() =>
 						dispatch({ type: "addLoadoutSet", id: crypto.randomUUID() })
 					}
-					className={`${SMALL_BUTTON} self-start text-dim`}
+					className={FILLED}
 				>
 					+ Loadout set
 				</Button>
@@ -162,9 +165,9 @@ export default function LoadoutPage({
 				)}
 				<Link
 					href={`/character/${id}/loadout/specials`}
-					className={`${ADD} mt-1`}
+					className={`${FILLED} mt-1`}
 				>
-					Choose loadout specials
+					+ loadout specials
 				</Link>
 			</section>
 

@@ -6,11 +6,13 @@ import type {
 import {
 	CREW_THEME_SPECIALS_COUNT,
 	EFFECT_NAMES,
+	EVOLUTION_MOMENT_NAMES,
 	FALLBACK_THEMEBOOKS,
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
 	POWER_OPTION_NAMES,
 	SPECIALS_PER_THEMEBOOK,
+	VETERAN_SPECIALS_COUNT,
 	WEAKNESS_LETTERS,
 } from "./fallback.ts";
 
@@ -57,12 +59,21 @@ export type Reference = {
 	blaze: Special[];
 };
 
+/** The Evolution screen's own reference material (core rules, page 191-192). */
+export type Evolution = {
+	/** Always the six names in EVOLUTION_MOMENT_NAMES, in order. */
+	moments: Special[];
+	/** Always fourteen. */
+	veteranSpecials: Special[];
+};
+
 export type ContentPack = {
 	themebooks: Themebook[];
 	/** The loadout theme's own specials (core rules, page 134). Always eight. */
 	loadoutSpecials: Special[];
 	crewTheme: CrewThemeContent;
 	reference: Reference;
+	evolution: Evolution;
 };
 
 /** What a tag editor prints over a blank field: "power tag question B". */
@@ -99,6 +110,13 @@ export const FALLBACK_REFERENCE: Reference = {
 	blaze: [],
 };
 
+/** Names only, same reasoning as FALLBACK_REFERENCE: the rule text is the
+ *  printed book's, so it stays blank until a pack fills it. */
+export const FALLBACK_EVOLUTION: Evolution = {
+	moments: EVOLUTION_MOMENT_NAMES.map((name) => ({ name, text: "" })),
+	veteranSpecials: emptySpecials(VETERAN_SPECIALS_COUNT),
+};
+
 export const FALLBACK_PACK: ContentPack = {
 	themebooks: FALLBACK_THEMEBOOKS.map((book) => ({
 		...book,
@@ -115,6 +133,7 @@ export const FALLBACK_PACK: ContentPack = {
 		specials: emptySpecials(CREW_THEME_SPECIALS_COUNT),
 	},
 	reference: FALLBACK_REFERENCE,
+	evolution: FALLBACK_EVOLUTION,
 };
 
 /**
@@ -124,10 +143,8 @@ export const FALLBACK_PACK: ContentPack = {
  */
 export function normalize(raw: unknown): ContentPack | null {
 	if (typeof raw !== "object" || raw === null) return null;
-	const { themebooks, loadout_specials, crew_theme, reference } = raw as Record<
-		string,
-		unknown
-	>;
+	const { themebooks, loadout_specials, crew_theme, reference, evolution } =
+		raw as Record<string, unknown>;
 	if (!Array.isArray(themebooks) || themebooks.length === 0) return null;
 
 	const normalized: Themebook[] = [];
@@ -151,6 +168,7 @@ export function normalize(raw: unknown): ContentPack | null {
 		loadoutSpecials,
 		crewTheme,
 		reference: normalizeReference(reference),
+		evolution: normalizeEvolution(evolution),
 	};
 }
 
@@ -207,6 +225,24 @@ function normalizeReference(raw: unknown): Reference {
 			FALLBACK_REFERENCE.powerOptions,
 		),
 		blaze: rows(section.blaze, plainRow, FALLBACK_REFERENCE.blaze),
+	};
+}
+
+/**
+ * Never null, same reasoning as normalizeReference: a pack that predates the
+ * Evolution screen, or only fills part of it, still loads every themebook.
+ */
+function normalizeEvolution(raw: unknown): Evolution {
+	if (typeof raw !== "object" || raw === null) return FALLBACK_EVOLUTION;
+	const section = raw as Record<string, unknown>;
+
+	return {
+		moments: rows(section.moments, plainRow, FALLBACK_EVOLUTION.moments),
+		veteranSpecials: rows(
+			section.veteran_specials,
+			plainRow,
+			FALLBACK_EVOLUTION.veteranSpecials,
+		),
 	};
 }
 

@@ -36,6 +36,13 @@ export const crewWeaknessQuestions = (pack: ContentPack) =>
 export const crewSpecialsOf = (pack: ContentPack): Special[] =>
 	pack.crewTheme.specials;
 
+/** The five Moments of Evolution with their own rule text, in order. */
+export const evolutionMomentsOf = (pack: ContentPack): Special[] =>
+	pack.evolution.moments;
+/** The corebook's fourteen named Veteran Specials, offered as inspiration. */
+export const veteranSpecialsOf = (pack: ContentPack): Special[] =>
+	pack.evolution.veteranSpecials;
+
 /**
  * How many tags already answer each letter. It labels a row and never removes
  * one, because a question is never consumed. Counted across the theme rather

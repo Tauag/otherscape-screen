@@ -24,8 +24,8 @@ import {
 	markTrack,
 	moveTag,
 	type TagKind,
-	toggleBroadTag,
 	type TrackName,
+	toggleBroadTag,
 	unburnTag,
 } from "@/lib/character/theme";
 import type {
@@ -34,6 +34,7 @@ import type {
 	CrewRelationship,
 	CrewTheme,
 	Essence,
+	Evolutions,
 	Loadout,
 	PowerQuestionLetter,
 	PowerTag,
@@ -64,13 +65,15 @@ import {
 	toggleLoadoutFeatureBurnt,
 	toggleLoadoutSetTitle,
 	toggleLoadoutTitleBurnt,
-	unloadAllLoadout,
 	type UpgradeChoice,
+	unloadAllLoadout,
 } from "@/lib/loadout-edit";
 import {
 	DEFAULT_BURN_VALUE,
 	DEFAULT_STATUS_LIMIT,
+	EVOLUTION_POINTS_TRACK_LENGTH,
 	STARTING_THEMES,
+	VETERAN_SPECIALS_MOMENT_LENGTH,
 } from "@/lib/rules/constants";
 import { essenceCandidates } from "@/lib/rules/essence";
 import {
@@ -136,6 +139,14 @@ export type CharacterAction =
 	  }
 	| { type: "setEssence"; essence: Essence }
 	| { type: "setEssenceSpecial"; essenceSpecial: string }
+	| { type: "markEvolutionPoints" }
+	| {
+			type: "toggleEvolutionMoment";
+			moment: Exclude<keyof Evolutions, "veteranSpecials">;
+	  }
+	| { type: "markVeteranSpecialsMoment" }
+	| { type: "addVeteranSpecial"; special: string }
+	| { type: "removeVeteranSpecial"; special: string }
 	| { type: "addLoadoutSet"; id: string }
 	| { type: "editLoadoutSetTitle"; setId: string; text: string }
 	| { type: "removeLoadoutSet"; setId: string }
@@ -399,6 +410,47 @@ export function reduce(
 		}
 		case "setEssenceSpecial":
 			return { ...character, essenceSpecial: action.essenceSpecial };
+		case "markEvolutionPoints":
+			return {
+				...character,
+				evolutionPoints:
+					character.evolutionPoints >= EVOLUTION_POINTS_TRACK_LENGTH
+						? 0
+						: ((character.evolutionPoints + 1) as Character["evolutionPoints"]),
+			};
+		case "toggleEvolutionMoment":
+			return {
+				...character,
+				evolutions: {
+					...character.evolutions,
+					[action.moment]: !character.evolutions[action.moment],
+				},
+			};
+		case "markVeteranSpecialsMoment": {
+			const { veteranSpecials } = character.evolutions;
+			const next =
+				veteranSpecials >= VETERAN_SPECIALS_MOMENT_LENGTH
+					? 0
+					: ((veteranSpecials + 1) as Evolutions["veteranSpecials"]);
+			return {
+				...character,
+				evolutions: { ...character.evolutions, veteranSpecials: next },
+			};
+		}
+		case "addVeteranSpecial":
+			return character.veteranSpecials.includes(action.special)
+				? character
+				: {
+						...character,
+						veteranSpecials: [...character.veteranSpecials, action.special],
+					};
+		case "removeVeteranSpecial":
+			return {
+				...character,
+				veteranSpecials: character.veteranSpecials.filter(
+					(special) => special !== action.special,
+				),
+			};
 		case "addLoadoutSet":
 			return { ...character, loadout: addLoadoutSet(loadout, action.id) };
 		case "editLoadoutSetTitle":

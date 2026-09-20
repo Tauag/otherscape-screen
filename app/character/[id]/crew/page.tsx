@@ -9,6 +9,8 @@ import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import {
+	FILLED,
+	FILLED_NEGATIVE,
 	PRIMARY,
 	REMOVE_BUTTON,
 } from "@/app/character/[id]/_components/styles";
@@ -27,10 +29,6 @@ import {
 
 const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
-const BASE =
-	"inline-flex min-h-11 items-center self-start rounded-sm px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
-const ADD = `${BASE} bg-[var(--hue)]`;
-const ADD_WEAKNESS = `${BASE} bg-negative`;
 
 const MOTIVATIONS: CrewMotivation[] = ["Identity", "Ritual", "Itch"];
 
@@ -106,11 +104,11 @@ export default function CrewPage({
 				}
 			>
 				<Button type="button" onClick={takeTag} className={PRIMARY}>
-					New power tag
+					+ power tag
 				</Button>
 				{!nascent && (
 					<Button type="button" onClick={takeSpecial} className={PRIMARY}>
-						New crew theme special
+						+ crew theme special
 					</Button>
 				)}
 			</ConfirmDialog>
@@ -202,9 +200,9 @@ export default function CrewPage({
 							letter: "A",
 						})
 					}
-					className={ADD}
+					className={FILLED}
 				>
-					New power tag
+					+ power tag
 				</Button>
 
 				<Button
@@ -216,9 +214,9 @@ export default function CrewPage({
 							letter: "A",
 						})
 					}
-					className={ADD_WEAKNESS}
+					className={FILLED_NEGATIVE}
 				>
-					New weakness tag
+					+ weakness tag
 				</Button>
 			</section>
 
@@ -345,9 +343,9 @@ export default function CrewPage({
 							id: crypto.randomUUID(),
 						})
 					}
-					className={`${ADD} mt-1`}
+					className={`${FILLED} mt-1`}
 				>
-					New crew relationship
+					+ crew relationship
 				</Button>
 			</section>
 
@@ -365,8 +363,8 @@ export default function CrewPage({
 						}
 					/>
 				)}
-				<Link href={`${here}/specials`} className={`${ADD} mt-1`}>
-					New crew theme special
+				<Link href={`${here}/specials`} className={`${FILLED} mt-1`}>
+					+ crew theme special
 				</Link>
 			</section>
 

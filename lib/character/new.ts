@@ -22,6 +22,7 @@ export function newCharacter(): Character {
 			sunderTheCosmology: false,
 			totalReconstitution: false,
 		},
+		evolutionPoints: 0,
 		crew: [],
 		crewTheme: {
 			powerTags: [],
