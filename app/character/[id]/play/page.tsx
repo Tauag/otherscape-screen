@@ -7,6 +7,7 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { StatusCard } from "@/app/character/[id]/play/_components/status-card";
 import { StoryTagChip } from "@/app/character/[id]/play/_components/story-tag-chip";
 import { LABEL } from "@/components/styles";
+import { LabelAction } from "../_components/label-action";
 
 const ADD =
 	"inline-flex min-h-11 items-center gap-[5px] font-display text-[11px] font-semibold tracking-[0.1em] text-noise uppercase";
@@ -31,13 +32,9 @@ export default function PlayPage() {
 	return (
 		<main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-4 pb-8">
 			<section className="flex flex-col gap-2">
-				<div className="flex items-baseline justify-between">
-					<h2 className={LABEL}>Statuses</h2>
-					<Button type="button" onClick={addStatus} className={ADD}>
-						<PlusIcon />
-						Status
-					</Button>
-				</div>
+				<LabelAction label="Statuses" onClick={addStatus}>
+					<PlusIcon /> Status
+				</LabelAction>
 
 				{character.statuses.length === 0 ? (
 					<p className="font-sans text-sm text-dim">
@@ -57,13 +54,9 @@ export default function PlayPage() {
 			</section>
 
 			<section className="flex flex-col gap-2">
-				<div className="flex items-baseline justify-between">
-					<h2 className={LABEL}>Story tags</h2>
-					<Button type="button" onClick={addStoryTag} className={ADD}>
-						<PlusIcon />
-						Tag
-					</Button>
-				</div>
+				<LabelAction label="Story Tags" onClick={addStoryTag}>
+					<PlusIcon /> Tag
+				</LabelAction>
 
 				{character.storyTags.length === 0 ? (
 					<p className="font-sans text-sm text-dim">

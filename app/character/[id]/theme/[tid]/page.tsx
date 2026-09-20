@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Select } from "@base-ui/react/select";
 import Link from "next/link";
@@ -13,10 +12,6 @@ import {
 } from "@/app/character/[id]/_components/lose-theme";
 import { ROW } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import {
-	FILLED,
-	FILLED_NEGATIVE,
-} from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
@@ -27,6 +22,8 @@ import type { ThemeType } from "@/lib/character/types";
 import { useContentPack } from "@/lib/content/load";
 import { findThemebook, themebooksOfType } from "@/lib/content/pack";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
+import { PlusIcon } from "../../_components/icons";
+import { LabelAction } from "../../_components/label-action";
 
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 
@@ -201,7 +198,19 @@ export default function ThemePage({
 			/>
 
 			<section className="flex flex-col gap-2">
-				<h2 className={LABEL}>Power tags</h2>
+				<LabelAction
+					label="Power tags"
+					onClick={() =>
+						dispatch({
+							type: "addPowerTag",
+							themeId: theme.id,
+							id: crypto.randomUUID(),
+							letter: "A",
+						})
+					}
+				>
+					<PlusIcon /> power tag
+				</LabelAction>
 				<ul className="flex flex-col gap-3">
 					{theme.powerTags.map((tag, index) => (
 						<TagRow
@@ -258,7 +267,19 @@ export default function ThemePage({
 					))}
 				</ul>
 
-				<h2 className={LABEL}>Weakness tags</h2>
+				<LabelAction
+					label="Weakness tags"
+					onClick={() =>
+						dispatch({
+							type: "addWeaknessTag",
+							themeId: theme.id,
+							id: crypto.randomUUID(),
+							letter: "A",
+						})
+					}
+				>
+					<PlusIcon /> weakness tag
+				</LabelAction>
 				<ul className="flex flex-col gap-3">
 					{theme.weaknessTags.map((tag, index) => (
 						<TagRow
@@ -297,38 +318,6 @@ export default function ThemePage({
 				</ul>
 			</section>
 
-			<section className="flex flex-row gap-2">
-				<Button
-					type="button"
-					onClick={() =>
-						dispatch({
-							type: "addPowerTag",
-							themeId: theme.id,
-							id: crypto.randomUUID(),
-							letter: "A",
-						})
-					}
-					className={FILLED}
-				>
-					+ power tag
-				</Button>
-
-				<Button
-					type="button"
-					onClick={() =>
-						dispatch({
-							type: "addWeaknessTag",
-							themeId: theme.id,
-							id: crypto.randomUUID(),
-							letter: "A",
-						})
-					}
-					className={FILLED_NEGATIVE}
-				>
-					+ weakness tag
-				</Button>
-			</section>
-
 			<label
 				htmlFor={`theme-quote-${theme.id}`}
 				className="flex flex-col gap-1"
@@ -352,7 +341,9 @@ export default function ThemePage({
 			</label>
 
 			<section className="flex flex-col gap-1.5">
-				<h2 className={LABEL}>Theme specials</h2>
+				<LabelAction label="Theme specials" href={`${here}/specials`}>
+					<PlusIcon /> theme special
+				</LabelAction>
 				{theme.specials.length === 0 ? (
 					<p className="font-sans text-sm text-dim">No theme specials yet.</p>
 				) : (
@@ -367,9 +358,6 @@ export default function ThemePage({
 						}
 					/>
 				)}
-				<Link href={`${here}/specials`} className={`${FILLED} mt-1`}>
-					+ theme special
-				</Link>
 			</section>
 
 			<section className="flex flex-col gap-2 pb-2">

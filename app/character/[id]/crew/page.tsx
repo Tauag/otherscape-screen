@@ -2,7 +2,6 @@
 
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
@@ -10,7 +9,6 @@ import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import {
 	FILLED,
-	FILLED_NEGATIVE,
 	PRIMARY,
 	REMOVE_BUTTON,
 } from "@/app/character/[id]/_components/styles";
@@ -26,6 +24,8 @@ import {
 	DEFAULT_BURN_VALUE,
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
+import { PlusIcon } from "../_components/icons";
+import { LabelAction } from "../_components/label-action";
 
 const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
@@ -103,18 +103,29 @@ export default function CrewPage({
 						: "Three points, one Upgrade. Take a new power tag, which may answer any question, or a crew theme special."
 				}
 			>
-				<Button type="button" onClick={takeTag} className={PRIMARY}>
+				<Button type="button" onClick={takeTag} className={FILLED}>
 					+ power tag
 				</Button>
 				{!nascent && (
-					<Button type="button" onClick={takeSpecial} className={PRIMARY}>
+					<Button type="button" onClick={takeSpecial} className={FILLED}>
 						+ crew theme special
 					</Button>
 				)}
 			</ConfirmDialog>
 
 			<section className="flex flex-col gap-2">
-				<h2 className={LABEL}>Power tags</h2>
+				<LabelAction
+					label="Power tags"
+					onClick={() =>
+						dispatch({
+							type: "addCrewPowerTag",
+							id: crypto.randomUUID(),
+							letter: "A",
+						})
+					}
+				>
+					<PlusIcon /> power tag
+				</LabelAction>
 				<ul className="flex flex-col gap-3">
 					{crew.powerTags.map((tag, index) => (
 						<TagRow
@@ -158,6 +169,18 @@ export default function CrewPage({
 				</ul>
 
 				<h2 className={LABEL}>Weakness tags</h2>
+				<LabelAction
+					label="Weakness tags"
+					onClick={() =>
+						dispatch({
+							type: "addCrewWeaknessTag",
+							id: crypto.randomUUID(),
+							letter: "A",
+						})
+					}
+				>
+					<PlusIcon /> weakness tag
+				</LabelAction>
 				<ul className="flex flex-col gap-3">
 					{crew.weaknessTags.map((tag, index) => (
 						<TagRow
@@ -188,36 +211,6 @@ export default function CrewPage({
 						/>
 					))}
 				</ul>
-			</section>
-
-			<section className="flex flex-row gap-2">
-				<Button
-					type="button"
-					onClick={() =>
-						dispatch({
-							type: "addCrewPowerTag",
-							id: crypto.randomUUID(),
-							letter: "A",
-						})
-					}
-					className={FILLED}
-				>
-					+ power tag
-				</Button>
-
-				<Button
-					type="button"
-					onClick={() =>
-						dispatch({
-							type: "addCrewWeaknessTag",
-							id: crypto.randomUUID(),
-							letter: "A",
-						})
-					}
-					className={FILLED_NEGATIVE}
-				>
-					+ weakness tag
-				</Button>
 			</section>
 
 			<fieldset className="flex flex-col gap-1.5">
@@ -260,6 +253,17 @@ export default function CrewPage({
 
 			<section className="flex flex-col gap-1.5">
 				<h2 className={LABEL}>Crew</h2>
+				<LabelAction
+					label="Crew Relationships"
+					onClick={() =>
+						dispatch({
+							type: "addCrewRelationship",
+							id: crypto.randomUUID(),
+						})
+					}
+				>
+					<PlusIcon /> relationship tag
+				</LabelAction>
 				{character.crew.length === 0 ? (
 					<p className="font-sans text-sm text-dim">
 						No crew relationships yet.
@@ -335,22 +339,12 @@ export default function CrewPage({
 						})}
 					</ul>
 				)}
-				<Button
-					type="button"
-					onClick={() =>
-						dispatch({
-							type: "addCrewRelationship",
-							id: crypto.randomUUID(),
-						})
-					}
-					className={`${FILLED} mt-1`}
-				>
-					+ crew relationship
-				</Button>
 			</section>
 
 			<section className="flex flex-col gap-1.5">
-				<h2 className={LABEL}>Crew theme specials</h2>
+				<LabelAction label="Crew theme specials" href={`${here}/specials`}>
+					<PlusIcon /> crew theme special
+				</LabelAction>
 				{crew.specials.length === 0 ? (
 					<p className="font-sans text-sm text-dim">
 						No crew theme specials yet.
@@ -363,9 +357,6 @@ export default function CrewPage({
 						}
 					/>
 				)}
-				<Link href={`${here}/specials`} className={`${FILLED} mt-1`}>
-					+ crew theme special
-				</Link>
 			</section>
 
 			{decayFull(crew) && (

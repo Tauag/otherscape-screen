@@ -1,16 +1,11 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import {
-	FILLED,
-	PRIMARY,
-	SMALL_BUTTON,
-} from "@/app/character/[id]/_components/styles";
+import { PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
@@ -18,6 +13,8 @@ import { LABEL } from "@/components/styles";
 import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
+import { PlusIcon } from "../_components/icons";
+import { LabelAction } from "../_components/label-action";
 
 const STEP =
 	"grid size-11 place-items-center rounded-sm border border-border text-dim disabled:opacity-40";
@@ -130,7 +127,14 @@ export default function LoadoutPage({
 			</section>
 
 			<section className="flex flex-col gap-2">
-				<p className={LABEL}>Loadout Sets</p>
+				<LabelAction
+					label="Loadout sets"
+					onClick={() =>
+						dispatch({ type: "addLoadoutSet", id: crypto.randomUUID() })
+					}
+				>
+					<PlusIcon /> loadout set
+				</LabelAction>
 				{loadout.sets.length === 0 ? (
 					<p className="font-sans text-sm text-dim">
 						No loadout sets yet. A set holds a title tag, its feature tags, and
@@ -139,20 +143,15 @@ export default function LoadoutPage({
 				) : (
 					loadout.sets.map((set) => <SetCard key={set.id} set={set} />)
 				)}
-
-				<Button
-					type="button"
-					onClick={() =>
-						dispatch({ type: "addLoadoutSet", id: crypto.randomUUID() })
-					}
-					className={FILLED}
-				>
-					+ Loadout set
-				</Button>
 			</section>
 
 			<section className="flex flex-col gap-1.5">
-				<p className={LABEL}>Loadout specials</p>
+				<LabelAction
+					label="Loadout specials"
+					href={`/character/${id}/loadout/specials`}
+				>
+					<PlusIcon /> loadout special
+				</LabelAction>
 				{loadout.specials.length === 0 ? (
 					<p className="font-sans text-sm text-dim">No loadout specials yet.</p>
 				) : (
@@ -163,12 +162,6 @@ export default function LoadoutPage({
 						}
 					/>
 				)}
-				<Link
-					href={`/character/${id}/loadout/specials`}
-					className={`${FILLED} mt-1`}
-				>
-					+ loadout specials
-				</Link>
 			</section>
 
 			<ConfirmDialog

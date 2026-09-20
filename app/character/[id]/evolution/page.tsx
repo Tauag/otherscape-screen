@@ -1,10 +1,8 @@
 "use client";
 
 import { Accordion } from "@base-ui/react/accordion";
-import Link from "next/link";
 import { use } from "react";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import {
@@ -17,6 +15,8 @@ import { EVOLUTION_MOMENT_NAMES } from "@/lib/content/fallback";
 import { useContentPack } from "@/lib/content/load";
 import { evolutionMomentsOf } from "@/lib/pickers";
 import { EVOLUTION_POINTS_TRACK_LENGTH } from "@/lib/rules/constants";
+import { PlusIcon } from "../_components/icons";
+import { LabelAction } from "../_components/label-action";
 
 const BOOLEAN_MOMENTS: {
 	key: Exclude<keyof Evolutions, "veteranSpecials">;
@@ -83,7 +83,12 @@ export default function EvolutionPage({
 			</section>
 
 			<section className="flex flex-col gap-1.5">
-				<h2 className={LABEL}>Veteran specials</h2>
+				<LabelAction
+					label="Veteran specials"
+					href={`/character/${id}/evolution/veteran-specials`}
+				>
+					<PlusIcon /> Special
+				</LabelAction>
 				{character.veteranSpecials.length === 0 ? (
 					<p className="font-sans text-sm text-dim">No veteran specials yet.</p>
 				) : (
@@ -94,12 +99,6 @@ export default function EvolutionPage({
 						}
 					/>
 				)}
-				<Link
-					href={`/character/${id}/evolution/veteran-specials`}
-					className={`${FILLED} mt-1`}
-				>
-					+ veteran specials
-				</Link>
 			</section>
 		</main>
 	);

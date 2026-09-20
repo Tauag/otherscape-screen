@@ -3,7 +3,7 @@
 import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { PRIMARY } from "@/app/character/[id]/_components/styles";
+import { FILLED } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { TrackName } from "@/lib/character/theme";
 import {
@@ -198,11 +198,11 @@ export function UpgradeDialog({
 					: "Three points, one Upgrade. Take a new power tag, which may answer any question, or a theme special."
 			}
 		>
-			<Button type="button" onClick={takeTag} className={PRIMARY}>
+			<Button type="button" onClick={takeTag} className={FILLED}>
 				+ power tag
 			</Button>
 			{!nascent && (
-				<Button type="button" onClick={takeSpecial} className={PRIMARY}>
+				<Button type="button" onClick={takeSpecial} className={FILLED}>
 					+ theme special
 				</Button>
 			)}

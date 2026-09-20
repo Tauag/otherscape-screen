@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { PRIMARY } from "@/app/character/[id]/_components/styles";
+import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { Chip } from "@/components/chip";
@@ -209,11 +209,11 @@ export function CrewCard({
 						: "Three points, one Upgrade. Take a new power tag, which may answer any question, or a crew theme special."
 				}
 			>
-				<Button type="button" onClick={takeTag} className={PRIMARY}>
+				<Button type="button" onClick={takeTag} className={FILLED}>
 					+ power tag
 				</Button>
 				{!nascent && (
-					<Button type="button" onClick={takeSpecial} className={PRIMARY}>
+					<Button type="button" onClick={takeSpecial} className={FILLED}>
 						+ crew theme special
 					</Button>
 				)}
