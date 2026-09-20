@@ -1,31 +1,27 @@
 "use client";
 
 import { Input } from "@base-ui/react/input";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { isNascent } from "@/lib/character/theme";
 import { useCharacter } from "../_hooks/use-character";
-import { initials } from "../_lib/initials";
+import { BackIcon } from "./icons";
 import { SheetMenu } from "./menu";
 
 export function AppBar({ shareToken }: { shareToken: string | null }) {
 	const { character, dispatch } = useCharacter();
 	const { id } = useParams<{ id: string }>();
+	const router = useRouter();
 
 	return (
 		<header className="sticky top-0 mx-auto flex w-full max-w-md items-center gap-[11px] border-b border-edge bg-chrome px-4 pt-[max(13px,env(safe-area-inset-top))] pb-[13px]">
-			<Link
-				href={`/character/${id}`}
-				aria-label="Back to this character"
-				className="-m-1 flex shrink-0 p-1"
+			<button
+				type="button"
+				onClick={() => router.back()}
+				aria-label="Back"
+				className="-m-1 flex size-11 shrink-0 items-center justify-center p-1 text-dim"
 			>
-				<span
-					aria-hidden="true"
-					className="flex size-9 items-center justify-center border border-raised bg-surface font-display text-[13px] font-bold tracking-[0.06em] text-quiet [clip-path:polygon(0_0,100%_0,100%_72%,72%_100%,0_100%)]"
-				>
-					{initials(character.name)}
-				</span>
-			</Link>
+				<BackIcon />
+			</button>
 
 			<div className="flex min-w-0 flex-1 flex-col gap-[3px]">
 				{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label; biome can't see through the component boundary. */}

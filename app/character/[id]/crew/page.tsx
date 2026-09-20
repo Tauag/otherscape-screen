@@ -15,7 +15,6 @@ import {
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { BackLink } from "@/components/back-link";
 import { LABEL } from "@/components/styles";
 import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
@@ -71,8 +70,6 @@ export default function CrewPage({
 			data-type="crew"
 			className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3 pb-8"
 		>
-			<BackLink href={`/character/${id}`} text="Sheet" />
-
 			<h1 className="font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
 				{title?.text.trim() || "Untitled crew"}
 			</h1>

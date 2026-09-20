@@ -7,7 +7,6 @@ import { LoadoutCard } from "@/app/character/[id]/_components/loadout-card";
 import { QUIET } from "@/app/character/[id]/_components/styles";
 import { ThemeCard } from "@/app/character/[id]/_components/theme-card";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { BackLink } from "@/components/back-link";
 import { STARTING_THEMES } from "@/lib/rules/constants";
 import { essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
@@ -23,8 +22,6 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 
 	return (
 		<main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3 pb-8">
-			<BackLink href="/" text="Characters" />
-
 			{warning && (
 				<p className="font-sans text-sm text-negative-text">{warning}</p>
 			)}

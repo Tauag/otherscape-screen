@@ -10,7 +10,6 @@ import { PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
-import { BackLink } from "@/components/back-link";
 import { LABEL } from "@/components/styles";
 import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
@@ -45,8 +44,6 @@ export default function LoadoutPage({
 
 	return (
 		<main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-6 pb-8">
-			<BackLink href={`/character/${id}`} text="Sheet" />
-
 			<section>
 				<p className={LABEL}>Loadout Power</p>
 				<div className="flex items-center gap-3 pt-1">

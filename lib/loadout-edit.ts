@@ -191,7 +191,11 @@ export function unloadAllLoadout(loadout: Loadout): Loadout {
 			...set,
 			titleLoaded: false,
 			titleBurnt: false,
-			features: set.features.map((f) => ({ ...f, loaded: false, burnt: false })),
+			features: set.features.map((f) => ({
+				...f,
+				loaded: false,
+				burnt: false,
+			})),
 		})),
 	};
 }
