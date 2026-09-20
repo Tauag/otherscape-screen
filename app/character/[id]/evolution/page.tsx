@@ -46,15 +46,17 @@ export default function EvolutionPage({
 				Evolution
 			</h1>
 
-			<TrackPips
-				name="Evolution"
-				short="EVO"
-				length={EVOLUTION_POINTS_TRACK_LENGTH}
-				marked={character.evolutionPoints}
-				size="lg"
-				active
-				onMark={() => dispatch({ type: "markEvolutionPoints" })}
-			/>
+			<section className="flex flex-col">
+				<TrackPips
+					name="Evolution"
+					short="EVO"
+					length={EVOLUTION_POINTS_TRACK_LENGTH}
+					marked={character.evolutionPoints}
+					size="lg"
+					active
+					onMark={() => dispatch({ type: "markEvolutionPoints" })}
+				/>
+			</section>
 
 			<section className="flex flex-col gap-1.5">
 				<h2 className={LABEL}>Moments of Evolution</h2>

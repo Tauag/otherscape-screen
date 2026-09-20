@@ -92,7 +92,7 @@ export default function ThemePage({
 							dispatch({ type: "setThemeType", themeId: theme.id, themeType });
 					}}
 				>
-					<Select.Trigger className="flex min-h-11 shrink-0 items-center justify-center gap-1.5 bg-bg px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase">
+					<Select.Trigger className="flex min-h-11 min-w-30 shrink-0 items-center justify-center gap-1.5 bg-bg px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase">
 						{theme.type}
 						<Select.Icon aria-hidden className="text-xs">
 							▾
