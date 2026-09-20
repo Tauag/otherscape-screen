@@ -15,7 +15,10 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 	const { dispatch } = useCharacter();
 
 	return (
-		<section className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
+		<section
+			id={`loadout-set-${set.id}`}
+			className="flex scroll-mt-20 flex-col gap-3 rounded-md border border-border bg-surface p-4"
+		>
 			<div className="flex items-center gap-2">
 				<Toggle
 					pressed={set.titleLoaded}

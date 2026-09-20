@@ -119,13 +119,11 @@ export default function CrewPage({
 			<section className="flex flex-col gap-2">
 				<LabelAction
 					label="Power tags"
-					onClick={() =>
-						dispatch({
-							type: "addCrewPowerTag",
-							id: crypto.randomUUID(),
-							letter: "A",
-						})
-					}
+					onClick={() => {
+						const tagId = crypto.randomUUID();
+						dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
+						router.push(`${here}#tag-${tagId}`);
+					}}
 				>
 					<PlusIcon /> power tag
 				</LabelAction>
@@ -174,13 +172,11 @@ export default function CrewPage({
 				<h2 className={LABEL}>Weakness tags</h2>
 				<LabelAction
 					label="Weakness tags"
-					onClick={() =>
-						dispatch({
-							type: "addCrewWeaknessTag",
-							id: crypto.randomUUID(),
-							letter: "A",
-						})
-					}
+					onClick={() => {
+						const tagId = crypto.randomUUID();
+						dispatch({ type: "addCrewWeaknessTag", id: tagId, letter: "A" });
+						router.push(`${here}#tag-${tagId}`);
+					}}
 				>
 					<PlusIcon /> weakness tag
 				</LabelAction>
@@ -258,12 +254,11 @@ export default function CrewPage({
 			<section className="flex flex-col gap-1.5">
 				<LabelAction
 					label="Crew Relationships"
-					onClick={() =>
-						dispatch({
-							type: "addCrewRelationship",
-							id: crypto.randomUUID(),
-						})
-					}
+					onClick={() => {
+						const relationshipId = crypto.randomUUID();
+						dispatch({ type: "addCrewRelationship", id: relationshipId });
+						router.push(`${here}#crew-relationship-${relationshipId}`);
+					}}
 				>
 					<PlusIcon /> relationship tag
 				</LabelAction>
@@ -278,7 +273,8 @@ export default function CrewPage({
 							return (
 								<li
 									key={relationship.id}
-									className="flex divide-x divide-border overflow-hidden rounded-sm border border-border"
+									id={`crew-relationship-${relationship.id}`}
+									className="flex scroll-mt-20 divide-x divide-border overflow-hidden rounded-sm border border-border"
 								>
 									<Input
 										type="text"

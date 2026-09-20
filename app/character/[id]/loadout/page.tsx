@@ -129,9 +129,11 @@ export default function LoadoutPage({
 			<section className="flex flex-col gap-2">
 				<LabelAction
 					label="Loadout sets"
-					onClick={() =>
-						dispatch({ type: "addLoadoutSet", id: crypto.randomUUID() })
-					}
+					onClick={() => {
+						const setId = crypto.randomUUID();
+						dispatch({ type: "addLoadoutSet", id: setId });
+						router.push(`/character/${id}/loadout#loadout-set-${setId}`);
+					}}
 				>
 					<PlusIcon /> loadout set
 				</LabelAction>

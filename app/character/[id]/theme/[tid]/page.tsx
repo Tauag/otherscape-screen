@@ -200,14 +200,16 @@ export default function ThemePage({
 			<section className="flex flex-col gap-2">
 				<LabelAction
 					label="Power tags"
-					onClick={() =>
+					onClick={() => {
+						const tagId = crypto.randomUUID();
 						dispatch({
 							type: "addPowerTag",
 							themeId: theme.id,
-							id: crypto.randomUUID(),
+							id: tagId,
 							letter: "A",
-						})
-					}
+						});
+						router.push(`${here}#tag-${tagId}`);
+					}}
 				>
 					<PlusIcon /> power tag
 				</LabelAction>
@@ -269,14 +271,16 @@ export default function ThemePage({
 
 				<LabelAction
 					label="Weakness tags"
-					onClick={() =>
+					onClick={() => {
+						const tagId = crypto.randomUUID();
 						dispatch({
 							type: "addWeaknessTag",
 							themeId: theme.id,
-							id: crypto.randomUUID(),
+							id: tagId,
 							letter: "A",
-						})
-					}
+						});
+						router.push(`${here}#tag-${tagId}`);
+					}}
 				>
 					<PlusIcon /> weakness tag
 				</LabelAction>
