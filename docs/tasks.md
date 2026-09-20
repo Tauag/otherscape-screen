@@ -93,7 +93,7 @@ run a real session from a phone before starting S8.
 
 ### T33 Fallback content — done
 ### T34 Load and cache the pack — done
-### T35 Upload script
+### T35 Upload script - done
 
 ---
 
@@ -107,46 +107,10 @@ run a real session from a phone before starting S8.
 
 ## S7 Play
 
-### T39 Statuses
-Add a status with a name, type, and starting tier. Mark or clear an individual
-tier directly, applying the stacking rule automatically - no separate step
-control. Delete a status. Every status belongs to the character - no mine/MC
-split, and no "out" flag. Raise or lower a status's tier limit (typically 6)
-from a tucked-away setting.
-**Done when:** the screen matches the Play artboard and every change takes one tap.
-**Depends on:** T18, T21
-**Refs:** PRD 7.7, design.md Play
-
-### T40 Story tags
-Add and delete an ongoing story tag, positive or negative. Burn a positive one
-for Power, like a power tag, and un-burn it. Mark one crispy (one-time): it
-can't burn. Deleting a crispy tag once a roll actually uses it needs a
-committed roll to hook into, which doesn't exist before T52, so that part
-ships there instead.
-**Done when:** a burnt tag reads as burnt, and a crispy tag reads as one-time
-and refuses to burn.
-**Depends on:** T39
-**Refs:** PRD 7.7
-
-### T41 Roll builder
-Select the tags and statuses that apply. No effect is asked for. Print the
-breakdown above the total. Show an outranked status selected and struck through.
-Support the manual modifier and rolling with a theme type. Selection is throwaway
-state in the layout provider, never saved. Let the player override a burnt
-tag's Power value (4 or 5, from a theme special) here, per burn; the sheet's
-burn toggle (T26) always uses the default.
-**Done when:** the screen matches the Roll artboard and the total agrees with
-`power`.
-**Depends on:** T17, T40
-**Refs:** PRD 7.8, design.md Roll
-
-### T42 Reference screen
-Port the CHEATSHEET tab: effect costs, mitigation costs, the Scale table, making a
-roll, and the Power options. Read-only, with one search field filtering the list.
-Empty content-pack slots stay visible.
-**Done when:** a player reads an effect cost without losing their roll selection.
-**Depends on:** T34
-**Refs:** PRD 7.10, design.md Reference
+### T39 Statuses - done
+### T40 Story tags - done
+### T41 Roll builder - done
+### T42 Reference screen - done
 
 ### T43 Desktop layout
 At `lg:`, render sheet, play, and roll as three panes and drop the tab bar. CSS
@@ -262,12 +226,3 @@ name, appearance, background, and crew relationships. Archive every replaced the
 holds the old themes.
 **Depends on:** T54
 **Refs:** PRD 7.4
-
-### T57 Turn the roles sketch into real tickets
-sysdesign 5 sketches admin roles: a `profiles` table, the role-aware
-`own_characters` policy, and the JWT-claim optimization if the subquery ever
-needs it. Break that sketch into scoped tickets here, the way this file
-breaks down every other section.
-**Done when:** the roles work has its own S11 with tickets a player could pick
-up and build, each with a Done-when and its Refs.
-**Refs:** sysdesign 5
