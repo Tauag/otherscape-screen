@@ -12,13 +12,13 @@ import type {
 	ThemeType,
 	Valence,
 } from "@/lib/character/types";
+import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import {
 	burnValueOf,
 	type RollSelection,
 	type SelectedStatus,
 	type SelectedTag,
 } from "@/lib/rules/power";
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 /** What the player has tapped for the roll in front of them. Never saved. */
 export type RollPick = {
@@ -31,6 +31,15 @@ export type RollPick = {
 	 * the character document: the sheet's own burn toggle keeps the default.
 	 */
 	burnValues: Record<string, number>;
+	/** Ids spent in the most recently finalized roll, so a mitigation roll
+	 *  started right after it knows which ones to lock out. */
+	lastRolledIds: string[];
+	/**
+	 * Ids locked out for the mitigation roll in progress, if any: the tags,
+	 * statuses, and story tags spent in the roll that caused the consequence
+	 * being mitigated. A roll can't mitigate its own cause.
+	 */
+	mitigationLockedIds: string[];
 };
 
 export const NO_PICK: RollPick = {
@@ -38,7 +47,36 @@ export const NO_PICK: RollPick = {
 	modifier: 0,
 	rollWith: null,
 	burnValues: {},
+	lastRolledIds: [],
+	mitigationLockedIds: [],
 };
+
+/**
+ * What finishing a roll does to the pick: the tag selection clears, what it
+ * spent is remembered as `lastRolledIds` for a mitigation roll started right
+ * after, and finishing also ends any mitigation lock this roll was itself
+ * rolled under.
+ */
+export function finalizeRollPick(pick: RollPick): RollPick {
+	return {
+		...pick,
+		ids: [],
+		burnValues: {},
+		lastRolledIds: pick.ids,
+		mitigationLockedIds: [],
+	};
+}
+
+/** Locks out the tags spent in the last roll, so a mitigation roll for the
+ *  consequence it caused can't reuse them. */
+export function startMitigationPick(pick: RollPick): RollPick {
+	return { ...pick, mitigationLockedIds: pick.lastRolledIds };
+}
+
+/** Lifts a mitigation lock without spending anything. */
+export function cancelMitigationPick(pick: RollPick): RollPick {
+	return { ...pick, mitigationLockedIds: [] };
+}
 
 /** Power always reads as arithmetic, so every value but 0 carries its sign. */
 export function signed(value: number): string {

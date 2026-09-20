@@ -1,15 +1,20 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { useState } from "react";
 import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
+import { SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import {
 	burningTagId,
 	burnToggleAction,
+	cancelMitigationPick,
+	finalizeRollPick,
 	type RollTag,
 	rollGroups,
 	rollOrder,
 	signed,
+	startMitigationPick,
 	storyRollTag,
 	toRollSelection,
 } from "@/app/character/[id]/_lib/roll-selection";
@@ -35,13 +40,17 @@ export default function RollPage() {
 		]),
 	);
 
-	const toggle = (id: string) =>
+	const toggle = (id: string) => {
+		// Locked out: this tag paid for the action that caused the consequence
+		// being mitigated, so it can't also pay for the mitigation.
+		if (pick.mitigationLockedIds.includes(id)) return;
 		setPick((current) => ({
 			...current,
 			ids: current.ids.includes(id)
 				? current.ids.filter((one) => one !== id)
 				: [...current.ids, id],
 		}));
+	};
 
 	const burnValueOfPick = (tag: RollTag) =>
 		tag.burnValue === null ? null : (pick.burnValues[tag.id] ?? tag.burnValue);
@@ -70,8 +79,11 @@ export default function RollPage() {
 				dispatch({ type: "burnCrewRelationship", id: relationship.id });
 			}
 		}
-		setPick((current) => ({ ...current, ids: [], burnValues: {} }));
+		setPick(finalizeRollPick);
 	};
+
+	const startMitigation = () => setPick(startMitigationPick);
+	const cancelMitigation = () => setPick(cancelMitigationPick);
 
 	const burning = burningTagId(character, pick);
 	const setBurnt = (tagId: string, burnt: boolean) => {
@@ -84,6 +96,7 @@ export default function RollPage() {
 		const selected = line !== undefined;
 		// Already burnt on the sheet: spent, so it can't be picked for a roll.
 		const burnt = tag.burnValue !== null;
+		const locked = pick.mitigationLockedIds.includes(tag.id);
 		const canBurnControl =
 			selected && (burnt || (tag.canBurn && burning === null));
 		return (
@@ -97,8 +110,16 @@ export default function RollPage() {
 				selected={selected}
 				counted={line?.counted ?? false}
 				value={line && signed(line.value)}
-				badge={burnt ? "BURNT" : tag.crispy ? "crispy" : undefined}
-				onToggle={burnt ? undefined : () => toggle(tag.id)}
+				badge={
+					burnt
+						? "BURNT"
+						: locked
+							? "locked"
+							: tag.crispy
+								? "crispy"
+								: undefined
+				}
+				onToggle={burnt || locked ? undefined : () => toggle(tag.id)}
 				onValueClick={selected && burnt ? () => setOverriding(tag) : undefined}
 				onBurntChange={
 					canBurnControl ? (next) => setBurnt(tag.id, next) : undefined
@@ -110,6 +131,23 @@ export default function RollPage() {
 	return (
 		<main className="mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col pb-8">
 			<div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto px-5 py-3.5">
+				{pick.mitigationLockedIds.length > 0 && (
+					<div className="flex items-center justify-between gap-2 rounded-sm border border-border bg-recess px-3 py-2">
+						<p className="font-sans text-xs text-dim">
+							Mitigating — {pick.mitigationLockedIds.length} tag
+							{pick.mitigationLockedIds.length === 1 ? "" : "s"} from that
+							action locked out.
+						</p>
+						<Button
+							type="button"
+							onClick={cancelMitigation}
+							className={SMALL_BUTTON}
+						>
+							Cancel
+						</Button>
+					</div>
+				)}
+
 				{rollGroups(character).map((group) => {
 					const subtotal = group.tags.reduce((sum, tag) => {
 						const line = lineOf.get(tag.id);
@@ -149,6 +187,7 @@ export default function RollPage() {
 							{character.statuses.map((status) => {
 								const line = lineOf.get(status.id);
 								const tier = status.tiers.lastIndexOf(true) + 1;
+								const locked = pick.mitigationLockedIds.includes(status.id);
 								return (
 									<RollChip
 										key={status.id}
@@ -157,8 +196,14 @@ export default function RollPage() {
 										selected={line !== undefined}
 										counted={line?.counted ?? false}
 										value={line && signed(line.value)}
-										badge={line && !line.counted ? "outranked" : undefined}
-										onToggle={() => toggle(status.id)}
+										badge={
+											line && !line.counted
+												? "outranked"
+												: locked
+													? "locked"
+													: undefined
+										}
+										onToggle={locked ? undefined : () => toggle(status.id)}
 									/>
 								);
 							})}
@@ -177,6 +222,7 @@ export default function RollPage() {
 								const line = lineOf.get(tag.id);
 								const selected = line !== undefined;
 								const burnt = rollTag.burnValue !== null;
+								const locked = pick.mitigationLockedIds.includes(tag.id);
 								const canBurnControl =
 									selected && (burnt || (rollTag.canBurn && burning === null));
 								return (
@@ -188,8 +234,18 @@ export default function RollPage() {
 										selected={selected}
 										counted={line?.counted ?? false}
 										value={line && signed(line.value)}
-										badge={burnt ? "BURNT" : tag.crispy ? "crispy" : undefined}
-										onToggle={burnt ? undefined : () => toggle(tag.id)}
+										badge={
+											burnt
+												? "BURNT"
+												: locked
+													? "locked"
+													: tag.crispy
+														? "crispy"
+														: undefined
+										}
+										onToggle={
+											burnt || locked ? undefined : () => toggle(tag.id)
+										}
 										onValueClick={
 											selected && burnt
 												? () => setOverriding(rollTag)
@@ -214,6 +270,8 @@ export default function RollPage() {
 				total={breakdown.total}
 				modifier={pick.modifier}
 				onRoll={finalizeTagSelection}
+				canMitigate={pick.lastRolledIds.length > 0}
+				onStartMitigation={startMitigation}
 			/>
 
 			{overriding && (

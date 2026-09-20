@@ -4,7 +4,7 @@ import { Button } from "@base-ui/react/button";
 import { useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { CopyIcon } from "@/app/character/[id]/_components/icons";
-import { REMOVE_BUTTON } from "@/app/character/[id]/_components/styles";
+import { QUIET, REMOVE_BUTTON } from "@/app/character/[id]/_components/styles";
 import { signed } from "@/app/character/[id]/_lib/roll-selection";
 import { LABEL } from "@/components/styles";
 
@@ -18,11 +18,19 @@ export function RollTotal({
 	total,
 	modifier,
 	onRoll,
+	canMitigate,
+	onStartMitigation,
 }: {
 	total: number;
 	modifier: number;
 	/** Called when the player commits to this roll, to clear the picked tags. */
 	onRoll: () => void;
+	/** Whether the roll just finalized spent any tags, so a mitigation roll
+	 *  started now would have something to lock out. */
+	canMitigate: boolean;
+	/** Locks out the tags just spent, then lets the player pick a fresh set
+	 *  for a mitigation roll. */
+	onStartMitigation: () => void;
 }) {
 	const [open, setOpen] = useState(false);
 	const [copied, setCopied] = useState(false);
@@ -84,6 +92,18 @@ export function RollTotal({
 				</div>
 				{copied && (
 					<p className="font-sans text-xs text-dim text-positive">Copied.</p>
+				)}
+				{canMitigate && (
+					<Button
+						type="button"
+						onClick={() => {
+							onStartMitigation();
+							setOpen(false);
+						}}
+						className={`${QUIET} self-start`}
+					>
+						Roll mitigation
+					</Button>
 				)}
 			</ConfirmDialog>
 		</div>
