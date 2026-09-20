@@ -24,6 +24,7 @@ import {
 	markTrack,
 	moveTag,
 	type TagKind,
+	toggleBroadTag,
 	type TrackName,
 	unburnTag,
 } from "@/lib/character/theme";
@@ -114,6 +115,7 @@ export type CharacterAction =
 	  }
 	| { type: "deletePowerTag"; themeId: string; tagId: string }
 	| { type: "deleteWeaknessTag"; themeId: string; tagId: string }
+	| { type: "toggleBroadTag"; themeId: string; tagId: string }
 	| {
 			type: "moveTag";
 			themeId: string;
@@ -361,6 +363,10 @@ export function reduce(
 		case "unburnTag":
 			return inTheme(character, action.themeId, (theme) =>
 				unburnTag(theme, action.tagId),
+			);
+		case "toggleBroadTag":
+			return inTheme(character, action.themeId, (theme) =>
+				toggleBroadTag(theme, action.tagId),
 			);
 		case "markTrack":
 			return inTheme(character, action.themeId, (theme) =>

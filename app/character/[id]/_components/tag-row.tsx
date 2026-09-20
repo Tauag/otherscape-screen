@@ -1,7 +1,9 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
+import { BroadButton } from "@/app/character/[id]/_components/broad-button";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
+import { ChipBadge } from "@/components/chip-badge";
 import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type {
 	PowerQuestionLetter,
@@ -16,11 +18,12 @@ type RowTag = {
 	letter: PowerQuestionLetter | WeaknessQuestionLetter;
 	text: string;
 	burnt?: boolean;
+	broad?: boolean;
 };
 
 /**
- * A power or weakness tag's row: the question link, its text field, an
- * optional burn toggle, and reorder/delete. Presentational - a theme's tag
+ * A power or weakness tag's row: the question link, its text field, optional
+ * broad/burn toggles, and reorder/delete. Presentational - a theme's tag
  * and the crew theme's tag both dispatch differently, so the caller owns
  * what each callback actually does.
  */
@@ -34,6 +37,7 @@ export function TagRow({
 	onMove,
 	onDelete,
 	onBurntChange,
+	onBroadChange,
 }: {
 	kind: TagKind;
 	tag: RowTag;
@@ -46,6 +50,8 @@ export function TagRow({
 	onDelete: () => void;
 	/** Power tags only: absent leaves the burn toggle off the row. */
 	onBurntChange?: (burnt: boolean) => void;
+	/** Power tags only: absent leaves the broad toggle off the row. */
+	onBroadChange?: (broad: boolean) => void;
 }) {
 	const label = tag.letter;
 	const named = tag.text.trim() || `the blank ${label} tag`;
@@ -73,11 +79,11 @@ export function TagRow({
 			data-valence={power ? undefined : "negative"}
 			className="flex scroll-mt-20 flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2"
 		>
-			<div className="flex items-center gap-2">
+			<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border">
 				<Link
 					href={href}
 					aria-label={`Question ${label} for ${named}`}
-					className="grid size-11 shrink-0 place-items-center rounded-sm border border-border bg-bg font-mono text-[13px] text-[var(--hue)]"
+					className="grid size-11 shrink-0 place-items-center bg-bg font-mono text-[13px] text-[var(--hue)]"
 				>
 					{label}
 				</Link>
@@ -89,16 +95,22 @@ export function TagRow({
 					onChange={(event) => onTextChange(event.target.value)}
 					aria-label={`${power ? "Power" : "Weakness"} tag ${label}`}
 					placeholder="Answer the question"
-					className={`min-h-11 min-w-32 flex-1 rounded-sm border border-border bg-bg px-3 font-display text-[15px] tracking-[0.03em] text-[var(--hue-text)] ${
+					className={`min-h-11 min-w-32 flex-1 bg-bg px-3 font-display text-[15px] tracking-[0.03em] text-[var(--hue-text)] ${
 						tag.burnt ? "line-through" : ""
 					}`}
 				/>
 
+				{power && onBroadChange && (
+					<BroadButton
+						broad={tag.broad ?? false}
+						onBroadChange={onBroadChange}
+						named={named}
+					/>
+				)}
+
 				{power && onBurntChange && (
-					// lazy: burn value picking (3/4/5, theme specials) matters only when
-					// rolling, which isn't built yet (T41). This toggle always burns for
-					// the default.
 					<BurnButton
+						bare
 						burnt={tag.burnt ?? false}
 						onBurntChange={onBurntChange}
 						named={named}
@@ -107,6 +119,8 @@ export function TagRow({
 			</div>
 
 			<div className="flex flex-wrap items-center">
+				{power && tag.broad && <ChipBadge>BROAD POWER TAG</ChipBadge>}
+
 				<div className="ml-auto flex divide-x divide-border overflow-hidden rounded-sm border border-border">
 					<Button
 						type="button"

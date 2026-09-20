@@ -247,6 +247,13 @@ export default function ThemePage({
 										: { type: "unburnTag", themeId: theme.id, tagId: tag.id },
 								)
 							}
+							onBroadChange={() =>
+								dispatch({
+									type: "toggleBroadTag",
+									themeId: theme.id,
+									tagId: tag.id,
+								})
+							}
 						/>
 					))}
 				</ul>

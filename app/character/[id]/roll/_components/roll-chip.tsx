@@ -3,7 +3,7 @@
 import { Button } from "@base-ui/react/button";
 import { Toggle } from "@base-ui/react/toggle";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
-import { ChipBadge } from "@/app/character/[id]/_components/chip-badge";
+import { ChipBadge } from "@/components/chip-badge";
 import type { ThemeType, Valence } from "@/lib/character/types";
 
 const VALUE = "shrink-0 font-mono text-[11px] font-bold";
@@ -17,6 +17,8 @@ type Props = {
 	type?: ThemeType | "crew" | "loadout";
 	valence?: Valence;
 	burnt?: boolean;
+	/** The tag an Evolution unlocked. Independent of `badge`: a broad tag can also be burnt. */
+	broad?: boolean;
 	selected: boolean;
 	/** False while the chip is outranked, scratched, or stopped by a theme type. */
 	counted: boolean;
@@ -38,6 +40,7 @@ export function RollChip({
 	type,
 	valence,
 	burnt,
+	broad,
 	selected,
 	counted,
 	onToggle,
@@ -64,6 +67,7 @@ export function RollChip({
 	const body = (
 		<>
 			<span className={`font-display text-[13px] ${ink}`}>{named}</span>
+			{broad && <ChipBadge>BROAD</ChipBadge>}
 			{badge && <ChipBadge>{badge}</ChipBadge>}
 			{value !== undefined && !onValueClick && (
 				<span className={`${VALUE} ${ink}`}>{value}</span>

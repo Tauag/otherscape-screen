@@ -1,14 +1,18 @@
+import { ChipBadge } from "@/components/chip-badge";
+
 export function Chip({
 	label,
 	text,
 	burnt,
 	negative,
+	broad,
 }: {
 	label: string;
 	text: string;
 	burnt?: boolean;
 	burnValue?: number;
 	negative?: boolean;
+	broad?: boolean;
 }) {
 	return (
 		<li
@@ -30,11 +34,8 @@ export function Chip({
 			>
 				{text}
 			</span>
-			{burnt && (
-				<span className="bg-badge text-burnt px-1 py-0.5 font-mono text-[8px] font-bold tracking-[0.08em]">
-					BURNT
-				</span>
-			)}
+			{broad && <ChipBadge>BROAD</ChipBadge>}
+			{burnt && <ChipBadge>BURNT</ChipBadge>}
 		</li>
 	);
 }

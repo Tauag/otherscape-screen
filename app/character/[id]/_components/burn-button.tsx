@@ -5,6 +5,8 @@ import { FlameIcon } from "@/app/character/[id]/_components/icons";
 
 const ICON_BUTTON =
 	"grid size-11 shrink-0 place-items-center rounded-sm border border-border text-[var(--hue)] disabled:opacity-40";
+const BARE_ICON_BUTTON =
+	"grid size-11 shrink-0 place-items-center text-[var(--hue)] disabled:opacity-40";
 
 /** A plain burn/un-burn toggle. The caller owns what burning means for its tag. */
 export function BurnButton({
@@ -12,11 +14,14 @@ export function BurnButton({
 	onBurntChange,
 	named,
 	disabled,
+	bare,
 }: {
 	burnt: boolean;
 	onBurntChange: (burnt: boolean) => void;
 	named: string;
 	disabled?: boolean;
+	/** True inside a merged control group, which already supplies the border. */
+	bare?: boolean;
 }) {
 	return (
 		<Toggle
@@ -24,7 +29,7 @@ export function BurnButton({
 			onPressedChange={onBurntChange}
 			disabled={disabled}
 			aria-label={burnt ? `Un-burn ${named}` : `Burn ${named}`}
-			className={ICON_BUTTON}
+			className={bare ? BARE_ICON_BUTTON : ICON_BUTTON}
 		>
 			<FlameIcon burnt={burnt} />
 		</Toggle>

@@ -58,6 +58,7 @@ export function ThemeBlock({ theme }: { theme: Theme }) {
 								label={tag.letter}
 								text={tag.text}
 								burnt={tag.burnt}
+								broad={tag.broad}
 							/>
 						))}
 					{theme.weaknessTags.map((tag) => (

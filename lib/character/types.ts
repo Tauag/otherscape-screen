@@ -44,6 +44,8 @@ export type PowerTag = {
 	burnt: boolean;
 	/** The Power a burn is worth. Absent reads as the default, because theme specials set 4 or 5. */
 	burnValue?: number;
+	/** The tag an Evolution unlocks: covers unusually wide narrative territory. Niche, so it's absent on nearly every tag. */
+	broad?: boolean;
 };
 
 export type WeaknessTag = {

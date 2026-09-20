@@ -58,6 +58,8 @@ export type RollTag = {
 	/** Never burns for extra Power, so it never competes with the one other
 	 *  tag a roll may burn. */
 	crispy: boolean;
+	/** The tag an Evolution unlocked. Power tags only. */
+	broad: boolean;
 };
 
 export type RollGroup = {
@@ -78,6 +80,7 @@ function powerTag(tag: PowerTag, crispy = false): RollTag {
 		burnValue: burnValueOf(tag),
 		canBurn: !crispy,
 		crispy,
+		broad: tag.broad ?? false,
 	};
 }
 
@@ -89,6 +92,7 @@ function weaknessTag(tag: { id: string; text: string }): RollTag {
 		burnValue: null,
 		canBurn: false,
 		crispy: false,
+		broad: false,
 	};
 }
 
@@ -104,6 +108,7 @@ export function storyRollTag(tag: StoryTag): RollTag {
 		burnValue: canBurn ? burnValueOf(tag) : null,
 		canBurn,
 		crispy: tag.crispy,
+		broad: false,
 	};
 }
 
@@ -119,6 +124,7 @@ function relationshipTag(relationship: CrewRelationship): RollTag {
 		burnValue: burnValueOf(relationship),
 		canBurn: false,
 		crispy: true,
+		broad: false,
 	};
 }
 
@@ -132,6 +138,7 @@ function loadoutTags(set: LoadoutSet): RollTag[] {
 			burnValue: burnValueOf({ burnt: set.titleBurnt }),
 			canBurn: true,
 			crispy: false,
+			broad: false,
 		},
 		...set.features
 			.filter((feature) => feature.loaded)
@@ -142,6 +149,7 @@ function loadoutTags(set: LoadoutSet): RollTag[] {
 				burnValue: burnValueOf({ burnt: feature.burnt }),
 				canBurn: true,
 				crispy: false,
+				broad: false,
 			})),
 		...set.weaknesses.map(weaknessTag),
 	];

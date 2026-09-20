@@ -4,7 +4,7 @@ import { Button } from "@base-ui/react/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ChipBadge } from "@/app/character/[id]/_components/chip-badge";
+import { ChipBadge } from "@/components/chip-badge";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { PRIMARY } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";

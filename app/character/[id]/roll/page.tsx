@@ -93,6 +93,7 @@ export default function RollPage() {
 				type={tag.valence === "positive" ? (hue as never) : undefined}
 				valence={tag.valence === "negative" ? "negative" : undefined}
 				burnt={burnt}
+				broad={tag.broad}
 				selected={selected}
 				counted={line?.counted ?? false}
 				value={line && signed(line.value)}

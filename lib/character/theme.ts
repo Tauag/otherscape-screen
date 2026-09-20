@@ -190,6 +190,15 @@ export function unburnTag(theme: Theme, tagId: string): Theme {
 	};
 }
 
+export function toggleBroadTag(theme: Theme, tagId: string): Theme {
+	return {
+		...theme,
+		powerTags: theme.powerTags.map((tag) =>
+			tag.id === tagId ? { ...tag, broad: !tag.broad } : tag,
+		),
+	};
+}
+
 export type TrackName = "upgrade" | "decay";
 
 const TRACK_LENGTH: Record<TrackName, number> = {

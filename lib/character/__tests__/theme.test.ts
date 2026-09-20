@@ -8,6 +8,7 @@ import {
 	moveTag,
 	themeLine,
 	themeTitle,
+	toggleBroadTag,
 } from "../theme.ts";
 import type { Theme } from "../types.ts";
 import { sample } from "./sample.ts";
@@ -97,6 +98,21 @@ test("deleting the title tag clears the title and leaves the rest", () => {
 	assert.deepEqual(ids(gone), ["pt-2", "pt-3"]);
 
 	assert.equal(themeTitle(deletePowerTag(past, "pt-2"))?.id, "pt-1");
+});
+
+test("the broad flag toggles on one tag and leaves the rest alone", () => {
+	const marked = toggleBroadTag(past, "pt-2");
+	assert.equal(marked.powerTags.find((tag) => tag.id === "pt-2")?.broad, true);
+	assert.equal(
+		marked.powerTags.find((tag) => tag.id === "pt-1")?.broad,
+		undefined,
+	);
+
+	const cleared = toggleBroadTag(marked, "pt-2");
+	assert.equal(
+		cleared.powerTags.find((tag) => tag.id === "pt-2")?.broad,
+		false,
+	);
 });
 
 test("the quote line is named by the theme type", () => {
