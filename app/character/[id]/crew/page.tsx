@@ -7,18 +7,14 @@ import { use, useState } from "react";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import {
-	FILLED,
-	PRIMARY,
-	REMOVE_BUTTON,
-} from "@/app/character/[id]/_components/styles";
+import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { LABEL } from "@/components/styles";
 import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
-import type { CrewMotivation } from "@/lib/character/types";
+import type { CrewMotivation, ThemeType } from "@/lib/character/types";
 import {
 	DECAY_TRACK_LENGTH,
 	DEFAULT_BURN_VALUE,
@@ -31,6 +27,13 @@ const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
 
 const MOTIVATIONS: CrewMotivation[] = ["Identity", "Ritual", "Itch"];
+
+/** Identity is the Self line, Ritual is Mythos, Itch is Noise, on every themebook. */
+const MOTIVATION_TYPE: Record<CrewMotivation, ThemeType> = {
+	Identity: "self",
+	Ritual: "mythos",
+	Itch: "noise",
+};
 
 export default function CrewPage({
 	params,
@@ -215,19 +218,20 @@ export default function CrewPage({
 
 			<fieldset className="flex flex-col gap-1.5">
 				<legend className={LABEL}>Identity, Ritual, or Itch</legend>
-				<div className="flex gap-1.5">
+				<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border">
 					{MOTIVATIONS.map((motivation) => (
 						<Button
 							key={motivation}
 							type="button"
+							data-type={MOTIVATION_TYPE[motivation]}
 							aria-pressed={crew.motivation === motivation}
 							onClick={() =>
 								dispatch({ type: "setCrewMotivation", motivation })
 							}
-							className={`flex-1 rounded-sm border px-3 py-2 font-display text-sm font-semibold tracking-[0.08em] uppercase ${
+							className={`flex-1 px-3 py-2 font-display text-sm font-semibold tracking-[0.08em] uppercase ${
 								crew.motivation === motivation
-									? "border-[var(--hue)] text-[var(--hue)]"
-									: "border-border text-dim"
+									? "bg-[var(--hue)] text-bg"
+									: "text-[var(--hue)]"
 							}`}
 						>
 							{motivation}
@@ -252,7 +256,6 @@ export default function CrewPage({
 			</label>
 
 			<section className="flex flex-col gap-1.5">
-				<h2 className={LABEL}>Crew</h2>
 				<LabelAction
 					label="Crew Relationships"
 					onClick={() =>
@@ -273,7 +276,10 @@ export default function CrewPage({
 						{character.crew.map((relationship) => {
 							const named = relationship.member.trim() || "this crew member";
 							return (
-								<li key={relationship.id} className="flex items-center gap-2">
+								<li
+									key={relationship.id}
+									className="flex divide-x divide-border overflow-hidden rounded-sm border border-border"
+								>
 									<Input
 										type="text"
 										autoComplete="off"
@@ -287,7 +293,7 @@ export default function CrewPage({
 										}
 										aria-label="Crew member's name"
 										placeholder="Name"
-										className={`${FIELD} w-2/5`}
+										className="min-h-11 w-2/5 bg-bg px-3 font-sans text-base"
 									/>
 									<Input
 										type="text"
@@ -302,7 +308,7 @@ export default function CrewPage({
 										}
 										aria-label={`Relationship tag with ${named}`}
 										placeholder="Relationship tag"
-										className={`${FIELD} flex-1 ${relationship.burnt ? "line-through" : ""}`}
+										className={`min-h-11 flex-1 bg-bg px-3 font-sans text-base ${relationship.burnt ? "line-through" : ""}`}
 									/>
 									<BurnButton
 										burnt={relationship.burnt}
@@ -320,6 +326,7 @@ export default function CrewPage({
 											)
 										}
 										named={`the relationship with ${named}`}
+										square
 									/>
 									<Button
 										type="button"
@@ -330,7 +337,7 @@ export default function CrewPage({
 											})
 										}
 										aria-label={`Remove ${named}`}
-										className={`${REMOVE_BUTTON} size-11`}
+										className="grid size-11 shrink-0 place-items-center text-dim"
 									>
 										<span aria-hidden>✕</span>
 									</Button>

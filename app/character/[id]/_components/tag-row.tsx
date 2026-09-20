@@ -110,7 +110,6 @@ export function TagRow({
 
 				{power && onBurntChange && (
 					<BurnButton
-						bare
 						burnt={tag.burnt ?? false}
 						onBurntChange={onBurntChange}
 						named={named}
