@@ -116,13 +116,15 @@ run a real session from a phone before starting S8.
 At `lg:`, `/character/[id]` renders the play board instead of the sheet card
 list: a panel per theme plus loadout and crew, each with its track pips and its
 selectable tags; a table rail for statuses and story tags; a fixed dock holding
-the modifier, rolling with, the breakdown, the Power total and Roll. The tab bar
-goes. Every tag, status and story tag appears exactly once and is selectable
-where it sits. The board arranges the leaf components the phone already uses, so
-no new chip, pip, or card is written.
-**Done when:** a full character fits 1440x900 with no scrolling, selecting a tag
-anywhere on the board moves the dock total, a status sets its tier and joins the
-roll from the same card, and the phone view is byte-for-byte unchanged.
+the modifier, rolling with, the Power total and Roll. No breakdown: every number
+sits on the thing that produced it. The tab bar goes. Every tag, status and story
+tag appears exactly once and is selectable where it sits. Panels grow to their
+tags and the grid scrolls; the dock and the rail never move. The board arranges
+the leaf components the phone already uses, so no new chip, pip, or card is
+written.
+**Done when:** a starting character fits 1440x900, selecting a tag anywhere on the
+board moves the dock total, a status sets its tier and joins the roll from the
+same card, and the phone view is unchanged.
 **Depends on:** T41
 **Refs:** design.md 5, sysdesign 9
 

@@ -20,6 +20,8 @@ type Props = {
 	burnt?: boolean;
 	/** The tag an Evolution unlocked. Independent of `badge`: a broad tag can also be burnt. */
 	broad?: boolean;
+	/** A theme's title tag on the board: the label reads larger and bolder. */
+	prominent?: boolean;
 	selected: boolean;
 	/** False while the chip is outranked, scratched, or stopped by a theme type. */
 	counted: boolean;
@@ -42,6 +44,7 @@ export function RollChip({
 	valence,
 	burnt,
 	broad,
+	prominent,
 	selected,
 	counted,
 	onToggle,
@@ -67,7 +70,11 @@ export function RollChip({
 
 	const body = (
 		<>
-			<span className={`font-display text-[13px] ${ink}`}>{named}</span>
+			<span
+				className={`font-display ${prominent ? "text-[15px] font-bold" : "text-[13px]"} ${ink}`}
+			>
+				{named}
+			</span>
 			{broad && <ChipBadge>BROAD</ChipBadge>}
 			{badge && <ChipBadge>{badge}</ChipBadge>}
 			{value !== undefined && !onValueClick && (
