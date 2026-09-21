@@ -99,8 +99,10 @@ more than once, so two tags may carry the same letter.
 
 ## 4. Interface decisions
 
-1. **Power is never a bare number.** The roll builder prints the breakdown above
-   the total. A player checks the app's arithmetic without redoing it.
+1. **Power is never a bare number.** Every number sits on the thing that produced
+   it: a selected tag carries its own `+1`, an outranked status is struck through,
+   and Rolling with shows its own contribution on the control. A player checks the
+   app's arithmetic by reading the screen, not a printed sum.
 2. **Outranked statuses stay visible.** `traced-1` sits selected and struck
    through, because only the highest tier each side counts. The app says so
    instead of silently dropping it.
@@ -113,8 +115,138 @@ more than once, so two tags may carry the same letter.
    screen.
 6. **No fake status bar or keyboard.** The real ones render on top.
 
-## 5. Unresolved
+## 5. Desktop
 
+The Desktop artboard in the canvas is stale. This section supersedes it. It is
+designed from the play loop, not from the phone's screen boundaries.
+
+### What the table actually does
+
+| Step | How often | Screen today |
+|---|---|---|
+| Pick tags, read Power, roll | many times a scene | Roll |
+| Mark or clear a status tier | many times a scene | Play |
+| Create a story tag, spend a crispy one | many times a scene | Play |
+| Burn a tag | several times a session | Roll |
+| Mark Attention or Decay | several times a session | Sheet, Theme |
+| Load or unload a set | a few times a session | Loadout |
+| Write tag text, pick themebooks, spend Evolution | between sessions | Theme, pickers, Evolution |
+
+Everything above the last row is one continuous activity: build a roll from what
+is on the table, roll it, record what it cost. Those steps are split across three
+phone screens because a phone can only show one thing. A desk can show all of it,
+so the desktop puts that whole activity on **one board** and keeps the
+between-session work as routes.
+
+### The board
+
+The board is the desktop home at `lg`. It fits 1440x900 without scrolling.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ ← HALCYON DRIFT  NEXUS      Board  Evolution  Ref    Saved         ⋮   │
+├─────────────┬─────────────┬─────────────┬──────────────────────────────┤
+│ self·Divided│ mythos·Relic│ noise·Cyber │  THE TABLE                   │
+│ UPG ■■□ DEC■│ UPG ■□□ DEC□│ UPG □□□ DEC■│                              │
+│ NADIA     +1│ THE NINTH   │ GHOSTWIRE   │  STATUSES          + status  │
+│ talks…    +1│ opens…    +1│ rides…    +1│  traced-2      −2  ▣▣□□      │
+│ pistol BURNT│ whispers…   │ nobody…     │  braced-1          ▣□□□      │
+│ owes…       │             │             │                              │
+├─────────────┼─────────────┼─────────────┤  STORY TAGS           + tag  │
+│ (nascent)   │ Loadout 2/3 │ Crew        │  smoke cover       +1        │
+│             │ Night Run…  │ The Long…   │  alarm rising                │
+│ build this  │ grapple…    │ we all owe… │  the door is open    crispy  │
+│ theme       │ bulky…      │ Maro · …    │                              │
+├─────────────┴─────────────┴─────────────┴──────────────────────────────┤
+│ MOD [−][0][+]  ROLLING WITH [None|Self +2|Mythos|Noise]  POWER +3 [ROLL]│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+Three regions.
+
+| Region | Holds | Why here |
+|---|---|---|
+| Panels | One panel per theme, plus loadout and crew. Each carries its Attention and Decay pips, its title tag and its tags, every one selectable | Tag selection is the most frequent act in the game, and a track is marked right after the roll that filled it |
+| The table | Statuses and story tags: scene state, not yours | It changes every few minutes and belongs to the table, not to a theme |
+| The dock | Modifier, rolling with, the Power total, Roll | Never scrolls and never moves, so the number a player reads out is always in the same place |
+
+Layout: panels are a grid, three up at 1280 and above and two up below it. The
+table is a 340px rail. The dock is a fixed 96px bar across the bottom.
+
+**A panel grows to its tags.** A starting theme holds 3 power tags and 1 weakness;
+Upgrades take it to 10 and 4. No panel scrolls and no row gets denser, because a
+tag a player cannot see is a tag they will not use. The panel grid scrolls
+instead, under a dock and a table rail that never move. A starting character fits
+1440x900 with room left; a veteran scrolls, and the number they read out loud
+stays put either way.
+
+**The dock prints no breakdown.** Section 4 decision 1 is served by the board
+itself: a selected tag shows its own `+1`, an outranked status strikes through,
+and Rolling with carries its contribution on the control. A written sum beside
+all of that would only restate the screen.
+
+That last one matters. When a roll uses a domain, `power()` adds a line worth the
+theme count that belongs to no tag, and every positive tag stops counting. So the
+chosen segment reads `Self +2`, and the greyed-out tags around the board explain
+themselves.
+
+### The editors
+
+Everything a player does between sessions stays a route, and a route takes the
+full width when it opens: theme, loadout, crew, evolution, reference, and the
+five pickers. The pencil on a board panel opens that panel's editor.
+
+The sheet's card list has no desktop job left. The board shows the same themes,
+arranged for what a player actually does with them.
+
+### Chrome
+
+| Element | At `lg` |
+|---|---|
+| Links | `Board Evolution Ref`. Play and Roll are gone as destinations because the board holds both |
+| Power total | In the dock, at 46px, beside the Roll button |
+| Save status | Leaves the bottom of the page and sits in the app bar |
+| Tab bar | Gone |
+
+The parked-copy sentence is long and rare, so it stays out of the bar. It renders
+as a full-width strip under the app bar when a conflict leaves a copy behind.
+
+### Decisions
+
+1. **Every tag, status and story tag is drawn once.** Whatever shows a tag also
+   selects it. Nothing on the board is a read-only copy of something else.
+2. **A status carries both of its jobs.** The boxes set the tier, the row puts it
+   in the roll. They are used in the same beat, so they sit in the same card.
+3. **Track pips live on the theme that owns them.** Marking Attention after a
+   roll costs no navigation.
+4. **The board is a layout, not a new set of components.** It arranges the same
+   leaf components the phone uses: the chip, the track pips, the status card, the
+   roll controls, the total.
+5. **The phone does not change.** It keeps sheet, play and roll as separate
+   routes with the tab bar. The board is what a desk can do that a phone cannot,
+   so it is `lg:` only.
+6. **Hit targets stay at 44px.** They are comfortable with a mouse, and shrinking
+   them would fork the phone design.
+7. **Desktop adds a focus ring and hover states.** A keyboard and a mouse each
+   need an affordance that a finger never asked for.
+
+### Roster and share
+
+Neither view has the character shell, so neither gets a board. Both are one 448px
+column today, which reads as a phone page stretched across a desk.
+
+| View | At `lg` |
+|---|---|
+| Roster | The container widens. Cards flow two up, and three up at `xl`. The new-character bar leaves the sticky footer and joins the header row. |
+| Share | The container widens. Theme blocks flow two up. Loadout and crew stay full width below them. |
+
+Login and the not-invited page are already centred and self-sizing. They do not
+change.
+
+## 6. Unresolved
+
+- The canvas now trails the build on every screen, not just the two named below.
+  Read the app first and the artboards second.
 - Exact hex values for the three type hues. See section 2.
 - The Decay track box count (3) is confirmed and matches the artboards.
   Starting loadout Power is confirmed at 1 (PRD O5); the Loadout artboard
@@ -128,7 +260,7 @@ more than once, so two tags may carry the same letter.
   already matches the corrected rules.
 - Effect costs on the Reference screen. They come from the CHEATSHEET tab.
 
-## 6. Editing the canvas
+## 7. Editing the canvas
 
 Edit the artboards in the canvas itself, at the link above. Saving there
 publishes a new version.

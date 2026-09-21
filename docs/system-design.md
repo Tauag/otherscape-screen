@@ -325,9 +325,16 @@ Tabs are routes, not component state, so the phone back button works and a
 player can deep-link a theme. The document loads once in the layout, so no tab
 switch refetches.
 
-The desktop artboard is the same tree. At `lg:` the layout renders sheet, play,
-and roll as three panes and drops the tab bar. CSS decides, not a second set of
-components.
+Desktop is not the same screens side by side. At `lg:` the tab bar goes and
+`/character/[id]` renders the play board: the whole character on one screen, with
+every tag selectable where it sits, a rail for statuses and story tags, and a
+fixed dock for the total. Sheet, play and roll are three phone screens only
+because a phone shows one thing at a time; a desk does not have that constraint,
+so `/play` and `/roll` redirect to the board at `lg:`.
+
+The board is a layout, not a second component set. It arranges the same chip,
+track, status card and roll controls the phone routes use. Everything a player
+does between sessions stays an ordinary route. See design.md section 5.
 
 Roll-builder selection is throwaway state in the layout provider. It is never
 saved, per 7.8.

@@ -2,13 +2,14 @@
 	"name": "otherscape-screen",
 	"version": "0.1.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "biome lint --write",
 		"format": "biome format --write",
-		"test": "node --experimental-loader ./scripts/resolve-alias-hook.mjs --test",
+		"test": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"./scripts/resolve-alias-hook.mjs\", pathToFileURL(\"./\"));' --test",
 		"upload-content": "node --env-file=.env.local scripts/upload-content.mjs",
 		"prepare": "git config core.hooksPath .githooks"
 	},

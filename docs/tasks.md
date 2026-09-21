@@ -18,7 +18,7 @@ run a real session from a phone before starting S8.
 | S4.5 Design realignment | T58 | M2 |
 | S5 Content pack | T33-T35 | M2 |
 | S6 Creation | T36-T38 | M2.5 |
-| S7 Play | T39-T43 | M3 |
+| S7 Play | T39-T43, T60-T61 | M3 |
 | S8 Share and export | T44-T47 | M4 |
 | S9 Offline | T48-T51 | M4 |
 | S10 Later | T52-T57 | P1 |
@@ -112,41 +112,50 @@ run a real session from a phone before starting S8.
 ### T41 Roll builder - done
 ### T42 Reference screen - done
 
-### T43 Desktop layout
-At `lg:`, render sheet, play, and roll as three panes and drop the tab bar. CSS
-decides. No second set of components.
-**Done when:** the 1440x900 view matches the Desktop artboard and the phone view is
-unchanged.
+### T43 Desktop play board
+At `lg:`, `/character/[id]` renders the play board instead of the sheet card
+list: a panel per theme plus loadout and crew, each with its track pips and its
+selectable tags; a table rail for statuses and story tags; a fixed dock holding
+the modifier, rolling with, the breakdown, the Power total and Roll. The tab bar
+goes. Every tag, status and story tag appears exactly once and is selectable
+where it sits. The board arranges the leaf components the phone already uses, so
+no new chip, pip, or card is written.
+**Done when:** a full character fits 1440x900 with no scrolling, selecting a tag
+anywhere on the board moves the dock total, a status sets its tier and joins the
+roll from the same card, and the phone view is byte-for-byte unchanged.
 **Depends on:** T41
-**Refs:** design.md Desktop, sysdesign 9
+**Refs:** design.md 5, sysdesign 9
+
+### T43b Desktop editor routes
+At `lg:`, theme, loadout, crew, evolution, reference and the five pickers take
+the full width when opened from the board. `/play` and `/roll` redirect to the
+board, since it holds both.
+**Done when:** every route opens full width from a board panel's pencil, and the
+phone view is unchanged.
+**Depends on:** T43
+**Refs:** design.md 5 The editors
+
+### T60 Desktop roster
+Widen the container and flow the character cards two up, three up at `xl:`. Move
+the new-character bar out of the sticky footer and into the header row.
+**Done when:** the 1440 view fills its width and the phone view is unchanged.
+**Depends on:** T43
+**Refs:** design.md 5 Roster and share
+
+### T61 Desktop share view
+Widen the container and flow the theme blocks two up. Loadout and crew stay full
+width below them.
+**Done when:** the 1440 view fills its width and the phone view is unchanged.
+**Depends on:** T43
+**Refs:** design.md 5 Roster and share
 
 ---
 
 ## S8 Share and export
 
-### T44 Migration: shared_character function
-The `security definer` function, with execute revoked from `public` and granted to
-`anon` and `authenticated`.
-**Done when:** an anonymous call with a valid token returns the document, and an
-invalid token returns nothing.
-**Depends on:** T05
-**Refs:** sysdesign 4
-
-### T45 Generate and revoke a share link
-Write a v4 UUID into `share_token`, and null it to revoke. Re-sharing generates a
-new token, so an old link dies.
-**Done when:** a revoked link stops working and a new one works.
-**Depends on:** T44
-**Refs:** PRD 7.11
-
-### T46 Share page
-`/s/[token]`, a server component that calls the function and renders read-only
-HTML. No editor bundle, no Supabase client, no write path. It renders tags,
-question letters, tracks, and statuses, and never renders content-pack text.
-**Done when:** the page opens on a phone with no account, and the bundle carries no
-Supabase client.
-**Depends on:** T45
-**Refs:** PRD 7.11, sysdesign 4
+### T44 Migration: shared_character function - done
+### T45 Generate and revoke a share link - done
+### T46 Share page - done
 
 ### T47 Export and import
 Export the document to a file. Import validates it in TypeScript, runs `migrate`,
@@ -197,32 +206,7 @@ gone afterward.
 **Depends on:** T41
 **Refs:** PRD 7.9
 
-### T53 Undo
-A 20-deep stack of previous documents.
-**Done when:** the last edit reverses on every screen.
-**Depends on:** T14
-**Refs:** PRD 7.2
-
+### T53 Undo - won't do
 ### T54 Lose a theme — done
-One action, callable at any time on the player's command. It never depends on the
-Decay track. Archive the theme whole into Ghost Memories, with when and why it was
-lost.
-**Done when:** a lost theme reads back complete, tags and track marks included.
-**Depends on:** T23
-**Refs:** PRD 7.4
-
 ### T55 Decay warning and replacement — done
-Warn when a Decay track fills, and offer to lose that theme. Never lose it
-automatically. A replacement starts nascent, except for a Nexus that stays a Nexus
-and for a Conduit.
-**Done when:** a filled track warns, and a Conduit's replacement starts full.
-**Depends on:** T54
-**Refs:** PRD 7.4
-
-### T56 Evolution boxes and respec
-Mark and clear the fixed Evolution list. Respec rebuilds every theme and keeps the
-name, appearance, background, and crew relationships. Archive every replaced theme.
-**Done when:** a respec leaves the identity fields untouched and Ghost Memories
-holds the old themes.
-**Depends on:** T54
-**Refs:** PRD 7.4
+### T56 Evolution boxes and respec - done
