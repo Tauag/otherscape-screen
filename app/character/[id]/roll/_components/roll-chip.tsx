@@ -117,11 +117,13 @@ export function RollChip({
 			)}
 
 			{onBurntChange && (
-				<BurnButton
-					burnt={!!burnt}
-					onBurntChange={onBurntChange}
-					named={named}
-				/>
+				<div className="ml-auto">
+					<BurnButton
+						burnt={!!burnt}
+						onBurntChange={onBurntChange}
+						named={named}
+					/>
+				</div>
 			)}
 		</li>
 	);
