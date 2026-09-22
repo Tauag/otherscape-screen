@@ -24,7 +24,7 @@ export function loadoutSpend(loadout: Loadout): {
 		over,
 		warning:
 			over > 0
-				? `You have ${spent} out of ${available} loadout power available.`
+				? `You have used ${spent} out of ${available} loadout power available.`
 				: null,
 	};
 }

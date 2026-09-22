@@ -39,7 +39,7 @@ test("a half-built character names every gap, in reading order", () => {
 		"Theme 1 (Troubled Past) has no weakness tag.",
 		"Theme 1 (Troubled Past) has no Identity line.",
 		"No Essence is chosen.",
-		"You have 2 out of 1 loadout power available.",
+		"You have used 2 out of 1 loadout power available.",
 	]);
 });
 
