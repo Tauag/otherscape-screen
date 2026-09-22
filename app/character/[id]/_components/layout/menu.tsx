@@ -3,6 +3,7 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
+import Link from "next/link";
 import { useState } from "react";
 import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { MoreIcon } from "@/app/character/[id]/_components/icons";
@@ -54,6 +55,9 @@ export function SheetMenu({
 						className="outline-none"
 					>
 						<Menu.Popup className={MENU_POPUP}>
+							<Menu.Item className={MENU_ITEM} render={<Link href="/" />}>
+								All characters
+							</Menu.Item>
 							<Menu.Item
 								className={MENU_ITEM}
 								onClick={() => setGhostsOpen(true)}

@@ -92,6 +92,6 @@ test("an over-budget loadout reports the gap as a sentence", () => {
 		spent: 4,
 		available: 1,
 		over: 3,
-		warning: "You have 4 out of 1 power available.",
+		warning: "You have 4 out of 1 loadout power available.",
 	});
 });

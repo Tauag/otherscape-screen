@@ -1,27 +1,40 @@
 "use client";
 
 import { Input } from "@base-ui/react/input";
-import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { isNascent } from "@/lib/character/theme";
 import { useCharacter } from "../../_hooks/use-character";
 import { BackIcon } from "../icons";
 import { SheetMenu } from "./menu";
 
+const BACK =
+	"-m-1 flex size-11 shrink-0 items-center justify-center p-1 text-dim";
+
 export function AppBar({ shareToken }: { shareToken: string | null }) {
 	const { character, dispatch } = useCharacter();
 	const { id } = useParams<{ id: string }>();
+	const pathname = usePathname();
 	const router = useRouter();
 
 	return (
 		<header className="sticky top-0 mx-auto flex w-full max-w-md items-center gap-[11px] border-b border-edge bg-chrome px-4 pt-[max(13px,env(safe-area-inset-top))] pb-[13px] lg:hidden">
-			<button
-				type="button"
-				onClick={() => router.back()}
-				aria-label="Back"
-				className="-m-1 flex size-11 shrink-0 items-center justify-center p-1 text-dim"
-			>
-				<BackIcon />
-			</button>
+			{/* Nothing sits above the sheet but the roster, so the arrow points
+			    there rather than into history, which a deep link leaves empty. */}
+			{pathname === `/character/${id}` ? (
+				<Link href="/" aria-label="All characters" className={BACK}>
+					<BackIcon />
+				</Link>
+			) : (
+				<button
+					type="button"
+					onClick={() => router.back()}
+					aria-label="Back"
+					className={BACK}
+				>
+					<BackIcon />
+				</button>
+			)}
 
 			<div className="flex min-w-0 flex-1 flex-col gap-[3px]">
 				{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label; biome can't see through the component boundary. */}

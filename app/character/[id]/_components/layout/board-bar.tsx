@@ -2,11 +2,13 @@
 
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { BackIcon } from "@/app/character/[id]/_components/icons";
 import { SAVE_STATUS_MESSAGE } from "@/app/character/[id]/_components/layout/character-provider";
 import { SheetMenu } from "@/app/character/[id]/_components/layout/menu";
-import { BackIcon } from "@/app/character/[id]/_components/icons";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+
+const BACK = "grid size-9 shrink-0 place-items-center text-dim";
 
 const NAV = (id: string) => [
 	{ label: "Board", href: `/character/${id}` },
@@ -26,16 +28,26 @@ export function BoardBar({
 }) {
 	const { character, dispatch, status } = useCharacter();
 	const pathname = usePathname();
+	const router = useRouter();
 
 	return (
 		<header className="hidden h-[62px] shrink-0 items-center gap-3.5 border-b border-edge bg-chrome px-5 lg:flex">
-			<Link
-				href="/"
-				aria-label="Back to characters"
-				className="grid size-9 shrink-0 place-items-center text-dim"
-			>
-				<BackIcon />
-			</Link>
+			{/* Nothing sits above the board but the roster, so the arrow points
+			    there rather than into history, which a deep link leaves empty. */}
+			{pathname === `/character/${id}` ? (
+				<Link href="/" aria-label="All characters" className={BACK}>
+					<BackIcon />
+				</Link>
+			) : (
+				<button
+					type="button"
+					onClick={() => router.back()}
+					aria-label="Back"
+					className={BACK}
+				>
+					<BackIcon />
+				</button>
+			)}
 
 			<div className="flex min-w-0 flex-col gap-0.5">
 				{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label. */}
