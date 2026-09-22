@@ -22,10 +22,6 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 	const essenceTied =
 		essenceState === "unchosen" && essenceCandidates.length > 1;
 
-	// The server always renders this phone tree first (sysdesign 9, design.md 5
-	// "the board is not the same screens side by side"); this hook swaps it for
-	// the board after hydration reads a `lg:` viewport, so only one tree ever
-	// mounts the character at once.
 	const isBoard = useMediaQuery("(min-width: 1024px)", false);
 	if (isBoard) return <Board />;
 

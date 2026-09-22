@@ -19,6 +19,9 @@ import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
 import type { CharacterAction } from "../_lib/reducer";
 
+/** What useRollBoard hands back, for the board pieces that take it whole. */
+export type RollBoard = ReturnType<typeof useRollBoard>;
+
 /**
  * The roll builder's selection logic: what is picked, what it's worth, and the
  * tag chip that renders any of it. Shared by the phone roll screen and the
