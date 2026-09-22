@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { BoardBar } from "@/app/character/[id]/_components/board-bar";
 import { CharacterProvider } from "@/app/character/[id]/_components/character-provider";
 import { RollSelectionProvider } from "@/app/character/[id]/_components/roll-selection";
 import { TabBar } from "@/app/character/[id]/_components/tabs";
@@ -43,6 +44,13 @@ export default async function CharacterLayout({
 				updatedAt={row.updated_at}
 				shareToken={row.share_token}
 				bar={<TabBar key={`tab-bar-${id}`} id={id} />}
+				topBar={
+					<BoardBar
+						key={`board-bar-${id}`}
+						id={id}
+						shareToken={row.share_token}
+					/>
+				}
 			>
 				{children}
 			</CharacterProvider>

@@ -40,6 +40,25 @@ export function BroadIcon({ broad }: { broad: boolean }) {
 	);
 }
 
+export function EditIcon() {
+	return (
+		<svg
+			aria-hidden="true"
+			width="15"
+			height="15"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="1.8"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<path d="M12 20h9" />
+			<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+		</svg>
+	);
+}
+
 export function BackIcon() {
 	return (
 		<svg

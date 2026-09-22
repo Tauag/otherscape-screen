@@ -2,11 +2,13 @@
 
 import { Button } from "@base-ui/react/button";
 import { use } from "react";
+import { Board } from "@/app/character/[id]/_components/board";
 import { CrewCard } from "@/app/character/[id]/_components/crew-card";
 import { LoadoutCard } from "@/app/character/[id]/_components/loadout-card";
 import { QUIET } from "@/app/character/[id]/_components/styles";
 import { ThemeCard } from "@/app/character/[id]/_components/theme-card";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { useMediaQuery } from "@/app/character/[id]/_hooks/use-media-query";
 import { STARTING_THEMES } from "@/lib/rules/constants";
 import { essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { themeCountWarning } from "@/lib/rules/readiness";
@@ -19,6 +21,13 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 		essenceSuggestion(character.themes, character.essence);
 	const essenceTied =
 		essenceState === "unchosen" && essenceCandidates.length > 1;
+
+	// The server always renders this phone tree first (sysdesign 9, design.md 5
+	// "the board is not the same screens side by side"); this hook swaps it for
+	// the board after hydration reads a `lg:` viewport, so only one tree ever
+	// mounts the character at once.
+	const isBoard = useMediaQuery("(min-width: 1024px)", false);
+	if (isBoard) return <Board />;
 
 	return (
 		<main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3 pb-8">

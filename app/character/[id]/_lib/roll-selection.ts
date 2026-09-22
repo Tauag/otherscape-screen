@@ -298,6 +298,43 @@ export function rollGroups(character: Character): RollGroup[] {
 	return groups.filter((group) => group.tags.length > 0);
 }
 
+/**
+ * Every panel the board shows: one per theme, plus loadout and crew, in that
+ * order, even when a group has no tags yet. `rollGroups` drops an empty group
+ * because a roll has nothing to spend there, but a nascent theme (or an empty
+ * loadout, or a crew with no tags) still needs a panel on the board.
+ */
+export function boardGroups(character: Character): RollGroup[] {
+	const byId = new Map(rollGroups(character).map((group) => [group.id, group]));
+
+	const themeGroups: RollGroup[] = character.themes.map((theme) => {
+		const existing = byId.get(theme.id);
+		if (existing) return existing;
+		return {
+			id: theme.id,
+			hue: theme.type,
+			label: `${theme.type} · ${theme.themebook.trim() || "No themebook"}`,
+			tags: [],
+		};
+	});
+
+	const loadoutGroup: RollGroup = byId.get("loadout") ?? {
+		id: "loadout",
+		hue: "loadout",
+		label: "loadout",
+		tags: [],
+	};
+
+	const crewGroup: RollGroup = byId.get("crew") ?? {
+		id: "crew",
+		hue: "crew",
+		label: `crew · ${character.crewTheme.motivation}`,
+		tags: [],
+	};
+
+	return [...themeGroups, loadoutGroup, crewGroup];
+}
+
 type TagEntry = { id: string; tag: SelectedTag };
 type StatusEntry = { id: string; status: SelectedStatus };
 

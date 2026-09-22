@@ -4,6 +4,7 @@ import { sample } from "@/lib/character/__tests__/sample";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
 import {
+	boardGroups,
 	burningTagId,
 	burnToggleAction,
 	NO_PICK,
@@ -173,4 +174,39 @@ test("an unburnt crew relationship contributes the plain +1, and a burnt one is 
 	const crew = rollGroups(sample).find((group) => group.id === "crew");
 	const cr2 = crew?.tags.find((tag) => tag.id === "cr-2");
 	assert.notEqual(cr2?.burnValue, null);
+});
+
+test("boardGroups keeps a nascent theme with zero tags, which rollGroups drops", () => {
+	const nascent = {
+		id: "th-nascent",
+		type: "noise" as const,
+		themebook: "",
+		powerTags: [],
+		weaknessTags: [],
+		quote: "",
+		specials: [],
+		upgrade: 0 as const,
+		decay: 0 as const,
+	};
+	const character = { ...sample, themes: [...sample.themes, nascent] };
+
+	assert.equal(
+		rollGroups(character).some((group) => group.id === "th-nascent"),
+		false,
+	);
+
+	const board = boardGroups(character);
+	const panel = board.find((group) => group.id === "th-nascent");
+	assert.deepEqual(panel, {
+		id: "th-nascent",
+		hue: "noise",
+		label: "noise · No themebook",
+		tags: [],
+	});
+
+	// One panel per theme, in order, plus loadout and crew last.
+	assert.deepEqual(
+		board.map((group) => group.id),
+		[...character.themes.map((theme) => theme.id), "loadout", "crew"],
+	);
 });

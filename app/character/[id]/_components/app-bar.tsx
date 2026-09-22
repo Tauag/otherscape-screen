@@ -13,7 +13,7 @@ export function AppBar({ shareToken }: { shareToken: string | null }) {
 	const router = useRouter();
 
 	return (
-		<header className="sticky top-0 mx-auto flex w-full max-w-md items-center gap-[11px] border-b border-edge bg-chrome px-4 pt-[max(13px,env(safe-area-inset-top))] pb-[13px]">
+		<header className="sticky top-0 mx-auto flex w-full max-w-md items-center gap-[11px] border-b border-edge bg-chrome px-4 pt-[max(13px,env(safe-area-inset-top))] pb-[13px] lg:hidden">
 			<button
 				type="button"
 				onClick={() => router.back()}

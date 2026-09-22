@@ -25,16 +25,20 @@ import { type CharacterAction, reduce } from "../_lib/reducer";
 import { AppBar } from "./app-bar";
 import { Side } from "./conflict-side";
 
+export type SaveStatus = "saved" | "saving" | "offline" | "conflict";
+
 export const CharacterContext = createContext<{
 	character: Character;
 	dispatch: (action: CharacterAction) => void;
+	status: SaveStatus;
+	shareToken: string | null;
 } | null>(null);
 
 const SAVE_DELAY = 800;
 
-type SaveStatus = "saved" | "saving" | "offline" | "conflict";
-
-const message: Record<SaveStatus, string> = {
+/** The save status line, shared by the phone's sticky footer and the board's
+ *  app bar (design.md 5: "Save status leaves the bottom of the page"). */
+export const SAVE_STATUS_MESSAGE: Record<SaveStatus, string> = {
 	saved: "Saved",
 	saving: "Saving",
 	offline: "Offline. Your edits are kept on this device.",
@@ -58,6 +62,9 @@ type Props = {
 	/** The tab bar, built by the layout. One sticky element holds both, so the
 	 *  save line and the bar cannot pin to the same edge and overlap. */
 	bar: React.ReactNode;
+	/** The board's app bar, built by the layout. It lives outside this file so
+	 *  it can read SAVE_STATUS_MESSAGE without an import cycle. */
+	topBar: React.ReactNode;
 	children: React.ReactNode;
 };
 
@@ -68,6 +75,7 @@ export function CharacterProvider({
 	updatedAt,
 	shareToken,
 	bar,
+	topBar,
 	children,
 }: Props) {
 	const [character, dispatch] = useReducer(reduce, server);
@@ -293,39 +301,54 @@ export function CharacterProvider({
 		show("saved");
 	};
 
-	const value = useMemo(() => ({ character, dispatch }), [character]);
+	const value = useMemo(
+		() => ({ character, dispatch, status, shareToken }),
+		[character, status, shareToken],
+	);
 
 	return (
 		<CharacterContext.Provider value={value}>
-			<AppBar shareToken={shareToken} />
-			{children}
+			{/* lg: the app bar is fixed and the page scrolls under it, so the
+			    board's own panes keep the full row height. Phone keeps the
+			    document scroll, which the sticky bar and footer pin against. */}
+			<div className="flex flex-1 flex-col lg:h-dvh lg:min-h-0 lg:flex-none lg:overflow-hidden">
+				<AppBar shareToken={shareToken} />
+				{topBar}
 
-			<div className="relative sticky bottom-0 mx-auto w-full max-w-md bg-bg pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-				<div
-					aria-hidden="true"
-					className="pointer-events-none absolute inset-x-0 bottom-full h-[46px] bg-gradient-to-b from-transparent to-bg"
-				/>
-
-				<div className="px-5">
-					<p
-						role="status"
-						aria-live="polite"
-						className={`font-mono text-[11px] tracking-[0.08em] ${
-							status === "conflict" ? "text-negative-text" : "text-faint"
-						}`}
-					>
-						{message[status]}
-					</p>
-
-					{parked && (
-						<p className="pt-1 font-sans text-[11px] text-dim">
-							The copy you did not keep stays in this browser, under the storage
-							key <code className="font-mono text-faint">{parked}</code>.
-						</p>
-					)}
+				<div className="contents lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:overflow-y-auto">
+					{children}
 				</div>
 
-				{bar}
+				{/* The board (lg:) carries its own save line in its own app bar, so this
+				    phone-only footer hides there instead of stacking a second one. */}
+				<div className="relative sticky bottom-0 mx-auto w-full max-w-md bg-bg pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+					<div
+						aria-hidden="true"
+						className="pointer-events-none absolute inset-x-0 bottom-full h-[46px] bg-gradient-to-b from-transparent to-bg"
+					/>
+
+					<div className="px-5">
+						<p
+							role="status"
+							aria-live="polite"
+							className={`font-mono text-[11px] tracking-[0.08em] ${
+								status === "conflict" ? "text-negative-text" : "text-faint"
+							}`}
+						>
+							{SAVE_STATUS_MESSAGE[status]}
+						</p>
+
+						{parked && (
+							<p className="pt-1 font-sans text-[11px] text-dim">
+								The copy you did not keep stays in this browser, under the
+								storage key{" "}
+								<code className="font-mono text-faint">{parked}</code>.
+							</p>
+						)}
+					</div>
+
+					{bar}
+				</div>
 			</div>
 
 			<ConfirmDialog
