@@ -3,9 +3,9 @@
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SAVE_STATUS_MESSAGE } from "@/app/character/[id]/_components/character-provider";
+import { SAVE_STATUS_MESSAGE } from "@/app/character/[id]/_components/layout/character-provider";
+import { SheetMenu } from "@/app/character/[id]/_components/layout/menu";
 import { BackIcon } from "@/app/character/[id]/_components/icons";
-import { SheetMenu } from "@/app/character/[id]/_components/menu";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 
 const NAV = (id: string) => [

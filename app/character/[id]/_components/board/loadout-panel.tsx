@@ -3,7 +3,6 @@
 import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import {
 	EditLink,
 	EMPTY_SHELL,
@@ -11,7 +10,8 @@ import {
 	SHELL,
 	type TagChip,
 	TagList,
-} from "@/app/character/[id]/_components/panel-shell";
+} from "@/app/character/[id]/_components/board/panel-shell";
+import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { PRIMARY } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";

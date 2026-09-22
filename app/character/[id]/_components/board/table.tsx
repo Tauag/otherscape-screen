@@ -2,7 +2,7 @@
 
 import { Button } from "@base-ui/react/button";
 import { useState } from "react";
-import { BoardStoryTagRow } from "@/app/character/[id]/_components/board-story-tag-row";
+import { BoardStoryTagRow } from "@/app/character/[id]/_components/board/story-tag-row";
 import { PlusIcon } from "@/app/character/[id]/_components/icons";
 import { LabelAction } from "@/app/character/[id]/_components/label-action";
 import { SMALL_BUTTON } from "@/app/character/[id]/_components/styles";

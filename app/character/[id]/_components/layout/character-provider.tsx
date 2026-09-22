@@ -21,7 +21,7 @@ import {
 import { migrate } from "@/lib/character/migrate";
 import type { Character } from "@/lib/character/types";
 import { createClient } from "@/lib/supabase/client";
-import { type CharacterAction, reduce } from "../_lib/reducer";
+import { type CharacterAction, reduce } from "../../_lib/reducer";
 import { AppBar } from "./app-bar";
 import { Side } from "./conflict-side";
 

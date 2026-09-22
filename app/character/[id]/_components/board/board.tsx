@@ -2,11 +2,11 @@
 
 import { Button } from "@base-ui/react/button";
 import { useParams } from "next/navigation";
-import { BoardTable } from "@/app/character/[id]/_components/board-table";
-import { CrewPanel } from "@/app/character/[id]/_components/crew-panel";
+import { CrewPanel } from "@/app/character/[id]/_components/board/crew-panel";
+import { LoadoutPanel } from "@/app/character/[id]/_components/board/loadout-panel";
+import { BoardTable } from "@/app/character/[id]/_components/board/table";
+import { ThemePanel } from "@/app/character/[id]/_components/board/theme-panel";
 import { PlusIcon } from "@/app/character/[id]/_components/icons";
-import { LoadoutPanel } from "@/app/character/[id]/_components/loadout-panel";
-import { ThemePanel } from "@/app/character/[id]/_components/theme-panel";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useRollBoard } from "@/app/character/[id]/_hooks/use-roll-board";
 import { boardWarnings } from "@/app/character/[id]/_lib/board-warnings";

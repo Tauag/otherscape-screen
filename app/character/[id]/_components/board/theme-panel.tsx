@@ -11,7 +11,7 @@ import {
 	SHELL,
 	type TagChip,
 	TagList,
-} from "@/app/character/[id]/_components/panel-shell";
+} from "@/app/character/[id]/_components/board/panel-shell";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";

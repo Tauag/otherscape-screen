@@ -2,11 +2,11 @@
 
 import { Button } from "@base-ui/react/button";
 import { use } from "react";
-import { Board } from "@/app/character/[id]/_components/board";
-import { CrewCard } from "@/app/character/[id]/_components/crew-card";
-import { LoadoutCard } from "@/app/character/[id]/_components/loadout-card";
+import { Board } from "@/app/character/[id]/_components/board/board";
+import { CrewCard } from "@/app/character/[id]/_components/sheet/crew-card";
+import { LoadoutCard } from "@/app/character/[id]/_components/sheet/loadout-card";
+import { ThemeCard } from "@/app/character/[id]/_components/sheet/theme-card";
 import { QUIET } from "@/app/character/[id]/_components/styles";
-import { ThemeCard } from "@/app/character/[id]/_components/theme-card";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useMediaQuery } from "@/app/character/[id]/_hooks/use-media-query";
 import { STARTING_THEMES } from "@/lib/rules/constants";

@@ -3,8 +3,8 @@
 import { Input } from "@base-ui/react/input";
 import { useParams, useRouter } from "next/navigation";
 import { isNascent } from "@/lib/character/theme";
-import { useCharacter } from "../_hooks/use-character";
-import { BackIcon } from "./icons";
+import { useCharacter } from "../../_hooks/use-character";
+import { BackIcon } from "../icons";
 import { SheetMenu } from "./menu";
 
 export function AppBar({ shareToken }: { shareToken: string | null }) {

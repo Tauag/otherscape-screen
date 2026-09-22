@@ -1,8 +1,8 @@
 import { notFound, redirect } from "next/navigation";
-import { BoardBar } from "@/app/character/[id]/_components/board-bar";
-import { CharacterProvider } from "@/app/character/[id]/_components/character-provider";
+import { BoardBar } from "@/app/character/[id]/_components/layout/board-bar";
+import { CharacterProvider } from "@/app/character/[id]/_components/layout/character-provider";
+import { TabBar } from "@/app/character/[id]/_components/layout/tabs";
 import { RollSelectionProvider } from "@/app/character/[id]/_components/roll-selection";
-import { TabBar } from "@/app/character/[id]/_components/tabs";
 import { migrate } from "@/lib/character/migrate";
 import { createClient } from "@/lib/supabase/server";
 

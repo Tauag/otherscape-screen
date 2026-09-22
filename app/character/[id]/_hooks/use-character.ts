@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { CharacterContext } from "../_components/character-provider";
+import { CharacterContext } from "../_components/layout/character-provider";
 
 export function useCharacter() {
 	const value = useContext(CharacterContext);
