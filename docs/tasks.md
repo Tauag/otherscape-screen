@@ -5,24 +5,6 @@ Owner: Gavin Li
 Related: [PRD.md](./PRD.md) (what and why), [system-design.md](./system-design.md)
 (technical decisions), [design.md](./design.md) (interface)
 
-Tickets follow the build order in system-design.md section 12. Ship after S7 and
-run a real session from a phone before starting S8.
-
-| Step | Tickets | Milestone |
-|---|---|---|
-| S0 Rules research | T01-T02 | blocks M2 |
-| S1 Supabase | T03-T05 | M1 |
-| S2 Shell | T06-T15 | M1 |
-| S3 Rules engine | T16-T20 | M2 |
-| S4 Sheet | T21-T32 | M2 |
-| S4.5 Design realignment | T58 | M2 |
-| S5 Content pack | T33-T35 | M2 |
-| S6 Creation | T36-T38 | M2.5 |
-| S7 Play | T39-T43, T60-T61 | M3 |
-| S8 Share and export | T44-T47 | M4 |
-| S9 Offline | T48-T51 | M4 |
-| S10 Later | T52-T57 | P1 |
-
 ---
 
 ## S0 Rules research — done
@@ -105,51 +87,16 @@ run a real session from a phone before starting S8.
 
 ---
 
-## S7 Play
+## S7 Play - done
 
 ### T39 Statuses - done
 ### T40 Story tags - done
 ### T41 Roll builder - done
 ### T42 Reference screen - done
-
-### T43 Desktop play board
-At `lg:`, `/character/[id]` renders the play board instead of the sheet card
-list: a panel per theme plus loadout and crew, each with its track pips and its
-selectable tags; a table rail for statuses and story tags; a fixed dock holding
-the modifier, rolling with, the Power total and Roll. No breakdown: every number
-sits on the thing that produced it. The tab bar goes. Every tag, status and story
-tag appears exactly once and is selectable where it sits. Panels grow to their
-tags and the grid scrolls; the dock and the rail never move. The board arranges
-the leaf components the phone already uses, so no new chip, pip, or card is
-written.
-**Done when:** a starting character fits 1440x900, selecting a tag anywhere on the
-board moves the dock total, a status sets its tier and joins the roll from the
-same card, and the phone view is unchanged.
-**Depends on:** T41
-**Refs:** design.md 5, sysdesign 9
-
-### T43b Desktop editor routes
-At `lg:`, theme, loadout, crew, evolution, reference and the five pickers take
-the full width when opened from the board. `/play` and `/roll` redirect to the
-board, since it holds both.
-**Done when:** every route opens full width from a board panel's pencil, and the
-phone view is unchanged.
-**Depends on:** T43
-**Refs:** design.md 5 The editors
-
-### T60 Desktop roster
-Widen the container and flow the character cards two up, three up at `xl:`. Move
-the new-character bar out of the sticky footer and into the header row.
-**Done when:** the 1440 view fills its width and the phone view is unchanged.
-**Depends on:** T43
-**Refs:** design.md 5 Roster and share
-
-### T61 Desktop share view
-Widen the container and flow the theme blocks two up. Loadout and crew stay full
-width below them.
-**Done when:** the 1440 view fills its width and the phone view is unchanged.
-**Depends on:** T43
-**Refs:** design.md 5 Roster and share
+### T43 Desktop play board - done
+### T43b Desktop editor routes - done
+### T60 Desktop roster - done
+### T61 Desktop share view - done
 
 ---
 
