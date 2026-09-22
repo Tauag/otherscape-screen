@@ -33,7 +33,7 @@ import { RollTotal } from "@/app/character/[id]/roll/_components/roll-total";
 import { decayFull } from "@/lib/character/loss";
 import { themeTitle } from "@/lib/character/theme";
 import type { Character, StoryTag } from "@/lib/character/types";
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
+import { DEFAULT_BURN_VALUE, STARTING_THEMES } from "@/lib/rules/constants";
 import { essenceSuggestion } from "@/lib/rules/essence-suggestion";
 import { loadoutSpend } from "@/lib/rules/loadout";
 import { themeCountWarning } from "@/lib/rules/readiness";
@@ -101,8 +101,6 @@ export function Board() {
 		setPick,
 	} = useRollBoard(character, dispatch);
 
-	// boardGroups returns one entry per theme, in character.themes' order, then
-	// loadout, then crew — always, even for an empty one (trap 1).
 	const groups = boardGroups(character);
 	const themeGroups = groups.slice(0, character.themes.length);
 	const loadoutGroup = groups[character.themes.length];
@@ -245,6 +243,18 @@ export function Board() {
 						/>
 					))}
 
+					{character.themes.length < STARTING_THEMES && (
+						<Button
+							type="button"
+							onClick={() =>
+								dispatch({ type: "addTheme", id: crypto.randomUUID() })
+							}
+							className="flex min-h-[88px] items-center justify-center gap-1.5 rounded-md border border-raised border-dashed bg-recess font-display text-xs font-semibold tracking-[0.08em] text-dim uppercase"
+						>
+							<PlusIcon /> Theme card
+						</Button>
+					)}
+
 					<LoadoutPanel
 						loadout={character.loadout}
 						group={loadoutGroup}
@@ -260,10 +270,6 @@ export function Board() {
 					/>
 				</div>
 
-				{/* The table plus the dock: statuses and story tags scroll in their
-				    own column, and the roll controls sit fixed at its bottom, so the
-				    panel grid gets the full row height instead of a full-width dock
-				    strip cutting into it. */}
 				<aside
 					aria-label="The table"
 					className="flex min-h-0 w-[300px] shrink-0 flex-col border-l border-edge bg-chrome/40 xl:w-[340px]"
