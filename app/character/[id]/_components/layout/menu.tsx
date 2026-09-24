@@ -19,7 +19,7 @@ import { Chip } from "@/components/chip";
 import { LABEL } from "@/components/styles";
 import { generateShareLink, revokeShareLink } from "@/lib/actions";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
-import type { Essence, GhostMemory } from "@/lib/character/types";
+import type { Character, Essence, GhostMemory } from "@/lib/character/types";
 import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
@@ -33,6 +33,7 @@ export function SheetMenu({
 	shareToken: string | null;
 	id: string;
 }) {
+	const { character } = useCharacter();
 	const [ghostsOpen, setGhostsOpen] = useState(false);
 	const [essenceOpen, setEssenceOpen] = useState(false);
 	const [shareOpen, setShareOpen] = useState(false);
@@ -76,6 +77,12 @@ export function SheetMenu({
 							>
 								Share
 							</Menu.Item>
+							<Menu.Item
+								className={MENU_ITEM}
+								onClick={() => exportCharacter(character)}
+							>
+								Export
+							</Menu.Item>
 						</Menu.Popup>
 					</Menu.Positioner>
 				</Menu.Portal>
@@ -109,6 +116,18 @@ export function SheetMenu({
 			</ConfirmDialog>
 		</>
 	);
+}
+
+function exportCharacter(character: Character) {
+	const blob = new Blob([JSON.stringify(character, null, 2)], {
+		type: "application/json",
+	});
+	const url = URL.createObjectURL(blob);
+	const anchor = document.createElement("a");
+	anchor.href = url;
+	anchor.download = `${(character.name.trim() || "character").replace(/[\\/:*?"<>|]/g, "-")}.json`;
+	anchor.click();
+	URL.revokeObjectURL(url);
 }
 
 /** A read-only link, generated on demand and revocable at any time. Re-sharing

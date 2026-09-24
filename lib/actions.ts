@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { migrate } from "@/lib/character/migrate";
 import { newCharacter } from "@/lib/character/new";
+import type { Character } from "@/lib/character/types";
 import { createClient } from "@/lib/supabase/server";
 
 export async function signInWithGoogle() {
@@ -148,6 +150,39 @@ export async function deleteCharacter(
 
 	const { error } = await supabase.from("characters").delete().eq("id", id);
 	if (error) return "Could not delete the character.";
+
+	revalidatePath("/");
+	return null;
+}
+
+export async function importCharacter(
+	_previous: Message,
+	form: FormData,
+): Promise<Message> {
+	const raw = form.get("document");
+	if (typeof raw !== "string") return "Could not read that file.";
+
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(raw);
+	} catch {
+		return "That file is not valid JSON.";
+	}
+
+	let document: Character;
+	try {
+		document = migrate(parsed);
+	} catch (error) {
+		return error instanceof Error
+			? error.message
+			: "That file is not a character export.";
+	}
+
+	const { supabase, userId } = await session();
+	const { error } = await supabase
+		.from("characters")
+		.insert({ owner: userId, data: document });
+	if (error) return "Could not import that character.";
 
 	revalidatePath("/");
 	return null;

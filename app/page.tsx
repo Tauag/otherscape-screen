@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ChevronRightIcon } from "@/app/_components/icons";
 import {
 	CharacterCard,
+	ImportBar,
 	NewCharacterBar,
 } from "@/app/_components/roster-controls";
 import { signOut } from "@/lib/actions";
@@ -10,9 +11,6 @@ import { relativeTime } from "@/lib/relative-time";
 import { parseRosterSummary } from "@/lib/roster";
 import { createClient } from "@/lib/supabase/server";
 
-// The generated columns and nothing else. The document never travels here.
-// roster_summary is unknown, not a shape: a database row is a trust boundary,
-// and parseRosterSummary is where an unexpected value stops.
 type RosterRow = {
 	id: string;
 	name: string | null;
@@ -98,6 +96,7 @@ export default async function RosterPage() {
 
 			<div className="sticky bottom-0 bg-bg px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
 				<NewCharacterBar />
+				<ImportBar />
 			</div>
 		</main>
 	);

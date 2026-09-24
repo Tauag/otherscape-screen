@@ -105,12 +105,7 @@ Related: [PRD.md](./PRD.md) (what and why), [system-design.md](./system-design.m
 ### T44 Migration: shared_character function - done
 ### T45 Generate and revoke a share link - done
 ### T46 Share page - done
-### T47 Export and import
-Export the document to a file. Import validates it in TypeScript
-and inserts it as a new character.
-**Done when:** an exported character imports back identically.
-**Depends on:** T11
-**Refs:** PRD 7.12
+### T47 Export and import - done
 
 ---
 

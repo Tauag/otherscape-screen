@@ -10,6 +10,7 @@ import {
 	createCharacter,
 	deleteCharacter,
 	duplicateCharacter,
+	importCharacter,
 	renameCharacter,
 } from "@/lib/actions";
 import type { RosterSummary } from "@/lib/roster";
@@ -247,5 +248,45 @@ export function NewCharacterBar() {
 				{pending ? "Creating" : (error ?? "")}
 			</p>
 		</form>
+	);
+}
+
+export function ImportBar() {
+	const [pending, setPending] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	async function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const file = event.target.files?.[0];
+		event.target.value = "";
+		if (!file) return;
+
+		setPending(true);
+		setError(null);
+		const form = new FormData();
+		form.set("document", await file.text());
+		setError(await importCharacter(null, form));
+		setPending(false);
+	}
+
+	return (
+		<div className="pt-2 text-center">
+			<label className="inline-flex min-h-11 cursor-pointer items-center px-2 font-mono text-[10px] tracking-[0.08em] text-dim uppercase">
+				<input
+					type="file"
+					accept="application/json"
+					disabled={pending}
+					onChange={onChange}
+					className="sr-only"
+				/>
+				Import a character
+			</label>
+
+			<p
+				role="status"
+				className={`font-sans text-[11px] ${error ? "text-negative-text" : "text-dim"}`}
+			>
+				{pending ? "Importing" : (error ?? "")}
+			</p>
+		</div>
 	);
 }
