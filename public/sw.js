@@ -52,7 +52,10 @@ self.addEventListener("fetch", (event) => {
 // Upgrade path: on activate, drop /_next/static/ entries the current pages no
 // longer reference, or cap the entry count.
 async function fetchAndStore(event) {
-	const response = await fetch(event.request);
+	// no-store: otherwise a plain refresh can be satisfied from the browser's
+	// HTTP cache instead of the network, serving a stale page. Only a hard
+	// reload bypasses that cache, which is why this bug only shows there.
+	const response = await fetch(event.request, { cache: "no-store" });
 	// 200 only: a redirect (the login bounce) or an error must not replace a good copy.
 	if (response.status === 200) {
 		const copy = response.clone();
