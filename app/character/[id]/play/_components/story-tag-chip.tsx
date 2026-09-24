@@ -3,10 +3,10 @@
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
-import { MENU_ITEM } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { RowMenu } from "@/app/character/[id]/play/_components/row-menu";
 import { ChipBadge } from "@/components/chip-badge";
+import { MENU_ITEM } from "@/components/styles";
 import type { StoryTag } from "@/lib/character/types";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 

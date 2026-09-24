@@ -25,7 +25,3 @@ export const FILLED_NEGATIVE = `${FILLED_BASE} bg-negative`;
 /** A row's own delete action, set off from its sibling by the left border. Add a size (`w-11` in a stretched row, `size-11` in a centered one). */
 export const REMOVE_BUTTON =
 	"grid shrink-0 place-items-center border-l border-border text-dim";
-export const MENU_POPUP =
-	"min-w-[190px] rounded-md border border-border bg-surface p-1 text-text shadow-lg outline-none";
-export const MENU_ITEM =
-	"flex min-h-11 cursor-pointer items-center rounded-sm px-3 font-display text-sm font-semibold tracking-[0.08em] uppercase outline-none select-none data-[highlighted]:bg-primary/10 data-[highlighted]:text-primary";

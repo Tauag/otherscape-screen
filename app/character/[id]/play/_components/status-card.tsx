@@ -5,10 +5,10 @@ import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { Toggle } from "@base-ui/react/toggle";
 import { useState } from "react";
-import { MENU_ITEM } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { RowMenu } from "@/app/character/[id]/play/_components/row-menu";
 import { StatusLimitDialog } from "@/app/character/[id]/play/_components/status-limit-dialog";
+import { MENU_ITEM } from "@/components/styles";
 import type { Status } from "@/lib/character/types";
 
 const NAME =

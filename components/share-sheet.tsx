@@ -1,9 +1,9 @@
-import { CrewBlock } from "@/app/s/[token]/_components/crew-block";
-import { LoadoutBlock } from "@/app/s/[token]/_components/loadout-block";
-import { StatusRow } from "@/app/s/[token]/_components/status-row";
-import { StoryTagChip } from "@/app/s/[token]/_components/story-tag-chip";
-import { ThemeBlock } from "@/app/s/[token]/_components/theme-block";
+import { CrewBlock } from "@/components/crew-block";
+import { LoadoutBlock } from "@/components/loadout-block";
+import { StatusRow } from "@/components/status-row";
+import { StoryTagChip } from "@/components/story-tag-chip";
 import { LABEL } from "@/components/styles";
+import { ThemeBlock } from "@/components/theme-block";
 import type { Character } from "@/lib/character/types";
 
 export function ShareSheet({ character }: { character: Character }) {

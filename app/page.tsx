@@ -1,12 +1,11 @@
-import { Button } from "@base-ui/react/button";
 import { redirect } from "next/navigation";
-import { ChevronRightIcon } from "@/app/_components/icons";
 import {
 	CharacterCard,
 	ImportBar,
 	NewCharacterBar,
 } from "@/app/_components/roster-controls";
-import { signOut } from "@/lib/actions";
+import { RosterAppBar } from "@/components/roster-app-bar";
+import { accountName } from "@/lib/account-name";
 import { relativeTime } from "@/lib/relative-time";
 import { parseRosterSummary } from "@/lib/roster";
 import { createClient } from "@/lib/supabase/server";
@@ -33,36 +32,15 @@ export default async function RosterPage() {
 		.order("updated_at", { ascending: false })
 		.overrideTypes<RosterRow[], { merge: false }>();
 
-	const metadata = user.user_metadata as Record<string, unknown>;
-	const accountName =
-		[metadata.full_name, metadata.name, user.email].find(
-			(value): value is string => typeof value === "string" && value.length > 0,
-		) ?? "Account";
+	const { data: isAdmin } = await supabase.rpc("current_user_is_admin");
 
 	return (
 		<main className="mx-auto flex w-full max-w-md flex-1 flex-col">
-			<header className="flex items-center justify-between gap-3 px-5 pt-6 pb-4">
-				<h1 className="font-display text-[19px] font-bold tracking-[0.16em] uppercase">
-					Characters
-				</h1>
-
-				<form action={signOut}>
-					<Button
-						type="submit"
-						className="flex min-h-11 items-center gap-2 rounded-[20px] border border-border py-1 pr-3 pl-1.5"
-					>
-						<span
-							aria-hidden="true"
-							className="grid size-[22px] place-items-center rounded-full bg-border font-display text-[11px] font-bold text-text"
-						>
-							{accountName.trim().charAt(0).toUpperCase()}
-						</span>
-						<span className="font-sans text-xs text-dim">{accountName}</span>
-						<ChevronRightIcon className="size-3.5 text-faint" />
-						<span className="sr-only">Sign out</span>
-					</Button>
-				</form>
-			</header>
+			<RosterAppBar
+				title="Characters"
+				accountName={accountName(user)}
+				isAdmin={isAdmin === true}
+			/>
 
 			<div className="flex flex-1 flex-col gap-3 px-5 pb-4">
 				{error && (

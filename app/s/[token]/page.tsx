@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ShareSheet } from "@/app/s/[token]/_components/share-sheet";
+import { ShareSheet } from "@/components/share-sheet";
 import { migrate } from "@/lib/character/migrate";
 import { createClient } from "@/lib/supabase/server";
 

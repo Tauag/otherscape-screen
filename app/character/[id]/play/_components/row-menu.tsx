@@ -2,7 +2,7 @@
 
 import { Menu } from "@base-ui/react/menu";
 import { MoreIcon } from "@/app/character/[id]/_components/icons";
-import { MENU_POPUP } from "@/app/character/[id]/_components/styles";
+import { MENU_POPUP } from "@/components/styles";
 
 /**
  * The overflow menu a play row carries: the dots trigger and the popup around

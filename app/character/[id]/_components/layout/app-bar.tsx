@@ -3,9 +3,9 @@
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { BackIcon } from "@/components/icons";
 import { isNascent } from "@/lib/character/theme";
 import { useCharacter } from "../../_hooks/use-character";
-import { BackIcon } from "../icons";
 import { SheetMenu } from "./menu";
 
 const BACK =

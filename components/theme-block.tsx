@@ -1,10 +1,6 @@
-import { Pips } from "@/app/s/[token]/_components/pips";
-import {
-	CARD,
-	CARD_BODY,
-	CARD_STRIPE,
-} from "@/app/s/[token]/_components/styles";
 import { Chip } from "@/components/chip";
+import { Pips } from "@/components/pips";
+import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";

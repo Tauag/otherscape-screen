@@ -3,10 +3,10 @@
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BackIcon } from "@/app/character/[id]/_components/icons";
 import { SAVE_STATUS_MESSAGE } from "@/app/character/[id]/_components/layout/character-provider";
 import { SheetMenu } from "@/app/character/[id]/_components/layout/menu";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { BackIcon } from "@/components/icons";
 
 const BACK = "grid size-9 shrink-0 place-items-center text-dim";
 

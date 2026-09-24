@@ -9,14 +9,12 @@ import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { MoreIcon } from "@/app/character/[id]/_components/icons";
 import {
 	DANGER,
-	MENU_ITEM,
-	MENU_POPUP,
 	PRIMARY,
 	SMALL_BUTTON,
 } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { Chip } from "@/components/chip";
-import { LABEL } from "@/components/styles";
+import { LABEL, MENU_ITEM, MENU_POPUP } from "@/components/styles";
 import { generateShareLink, revokeShareLink } from "@/lib/actions";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Character, Essence, GhostMemory } from "@/lib/character/types";
