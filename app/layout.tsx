@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Chakra_Petch, JetBrains_Mono } from "next/font/google";
+import { ServiceWorker } from "@/components/service-worker";
 import "./globals.css";
 
 const chakraPetch = Chakra_Petch({
@@ -39,7 +40,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 			lang="en"
 			className={`${chakraPetch.variable} ${barlow.variable} ${jetbrainsMono.variable} h-full antialiased overflow-hidden`}
 		>
-			<body className="min-h-full flex flex-col">{children}</body>
+			<body className="min-h-full flex flex-col">
+				{children}
+				<ServiceWorker />
+			</body>
 		</html>
 	);
 }

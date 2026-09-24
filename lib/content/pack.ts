@@ -328,10 +328,14 @@ export const PACK_CACHE_KEY = "otherscape:pack:themebooks";
 /** Only what the cache needs, so a test can pass a plain object. */
 export type PackStore = Pick<Storage, "getItem" | "setItem">;
 
-/** The cached pack, or null when the row has been refilled since, or nothing is cached. */
+/**
+ * The cached pack, or null when the row has been refilled since, or nothing is
+ * cached. Without `updatedAt` (offline, so the row is unknown) any entry counts:
+ * a stale pack still beats the blank fallback.
+ */
 export function readCachedPack(
 	store: PackStore,
-	updatedAt: string,
+	updatedAt?: string,
 ): ContentPack | null {
 	try {
 		const raw = store.getItem(PACK_CACHE_KEY);
@@ -339,7 +343,7 @@ export function readCachedPack(
 		const entry: unknown = JSON.parse(raw);
 		if (typeof entry !== "object" || entry === null) return null;
 		const cached = entry as Record<string, unknown>;
-		if (cached.updatedAt !== updatedAt) return null;
+		if (updatedAt !== undefined && cached.updatedAt !== updatedAt) return null;
 		return normalize(cached.pack);
 	} catch {
 		// Blocked site data, or an entry someone hand-edited. Refetching is correct.

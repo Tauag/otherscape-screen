@@ -19,8 +19,9 @@ export const loadPack = (): Promise<ContentPack> => (pending ??= fetchPack());
 
 /**
  * `updated_at` first, because it is a few bytes and it is the cache key: a pack
- * this browser already holds costs no second query. Anything that goes wrong
- * (no row, no network, unreadable JSON) ends at the fallback, never at an error.
+ * this browser already holds costs no second query. A failed query (no network)
+ * ends at whatever pack this browser last held; anything else that goes wrong
+ * (no row, unreadable JSON) ends at the fallback, never at an error.
  */
 async function fetchPack(): Promise<ContentPack> {
 	try {
@@ -30,7 +31,8 @@ async function fetchPack(): Promise<ContentPack> {
 			.select("updated_at")
 			.eq("id", PACK_ID)
 			.maybeSingle()
-			.overrideTypes<{ updated_at: string }, { merge: false }>();
+			.overrideTypes<{ updated_at: string }, { merge: false }>()
+			.throwOnError();
 
 		if (!row) return FALLBACK_PACK;
 
@@ -42,7 +44,8 @@ async function fetchPack(): Promise<ContentPack> {
 			.select("data")
 			.eq("id", PACK_ID)
 			.maybeSingle()
-			.overrideTypes<{ data: unknown }, { merge: false }>();
+			.overrideTypes<{ data: unknown }, { merge: false }>()
+			.throwOnError();
 
 		const pack = normalize(full?.data);
 		if (!pack) return FALLBACK_PACK;
@@ -50,7 +53,12 @@ async function fetchPack(): Promise<ContentPack> {
 		writeCachedPack(localStorage, row.updated_at, full?.data);
 		return pack;
 	} catch {
-		return FALLBACK_PACK;
+		try {
+			return readCachedPack(localStorage) ?? FALLBACK_PACK;
+		} catch {
+			// Reading `localStorage` itself throws when site data is blocked.
+			return FALLBACK_PACK;
+		}
 	}
 }
 

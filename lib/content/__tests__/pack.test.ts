@@ -367,6 +367,14 @@ test("the cache is reused at the same updated_at and dropped when the row is ref
 	assert.equal(readCachedPack(cache, "2026-01-01T00:00:00Z"), null);
 });
 
+test("offline, with no updated_at to compare, any cached pack is reused", () => {
+	const cache = store();
+	assert.equal(readCachedPack(cache), null);
+
+	writeCachedPack(cache, "2026-01-01T00:00:00Z", rawPack());
+	assert.deepEqual(readCachedPack(cache), normalize(rawPack()));
+});
+
 test("a storage that throws, or holds nonsense, reads as no cache", () => {
 	const throwing: PackStore = {
 		getItem: () => {
