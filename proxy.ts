@@ -59,8 +59,10 @@ export async function proxy(request: NextRequest) {
 	return response;
 }
 
+// The manifest and its icons are fetched by the browser's installer, which
+// sends no session cookie, so a login redirect would break installation.
 export const config = {
 	matcher: [
-		"/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
+		"/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon/|apple-icon|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
 	],
 };
