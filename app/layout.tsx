@@ -22,12 +22,15 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
 	title: "Otherscape",
 	description: "A character sheet and play companion for Metro:Otherscape.",
+	// "black", not "black-translucent": the roster page has no top safe-area inset.
+	appleWebApp: { capable: true, title: "Otherscape", statusBarStyle: "black" },
 };
 
 export const viewport: Viewport = {
 	width: "device-width",
 	initialScale: 1,
 	viewportFit: "cover",
+	themeColor: "#0d0d15", // --color-chrome
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
