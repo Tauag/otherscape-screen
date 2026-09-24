@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-179 -221 1408 1408">
 	<title>Otherscape</title>
 	<!-- Traced at the source artwork's scale. The viewBox pads the mark into the maskable safe zone (radius 40%). The fill is the app background colour. -->
-	<rect x="-179" y="-221" width="1408" height="1408" fill="#0a0a0f"/>
+	<rect x="-179" y="-221" width="1408" height="1408" rx="310" fill="#0a0a0f"/>
 	<g fill="none" stroke="#c8f04a" stroke-width="63">
 		<path d="M229 512V447L102 200L152 108H897L947 200L820 447V512"/>
 		<path d="M316 580L473 859H576L733 580"/>
