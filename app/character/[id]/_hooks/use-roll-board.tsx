@@ -101,7 +101,7 @@ export function useRollBoard(
 		const burnt = tag.burnValue !== null;
 		const locked = pick.mitigationLockedIds.includes(tag.id);
 		const canBurnControl =
-			selected && (burnt || (tag.canBurn && burning === null));
+			burnt || (selected && tag.canBurn && burning === null);
 		return (
 			<RollChip
 				key={tag.id}

@@ -6,6 +6,7 @@ import type {
 	RollGroup,
 	RollTag,
 } from "@/app/character/[id]/_lib/roll-selection";
+import { specialName } from "@/lib/pickers";
 
 /** The shell every board panel shares: card chrome, header label, tag list,
  *  edit link, and quote line. Composition only, over the same leaf components
@@ -45,6 +46,25 @@ export function EditLink({ href, label }: { href: string; label: string }) {
 		>
 			<EditIcon />
 		</Link>
+	);
+}
+
+export function SpecialsList({ specials }: { specials: string[] }) {
+	if (specials.length === 0) return null;
+
+	return (
+		<ul className="flex flex-col gap-1">
+			{specials.map((special) => (
+				<li key={special} className="flex items-baseline gap-[7px]">
+					<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-[var(--hue)]/80 uppercase">
+						Special
+					</span>
+					<span className="font-sans text-[13px] text-[var(--hue-text)]">
+						{specialName(special)}
+					</span>
+				</li>
+			))}
+		</ul>
 	);
 }
 

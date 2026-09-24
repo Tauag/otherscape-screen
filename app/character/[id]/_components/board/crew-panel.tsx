@@ -9,6 +9,7 @@ import {
 	HEADER_LABEL,
 	PanelQuote,
 	SHELL,
+	SpecialsList,
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
@@ -101,6 +102,8 @@ export function CrewPanel({
 			)}
 
 			<PanelQuote label={crewTheme.motivation} quote={crewTheme.quote} />
+
+			<SpecialsList specials={crewTheme.specials} />
 
 			<ConfirmDialog
 				open={upgradeOpen}

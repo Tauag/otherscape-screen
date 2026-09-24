@@ -97,8 +97,13 @@ export function CrewBlock({
 				{crew.specials.length > 0 && (
 					<ul className="flex flex-col gap-1">
 						{crew.specials.map((special) => (
-							<li key={special} className="font-sans text-[13px] text-dim">
-								{specialName(special)}
+							<li key={special} className="flex items-baseline gap-[7px]">
+								<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-[var(--hue)]/80 uppercase">
+									Special
+								</span>
+								<span className="font-sans text-[13px] text-[var(--hue-text)]">
+									{specialName(special)}
+								</span>
 							</li>
 						))}
 					</ul>

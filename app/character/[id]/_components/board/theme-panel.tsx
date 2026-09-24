@@ -9,6 +9,7 @@ import {
 	NASCENT_BADGE,
 	PanelQuote,
 	SHELL,
+	SpecialsList,
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
@@ -79,6 +80,8 @@ export function ThemePanel({
 			<TagList group={group} tagChip={tagChip} />
 
 			<PanelQuote label={themeLine(theme.type)} quote={theme.quote} />
+
+			<SpecialsList specials={theme.specials} />
 
 			<UpgradeDialog
 				themeId={theme.id}

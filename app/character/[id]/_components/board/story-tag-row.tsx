@@ -34,7 +34,7 @@ export function BoardStoryTagRow({
 	const burnt = rollTag.burnValue !== null;
 	const locked = pick.mitigationLockedIds.includes(tag.id);
 	const canBurnControl =
-		selected && (burnt || (rollTag.canBurn && burning === null));
+		burnt || (selected && rollTag.canBurn && burning === null);
 	const named = tag.name.trim() || "this tag";
 
 	return (
