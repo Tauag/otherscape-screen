@@ -111,26 +111,26 @@ Related: [PRD.md](./PRD.md) (what and why), [system-design.md](./system-design.m
 
 ## S9 Offline
 
-### T48 PWA manifest and icons
+### T48 PWA manifest and icons - done
 Installable on a phone. Use the 23 icons already drawn in the artboards, pasted as
 SVG or taken from `lucide-react`.
 **Done when:** the app installs to a phone home screen.
 **Refs:** sysdesign 10
 
-### T49 Service worker
+### T49 Service worker - done
 Cache the app shell and the content pack.
 **Done when:** the app opens with the network disabled.
 **Depends on:** T48, T34
 **Refs:** sysdesign 8
 
-### T50 Retry a dirty save
+### T50 Retry a dirty save - done
 A dirty document retries its save on the `online` event.
 **Done when:** edits made with the network off reach the database when it returns.
 **Depends on:** T15, T49
 **Refs:** PRD 7.13
 
-### T51 Keepalive cron
-One Vercel cron, daily, calling a route that runs `select 1`. A free Supabase
+### T51 Keepalive cron - done
+One Netlify scheduled function, daily, calling a route that runs `select 1`. A free Supabase
 project pauses after seven days, and a fortnightly campaign hits that.
 **Done when:** the cron runs on a schedule and the project stays awake.
 **Refs:** sysdesign 11
