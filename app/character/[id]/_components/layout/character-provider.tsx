@@ -219,7 +219,10 @@ export function CharacterProvider({
 
 		if (choice === "local") {
 			// Unsaved edits from an earlier visit. Adopting them leaves them dirty,
-			// so the effect below schedules the save they never got.
+			// so the effect below schedules the save they never got. A clean copy
+			// (newer than a cached page) is already saved: mark it handled, as
+			// keepTheirs does, so it is not written back.
+			if (!local.dirty) handled.current = local.document;
 			dispatch({ type: "replace", document: local.document });
 			return;
 		}

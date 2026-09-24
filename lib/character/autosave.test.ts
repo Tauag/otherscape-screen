@@ -83,6 +83,11 @@ test("the local copy wins only when it holds edits the server never saw", () => 
 		"remote",
 		"stored, saved, and stale",
 	);
+	assert.equal(
+		resolve(entry(5, false), 4),
+		"local",
+		"saved, but the server read is older (a cached page)",
+	);
 	assert.equal(resolve(entry(4, true), 4), "local", "the offline edit");
 	assert.equal(
 		resolve(entry(5, true), 4),

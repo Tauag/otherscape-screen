@@ -60,9 +60,10 @@ export async function proxy(request: NextRequest) {
 }
 
 // The manifest and its icons are fetched by the browser's installer, which
-// sends no session cookie, so a login redirect would break installation.
+// sends no session cookie, so a login redirect would break installation. The
+// worker script is public, and skipping it saves an auth check per update.
 export const config = {
 	matcher: [
-		"/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon/|apple-icon|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
+		"/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon/|apple-icon|sw.js|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
 	],
 };
