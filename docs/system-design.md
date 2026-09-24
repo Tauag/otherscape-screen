@@ -437,12 +437,12 @@ Hit targets are 44 px, from design.md section 1.
 ## 11. Cost
 
 $0/month. Supabase free tier gives 500 MB of database and 50k monthly active
-users; a table of five players stores under 1 MB. Vercel Hobby covers the
-hosting.
+users; a table of five players stores under 1 MB. Netlify's free plan covers
+the hosting.
 
 A free Supabase project pauses after seven days without a request, and a
 fortnightly campaign hits that between sessions. A paused project on game night
-is the one predictable failure here. One Vercel cron, daily (the Hobby limit),
+is the one predictable failure here. One Netlify scheduled function, daily,
 calling a route that runs `select 1`, prevents it.
 
 ## 12. Build order
