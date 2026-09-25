@@ -31,11 +31,27 @@ export async function proxy(request: NextRequest) {
 
 	// getClaims verifies the JWT (locally against the project's JWKS, or via
 	// the auth server as a fallback) rather than trusting the cookie as-is.
-	const { data } = await supabase.auth.getClaims();
-	const email = data?.claims.email as string | undefined;
+	// lazy: a thrown error (bad/partial cookie, JWKS fetch failure) is treated
+	// the same as "no session" instead of retried, so a broken cookie fails
+	// closed to /login rather than flapping the route decision across requests.
+	const email = await (async () => {
+		try {
+			const { data } = await supabase.auth.getClaims();
+			return data?.claims.email as string | undefined;
+		} catch {
+			return undefined;
+		}
+	})();
 	const invited =
 		email && !isAuthCallbackPath(pathname)
-			? (await supabase.rpc("current_user_invited")).data === true
+			? await (async () => {
+					try {
+						const { data } = await supabase.rpc("current_user_invited");
+						return data === true;
+					} catch {
+						return false;
+					}
+				})()
 			: undefined;
 	const route = decideRoute({ pathname, email, invited });
 
@@ -56,6 +72,16 @@ export async function proxy(request: NextRequest) {
 	cookiesToSet.forEach(({ name, value, options }) => {
 		response.cookies.set(name, value, options);
 	});
+
+	if (route === "not-invited") {
+		request.cookies
+			.getAll()
+			.filter(({ name }) => name.startsWith("sb-"))
+			.forEach(({ name }) => {
+				response.cookies.delete(name);
+			});
+	}
+
 	return response;
 }
 
