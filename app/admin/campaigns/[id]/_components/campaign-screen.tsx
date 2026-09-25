@@ -23,7 +23,7 @@ export function CampaignScreen({
 	const { campaign, dispatch, status, parked } = useCampaign();
 
 	return (
-		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
+		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col lg:h-dvh lg:min-h-0 lg:flex-none">
 			<RosterAppBar
 				title={campaign.name.trim() || "Unnamed"}
 				accountName={accountName}
@@ -48,8 +48,8 @@ export function CampaignScreen({
 				</p>
 			)}
 
-			<div className="grid flex-1 gap-6 px-5 pb-8 lg:grid-cols-[minmax(0,1fr)_340px]">
-				<div className="flex min-w-0 flex-col gap-5">
+			<div className="flex flex-1 flex-col gap-6 px-5 pb-8 lg:min-h-0 lg:flex-row">
+				<div className="flex min-w-0 flex-col gap-5 lg:min-h-0 lg:flex-1">
 					<label className="flex flex-col gap-1">
 						<span className={LABEL}>Campaign name</span>
 						<input
@@ -78,7 +78,7 @@ export function CampaignScreen({
 					<NpcSection />
 				</div>
 
-				<aside className="flex min-w-0 flex-col gap-6">
+				<aside className="flex min-w-0 flex-col gap-6 lg:w-[340px] lg:min-h-0 lg:shrink-0 lg:overflow-y-auto">
 					<div className="flex flex-col gap-2">
 						<div className="flex items-center justify-between gap-2">
 							<span className={LABEL}>
