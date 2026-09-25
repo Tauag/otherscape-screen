@@ -154,11 +154,7 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 		case "setNpcStoryTagValence":
 			return inNpc(campaign, action.npcId, (npc) => ({
 				...npc,
-				storyTags: setStoryTagValence(
-					npc.storyTags,
-					action.id,
-					action.valence,
-				),
+				storyTags: setStoryTagValence(npc.storyTags, action.id, action.valence),
 			}));
 		case "burnNpcStoryTag":
 			return inNpc(campaign, action.npcId, (npc) => ({

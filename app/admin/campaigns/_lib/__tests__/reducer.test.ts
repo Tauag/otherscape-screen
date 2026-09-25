@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { DEFAULT_BURN_VALUE, DEFAULT_STATUS_LIMIT } from "@/lib/rules/constants";
+import {
+	DEFAULT_BURN_VALUE,
+	DEFAULT_STATUS_LIMIT,
+} from "@/lib/rules/constants";
 import { newCampaign } from "../new.ts";
 import { reduce } from "../reducer.ts";
 import type { Campaign } from "../types.ts";
@@ -8,7 +11,10 @@ import { sample } from "./sample.ts";
 
 test("replace swaps in a whole document", () => {
 	const campaign = newCampaign();
-	assert.deepEqual(reduce(campaign, { type: "replace", document: sample }), sample);
+	assert.deepEqual(
+		reduce(campaign, { type: "replace", document: sample }),
+		sample,
+	);
 });
 
 test("rename sets the campaign name", () => {
