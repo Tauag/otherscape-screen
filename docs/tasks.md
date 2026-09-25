@@ -158,7 +158,7 @@ reducer for every campaign action. Cover it with `node:test` tests, matching
 tags and statuses.
 **Refs:** sysdesign 3, sysdesign 14
 
-### T64 Campaign list
+### T64 Campaign list - done
 Build `/admin/campaigns`: list campaigns, create one, delete one with
 confirmation. Link to it from `/admin`.
 **Done when:** an admin creates, sees, and deletes a campaign; a signed-in
