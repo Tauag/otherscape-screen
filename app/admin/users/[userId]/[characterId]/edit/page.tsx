@@ -9,7 +9,7 @@ import { requireAdmin } from "@/app/admin/_lib/require-admin";
  */
 export default async function AdminEditCharacterPage({
 	params,
-}: PageProps<"/admin/[userId]/[characterId]/edit">) {
+}: PageProps<"/admin/users/[userId]/[characterId]/edit">) {
 	const { characterId } = await params;
 	await requireAdmin();
 	redirect(`/character/${characterId}`);

@@ -32,13 +32,6 @@ export default async function AdminPage() {
 			/>
 
 			<div className="flex flex-1 flex-col gap-1 px-5 pb-4">
-				<Link
-					href="/admin/campaigns"
-					className="flex items-center justify-between gap-3 rounded-md border border-border bg-surface px-3 py-2.5"
-				>
-					<span className="font-sans text-sm text-text">Campaigns</span>
-				</Link>
-
 				{error && (
 					<p className="font-sans text-sm text-negative-text">
 						Could not load invited users. Reload the page.
@@ -75,7 +68,7 @@ function UserRow({ invited }: { invited: InvitedUser }) {
 	if (!invited.user_id) return <div className={className}>{content}</div>;
 
 	return (
-		<Link href={`/admin/${invited.user_id}`} className={className}>
+		<Link href={`/admin/users/${invited.user_id}`} className={className}>
 			{content}
 		</Link>
 	);

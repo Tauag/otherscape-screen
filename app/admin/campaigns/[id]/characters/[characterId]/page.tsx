@@ -52,25 +52,25 @@ export default async function CampaignCharacterPage({
 	const playerName = player?.display_name ?? player?.email ?? "Unknown player";
 
 	return (
-		<>
-			<div className="mx-auto flex w-full max-w-md items-center justify-between gap-3 px-5 pt-6 md:max-w-3xl xl:max-w-5xl">
-				<Link
-					href={`/admin/campaigns/${id}`}
-					className="font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
-				>
-					{campaign?.name?.trim() || "Back"}
-				</Link>
-				<Link
-					href={`/character/${characterId}`}
-					className="font-mono text-[10px] tracking-[0.08em] text-primary uppercase"
-				>
-					Edit
-				</Link>
-			</div>
-			<ShareSheet
-				character={migrate(character.data)}
-				subtitle={`Read-only · ${playerName}'s character`}
-			/>
-		</>
+		<ShareSheet
+			character={migrate(character.data)}
+			subtitle={`Read-only · ${playerName}'s character`}
+			header={
+				<div className="mx-auto flex w-full max-w-md items-center justify-between gap-3 px-5 pt-6 md:max-w-3xl xl:max-w-5xl">
+					<Link
+						href={`/admin/campaigns/${id}`}
+						className="font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
+					>
+						{campaign?.name?.trim() || "Back"}
+					</Link>
+					<Link
+						href={`/character/${characterId}`}
+						className="font-mono text-[10px] tracking-[0.08em] text-primary uppercase"
+					>
+						Edit
+					</Link>
+				</div>
+			}
+		/>
 	);
 }

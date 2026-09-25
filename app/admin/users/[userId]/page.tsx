@@ -19,7 +19,7 @@ type InvitedUser = { user_id: string | null; display_name: string | null };
 
 export default async function AdminUserPage({
 	params,
-}: PageProps<"/admin/[userId]">) {
+}: PageProps<"/admin/users/[userId]">) {
 	const { userId } = await params;
 	const { supabase, user } = await requireAdmin();
 
@@ -59,7 +59,7 @@ export default async function AdminUserPage({
 				{characters?.map((character) => (
 					<Link
 						key={character.id}
-						href={`/admin/${userId}/${character.id}`}
+						href={`/admin/users/${userId}/${character.id}`}
 						className="flex flex-col gap-0.5 rounded-md border border-border bg-surface px-3 py-2.5"
 					>
 						<span className="font-sans text-sm text-text">

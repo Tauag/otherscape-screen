@@ -6,7 +6,7 @@ import { migrate } from "@/lib/character/migrate";
 
 export default async function AdminCharacterPage({
 	params,
-}: PageProps<"/admin/[userId]/[characterId]">) {
+}: PageProps<"/admin/users/[userId]/[characterId]">) {
 	const { userId, characterId } = await params;
 	const { supabase } = await requireAdmin();
 
@@ -21,22 +21,24 @@ export default async function AdminCharacterPage({
 	if (error || !row) notFound();
 
 	return (
-		<>
-			<div className="mx-auto flex w-full max-w-md items-center justify-between gap-3 px-5 pt-6 md:max-w-3xl xl:max-w-5xl">
-				<Link
-					href={`/admin/${userId}`}
-					className="font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
-				>
-					Back
-				</Link>
-				<Link
-					href={`/admin/${userId}/${characterId}/edit`}
-					className="font-mono text-[10px] tracking-[0.08em] text-primary uppercase"
-				>
-					Edit
-				</Link>
-			</div>
-			<ShareSheet character={migrate(row.data)} />
-		</>
+		<ShareSheet
+			character={migrate(row.data)}
+			header={
+				<div className="mx-auto flex w-full max-w-md items-center justify-between gap-3 px-5 pt-6 md:max-w-3xl xl:max-w-5xl">
+					<Link
+						href={`/admin/users/${userId}`}
+						className="font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
+					>
+						Back
+					</Link>
+					<Link
+						href={`/admin/users/${userId}/${characterId}/edit`}
+						className="font-mono text-[10px] tracking-[0.08em] text-primary uppercase"
+					>
+						Edit
+					</Link>
+				</div>
+			}
+		/>
 	);
 }

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { CrewBlock } from "@/components/crew-block";
 import { LoadoutBlock } from "@/components/loadout-block";
 import { StatusRow } from "@/components/status-row";
@@ -9,49 +10,57 @@ import type { Character } from "@/lib/character/types";
 export function ShareSheet({
 	character,
 	subtitle = "Read-only",
+	header,
 }: {
 	character: Character;
 	/** e.g. "Read-only · Sam's character" for the admin's campaign roster view. */
 	subtitle?: string;
+	/** Extra content (e.g. back/edit links) that sits above the sheet and shares its scroll area. */
+	header?: ReactNode;
 }) {
 	return (
-		<main className="mx-auto grid w-full max-w-md flex-1 grid-cols-1 items-start gap-4 px-5 pt-6 pb-8 md:max-w-3xl md:grid-cols-2 xl:max-w-5xl xl:grid-cols-3">
-			<header className="col-span-full flex flex-col gap-[3px]">
-				<p className={LABEL}>{subtitle}</p>
-				<h1 className="font-display text-[21px] font-bold tracking-[0.05em] text-text uppercase">
-					{character.name.trim() || "Unnamed"}
-				</h1>
-				{character.essence && (
-					<p className="font-display text-[11px] font-semibold tracking-[0.16em] text-dim uppercase">
-						{character.essence}
-					</p>
+		// lg: bounded to the viewport so this div, not the document (which the
+		// root layout disables scroll on), owns the scrollbar.
+		<div className="lg:flex lg:h-dvh lg:min-h-0 lg:flex-col lg:overflow-y-auto">
+			{header}
+			<main className="mx-auto grid w-full max-w-md flex-1 grid-cols-1 items-start gap-4 px-5 pt-6 pb-8 md:max-w-3xl md:grid-cols-2 xl:max-w-5xl xl:grid-cols-3">
+				<header className="col-span-full flex flex-col gap-[3px]">
+					<p className={LABEL}>{subtitle}</p>
+					<h1 className="font-display text-[21px] font-bold tracking-[0.05em] text-text uppercase">
+						{character.name.trim() || "Unnamed"}
+					</h1>
+					{character.essence && (
+						<p className="font-display text-[11px] font-semibold tracking-[0.16em] text-dim uppercase">
+							{character.essence}
+						</p>
+					)}
+				</header>
+
+				{character.themes.map((theme) => (
+					<ThemeBlock key={theme.id} theme={theme} />
+				))}
+
+				<LoadoutBlock loadout={character.loadout} />
+
+				<CrewBlock crew={character.crewTheme} relationships={character.crew} />
+
+				{character.statuses.length > 0 && (
+					<section className="col-span-full flex flex-col gap-2">
+						<p className={LABEL}>Statuses</p>
+						{character.statuses.map((status) => (
+							<StatusRow key={status.id} status={status} />
+						))}
+					</section>
 				)}
-			</header>
 
-			{character.themes.map((theme) => (
-				<ThemeBlock key={theme.id} theme={theme} />
-			))}
-
-			<LoadoutBlock loadout={character.loadout} />
-
-			<CrewBlock crew={character.crewTheme} relationships={character.crew} />
-
-			{character.statuses.length > 0 && (
-				<section className="col-span-full flex flex-col gap-2">
-					<p className={LABEL}>Statuses</p>
-					{character.statuses.map((status) => (
-						<StatusRow key={status.id} status={status} />
-					))}
-				</section>
-			)}
-
-			{character.storyTags.length > 0 && (
-				<section className="col-span-full flex flex-wrap gap-1.5">
-					{character.storyTags.map((tag) => (
-						<StoryTagChip key={tag.id} tag={tag} />
-					))}
-				</section>
-			)}
-		</main>
+				{character.storyTags.length > 0 && (
+					<section className="col-span-full flex flex-wrap gap-1.5">
+						{character.storyTags.map((tag) => (
+							<StoryTagChip key={tag.id} tag={tag} />
+						))}
+					</section>
+				)}
+			</main>
+		</div>
 	);
 }

@@ -7,15 +7,16 @@ import { BackIcon, ChevronRightIcon } from "@/components/icons";
 import { MENU_ITEM, MENU_POPUP } from "@/components/styles";
 import { signOut } from "@/lib/actions";
 
-/** "/" is the top of this section; "/admin" sits under it, and every other
- *  admin route sits one or two levels under that. The parent is a direct
- *  lookup rather than router.back()'s free-form history. */
+/** "/" is the top of this section; "/admin/users" and "/admin/campaigns" sit
+ *  directly under it, and every other admin route sits one or two levels
+ *  under one of those. The parent is a direct lookup rather than
+ *  router.back()'s free-form history. */
 function backTarget(pathname: string): string | null {
 	if (pathname === "/") return null;
-	if (pathname === "/admin") return "/";
-	if (pathname === "/admin/campaigns") return "/admin";
+	if (pathname === "/admin/users") return "/";
+	if (pathname === "/admin/campaigns") return "/";
 	if (pathname.startsWith("/admin/campaigns/")) return "/admin/campaigns";
-	return "/admin";
+	return "/admin/users";
 }
 
 export function RosterAppBar({
@@ -78,7 +79,7 @@ export function RosterAppBar({
 								{isAdmin && (
 									<Menu.Item
 										className={MENU_ITEM}
-										render={<Link href="/admin" />}
+										render={<Link href="/admin/users" />}
 									>
 										Users
 									</Menu.Item>
