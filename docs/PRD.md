@@ -31,8 +31,9 @@ Players need the sheet on a phone during play and on a desktop during prep.
 
 ## 3. Non-goals for v1
 
-- GM tools (NPC sheets, GM-owned story tags, campaign management). See section 10.
-- Crew sheet. It lands with the GM tools.
+- Full GM tooling beyond the campaign screen: crew sheet, NPC sheets built
+  from the full theme model, and campaign content shared into a player's
+  session view. See section 10.
 - Real-time multiplayer editing.
 - Native mobile apps.
 - Publishing themebook text to people outside the table. Whether the content pack
@@ -77,6 +78,7 @@ edit. The MC overrules the book often enough that hard blocks would get in the w
 | Player, in session | Phone | Fast status edits, tag selection, Power total |
 | Player, between sessions | Desktop | Build and revise themes, write tags, plan loadout |
 | Friend or MC, invited | Either | Read a shared sheet, no edits |
+| GM, running the campaign | Either | Track campaign story tags and NPCs, look at any player's sheet at any time |
 
 ## 6. Domain model
 
@@ -196,9 +198,9 @@ It carries its own Upgrade track of 3 points, and it has no Decay track.
   themebooks both use this shorthand.
 - Tier marks, 1 to a limit, each box marked or not, individually. The limit is
   typically 6; a player can raise or lower it, a rare edge case for the
-  unusual status built larger. Every status belongs to the character - there
-  is no owner flag. (GM-owned statuses, shared into a session, are later GM
-  tooling; see section 10.)
+  unusual status built larger. A status belongs to a character, or, inside a
+  campaign, to an NPC (7.14). Sharing a campaign status into a player's
+  session view is later GM tooling; see section 10.
 - Type: positive or negative.
 - Stacking rule: mark the target tier. If that tier is already marked, mark
   one tier higher, and repeat, up to the limit.
@@ -215,6 +217,22 @@ It carries its own Upgrade track of 3 points, and it has no Decay track.
   a positive story tag burns.
 - Crispy flag: one-time use. A crispy tag cannot burn, and is deleted once it
   is used in a roll.
+
+### Campaign
+- Name, notes (free text).
+- Story tags: positive or negative, the same shape as a character's story
+  tag (above). They record campaign lore, never anything on a player's
+  character sheet.
+- NPCs: any number.
+- Assigned characters: any number of the existing player characters. A
+  character can belong to more than one campaign.
+
+### NPC
+- Name, notes (free text).
+- Story tags: positive or negative, the same shape as a character's.
+- Statuses: the same shape as a character's, with tier marks.
+- No themes. An NPC built from the full theme model is later GM tooling; see
+  section 10.
 
 ## 7. Requirements
 
@@ -389,6 +407,22 @@ reads the effect costs here after the roll, when they decide how to spend Power.
 - A player keeps editing when the venue's wifi drops.
 - No edit made offline is lost once the connection returns.
 
+### 7.14 Campaign management — P0
+A GM's own table, separate from any player's sheet. Only the GM sees it.
+
+- Create, rename, and delete a campaign.
+- Create, edit, and delete campaign story tags: positive or negative, burn a
+  positive one, mark one crispy, same rules as a character's story tags (6).
+- Create, edit, and delete NPCs, each with its own story tags and statuses.
+- Mark and clear a status tier on an NPC, same stacking and removal rules as
+  a character's status (6).
+- Assign a character to the campaign, and remove it. A character keeps
+  playing normally; assignment only lets the GM look it up.
+- Open any assigned character's sheet, read-only, at any time.
+
+Out of scope here: a player ever seeing a campaign's story tags or NPCs, an
+NPC built from the theme model, and the crew sheet. See section 10.
+
 ## 8. Milestones
 
 | Milestone | Contents | Done when |
@@ -435,9 +469,12 @@ Confirmed against the rulebook. O1 to O6 are closed.
 Recorded so v1 does not block them. Not in scope now.
 
 - Crew sheet: crew theme, crew log, specific items, downtime options.
-- NPC and threat sheets, built from the same theme and tag model.
-- GM-owned story tags and statuses, shared into a session view.
-- Campaign container that groups characters, NPCs, and story tags.
+- Full NPC and threat sheets, built from the same theme model as a player
+  character. A campaign NPC today (7.14) has story tags and statuses only.
+- Sharing a campaign's story tags or an NPC's statuses into a player's
+  session view.
+- A GM role separate from admin, so someone can run a campaign without full
+  admin access.
 
-NPCs and the crew reuse the same theme and tag model as a player character. V1
-should not make that harder to add later.
+The crew, and a full NPC, reuse the same theme and tag model as a player
+character. V1 should not make that harder to add later.

@@ -134,3 +134,59 @@ gone afterward.
 ### T54 Lose a theme — done
 ### T55 Decay warning and replacement — done
 ### T56 Evolution boxes and respec - done
+
+---
+
+## S11 Campaign
+
+Artboards for T64-T67: https://claude.ai/artifact/4eMZSG3dhASSRs3yA2wiL2
+(design.md 8). Match them.
+
+### T62 Migration: campaigns and campaign_characters
+Add `campaigns`, `campaign_characters`, the `campaigns_bump_version` trigger,
+RLS, and column grants, all admin-only via `current_user_is_admin()`.
+**Done when:** a non-admin select against `campaigns` returns zero rows and a
+non-admin insert fails.
+**Refs:** sysdesign 3
+
+### T63 Campaign types, defaults, and reducer
+Define the `Campaign` and `Npc` types (reusing `StoryTag` and `Status`
+unchanged), a `migrate(doc)` function, an empty-campaign default, and a pure
+reducer for every campaign action. Cover it with `node:test` tests, matching
+`lib/character/__tests__`.
+**Done when:** tests pass for every reducer action, including an NPC's story
+tags and statuses.
+**Refs:** sysdesign 3, sysdesign 14
+
+### T64 Campaign list
+Build `/admin/campaigns`: list campaigns, create one, delete one with
+confirmation. Link to it from `/admin`.
+**Done when:** an admin creates, sees, and deletes a campaign; a signed-in
+non-admin gets a 404.
+**Depends on:** T62, T63
+**Refs:** PRD 7.14, design.md 8.1, sysdesign 9, canvas: Campaign list, Delete campaign
+
+### T65 Campaign story tags with autosave
+Build the story tags section of `/admin/campaigns/[id]`: create, rename, set
+valence, burn, mark crispy, delete. Wire autosave per sysdesign 14.
+**Done when:** editing a campaign's story tags saves automatically and
+survives a reload.
+**Depends on:** T64
+**Refs:** PRD 7.14, design.md 8.2, sysdesign 14, canvas: Campaign screen
+
+### T66 NPCs with story tags and statuses
+Add the NPCs section: create, edit, delete an NPC; within it, the same story
+tag actions as T65 plus mark and clear a status tier.
+**Done when:** a new NPC's story tag and status both persist after a reload.
+**Depends on:** T65
+**Refs:** PRD 7.14, design.md 8.2, sysdesign 3, canvas: Campaign screen
+
+### T67 Assign characters and read-only view
+Add the assigned characters section (a picker of every character, add and
+remove, as server actions on `campaign_characters`) and
+`/admin/campaigns/[id]/characters/[characterId]`, reusing
+`components/share-sheet.tsx`, with a link to the real editor.
+**Done when:** an admin assigns a character, opens its read-only view, and
+removes it from the campaign.
+**Depends on:** T64
+**Refs:** PRD 7.14, design.md 8.2, design.md 8.3, sysdesign 9, canvas: Campaign screen, Assign characters, Character view
