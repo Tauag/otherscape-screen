@@ -1,5 +1,6 @@
 import { Button } from "@base-ui/react/button";
 import type { Metadata } from "next";
+import { CheckInviteError } from "@/app/login/_components/check-invite-error";
 import { signInWithDiscord, signInWithGoogle } from "@/lib/actions";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -7,6 +8,7 @@ export const metadata: Metadata = { title: "Sign in" };
 export default function LoginPage() {
 	return (
 		<main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-16 text-center">
+			<CheckInviteError />
 			<div className="flex flex-col items-center gap-2">
 				<h1 className="font-display text-xl font-bold tracking-[0.16em] uppercase">
 					Otherscape

@@ -42,8 +42,13 @@ export async function signInWithDiscord() {
 
 export async function signOut() {
 	const supabase = await createClient();
+	const { data } = await supabase.auth.getClaims();
+	const invited = data?.claims.email
+		? (await supabase.rpc("current_user_invited")).data === true
+		: undefined;
+
 	await supabase.auth.signOut();
-	redirect("/login");
+	redirect(invited === false ? "/not-invited" : "/login");
 }
 
 /**
