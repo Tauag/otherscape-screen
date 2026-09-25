@@ -2,9 +2,9 @@
 
 import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { FILLED } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import type { TrackName } from "@/lib/character/theme";
 import {
 	DECAY_TRACK_LENGTH,

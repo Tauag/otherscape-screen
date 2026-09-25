@@ -2,11 +2,11 @@
 
 import { Button } from "@base-ui/react/button";
 import { useState } from "react";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { CopyIcon } from "@/app/character/[id]/_components/icons";
-import { QUIET, REMOVE_BUTTON } from "@/app/character/[id]/_components/styles";
+import { REMOVE_BUTTON } from "@/app/character/[id]/_components/styles";
 import { signed } from "@/app/character/[id]/_lib/roll-selection";
-import { LABEL } from "@/components/styles";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { LABEL, QUIET } from "@/components/styles";
 
 /** The Discord slash command that reproduces this roll's power modifier. */
 function rollCommand(total: number): string {

@@ -3,10 +3,9 @@
 import { Input } from "@base-ui/react/input";
 import { useState } from "react";
 import { SearchIcon } from "@/app/character/[id]/_components/icons";
-import { HEADING } from "@/app/character/[id]/_components/styles";
 import { ReferenceRow } from "@/app/character/[id]/reference/_components/reference-row";
 import { filter, sections } from "@/app/character/[id]/reference/_lib/sections";
-import { LABEL } from "@/components/styles";
+import { HEADING, LABEL } from "@/components/styles";
 import { useContentPack } from "@/lib/content/load";
 
 const EMPTY =

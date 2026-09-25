@@ -35,14 +35,21 @@ test("setNotes sets the campaign notes", () => {
 
 // --- Campaign story tags ---------------------------------------------------
 
-test("addStoryTag appends a blank tag of the given valence", () => {
+test("addStoryTag appends a tag with the given name and valence", () => {
 	const campaign = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "acid downpour",
 		valence: "positive",
 	});
 	assert.deepEqual(campaign.storyTags, [
-		{ id: "cst-1", name: "", valence: "positive", burnt: false, crispy: false },
+		{
+			id: "cst-1",
+			name: "acid downpour",
+			valence: "positive",
+			burnt: false,
+			crispy: false,
+		},
 	]);
 });
 
@@ -50,11 +57,13 @@ test("renameStoryTag edits one tag and leaves the rest alone", () => {
 	let campaign = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "",
 		valence: "positive",
 	});
 	campaign = reduce(campaign, {
 		type: "addStoryTag",
 		id: "cst-2",
+		name: "",
 		valence: "negative",
 	});
 	campaign = reduce(campaign, {
@@ -70,6 +79,7 @@ test("setStoryTagValence flips a tag's valence", () => {
 	let campaign = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "",
 		valence: "positive",
 	});
 	campaign = reduce(campaign, {
@@ -84,6 +94,7 @@ test("burnStoryTag burns a positive tag, and the default value stays absent", ()
 	let campaign = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "",
 		valence: "positive",
 	});
 	campaign = reduce(campaign, {
@@ -103,6 +114,7 @@ test("burnStoryTag burns a positive tag, and the default value stays absent", ()
 		reduce(newCampaign(), {
 			type: "addStoryTag",
 			id: "cst-1",
+			name: "",
 			valence: "positive",
 		}),
 		{ type: "burnStoryTag", id: "cst-1", burnValue: 5 },
@@ -114,6 +126,7 @@ test("burnStoryTag does nothing to a negative or a crispy tag", () => {
 	let campaign = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "",
 		valence: "negative",
 	});
 	campaign = reduce(campaign, {
@@ -126,6 +139,7 @@ test("burnStoryTag does nothing to a negative or a crispy tag", () => {
 	let crispy = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-2",
+		name: "",
 		valence: "positive",
 	});
 	crispy = reduce(crispy, { type: "toggleStoryTagCrispy", id: "cst-2" });
@@ -137,10 +151,28 @@ test("burnStoryTag does nothing to a negative or a crispy tag", () => {
 	assert.equal(crispy.storyTags[0].burnt, false);
 });
 
+test("unburnStoryTag clears the burn and its burnValue", () => {
+	let campaign = reduce(newCampaign(), {
+		type: "addStoryTag",
+		id: "cst-1",
+		name: "",
+		valence: "positive",
+	});
+	campaign = reduce(campaign, {
+		type: "burnStoryTag",
+		id: "cst-1",
+		burnValue: 5,
+	});
+	campaign = reduce(campaign, { type: "unburnStoryTag", id: "cst-1" });
+	assert.equal(campaign.storyTags[0].burnt, false);
+	assert.equal(campaign.storyTags[0].burnValue, undefined);
+});
+
 test("toggleStoryTagCrispy toggles, and going crispy un-burns", () => {
 	let campaign = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "",
 		valence: "positive",
 	});
 	campaign = reduce(campaign, {
@@ -165,11 +197,13 @@ test("removeStoryTag drops one tag and keeps the rest", () => {
 	let campaign = reduce(newCampaign(), {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "",
 		valence: "positive",
 	});
 	campaign = reduce(campaign, {
 		type: "addStoryTag",
 		id: "cst-2",
+		name: "",
 		valence: "negative",
 	});
 	campaign = reduce(campaign, { type: "removeStoryTag", id: "cst-1" });
@@ -227,12 +261,14 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 	campaign = reduce(campaign, {
 		type: "addStoryTag",
 		id: "cst-1",
+		name: "",
 		valence: "positive",
 	});
 	campaign = reduce(campaign, {
-		type: "addNpcStoryTag",
+		type: "addStoryTag",
 		npcId: "npc-1",
 		id: "nst-1",
+		name: "",
 		valence: "negative",
 	});
 	assert.equal(campaign.storyTags.length, 1);
@@ -241,7 +277,7 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 	]);
 
 	campaign = reduce(campaign, {
-		type: "renameNpcStoryTag",
+		type: "renameStoryTag",
 		npcId: "npc-1",
 		id: "nst-1",
 		name: "still has friends in corpsec",
@@ -253,7 +289,7 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 	assert.equal(campaign.storyTags[0].name, ""); // the campaign's own tag, untouched
 
 	campaign = reduce(campaign, {
-		type: "setNpcStoryTagValence",
+		type: "setStoryTagValence",
 		npcId: "npc-1",
 		id: "nst-1",
 		valence: "positive",
@@ -261,7 +297,7 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 	assert.equal(campaign.npcs[0].storyTags[0].valence, "positive");
 
 	campaign = reduce(campaign, {
-		type: "burnNpcStoryTag",
+		type: "burnStoryTag",
 		npcId: "npc-1",
 		id: "nst-1",
 		burnValue: DEFAULT_BURN_VALUE,
@@ -269,7 +305,7 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 	assert.equal(campaign.npcs[0].storyTags[0].burnt, true);
 
 	campaign = reduce(campaign, {
-		type: "toggleNpcStoryTagCrispy",
+		type: "toggleStoryTagCrispy",
 		npcId: "npc-1",
 		id: "nst-1",
 	});
@@ -282,7 +318,7 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 	});
 
 	campaign = reduce(campaign, {
-		type: "removeNpcStoryTag",
+		type: "removeStoryTag",
 		npcId: "npc-1",
 		id: "nst-1",
 	});
@@ -293,9 +329,10 @@ test("an NPC story tag verb touches only its own NPC", () => {
 	let campaign = withNpc();
 	campaign = reduce(campaign, { type: "addNpc", id: "npc-2" });
 	campaign = reduce(campaign, {
-		type: "addNpcStoryTag",
+		type: "addStoryTag",
 		npcId: "npc-1",
 		id: "nst-1",
+		name: "",
 		valence: "positive",
 	});
 	assert.equal(campaign.npcs[0].storyTags.length, 1);

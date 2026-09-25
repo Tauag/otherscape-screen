@@ -59,22 +59,6 @@ export function EditIcon() {
 	);
 }
 
-export function MoreIcon() {
-	return (
-		<svg
-			aria-hidden="true"
-			width="4"
-			height="18"
-			viewBox="0 0 4 18"
-			fill="currentColor"
-		>
-			<circle cx="2" cy="2" r="2" />
-			<circle cx="2" cy="9" r="2" />
-			<circle cx="2" cy="16" r="2" />
-		</svg>
-	);
-}
-
 export function PlusIcon() {
 	return (
 		<svg

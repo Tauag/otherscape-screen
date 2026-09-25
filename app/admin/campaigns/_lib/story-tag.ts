@@ -4,15 +4,18 @@
 // two list sites (the campaign, and each NPC), so it's pulled out once here
 // instead of copied twice.
 
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import type { StoryTag, Valence } from "@/lib/character/types";
+import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
+/** Named on creation: the campaign's "New story tag" form carries a name, so
+ *  there is no blank-then-rename step like a character's does. */
 export function addStoryTag(
 	tags: StoryTag[],
 	id: string,
+	name: string,
 	valence: Valence,
 ): StoryTag[] {
-	return [...tags, { id, name: "", valence, burnt: false, crispy: false }];
+	return [...tags, { id, name, valence, burnt: false, crispy: false }];
 }
 
 export function renameStoryTag(
@@ -31,13 +34,6 @@ export function setStoryTagValence(
 	return tags.map((tag) => (tag.id === id ? { ...tag, valence } : tag));
 }
 
-/**
- * lazy: no unburnStoryTag - design.md 8.2 lists burn but not unburn for a
- * campaign or NPC story tag, unlike a character's (reversible there because
- * the player owns the mistake). Ceiling: a GM who fat-fingers a burn value
- * can't undo it, only re-burn to correct it. Upgrade path: add unburnStoryTag,
- * same shape as lib/character/reducer.ts's, if that turns out to matter.
- */
 export function burnStoryTag(
 	tags: StoryTag[],
 	id: string,
@@ -49,6 +45,17 @@ export function burnStoryTag(
 		// Absent reads as the default, same as lib/character/theme.ts's PowerTag,
 		// so a later change to DEFAULT_BURN_VALUE still reaches this tag.
 		if (burnValue === DEFAULT_BURN_VALUE) delete next.burnValue;
+		return next;
+	});
+}
+
+/** Same shape as lib/character/reducer.ts's unburnStoryTag: a GM who
+ *  fat-fingers a burn can undo it, same as a player can their own. */
+export function unburnStoryTag(tags: StoryTag[], id: string): StoryTag[] {
+	return tags.map((tag) => {
+		if (tag.id !== id) return tag;
+		const next = { ...tag, burnt: false };
+		delete next.burnValue;
 		return next;
 	});
 }

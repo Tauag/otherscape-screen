@@ -3,8 +3,8 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { useId, useState } from "react";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { PRIMARY } from "@/app/character/[id]/_components/styles";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 /**
  * Raises or lowers a status's tier limit. Hidden behind the row menu: the

@@ -1,17 +1,13 @@
 // Shared style tokens for the sheet and theme screen's dialogs and buttons.
+// DIALOG_BACKDROP, DIALOG_POPUP, HEADING, and QUIET moved to
+// components/styles.ts once components/confirm-dialog.tsx (a second
+// subtree's user) needed them; import those four from there instead.
 
-export const DIALOG_BACKDROP = "fixed inset-0 bg-bg/80";
-export const DIALOG_POPUP =
-	"fixed inset-0 m-auto h-fit max-h-[85vh] w-[90vw] max-w-[420px] overflow-y-auto rounded-md border border-border bg-surface p-5 text-text";
-export const HEADING =
-	"font-display text-base font-bold tracking-[0.08em] uppercase";
 export const PRIMARY =
 	"inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase";
 /** PRIMARY's destructive sibling, for an irreversible action like losing a theme. */
 export const DANGER =
 	"inline-flex min-h-11 items-center rounded-sm text-danger border border-danger px-4 font-display text-sm font-bold tracking-[0.08em] uppercase";
-export const QUIET =
-	"inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase";
 /** QUIET's compact sibling: a chip-sized outline button for a dense list of rows. */
 export const SMALL_BUTTON =
 	"inline-flex min-h-11 items-center rounded-sm border border-border px-3 font-display text-xs font-semibold tracking-[0.08em] uppercase";
