@@ -6,11 +6,18 @@ import { LABEL } from "@/components/styles";
 import { ThemeBlock } from "@/components/theme-block";
 import type { Character } from "@/lib/character/types";
 
-export function ShareSheet({ character }: { character: Character }) {
+export function ShareSheet({
+	character,
+	subtitle = "Read-only",
+}: {
+	character: Character;
+	/** e.g. "Read-only · Sam's character" for the admin's campaign roster view. */
+	subtitle?: string;
+}) {
 	return (
 		<main className="mx-auto grid w-full max-w-md flex-1 grid-cols-1 items-start gap-4 px-5 pt-6 pb-8 md:max-w-3xl md:grid-cols-2 xl:max-w-5xl xl:grid-cols-3">
 			<header className="col-span-full flex flex-col gap-[3px]">
-				<p className={LABEL}>Read-only</p>
+				<p className={LABEL}>{subtitle}</p>
 				<h1 className="font-display text-[21px] font-bold tracking-[0.05em] text-text uppercase">
 					{character.name.trim() || "Unnamed"}
 				</h1>

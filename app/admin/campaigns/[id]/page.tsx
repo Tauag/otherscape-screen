@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
+import { AssignedCharacters } from "@/app/admin/campaigns/[id]/_components/assigned-characters";
 import { migrate } from "@/app/admin/campaigns/_lib/migrate";
 import { accountName } from "@/lib/account-name";
 import { CampaignProvider } from "./_components/campaign-provider";
@@ -32,7 +33,10 @@ export default async function CampaignPage({
 			version={row.version}
 			updatedAt={row.updated_at}
 		>
-			<CampaignScreen accountName={accountName(user)} />
+			<CampaignScreen
+				accountName={accountName(user)}
+				characters={<AssignedCharacters campaignId={id} />}
+			/>
 		</CampaignProvider>
 	);
 }
