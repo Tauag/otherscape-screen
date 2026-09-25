@@ -142,14 +142,14 @@ gone afterward.
 Artboards for T64-T67: https://claude.ai/artifact/4eMZSG3dhASSRs3yA2wiL2
 (design.md 8). Match them.
 
-### T62 Migration: campaigns and campaign_characters
+### T62 Migration: campaigns and campaign_characters - done
 Add `campaigns`, `campaign_characters`, the `campaigns_bump_version` trigger,
 RLS, and column grants, all admin-only via `current_user_is_admin()`.
 **Done when:** a non-admin select against `campaigns` returns zero rows and a
 non-admin insert fails.
 **Refs:** sysdesign 3
 
-### T63 Campaign types, defaults, and reducer
+### T63 Campaign types, defaults, and reducer - done
 Define the `Campaign` and `Npc` types (reusing `StoryTag` and `Status`
 unchanged), a `migrate(doc)` function, an empty-campaign default, and a pure
 reducer for every campaign action. Cover it with `node:test` tests, matching
