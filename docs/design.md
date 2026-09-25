@@ -10,6 +10,9 @@ The PRD states no interface decisions. This document holds them.
 **The artboards live in the canvas, and nowhere else:**
 https://claude.ai/code/artifact/1e55c96a-02c5-4710-8b68-4d936b153b8e
 
+The Campaign screens (section 8) have their own canvas:
+https://claude.ai/artifact/4eMZSG3dhASSRs3yA2wiL2
+
 Open that link to read, edit, or export a screen. This document holds the
 decisions; the canvas holds the pictures they describe.
 
@@ -259,6 +262,10 @@ change.
   per-core-theme grouping; the built screen (`app/character/[id]/loadout`)
   already matches the corrected rules.
 - Effect costs on the Reference screen. They come from the CHEATSHEET tab.
+- Should a campaign's story tags ever appear on a player's board? PRD section
+  10 records "shared into a session view" as later; this doc takes no
+  position yet.
+- Should an assigned character show a campaign badge on the roster?
 
 ## 7. Editing the canvas
 
@@ -271,3 +278,45 @@ nothing, because the canvas edits them directly and exports PNG and PDF on its
 own.
 
 One consequence: the canvas is the only copy. Nothing in git can rebuild it.
+The Campaign screens (section 8) live in their own canvas, linked at the top.
+They are admin tooling, not player screens, so they stay out of the
+nine-screen set.
+
+## 8. Campaign
+
+The GM's workspace: campaign story tags, NPCs, and the characters currently
+assigned to the campaign. Admin-only, reached from `/admin`. Desktop is the
+only case that matters here; a GM preps a campaign at a desk, not at the
+table mid-session.
+
+**Artboards:** https://claude.ai/artifact/4eMZSG3dhASSRs3yA2wiL2 (Campaign
+screen, Campaign list, Character view, Assign characters, Delete campaign).
+Build T64-T67 against them.
+
+**Naming.** Section 5 already calls the desktop board's story tag and status
+rail "the table". This screen is "the Campaign screen", never "the table", so
+the two are never confused in conversation or in code.
+
+### 8.1 Campaign list
+- One list of campaigns: name and a create control.
+- Deleting a campaign asks for confirmation, then removes it and every NPC
+  and story tag inside it. An assigned character is unaffected; only its
+  link to the campaign is removed.
+
+### 8.2 Campaign screen
+Three sections on one screen:
+
+| Section | Holds | Actions |
+|---|---|---|
+| Story tags | The campaign's own story tags, positive or negative | Create, rename, set valence, burn, mark crispy, delete |
+| NPCs | Any number, each with its own story tags and statuses | Create, edit, delete an NPC; within it, the same story tag actions plus mark and clear a status tier |
+| Assigned characters | Every character added to this campaign | Add from a picker of all characters, remove |
+
+A story tag or status here reads exactly like the player board's: the same
+chip and the same tier boxes (sections 2 to 4), so a GM never has to learn a
+second visual language for the same two objects.
+
+### 8.3 Character view
+Opens from an assigned character. Read-only, like the share page: the GM
+reads the sheet without risking an edit. A link opens the real editor if the
+GM wants to change something.

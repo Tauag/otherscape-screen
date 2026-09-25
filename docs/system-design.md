@@ -100,6 +100,27 @@ create table content_packs (
   data       jsonb not null,
   updated_at timestamptz not null default now()
 );
+
+create table campaigns (
+  id         uuid primary key default gen_random_uuid(),
+  owner      uuid not null references auth.users on delete cascade,
+  data       jsonb not null,
+  version    int  not null default 1,
+  name       text generated always as (data->>'name') stored,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create trigger campaigns_bump_version
+  before update on campaigns
+  for each row execute function bump_version();
+
+create table campaign_characters (
+  campaign_id  uuid not null references campaigns on delete cascade,
+  character_id uuid not null references characters on delete cascade,
+  added_at     timestamptz not null default now(),
+  primary key (campaign_id, character_id)
+);
 ```
 
 `name`, `essence`, and `roster_summary` are generated columns, so the roster
@@ -166,6 +187,57 @@ No member allowlist. Every Google account owns its own characters, unlike
 household-inventory where one household shares one dataset. If strangers ever
 sign up, add a `members` table and one clause to the policy.
 
+### Campaigns
+
+```sql
+alter table campaigns enable row level security;
+
+create policy admin_campaigns on campaigns
+  for all to authenticated
+  using (current_user_is_admin())
+  with check (current_user_is_admin());
+
+revoke all on campaigns from authenticated;
+grant select, delete on campaigns to authenticated;
+grant insert (owner, data) on campaigns to authenticated;
+grant update (data) on campaigns to authenticated;
+
+alter table campaign_characters enable row level security;
+
+create policy admin_campaign_characters on campaign_characters
+  for all to authenticated
+  using (current_user_is_admin())
+  with check (current_user_is_admin());
+```
+
+`current_user_is_admin()` already exists (`admin_role_access` migration) and
+gates every `/admin` route. Reusing it here means a non-admin gets zero rows
+from both tables and a non-admin insert fails on the policy, with no new
+authorization concept to build.
+
+One `data` jsonb document per campaign, for the same reason section 2 gives a
+character one: only the GM edits it, so it reuses the same `version` column,
+the same `bump_version` trigger, and the same optimistic-concurrency check and
+conflict UI (section 8) that characters already have.
+
+Shape: `{ name, notes, storyTags: StoryTag[], npcs: Npc[] }`, where
+`Npc = { id, name, notes, storyTags: StoryTag[], statuses: Status[] }`.
+`StoryTag` and `Status` are `lib/character/types.ts`'s existing types,
+unchanged. An NPC carries no `themes` field yet; PRD section 10 has full NPC
+sheets, built from the theme model, as later work, and the shape leaves room
+for a `themes` field when that lands.
+
+`campaign_characters` links a campaign to existing `characters` rows. A
+character can sit in more than one campaign, so the primary key is the pair,
+not `character_id` alone. `on delete cascade` on both foreign keys means
+deleting a campaign or a character removes the link row; it never touches the
+other side.
+
+`lazy:` whole-document writes on `campaigns.data`, same ceiling as section 2's
+note on `characters.data`: two admins editing one campaign at once hits a
+last-writer conflict. The existing conflict UI handles it, since it is the
+same `version` mechanism.
+
 ## 4. Sharing
 
 `share_token` is a v4 UUID, so the link is a capability with 122 bits of
@@ -229,6 +301,14 @@ does:
   reserves an account, `role` and all, before that person ever signs in.
 
 T57 turns this sketch into real tickets once it's needed.
+
+**Campaigns need none of it.** GM is admin: any `invited_emails.role =
+'admin'` account manages every campaign, the same account that already reads
+every character through `admin_read_characters`. There is no per-campaign GM
+and no player visibility into a campaign. That ceiling stands until a
+non-admin GM is wanted; the upgrade path is a `gm` column on `campaigns` plus
+a membership-based RLS clause, which is what T57 would deliver anyway. Until
+then this section's sketch stays exactly a sketch.
 
 ## 6. Content pack
 
@@ -319,6 +399,12 @@ rarely, and the two documents are both readable.
   /character/[id]/reference    cheatsheet     (Reference)
 /character/[id]/create         guided creation, step N of 10  (Create)
 /s/[token]             read-only share
+
+/admin                             requireAdmin() gates every route below
+  /admin/campaigns                 campaign list: create, delete
+  /admin/campaigns/[id]            campaign screen: story tags, NPCs, assigned characters
+  /admin/campaigns/[id]/characters/[characterId]
+                                    read-only character view, reusing components/share-sheet.tsx
 ```
 
 Tabs are routes, not component state, so the phone back button works and a
@@ -470,3 +556,29 @@ building before that test happens.
 - design.md leaves the three type hues unconfirmed against the Google Sheet.
 - Whether the content pack ever holds the rulebook wording. The app runs either
   way, which is the point of section 6.
+
+## 14. Campaign screen state
+
+A pure reducer in `app/admin/campaigns/_lib`, on the same pattern as the
+character reducer (section 8): actions are the domain verbs (`addStoryTag`,
+`burnStoryTag`, `addNpc`, `markNpcStatus`, …), and the
+document is the state. Character assignment is not a reducer action: it writes
+`campaign_characters` rows through server actions in `lib/actions.ts` style. `node --test`, matching `lib/character/__tests__`,
+covers it before any screen calls it.
+
+Autosave reuses `lib/character/autosave.ts`'s debounce-and-flush scheduler if
+its logic turns out generic enough to lift as-is; if it is not, generalize it
+minimally rather than forking a second copy. Today it is typed directly to
+`Character` and keys `localStorage` as `otherscape:character:${id}`, so
+lifting it means parameterizing the type and the key prefix, not rewriting
+the debounce, park, or conflict logic.
+
+Display reuses `components/story-tag-chip.tsx` and `components/status-row.tsx`
+unchanged; a campaign story tag and an NPC status are the same `StoryTag` and
+`Status` values a character has. Editing them needs campaign-scoped
+equivalents, because the board's editable versions
+(`app/character/[id]/play/_components/*`) are coupled to the character
+reducer. Per `CLAUDE.md`'s file layout rule, campaign-only components and
+`_lib` code live under `app/admin/campaigns/`; a piece moves to `components/`
+or `lib/` only once a second route subtree needs it. Interactive elements use
+Base UI, per `CLAUDE.md`.
