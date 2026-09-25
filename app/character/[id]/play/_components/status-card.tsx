@@ -6,8 +6,8 @@ import { Menu } from "@base-ui/react/menu";
 import { Toggle } from "@base-ui/react/toggle";
 import { useState } from "react";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { RowMenu } from "@/app/character/[id]/play/_components/row-menu";
 import { StatusLimitDialog } from "@/app/character/[id]/play/_components/status-limit-dialog";
+import { RowMenu } from "@/components/row-menu";
 import { MENU_ITEM } from "@/components/styles";
 import type { Status } from "@/lib/character/types";
 

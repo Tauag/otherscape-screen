@@ -22,10 +22,14 @@ export function RosterAppBar({
 	title,
 	accountName,
 	isAdmin,
+	status,
 }: {
 	title: string;
 	accountName: string;
 	isAdmin: boolean;
+	/** A live status line (e.g. a campaign's save state), next to the account
+	 *  menu. Absent everywhere else, so this bar looks unchanged for them. */
+	status?: React.ReactNode;
 }) {
 	const back = backTarget(usePathname());
 
@@ -46,44 +50,48 @@ export function RosterAppBar({
 				</h1>
 			</div>
 
-			<Menu.Root>
-				<Menu.Trigger
-					aria-label="Account menu"
-					className="flex min-h-11 items-center gap-2 rounded-[20px] border border-border py-1 pr-3 pl-1.5"
-				>
-					<span
-						aria-hidden="true"
-						className="grid size-[22px] place-items-center rounded-full bg-border font-display text-[11px] font-bold text-text"
-					>
-						{accountName.trim().charAt(0).toUpperCase()}
-					</span>
-					<span className="font-sans text-xs text-dim">{accountName}</span>
-				</Menu.Trigger>
+			<div className="flex items-center gap-4">
+				{status}
 
-				<Menu.Portal>
-					<Menu.Positioner
-						side="bottom"
-						align="end"
-						sideOffset={8}
-						className="outline-none"
+				<Menu.Root>
+					<Menu.Trigger
+						aria-label="Account menu"
+						className="flex min-h-11 items-center gap-2 rounded-[20px] border border-border py-1 pr-3 pl-1.5"
 					>
-						<Menu.Popup className={MENU_POPUP}>
-							{isAdmin && (
-								<Menu.Item
-									className={MENU_ITEM}
-									render={<Link href="/admin" />}
-								>
-									Users
+						<span
+							aria-hidden="true"
+							className="grid size-[22px] place-items-center rounded-full bg-border font-display text-[11px] font-bold text-text"
+						>
+							{accountName.trim().charAt(0).toUpperCase()}
+						</span>
+						<span className="font-sans text-xs text-dim">{accountName}</span>
+					</Menu.Trigger>
+
+					<Menu.Portal>
+						<Menu.Positioner
+							side="bottom"
+							align="end"
+							sideOffset={8}
+							className="outline-none"
+						>
+							<Menu.Popup className={MENU_POPUP}>
+								{isAdmin && (
+									<Menu.Item
+										className={MENU_ITEM}
+										render={<Link href="/admin" />}
+									>
+										Users
+									</Menu.Item>
+								)}
+								<Menu.Item className={MENU_ITEM} onClick={() => void signOut()}>
+									Log out
+									<ChevronRightIcon className="size-3.5 text-faint ml-2" />
 								</Menu.Item>
-							)}
-							<Menu.Item className={MENU_ITEM} onClick={() => void signOut()}>
-								Log out
-								<ChevronRightIcon className="size-3.5 text-faint ml-2" />
-							</Menu.Item>
-						</Menu.Popup>
-					</Menu.Positioner>
-				</Menu.Portal>
-			</Menu.Root>
+							</Menu.Popup>
+						</Menu.Positioner>
+					</Menu.Portal>
+				</Menu.Root>
+			</div>
 		</header>
 	);
 }

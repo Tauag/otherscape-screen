@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
 import { migrate } from "@/app/admin/campaigns/_lib/migrate";
-import { RosterAppBar } from "@/components/roster-app-bar";
 import { accountName } from "@/lib/account-name";
+import { CampaignProvider } from "./_components/campaign-provider";
+import { CampaignScreen } from "./_components/campaign-screen";
 
 export default async function CampaignPage({
 	params,
@@ -12,22 +13,26 @@ export default async function CampaignPage({
 
 	const { data: row, error } = await supabase
 		.from("campaigns")
-		.select("data")
+		.select("data, version, updated_at")
 		.eq("id", id)
 		.maybeSingle()
-		.overrideTypes<{ data: unknown }, { merge: false }>();
+		.overrideTypes<
+			{ data: unknown; version: number; updated_at: string },
+			{ merge: false }
+		>();
 
 	if (error || !row) notFound();
 
 	const campaign = migrate(row.data);
 
 	return (
-		<main className="mx-auto flex w-full max-w-2xl flex-1 flex-col">
-			<RosterAppBar
-				title={campaign.name.trim() || "Unnamed"}
-				accountName={accountName(user)}
-				isAdmin
-			/>
-		</main>
+		<CampaignProvider
+			id={id}
+			document={campaign}
+			version={row.version}
+			updatedAt={row.updated_at}
+		>
+			<CampaignScreen accountName={accountName(user)} />
+		</CampaignProvider>
 	);
 }

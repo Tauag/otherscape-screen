@@ -1,75 +1,94 @@
 // The parts of autosave that do not need React: the debounce-and-flush
-// scheduler, the per-character localStorage entry, and the rule that decides
+// scheduler, the per-document localStorage entry, and the rule that decides
 // whether the browser's copy or the server's copy wins on mount.
+//
+// Generic over the document type and its localStorage key prefix, so
+// app/admin/campaigns/_lib/autosave.ts reuses this same engine for Campaign
+// instead of forking a copy - the debounce, park, and conflict logic never
+// look at the document's shape.
 
 import { migrate } from "./migrate.ts";
 import type { Character } from "./types.ts";
 
 /**
- * One character's copy in this browser. `version` is the server version the
+ * One document's copy in this browser. `version` is the server version the
  * document is based on, so a save made after an offline reload still carries
  * the right optimistic-concurrency filter.
+ *
+ * Defaults to `Character` so existing call sites, and this file's own test,
+ * keep working unparameterized.
  */
-export type LocalEntry = {
+export type LocalEntry<T = Character> = {
 	version: number;
 	/** True while the document holds edits the server has not confirmed. */
 	dirty: boolean;
 	/** ISO 8601, so the conflict prompt can say when each copy was touched. */
 	savedAt: string;
-	document: Character;
+	document: T;
 };
 
-/** Per character, because two open characters must not overwrite each other. */
-export const localKey = (id: string) => `otherscape:character:${id}`;
-
-/** Every key a conflict parks a copy under starts with this. */
-export const parkedKeyPrefix = (id: string) => `${localKey(id)}:kept`;
-
-export function readLocal(id: string): LocalEntry | null {
-	const raw = readRaw(localKey(id));
-	if (raw === null) return null;
-
-	try {
-		const entry: unknown = JSON.parse(raw);
-		if (typeof entry !== "object" || entry === null) return null;
-		const { version, dirty, savedAt, document } = entry as Record<
-			string,
-			unknown
-		>;
-		if (typeof version !== "number" || typeof dirty !== "boolean") return null;
-		// migrate throws on a shape it cannot read, which is the point: a stale or
-		// hand-edited entry is discarded rather than handed to the reducer.
-		return {
-			version,
-			dirty,
-			savedAt:
-				typeof savedAt === "string" ? savedAt : new Date(0).toISOString(),
-			document: migrate(document),
-		};
-	} catch {
-		return null;
-	}
-}
-
-export const writeLocal = (id: string, entry: LocalEntry) =>
-	writeRaw(localKey(id), entry);
-
 /**
- * Keep the copy a conflict did not choose, so resolving never destroys an edit.
- * Each park gets its own key: a second conflict must not overwrite what the
- * player was told was safe. Returns the key written, or null if the write
- * failed, so the screen names the copy that is really there.
- *
- * lazy: nothing prunes parked copies. Ceiling: a player who conflicts over and
- * over fills the origin's storage quota, after which writeRaw fails silently.
- * Upgrade path: keep the newest few and drop the rest on write.
+ * The localStorage read/write/park trio, bound to one document type, key
+ * prefix, and `migrate` function. `migrate` is the trust boundary: a stale or
+ * hand-edited entry that does not parse as `T` is discarded rather than
+ * handed to the reducer.
  */
-export function parkLocal(id: string, entry: LocalEntry): string | null {
-	const key = `${parkedKeyPrefix(id)}:${Date.now()}`;
-	return writeRaw(key, entry) ? key : null;
+export function createAutosave<T>(
+	prefix: string,
+	migrateDoc: (doc: unknown) => T,
+) {
+	const localKey = (id: string) => `${prefix}:${id}`;
+
+	/** Every key a conflict parks a copy under starts with this. */
+	const parkedKeyPrefix = (id: string) => `${localKey(id)}:kept`;
+
+	function readLocal(id: string): LocalEntry<T> | null {
+		const raw = readRaw(localKey(id));
+		if (raw === null) return null;
+
+		try {
+			const entry: unknown = JSON.parse(raw);
+			if (typeof entry !== "object" || entry === null) return null;
+			const { version, dirty, savedAt, document } = entry as Record<
+				string,
+				unknown
+			>;
+			if (typeof version !== "number" || typeof dirty !== "boolean")
+				return null;
+			return {
+				version,
+				dirty,
+				savedAt:
+					typeof savedAt === "string" ? savedAt : new Date(0).toISOString(),
+				document: migrateDoc(document),
+			};
+		} catch {
+			return null;
+		}
+	}
+
+	const writeLocal = (id: string, entry: LocalEntry<T>) =>
+		writeRaw(localKey(id), entry);
+
+	/**
+	 * Keep the copy a conflict did not choose, so resolving never destroys an
+	 * edit. Each park gets its own key: a second conflict must not overwrite
+	 * what the player was told was safe. Returns the key written, or null if
+	 * the write failed, so the screen names the copy that is really there.
+	 *
+	 * lazy: nothing prunes parked copies. Ceiling: a player who conflicts over
+	 * and over fills the origin's storage quota, after which writeRaw fails
+	 * silently. Upgrade path: keep the newest few and drop the rest on write.
+	 */
+	function parkLocal(id: string, entry: LocalEntry<T>): string | null {
+		const key = `${parkedKeyPrefix(id)}:${Date.now()}`;
+		return writeRaw(key, entry) ? key : null;
+	}
+
+	return { localKey, parkedKeyPrefix, readLocal, writeLocal, parkLocal };
 }
 
-function writeRaw(key: string, entry: LocalEntry): boolean {
+function writeRaw(key: string, entry: unknown): boolean {
 	try {
 		localStorage.setItem(key, JSON.stringify(entry));
 		return true;
@@ -88,6 +107,13 @@ function readRaw(key: string): string | null {
 	}
 }
 
+const character = createAutosave<Character>("otherscape:character", migrate);
+export const localKey = character.localKey;
+export const parkedKeyPrefix = character.parkedKeyPrefix;
+export const readLocal = character.readLocal;
+export const writeLocal = character.writeLocal;
+export const parkLocal = character.parkLocal;
+
 /**
  * Which copy the provider starts from.
  *
@@ -99,8 +125,8 @@ function readRaw(key: string): string | null {
  * - Dirty but based on an older version: another device saved in between. Both
  *   copies hold real edits, so neither is discarded and the player chooses.
  */
-export function resolve(
-	local: LocalEntry | null,
+export function resolve<T = Character>(
+	local: LocalEntry<T> | null,
 	remoteVersion: number,
 ): "local" | "remote" | "conflict" {
 	if (!local) return "remote";

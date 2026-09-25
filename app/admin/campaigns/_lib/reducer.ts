@@ -1,4 +1,4 @@
-import type { Status, Valence } from "@/lib/character/types";
+import type { Status, StoryTag, Valence } from "@/lib/character/types";
 import { DEFAULT_STATUS_LIMIT } from "@/lib/rules/constants";
 import {
 	clearStatusTier,
@@ -13,6 +13,7 @@ import {
 	renameStoryTag,
 	setStoryTagValence,
 	toggleStoryTagCrispy,
+	unburnStoryTag,
 } from "./story-tag.ts";
 import type { Campaign, Npc } from "./types.ts";
 
@@ -20,27 +21,25 @@ export type CampaignAction =
 	| { type: "replace"; document: Campaign }
 	| { type: "rename"; name: string }
 	| { type: "setNotes"; notes: string }
-	| { type: "addStoryTag"; id: string; valence: Valence }
-	| { type: "renameStoryTag"; id: string; name: string }
-	| { type: "setStoryTagValence"; id: string; valence: Valence }
-	| { type: "burnStoryTag"; id: string; burnValue: number }
-	| { type: "toggleStoryTagCrispy"; id: string }
-	| { type: "removeStoryTag"; id: string }
+	// A story tag verb below omits `npcId` for the campaign's own list, or
+	// carries it for one NPC's - one UI (story-tag-list.tsx) serves both.
+	| {
+			type: "addStoryTag";
+			npcId?: string;
+			id: string;
+			name: string;
+			valence: Valence;
+	  }
+	| { type: "renameStoryTag"; npcId?: string; id: string; name: string }
+	| { type: "setStoryTagValence"; npcId?: string; id: string; valence: Valence }
+	| { type: "burnStoryTag"; npcId?: string; id: string; burnValue: number }
+	| { type: "unburnStoryTag"; npcId?: string; id: string }
+	| { type: "toggleStoryTagCrispy"; npcId?: string; id: string }
+	| { type: "removeStoryTag"; npcId?: string; id: string }
 	| { type: "addNpc"; id: string }
 	| { type: "renameNpc"; npcId: string; name: string }
 	| { type: "setNpcNotes"; npcId: string; notes: string }
 	| { type: "removeNpc"; npcId: string }
-	| { type: "addNpcStoryTag"; npcId: string; id: string; valence: Valence }
-	| { type: "renameNpcStoryTag"; npcId: string; id: string; name: string }
-	| {
-			type: "setNpcStoryTagValence";
-			npcId: string;
-			id: string;
-			valence: Valence;
-	  }
-	| { type: "burnNpcStoryTag"; npcId: string; id: string; burnValue: number }
-	| { type: "toggleNpcStoryTagCrispy"; npcId: string; id: string }
-	| { type: "removeNpcStoryTag"; npcId: string; id: string }
 	| { type: "addNpcStatus"; npcId: string; id: string; valence: Valence }
 	| { type: "renameNpcStatus"; npcId: string; id: string; name: string }
 	| {
@@ -78,6 +77,21 @@ function inNpcStatus(
 	};
 }
 
+/** Every story-tag verb below edits one list: the campaign's own (no
+ *  `npcId`) or one NPC's. */
+function inStoryTags(
+	campaign: Campaign,
+	npcId: string | undefined,
+	edit: (tags: StoryTag[]) => StoryTag[],
+): Campaign {
+	if (npcId === undefined)
+		return { ...campaign, storyTags: edit(campaign.storyTags) };
+	return inNpc(campaign, npcId, (npc) => ({
+		...npc,
+		storyTags: edit(npc.storyTags),
+	}));
+}
+
 export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 	switch (action.type) {
 		case "replace":
@@ -87,43 +101,33 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 		case "setNotes":
 			return { ...campaign, notes: action.notes };
 		case "addStoryTag":
-			return {
-				...campaign,
-				storyTags: addStoryTag(campaign.storyTags, action.id, action.valence),
-			};
+			return inStoryTags(campaign, action.npcId, (tags) =>
+				addStoryTag(tags, action.id, action.name, action.valence),
+			);
 		case "renameStoryTag":
-			return {
-				...campaign,
-				storyTags: renameStoryTag(campaign.storyTags, action.id, action.name),
-			};
+			return inStoryTags(campaign, action.npcId, (tags) =>
+				renameStoryTag(tags, action.id, action.name),
+			);
 		case "setStoryTagValence":
-			return {
-				...campaign,
-				storyTags: setStoryTagValence(
-					campaign.storyTags,
-					action.id,
-					action.valence,
-				),
-			};
+			return inStoryTags(campaign, action.npcId, (tags) =>
+				setStoryTagValence(tags, action.id, action.valence),
+			);
 		case "burnStoryTag":
-			return {
-				...campaign,
-				storyTags: burnStoryTag(
-					campaign.storyTags,
-					action.id,
-					action.burnValue,
-				),
-			};
+			return inStoryTags(campaign, action.npcId, (tags) =>
+				burnStoryTag(tags, action.id, action.burnValue),
+			);
+		case "unburnStoryTag":
+			return inStoryTags(campaign, action.npcId, (tags) =>
+				unburnStoryTag(tags, action.id),
+			);
 		case "toggleStoryTagCrispy":
-			return {
-				...campaign,
-				storyTags: toggleStoryTagCrispy(campaign.storyTags, action.id),
-			};
+			return inStoryTags(campaign, action.npcId, (tags) =>
+				toggleStoryTagCrispy(tags, action.id),
+			);
 		case "removeStoryTag":
-			return {
-				...campaign,
-				storyTags: removeStoryTag(campaign.storyTags, action.id),
-			};
+			return inStoryTags(campaign, action.npcId, (tags) =>
+				removeStoryTag(tags, action.id),
+			);
 		case "addNpc":
 			return { ...campaign, npcs: [...campaign.npcs, newNpc(action.id)] };
 		case "renameNpc":
@@ -141,36 +145,6 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 				...campaign,
 				npcs: campaign.npcs.filter((npc) => npc.id !== action.npcId),
 			};
-		case "addNpcStoryTag":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				storyTags: addStoryTag(npc.storyTags, action.id, action.valence),
-			}));
-		case "renameNpcStoryTag":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				storyTags: renameStoryTag(npc.storyTags, action.id, action.name),
-			}));
-		case "setNpcStoryTagValence":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				storyTags: setStoryTagValence(npc.storyTags, action.id, action.valence),
-			}));
-		case "burnNpcStoryTag":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				storyTags: burnStoryTag(npc.storyTags, action.id, action.burnValue),
-			}));
-		case "toggleNpcStoryTagCrispy":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				storyTags: toggleStoryTagCrispy(npc.storyTags, action.id),
-			}));
-		case "removeNpcStoryTag":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				storyTags: removeStoryTag(npc.storyTags, action.id),
-			}));
 		case "addNpcStatus": {
 			const status: Status = {
 				id: action.id,

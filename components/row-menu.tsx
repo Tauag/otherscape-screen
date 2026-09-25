@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu } from "@base-ui/react/menu";
-import { MoreIcon } from "@/app/character/[id]/_components/icons";
+import { MoreIcon } from "@/components/icons";
 import { MENU_POPUP } from "@/components/styles";
 
 /**

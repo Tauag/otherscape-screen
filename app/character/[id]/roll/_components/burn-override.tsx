@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { PRIMARY, QUIET } from "@/app/character/[id]/_components/styles";
+import { PRIMARY } from "@/app/character/[id]/_components/styles";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { QUIET } from "@/components/styles";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 /** The Power a burn is worth: the default, or the 4 and 5 a theme special buys. */

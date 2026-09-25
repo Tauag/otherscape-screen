@@ -5,8 +5,6 @@ import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import Link from "next/link";
 import { useState } from "react";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
-import { MoreIcon } from "@/app/character/[id]/_components/icons";
 import {
 	DANGER,
 	PRIMARY,
@@ -14,6 +12,8 @@ import {
 } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { Chip } from "@/components/chip";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { MoreIcon } from "@/components/icons";
 import { LABEL, MENU_ITEM, MENU_POPUP } from "@/components/styles";
 import { generateShareLink, revokeShareLink } from "@/lib/actions";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";

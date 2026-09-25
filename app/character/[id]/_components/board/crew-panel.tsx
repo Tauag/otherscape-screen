@@ -13,11 +13,11 @@ import {
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
 import type { CrewTheme } from "@/lib/character/types";
 import {

@@ -166,7 +166,7 @@ non-admin gets a 404.
 **Depends on:** T62, T63
 **Refs:** PRD 7.14, design.md 8.1, sysdesign 9, canvas: Campaign list, Delete campaign
 
-### T65 Campaign story tags with autosave
+### T65 Campaign story tags with autosave - done
 Build the story tags section of `/admin/campaigns/[id]`: create, rename, set
 valence, burn, mark crispy, delete. Wire autosave per sysdesign 14.
 **Done when:** editing a campaign's story tags saves automatically and

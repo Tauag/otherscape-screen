@@ -11,11 +11,11 @@ import {
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
-import { ConfirmDialog } from "@/app/character/[id]/_components/confirm-dialog";
 import { PRIMARY } from "@/app/character/[id]/_components/styles";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import type { Loadout } from "@/lib/character/types";
 import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
