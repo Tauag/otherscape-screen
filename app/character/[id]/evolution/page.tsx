@@ -9,6 +9,7 @@ import {
 	CountedMomentRow,
 	MomentRow,
 } from "@/app/character/[id]/evolution/_components/moment-row";
+import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 import type { Evolutions } from "@/lib/character/types";
 import { EVOLUTION_MOMENT_NAMES } from "@/lib/content/fallback";
@@ -16,7 +17,6 @@ import { useContentPack } from "@/lib/content/load";
 import { evolutionMomentsOf } from "@/lib/pickers";
 import { EVOLUTION_POINTS_TRACK_LENGTH } from "@/lib/rules/constants";
 import { PlusIcon } from "../_components/icons";
-import { LabelAction } from "../_components/label-action";
 
 const BOOLEAN_MOMENTS: {
 	key: Exclude<keyof Evolutions, "veteranSpecials">;

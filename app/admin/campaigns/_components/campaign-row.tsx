@@ -2,9 +2,13 @@
 
 import { AlertDialog } from "@base-ui/react/alert-dialog";
 import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { deleteCampaign } from "@/app/admin/campaigns/_lib/actions";
+import {
+	deleteCampaign,
+	renameCampaign,
+} from "@/app/admin/campaigns/_lib/actions";
 import { LABEL } from "@/components/styles";
 
 type Props = {
@@ -33,42 +37,85 @@ export function CampaignRow({
 	edited,
 }: Props) {
 	const label = name.trim() || "Unnamed";
+	const [renaming, setRenaming] = useState(false);
+	const [renameError, rename, renamePending] = useActionState(
+		renameCampaign,
+		null,
+	);
 	const [error, remove, pending] = useActionState(deleteCampaign, null);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 
 	return (
 		<article className="flex flex-col gap-2 rounded-md border border-border bg-surface px-3 py-2.5">
-			<Link
-				href={`/admin/campaigns/${id}`}
-				className="flex min-w-0 flex-col gap-0.5"
-			>
-				<span className="truncate font-display text-base font-bold tracking-[0.05em] text-text uppercase">
-					{label}
-				</span>
-				<span className={LABEL}>
-					{plural(npcCount, "NPC")} · {plural(storyTagCount, "story tag")} ·{" "}
-					{plural(characterCount, "character")}
-				</span>
-			</Link>
+			{renaming ? (
+				<form
+					className="flex items-center gap-2"
+					onKeyDown={(event) => event.key === "Escape" && setRenaming(false)}
+					action={(form) => {
+						setRenaming(false);
+						rename(form);
+					}}
+				>
+					<input type="hidden" name="id" value={id} />
+					<Input
+						autoFocus
+						autoComplete="off"
+						name="name"
+						defaultValue={name}
+						aria-label="Campaign name"
+						className="min-h-11 w-full rounded-sm border border-border bg-bg px-2 font-display text-base font-bold tracking-[0.05em]"
+					/>
+					<Button
+						type="submit"
+						className="inline-flex min-h-11 items-center px-2 font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
+					>
+						Save
+					</Button>
+				</form>
+			) : (
+				<Link
+					href={`/admin/campaigns/${id}`}
+					className="flex min-w-0 flex-col gap-0.5"
+				>
+					<span className="truncate font-display text-base font-bold tracking-[0.05em] text-text uppercase">
+						{label}
+					</span>
+					<span className={LABEL}>
+						{plural(npcCount, "NPC")} · {plural(storyTagCount, "story tag")} ·{" "}
+						{plural(characterCount, "character")}
+					</span>
+				</Link>
+			)}
 
 			<div className="flex items-center justify-between gap-2 border-t border-hairline pt-2">
 				<p className="font-sans text-[11.5px] text-faint">
 					Edited <time dateTime={updatedAt}>{edited}</time>
 				</p>
 
-				<Button
-					type="button"
-					onClick={() => setDeleteOpen(true)}
-					aria-label={`Delete ${label}`}
-					className="inline-flex min-h-11 items-center px-2 font-mono text-[10px] tracking-[0.08em] text-danger-text uppercase"
-				>
-					Delete
-				</Button>
+				<div className="flex items-center">
+					<Button
+						type="button"
+						onClick={() => setRenaming(true)}
+						aria-label={`Rename ${label}`}
+						className="inline-flex min-h-11 items-center px-2 font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
+					>
+						Rename
+					</Button>
+
+					<Button
+						type="button"
+						onClick={() => setDeleteOpen(true)}
+						aria-label={`Delete ${label}`}
+						className="inline-flex min-h-11 items-center px-2 font-mono text-[10px] tracking-[0.08em] text-danger-text uppercase"
+					>
+						Delete
+					</Button>
+				</div>
 			</div>
 
-			{error && (
+			{(renameError ?? error) && (
 				<p role="status" className="font-sans text-[11px] text-negative-text">
-					{error}
+					{renamePending ? "Working" : (renameError ?? error)}
 				</p>
 			)}
 

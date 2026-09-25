@@ -9,12 +9,12 @@ import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
 import { PlusIcon } from "../_components/icons";
-import { LabelAction } from "../_components/label-action";
 
 const STEP =
 	"grid size-11 place-items-center rounded-sm border border-border text-dim disabled:opacity-40";

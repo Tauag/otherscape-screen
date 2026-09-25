@@ -51,18 +51,6 @@ export function CampaignScreen({
 			<div className="flex flex-1 flex-col gap-6 px-5 pb-8 lg:min-h-0 lg:flex-row">
 				<div className="flex min-w-0 flex-col gap-5 lg:min-h-0 lg:flex-1">
 					<label className="flex flex-col gap-1">
-						<span className={LABEL}>Campaign name</span>
-						<input
-							value={campaign.name}
-							onChange={(event) =>
-								dispatch({ type: "rename", name: event.target.value })
-							}
-							placeholder="Unnamed"
-							className="min-h-11 rounded-sm border border-border bg-bg px-3 font-display text-base text-text placeholder:text-dim"
-						/>
-					</label>
-
-					<label className="flex flex-col gap-1">
 						<span className={LABEL}>Campaign notes</span>
 						<textarea
 							value={campaign.notes}

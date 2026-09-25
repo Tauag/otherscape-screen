@@ -5,7 +5,7 @@ import { PlusIcon } from "@/app/character/[id]/_components/icons";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { StatusCard } from "@/app/character/[id]/play/_components/status-card";
 import { StoryTagChip } from "@/app/character/[id]/play/_components/story-tag-chip";
-import { LabelAction } from "../_components/label-action";
+import { LabelAction } from "@/components/label-action";
 
 export default function PlayPage() {
 	const { character, dispatch } = useCharacter();

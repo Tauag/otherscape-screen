@@ -15,6 +15,7 @@ import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
@@ -23,7 +24,6 @@ import { useContentPack } from "@/lib/content/load";
 import { findThemebook, themebooksOfType } from "@/lib/content/pack";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { PlusIcon } from "../../_components/icons";
-import { LabelAction } from "../../_components/label-action";
 
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
 

@@ -1,8 +1,7 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
 import { useState } from "react";
-import { LABEL } from "@/components/styles";
+import { LabelAction } from "@/components/label-action";
 import { useCampaign } from "../_hooks/use-campaign";
 import { NpcCard } from "./npc-card";
 
@@ -20,19 +19,9 @@ export function NpcSection() {
 
 	return (
 		<div className="flex min-h-0 flex-col gap-3 lg:flex-1">
-			<div className="flex items-center justify-between gap-2">
-				<span className={LABEL}>NPCs · {campaign.npcs.length}</span>
-				<Button
-					type="button"
-					onClick={addNpc}
-					className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-				>
-					<span aria-hidden="true" className="text-base leading-none">
-						+
-					</span>
-					New NPC
-				</Button>
-			</div>
+			<LabelAction label={`NPCs · ${campaign.npcs.length}`} onClick={addNpc}>
+				+ New NPC
+			</LabelAction>
 
 			{campaign.npcs.length === 0 ? (
 				<p className="font-sans text-sm text-dim">No NPCs yet.</p>

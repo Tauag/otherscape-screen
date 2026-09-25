@@ -8,6 +8,12 @@ import { newCampaign } from "@/app/admin/campaigns/_lib/new";
 /** Same useActionState shape as lib/actions.ts's roster actions. */
 type Message = string | null;
 
+const CONFLICT = "This campaign changed elsewhere. Reload the page.";
+
+function isDocument(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 export async function createCampaign(
 	_previous: Message,
 	form: FormData,
@@ -26,6 +32,38 @@ export async function createCampaign(
 
 	revalidatePath("/admin/campaigns");
 	redirect(`/admin/campaigns/${created.id}`);
+}
+
+export async function renameCampaign(
+	_previous: Message,
+	form: FormData,
+): Promise<Message> {
+	const id = String(form.get("id") ?? "");
+	const name = String(form.get("name") ?? "").trim();
+	const { supabase } = await requireAdmin();
+	const { data: row, error } = await supabase
+		.from("campaigns")
+		.select("data, version")
+		.eq("id", id)
+		.single()
+		.overrideTypes<{ data: unknown; version: number }, { merge: false }>();
+
+	const document = row?.data;
+	if (error || !row || !isDocument(document))
+		return "Could not find that campaign.";
+
+	const { data: written, error: writeError } = await supabase
+		.from("campaigns")
+		.update({ data: { ...document, name } })
+		.eq("id", id)
+		.eq("version", row.version)
+		.select("id");
+
+	if (writeError) return "Could not rename the campaign.";
+	if (!written?.length) return CONFLICT;
+
+	revalidatePath("/admin/campaigns");
+	return null;
 }
 
 export async function deleteCampaign(

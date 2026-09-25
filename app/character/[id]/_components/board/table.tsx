@@ -4,13 +4,13 @@ import { Button } from "@base-ui/react/button";
 import { useState } from "react";
 import { BoardStoryTagRow } from "@/app/character/[id]/_components/board/story-tag-row";
 import { PlusIcon } from "@/app/character/[id]/_components/icons";
-import { LabelAction } from "@/app/character/[id]/_components/label-action";
 import { SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollBoard } from "@/app/character/[id]/_hooks/use-roll-board";
 import { StatusCard } from "@/app/character/[id]/play/_components/status-card";
 import { RollControls } from "@/app/character/[id]/roll/_components/roll-controls";
 import { RollTotal } from "@/app/character/[id]/roll/_components/roll-total";
+import { LabelAction } from "@/components/label-action";
 
 /** The board's right rail: what the scene put on the table, and the roll
  *  builder that spends it. */

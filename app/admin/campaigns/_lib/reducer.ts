@@ -19,7 +19,6 @@ import type { Campaign, Npc } from "./types.ts";
 
 export type CampaignAction =
 	| { type: "replace"; document: Campaign }
-	| { type: "rename"; name: string }
 	| { type: "setNotes"; notes: string }
 	// A story tag verb below omits `npcId` for the campaign's own list, or
 	// carries it for one NPC's - one UI (story-tag-list.tsx) serves both.
@@ -96,8 +95,6 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 	switch (action.type) {
 		case "replace":
 			return action.document;
-		case "rename":
-			return { ...campaign, name: action.name };
 		case "setNotes":
 			return { ...campaign, notes: action.notes };
 		case "addStoryTag":

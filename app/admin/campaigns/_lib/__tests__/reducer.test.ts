@@ -17,14 +17,6 @@ test("replace swaps in a whole document", () => {
 	);
 });
 
-test("rename sets the campaign name", () => {
-	const campaign = reduce(newCampaign(), {
-		type: "rename",
-		name: "The Lantern Street Job",
-	});
-	assert.equal(campaign.name, "The Lantern Street Job");
-});
-
 test("setNotes sets the campaign notes", () => {
 	const campaign = reduce(newCampaign(), {
 		type: "setNotes",

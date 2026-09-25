@@ -11,6 +11,7 @@ import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import { TrackPips } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
@@ -21,7 +22,6 @@ import {
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
 import { PlusIcon } from "../_components/icons";
-import { LabelAction } from "../_components/label-action";
 
 const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
