@@ -7,12 +7,14 @@ import { BackIcon, ChevronRightIcon } from "@/components/icons";
 import { MENU_ITEM, MENU_POPUP } from "@/components/styles";
 import { signOut } from "@/lib/actions";
 
-/** "/" is the top of this section; "/admin" sits under it, and an admin's
- *  user page sits under that. Both admin routes are one level deep, so the
- *  parent is a direct lookup rather than router.back()'s free-form history. */
+/** "/" is the top of this section; "/admin" sits under it, and every other
+ *  admin route sits one or two levels under that. The parent is a direct
+ *  lookup rather than router.back()'s free-form history. */
 function backTarget(pathname: string): string | null {
 	if (pathname === "/") return null;
 	if (pathname === "/admin") return "/";
+	if (pathname === "/admin/campaigns") return "/admin";
+	if (pathname.startsWith("/admin/campaigns/")) return "/admin/campaigns";
 	return "/admin";
 }
 

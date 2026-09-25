@@ -32,6 +32,13 @@ export default async function AdminPage() {
 			/>
 
 			<div className="flex flex-1 flex-col gap-1 px-5 pb-4">
+				<Link
+					href="/admin/campaigns"
+					className="flex items-center justify-between gap-3 rounded-md border border-border bg-surface px-3 py-2.5"
+				>
+					<span className="font-sans text-sm text-text">Campaigns</span>
+				</Link>
+
 				{error && (
 					<p className="font-sans text-sm text-negative-text">
 						Could not load invited users. Reload the page.
