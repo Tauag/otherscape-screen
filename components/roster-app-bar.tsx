@@ -83,6 +83,14 @@ export function RosterAppBar({
 										Users
 									</Menu.Item>
 								)}
+								{isAdmin && (
+									<Menu.Item
+										className={MENU_ITEM}
+										render={<Link href="/admin/campaigns" />}
+									>
+										Campaigns
+									</Menu.Item>
+								)}
 								<Menu.Item className={MENU_ITEM} onClick={() => void signOut()}>
 									Log out
 									<ChevronRightIcon className="size-3.5 text-faint ml-2" />

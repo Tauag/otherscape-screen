@@ -181,7 +181,7 @@ tag actions as T65 plus mark and clear a status tier.
 **Depends on:** T65
 **Refs:** PRD 7.14, design.md 8.2, sysdesign 3, canvas: Campaign screen
 
-### T67 Assign characters and read-only view
+### T67 Assign characters and read-only view - done
 Add the assigned characters section (a picker of every character, add and
 remove, as server actions on `campaign_characters`) and
 `/admin/campaigns/[id]/characters/[characterId]`, reusing

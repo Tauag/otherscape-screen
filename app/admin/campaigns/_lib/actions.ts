@@ -43,3 +43,47 @@ export async function deleteCampaign(
 	revalidatePath("/admin/campaigns");
 	return null;
 }
+
+export async function assignCharacters(
+	_previous: Message,
+	form: FormData,
+): Promise<Message> {
+	const campaignId = String(form.get("campaignId") ?? "");
+	const characterIds = form.getAll("characterId").map(String);
+	if (!campaignId) return "Missing campaign.";
+	if (characterIds.length === 0) return "Choose at least one character.";
+
+	const { supabase } = await requireAdmin();
+	// The picker only offers unassigned characters, so a PK conflict here is
+	// just a stale error message, not a state the admin needs to resolve.
+	const { error } = await supabase.from("campaign_characters").insert(
+		characterIds.map((characterId) => ({
+			campaign_id: campaignId,
+			character_id: characterId,
+		})),
+	);
+	if (error) return "Could not assign the selected characters.";
+
+	revalidatePath(`/admin/campaigns/${campaignId}`);
+	return null;
+}
+
+export async function removeCharacter(
+	_previous: Message,
+	form: FormData,
+): Promise<Message> {
+	const campaignId = String(form.get("campaignId") ?? "");
+	const characterId = String(form.get("characterId") ?? "");
+	if (!campaignId || !characterId) return "Missing character.";
+
+	const { supabase } = await requireAdmin();
+	const { error } = await supabase
+		.from("campaign_characters")
+		.delete()
+		.eq("campaign_id", campaignId)
+		.eq("character_id", characterId);
+	if (error) return "Could not remove the character.";
+
+	revalidatePath(`/admin/campaigns/${campaignId}`);
+	return null;
+}

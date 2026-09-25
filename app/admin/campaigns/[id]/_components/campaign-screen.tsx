@@ -9,10 +9,17 @@ import { StoryTagList } from "./story-tag-list";
 
 /**
  * The campaign screen (design.md 8.2): campaign name and notes, then NPCs,
- * then the story tags aside. Assigned characters (T67) are a later section
- * of this same grid - not built yet, so this leaves no placeholder for it.
+ * then the story tags and assigned-characters aside. `characters` comes in
+ * as a prop because AssignedCharacters (T67) is an async server component,
+ * and this screen is a client component.
  */
-export function CampaignScreen({ accountName }: { accountName: string }) {
+export function CampaignScreen({
+	accountName,
+	characters,
+}: {
+	accountName: string;
+	characters: React.ReactNode;
+}) {
 	const { campaign, dispatch, status, parked } = useCampaign();
 
 	return (
@@ -71,14 +78,18 @@ export function CampaignScreen({ accountName }: { accountName: string }) {
 					<NpcSection />
 				</div>
 
-				<aside className="flex min-w-0 flex-col gap-2">
-					<div className="flex items-center justify-between gap-2">
-						<span className={LABEL}>
-							Story tags · {campaign.storyTags.length}
-						</span>
-						<span className={LABEL}>Not on any sheet</span>
+				<aside className="flex min-w-0 flex-col gap-6">
+					<div className="flex flex-col gap-2">
+						<div className="flex items-center justify-between gap-2">
+							<span className={LABEL}>
+								Story tags · {campaign.storyTags.length}
+							</span>
+							<span className={LABEL}>Not on any sheet</span>
+						</div>
+						<StoryTagList tags={campaign.storyTags} />
 					</div>
-					<StoryTagList tags={campaign.storyTags} />
+
+					{characters}
 				</aside>
 			</div>
 		</main>
