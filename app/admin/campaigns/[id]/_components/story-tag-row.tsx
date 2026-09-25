@@ -8,7 +8,6 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { RowMenu } from "@/components/row-menu";
 import { MENU_ITEM } from "@/components/styles";
 import type { StoryTag } from "@/lib/character/types";
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { useCampaign } from "../_hooks/use-campaign";
 
 /**
@@ -22,9 +21,6 @@ export function StoryTagRow({ tag, npcId }: { tag: StoryTag; npcId?: string }) {
 	const { dispatch } = useCampaign();
 	const [renaming, setRenaming] = useState(false);
 	const named = tag.name.trim() || "this tag";
-	// Mirrors app/character/[id]/play/_components/story-tag-chip.tsx's canBurn:
-	// only a positive, non-crispy tag ever shows Burn or Unburn.
-	const canBurn = tag.valence === "positive" && !tag.crispy;
 
 	return (
 		<li
@@ -69,33 +65,6 @@ export function StoryTagRow({ tag, npcId }: { tag: StoryTag; npcId?: string }) {
 					}
 				>
 					{tag.valence === "positive" ? "Make it negative" : "Make it positive"}
-				</Menu.Item>
-				{canBurn && (
-					<Menu.Item
-						className={MENU_ITEM}
-						onClick={() =>
-							dispatch(
-								tag.burnt
-									? { type: "unburnStoryTag", npcId, id: tag.id }
-									: {
-											type: "burnStoryTag",
-											npcId,
-											id: tag.id,
-											burnValue: DEFAULT_BURN_VALUE,
-										},
-							)
-						}
-					>
-						{tag.burnt ? "Unburn" : "Burn"}
-					</Menu.Item>
-				)}
-				<Menu.Item
-					className={MENU_ITEM}
-					onClick={() =>
-						dispatch({ type: "toggleStoryTagCrispy", npcId, id: tag.id })
-					}
-				>
-					{tag.crispy ? "Clear crispy (1x)" : "Mark crispy (1x)"}
 				</Menu.Item>
 				<Menu.Item
 					className={MENU_ITEM}

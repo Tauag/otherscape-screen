@@ -4,21 +4,18 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { useState } from "react";
+import type { Npc } from "@/app/admin/campaigns/_lib/types";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { RowMenu } from "@/components/row-menu";
 import { CARD, CARD_BODY, LABEL, MENU_ITEM } from "@/components/styles";
-import type { Npc } from "@/app/admin/campaigns/_lib/types";
 import { useCampaign } from "../_hooks/use-campaign";
 import { NpcStatusRow } from "./npc-status-row";
 import { StoryTagList } from "./story-tag-list";
 
-// A neutral stripe, not var(--hue): unlike a theme or a story tag, an NPC as
-// a whole carries no valence or type of its own.
 const STRIPE = "w-[3px] shrink-0 bg-quiet";
 const ADD =
 	"flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-dashed border-pip font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
 
-/** One NPC card: design.md 8.2, canvas Campaign screen. */
 export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 	const { dispatch } = useCampaign();
 	const [deleteOpen, setDeleteOpen] = useState(false);

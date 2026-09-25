@@ -28,7 +28,7 @@ export function StoryTagList({
 	tags: StoryTag[];
 	npcId?: string;
 	/** Show a "+ Story tag" trigger instead of the always-open form, for a
-	 *  dense NPC card (T66). The form stays open once opened. */
+	 *  dense NPC card (T66), with a Cancel to collapse it again. */
 	collapsed?: boolean;
 }) {
 	const { dispatch } = useCampaign();
@@ -107,6 +107,18 @@ export function StoryTagList({
 							Add
 						</Button>
 					</div>
+					{collapsed ? (
+						<Button
+							type="button"
+							onClick={() => {
+								setName("");
+								setOpen(false);
+							}}
+							className="font-mono text-[10px] tracking-[0.08em] text-dim uppercase"
+						>
+							Cancel
+						</Button>
+					) : null}
 				</form>
 			) : (
 				<Button
