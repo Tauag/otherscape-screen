@@ -174,7 +174,7 @@ survives a reload.
 **Depends on:** T64
 **Refs:** PRD 7.14, design.md 8.2, sysdesign 14, canvas: Campaign screen
 
-### T66 NPCs with story tags and statuses
+### T66 NPCs with story tags and statuses - done
 Add the NPCs section: create, edit, delete an NPC; within it, the same story
 tag actions as T65 plus mark and clear a status tier.
 **Done when:** a new NPC's story tag and status both persist after a reload.
