@@ -4,13 +4,13 @@ import { RosterAppBar } from "@/components/roster-app-bar";
 import { LABEL } from "@/components/styles";
 import { useCampaign } from "../_hooks/use-campaign";
 import { SAVE_STATUS_MESSAGE } from "./campaign-provider";
+import { NpcSection } from "./npc-section";
 import { StoryTagList } from "./story-tag-list";
 
 /**
- * The campaign screen (design.md 8.2): campaign name and notes, then the
- * story tags aside. NPCs (T66) and assigned characters (T67) are later
- * sections of this same grid - not built yet, so this leaves no placeholder
- * for either.
+ * The campaign screen (design.md 8.2): campaign name and notes, then NPCs,
+ * then the story tags aside. Assigned characters (T67) are a later section
+ * of this same grid - not built yet, so this leaves no placeholder for it.
  */
 export function CampaignScreen({ accountName }: { accountName: string }) {
 	const { campaign, dispatch, status, parked } = useCampaign();
@@ -67,6 +67,8 @@ export function CampaignScreen({ accountName }: { accountName: string }) {
 							className="min-h-11 resize-none rounded-sm border border-border bg-bg p-3 font-sans text-sm text-text placeholder:text-dim"
 						/>
 					</label>
+
+					<NpcSection />
 				</div>
 
 				<aside className="flex min-w-0 flex-col gap-2">

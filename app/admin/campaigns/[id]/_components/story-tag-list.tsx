@@ -12,6 +12,8 @@ import { StoryTagRow } from "./story-tag-row";
 
 const SEGMENT =
 	"min-h-11 flex-1 px-3 font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
+const ADD_TRIGGER =
+	"flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-dashed border-pip font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
 
 /**
  * A list of story tags, plus the "New story tag" form. `npcId` is the only
@@ -21,13 +23,18 @@ const SEGMENT =
 export function StoryTagList({
 	tags,
 	npcId,
+	collapsed,
 }: {
 	tags: StoryTag[];
 	npcId?: string;
+	/** Show a "+ Story tag" trigger instead of the always-open form, for a
+	 *  dense NPC card (T66). The form stays open once opened. */
+	collapsed?: boolean;
 }) {
 	const { dispatch } = useCampaign();
 	const [name, setName] = useState("");
 	const [valence, setValence] = useState<Valence>("positive");
+	const [open, setOpen] = useState(!collapsed);
 	const inputId = useId();
 
 	function add(event: React.FormEvent) {
@@ -56,49 +63,60 @@ export function StoryTagList({
 				</ul>
 			)}
 
-			<form onSubmit={add} className="flex flex-col gap-2">
-				<label htmlFor={inputId} className={LABEL}>
-					New story tag
-				</label>
-				<Input
-					id={inputId}
-					value={name}
-					onChange={(event) => setName(event.target.value)}
-					autoComplete="off"
-					placeholder="e.g. flooded arcade"
-					className="min-h-11 w-full rounded-sm border border-border bg-bg px-3 font-sans text-sm text-text placeholder:text-dim"
-				/>
-				<div className="flex gap-2">
-					<ToggleGroup
-						value={[valence]}
-						onValueChange={(values) => {
-							const next = values[0] as Valence | undefined;
-							if (next) setValence(next);
-						}}
-						aria-label="Valence"
-						className="flex overflow-hidden rounded-sm border border-border"
-					>
-						<Toggle
-							value="positive"
-							className={`${SEGMENT} data-[pressed]:bg-positive/12 data-[pressed]:text-positive-text`}
+			{open ? (
+				<form onSubmit={add} className="flex flex-col gap-2">
+					<label htmlFor={inputId} className={LABEL}>
+						New story tag
+					</label>
+					<Input
+						id={inputId}
+						value={name}
+						onChange={(event) => setName(event.target.value)}
+						autoComplete="off"
+						autoFocus={collapsed}
+						placeholder="e.g. flooded arcade"
+						className="min-h-11 w-full rounded-sm border border-border bg-bg px-3 font-sans text-sm text-text placeholder:text-dim"
+					/>
+					<div className="flex gap-2">
+						<ToggleGroup
+							value={[valence]}
+							onValueChange={(values) => {
+								const next = values[0] as Valence | undefined;
+								if (next) setValence(next);
+							}}
+							aria-label="Valence"
+							className="flex overflow-hidden rounded-sm border border-border"
 						>
-							Positive
-						</Toggle>
-						<Toggle
-							value="negative"
-							className={`${SEGMENT} data-[pressed]:bg-negative/12 data-[pressed]:text-negative-text`}
+							<Toggle
+								value="positive"
+								className={`${SEGMENT} data-[pressed]:bg-positive/12 data-[pressed]:text-positive-text`}
+							>
+								Positive
+							</Toggle>
+							<Toggle
+								value="negative"
+								className={`${SEGMENT} data-[pressed]:bg-negative/12 data-[pressed]:text-negative-text`}
+							>
+								Negative
+							</Toggle>
+						</ToggleGroup>
+						<Button
+							type="submit"
+							className="inline-flex min-h-11 flex-1 items-center justify-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
 						>
-							Negative
-						</Toggle>
-					</ToggleGroup>
-					<Button
-						type="submit"
-						className="inline-flex min-h-11 flex-1 items-center justify-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
-					>
-						Add
-					</Button>
-				</div>
-			</form>
+							Add
+						</Button>
+					</div>
+				</form>
+			) : (
+				<Button
+					type="button"
+					onClick={() => setOpen(true)}
+					className={ADD_TRIGGER}
+				>
+					+ Story tag
+				</Button>
+			)}
 		</div>
 	);
 }
