@@ -7,7 +7,7 @@ import { SAVE_STATUS_MESSAGE } from "@/app/character/[id]/_components/layout/cha
 import { SheetMenu } from "@/app/character/[id]/_components/layout/menu";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { backTarget } from "@/app/character/[id]/_lib/back-target";
-import { BackIcon } from "@/components/icons";
+import { BackIcon, OtherscapeIcon } from "@/components/icons";
 
 const BACK = "grid size-9 shrink-0 place-items-center text-dim";
 
@@ -38,6 +38,10 @@ export function BoardBar({
 				className={BACK}
 			>
 				<BackIcon />
+			</Link>
+
+			<Link href="/" aria-label="Home" className={BACK}>
+				<OtherscapeIcon />
 			</Link>
 
 			<div className="flex min-w-0 flex-col gap-0.5">

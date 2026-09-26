@@ -3,7 +3,7 @@
 import { Menu } from "@base-ui/react/menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BackIcon, ChevronRightIcon } from "@/components/icons";
+import { BackIcon, ChevronRightIcon, OtherscapeIcon } from "@/components/icons";
 import { MENU_ITEM, MENU_POPUP } from "@/components/styles";
 import { signOut } from "@/lib/actions";
 
@@ -32,7 +32,8 @@ export function RosterAppBar({
 	 *  menu. Absent everywhere else, so this bar looks unchanged for them. */
 	status?: React.ReactNode;
 }) {
-	const back = backTarget(usePathname());
+	const pathname = usePathname();
+	const back = backTarget(pathname);
 
 	return (
 		<header className="flex items-center justify-between gap-3 px-5 pt-6 pb-4">
@@ -46,6 +47,15 @@ export function RosterAppBar({
 						<BackIcon />
 					</Link>
 				)}
+
+				<Link
+					href="/"
+					aria-label="Home"
+					className="-m-1 -ml-2 flex size-11 shrink-0 items-center justify-center p-1 text-dim"
+				>
+					<OtherscapeIcon />
+				</Link>
+
 				<h1 className="font-display text-[19px] font-bold tracking-[0.16em] uppercase">
 					{title}
 				</h1>
