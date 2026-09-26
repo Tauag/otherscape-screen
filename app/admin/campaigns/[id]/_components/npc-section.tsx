@@ -26,7 +26,7 @@ export function NpcSection() {
 			{campaign.npcs.length === 0 ? (
 				<p className="font-sans text-sm text-dim">No NPCs yet.</p>
 			) : (
-				<div className="grid gap-4 sm:grid-cols-2">
+				<div className="grid gap-3 sm:grid-cols-2">
 					{campaign.npcs.map((npc) => (
 						<NpcCard key={npc.id} npc={npc} autoFocus={npc.id === added} />
 					))}

@@ -26,7 +26,7 @@ export default async function CampaignsPage() {
 		.overrideTypes<CampaignListRow[], { merge: false }>();
 
 	return (
-		<main className="mx-auto flex w-full flex-1 flex-col">
+		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
 			<RosterAppBar title="Campaigns" accountName={accountName(user)} isAdmin />
 
 			<div className="flex flex-1 flex-col gap-4 px-5 pb-4">

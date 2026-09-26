@@ -23,7 +23,7 @@ export function CampaignScreen({
 	const { campaign, dispatch, status, parked } = useCampaign();
 
 	return (
-		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
+		<main className="mx-auto flex w-full flex-1 flex-col">
 			<RosterAppBar
 				title={campaign.name.trim() || "Unnamed"}
 				accountName={accountName}
