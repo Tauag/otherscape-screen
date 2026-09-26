@@ -105,8 +105,7 @@ export function CharacterCard({
 				)}
 			</div>
 
-			<div className="flex items-center gap-[9px]">
-				{/* aria-hidden: a picture of what the Essence text already says in words. */}
+			<div className="flex items-center gap-[16px]">
 				{summary.themes.length > 0 && (
 					<div aria-hidden="true" className="flex gap-[3px]">
 						{summary.themes.map((theme, index) => (
@@ -123,19 +122,6 @@ export function CharacterCard({
 				<p className="font-display text-[11px] font-semibold tracking-[0.16em] text-dim uppercase">
 					{essence || "Essence not set"}
 				</p>
-
-				{summary.statuses > 0 && (
-					<div className="ml-auto flex items-center gap-1.5">
-						<span
-							aria-hidden="true"
-							className="size-1.5 rounded-full bg-negative"
-						/>
-						<p className="font-sans text-[11.5px] text-negative-text/65">
-							{summary.statuses}{" "}
-							{summary.statuses === 1 ? "status" : "statuses"} in play
-						</p>
-					</div>
-				)}
 			</div>
 
 			<div className="flex items-center justify-between gap-2 border-t border-hairline pt-[11px]">
