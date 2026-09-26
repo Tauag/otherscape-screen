@@ -6,8 +6,8 @@ import type {
 	RollGroup,
 	RollTag,
 } from "@/app/character/[id]/_lib/roll-selection";
-import { specialName, specialText } from "@/lib/pickers";
 import { SpecialTooltip } from "@/components/special-tooltip";
+import { specialName, specialText } from "@/lib/pickers";
 
 /** The shell every board panel shares: card chrome, header label, tag list,
  *  edit link, and quote line. Composition only, over the same leaf components

@@ -15,7 +15,7 @@ export function SpecialTooltip({
 
 	return (
 		<Tooltip.Root>
-			<Tooltip.Trigger render={<span />} className="cursor-help">
+			<Tooltip.Trigger delay={100} render={<span />} className="cursor-help">
 				{children}
 			</Tooltip.Trigger>
 			<Tooltip.Portal>
