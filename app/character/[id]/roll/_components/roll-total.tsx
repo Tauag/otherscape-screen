@@ -23,7 +23,7 @@ function rollCommand(total: number): string {
 
 // The tumble runs at least this long, so the reveal lands about when the
 // Discord post does and the table sees it together.
-const TUMBLE_MS = 1200;
+const TUMBLE_MS = 800;
 const d6 = () => Math.floor(Math.random() * 6) + 1;
 
 const OUTCOME_CLASS = {
