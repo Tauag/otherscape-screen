@@ -61,9 +61,7 @@ export function StatusCard({
 				className={`${NAME} ${className}`}
 			/>
 		) : (
-			<span
-				className={`${NAME} ${className} ${status.name ? "" : "text-dim"}`}
-			>
+			<span className={`${NAME} ${className} ${status.name ? "" : "text-dim"}`}>
 				{status.name || "Name this status"}
 			</span>
 		);
