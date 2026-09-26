@@ -33,14 +33,15 @@ export default async function RosterPage() {
 		user_metadata: claims.user_metadata,
 	};
 
-	const { data: characters, error } = await supabase
-		.from("characters")
-		.select("id, name, essence, updated_at, share_token, roster_summary")
-		.eq("owner", user.id)
-		.order("updated_at", { ascending: false })
-		.overrideTypes<RosterRow[], { merge: false }>();
-
-	const { data: isAdmin } = await supabase.rpc("current_user_is_admin");
+	const [{ data: characters, error }, { data: isAdmin }] = await Promise.all([
+		supabase
+			.from("characters")
+			.select("id, name, essence, updated_at, share_token, roster_summary")
+			.eq("owner", user.id)
+			.order("updated_at", { ascending: false })
+			.overrideTypes<RosterRow[], { merge: false }>(),
+		supabase.rpc("current_user_is_admin"),
+	]);
 
 	return (
 		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
