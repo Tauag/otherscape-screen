@@ -44,7 +44,7 @@ export default async function CampaignsPage() {
 					<p className="font-sans text-sm text-dim">No campaigns yet.</p>
 				)}
 
-				<div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				<div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
 					{campaigns?.map((row) => {
 						const campaign = migrate(row.data);
 						return (
