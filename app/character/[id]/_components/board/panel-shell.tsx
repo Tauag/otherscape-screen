@@ -18,7 +18,7 @@ export type TagChip = (tag: RollTag, hue?: string) => React.ReactNode;
 export const HEADER_LABEL =
 	"font-display text-[10px] font-semibold tracking-[0.17em] text-dim uppercase";
 export const SHELL =
-	"flex min-h-[17.5rem] flex-col gap-2 overflow-y-auto rounded-md border border-border border-t-[3px] border-t-[var(--hue)] bg-surface px-3 pt-[11px] pb-3";
+	"flex min-h-[15.25rem] flex-col gap-2 overflow-y-auto rounded-md border border-border border-t-[3px] border-t-[var(--hue)] bg-surface px-3 pt-[11px] pb-3";
 export const EMPTY_SHELL =
 	"flex flex-col gap-2 overflow-hidden rounded-md border border-dashed border-raised border-t-[3px] border-t-[var(--hue)]/35 bg-recess px-3 pt-[11px] pb-3";
 export const NASCENT_BADGE =
