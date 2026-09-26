@@ -22,6 +22,7 @@ export default function RollPage() {
 		pick,
 		setPick,
 		breakdown,
+		rollLines,
 		lineOf,
 		toggle,
 		setBurnt,
@@ -175,6 +176,8 @@ export default function RollPage() {
 
 			<RollTotal
 				total={breakdown.total}
+				lines={rollLines}
+				mitigating={pick.mitigationLockedIds.length > 0}
 				modifier={pick.modifier}
 				onRoll={finalizeTagSelection}
 				canMitigate={pick.lastRolledIds.length > 0}

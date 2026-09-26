@@ -80,8 +80,12 @@ export function createAutosave<T>(
 	 * and over fills the origin's storage quota, after which writeRaw fails
 	 * silently. Upgrade path: keep the newest few and drop the rest on write.
 	 */
+	let parked = 0;
+
 	function parkLocal(id: string, entry: LocalEntry<T>): string | null {
-		const key = `${parkedKeyPrefix(id)}:${Date.now()}`;
+		// The counter, not just the clock: two parks can land in the same
+		// millisecond, and the second must not overwrite the first.
+		const key = `${parkedKeyPrefix(id)}:${Date.now()}-${parked++}`;
 		return writeRaw(key, entry) ? key : null;
 	}
 

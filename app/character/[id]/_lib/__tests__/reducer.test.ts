@@ -737,3 +737,42 @@ test("a story tag verb leaves every other tag alone", () => {
 		["sg-1"],
 	);
 });
+
+// A special is picked from a list, so the same one can be tapped twice. Each of
+// the three lists that hold specials has to absorb that.
+test("a special is added once however often it is picked, and removed by its text", () => {
+	const special = "Cold Case — burn this theme for 4.";
+	let character = reduce(newCharacter(), { type: "addTheme", id: "t1" });
+
+	for (const _ of [1, 2]) {
+		character = reduce(character, {
+			type: "addThemeSpecial",
+			themeId: "t1",
+			special,
+		});
+		character = reduce(character, { type: "addCrewSpecial", special });
+		character = reduce(character, { type: "addLoadoutSpecial", special });
+	}
+	assert.deepEqual(character.themes[0].specials, [special]);
+	assert.deepEqual(character.crewTheme.specials, [special]);
+	assert.deepEqual(character.loadout.specials, [special]);
+
+	character = reduce(character, {
+		type: "removeThemeSpecial",
+		themeId: "t1",
+		special,
+	});
+	character = reduce(character, { type: "removeCrewSpecial", special });
+	character = reduce(character, { type: "removeLoadoutSpecial", special });
+	assert.deepEqual(character.themes[0].specials, []);
+	assert.deepEqual(character.crewTheme.specials, []);
+	assert.deepEqual(character.loadout.specials, []);
+});
+
+test("removing a special that was never added changes nothing", () => {
+	const character = reduce(newCharacter(), {
+		type: "removeLoadoutSpecial",
+		special: "never picked",
+	});
+	assert.deepEqual(character.loadout.specials, []);
+});

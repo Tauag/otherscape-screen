@@ -335,8 +335,8 @@ export function boardGroups(character: Character): RollGroup[] {
 	return [...themeGroups, loadoutGroup, crewGroup];
 }
 
-type TagEntry = { id: string; tag: SelectedTag };
-type StatusEntry = { id: string; status: SelectedStatus };
+type TagEntry = { id: string; label: string; tag: SelectedTag };
+type StatusEntry = { id: string; label: string; status: SelectedStatus };
 
 // lazy: a linear `includes` per candidate. The ceiling is a sheet with hundreds
 // of tags, where the scan shows on each tap; the upgrade path is a Set.
@@ -346,25 +346,14 @@ function picked(
 ): { tags: TagEntry[]; statuses: StatusEntry[] } {
 	const chosen = (id: string) => pick.ids.includes(id);
 
-	const tags: TagEntry[] = rollGroups(character)
-		.flatMap((group) => group.tags)
+	const tags: TagEntry[] = [
+		...rollGroups(character).flatMap((group) => group.tags),
+		...character.storyTags.map(storyRollTag),
+	]
 		.filter((tag) => chosen(tag.id))
 		.map((tag) => ({
 			id: tag.id,
-			tag: {
-				valence: tag.valence,
-				burnValue:
-					tag.burnValue === null
-						? null
-						: (pick.burnValues[tag.id] ?? tag.burnValue),
-			},
-		}));
-
-	const storyTags: TagEntry[] = character.storyTags
-		.filter((tag) => chosen(tag.id))
-		.map(storyRollTag)
-		.map((tag) => ({
-			id: tag.id,
+			label: tag.text,
 			tag: {
 				valence: tag.valence,
 				burnValue:
@@ -376,15 +365,16 @@ function picked(
 
 	const statuses: StatusEntry[] = character.statuses
 		.filter((status) => chosen(status.id))
-		.map((status) => ({
-			id: status.id,
-			status: {
-				valence: status.valence,
-				tier: status.tiers.lastIndexOf(true) + 1,
-			},
-		}));
+		.map((status) => {
+			const tier = status.tiers.lastIndexOf(true) + 1;
+			return {
+				id: status.id,
+				label: `${status.name}-${tier}`,
+				status: { valence: status.valence, tier },
+			};
+		});
 
-	return { tags: [...tags, ...storyTags], statuses };
+	return { tags, statuses };
 }
 
 /** The selection `power()` reads, projected from the document and the taps. */
@@ -413,4 +403,17 @@ export function toRollSelection(
 export function rollOrder(character: Character, pick: RollPick): string[] {
 	const { tags, statuses } = picked(character, pick);
 	return [...tags, ...statuses].map((entry) => entry.id);
+}
+
+/**
+ * A name for each of `power().lines`, in the same order: the `rollWith` line,
+ * the picked tags and statuses, then the modifier. The Discord post reads it.
+ */
+export function rollLabels(character: Character, pick: RollPick): string[] {
+	const { tags, statuses } = picked(character, pick);
+	return [
+		...(pick.rollWith ? [`Rolling with ${pick.rollWith}`] : []),
+		...[...tags, ...statuses].map((entry) => entry.label),
+		...(pick.modifier !== 0 ? ["Modifier"] : []),
+	];
 }

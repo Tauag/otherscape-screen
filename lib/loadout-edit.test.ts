@@ -10,10 +10,12 @@ import {
 	decrementWildcards,
 	editLoadoutFeature,
 	editLoadoutSetTitle,
+	editLoadoutWeakness,
 	incrementWildcards,
 	markLoadoutUpgrade,
 	removeLoadoutFeature,
 	removeLoadoutSet,
+	removeLoadoutWeakness,
 	takeLoadoutUpgrade,
 	toggleLoadoutFeature,
 	toggleLoadoutFeatureBurnt,
@@ -240,4 +242,25 @@ test("the fixture's spend matches what's actually loaded", () => {
 		over: 0,
 		warning: null,
 	});
+});
+
+test("editing and removing a weakness touches only that one", () => {
+	const two = addLoadoutWeakness(loadout, "ls-1", "lw-new");
+	const edited = editLoadoutWeakness(two, "ls-1", "lw-new", "and it jams");
+
+	assert.equal(edited.sets[0].weaknesses.at(-1)!.text, "and it jams");
+	assert.equal(
+		edited.sets[0].weaknesses[0].text,
+		loadout.sets[0].weaknesses[0].text,
+	);
+
+	const removed = removeLoadoutWeakness(edited, "ls-1", "lw-new");
+	assert.deepEqual(removed.sets[0].weaknesses, loadout.sets[0].weaknesses);
+});
+
+// A weakness came free with the title, so it is never charged and never loaded.
+test("a weakness survives unloading the whole loadout", () => {
+	const next = unloadAllLoadout(addLoadoutWeakness(loadout, "ls-2", "lw-new"));
+	assert.deepEqual(next.sets[1].weaknesses, [{ id: "lw-new", text: "" }]);
+	assert.equal(loadoutSpend(next).spent, loadout.wildcards * 2);
 });

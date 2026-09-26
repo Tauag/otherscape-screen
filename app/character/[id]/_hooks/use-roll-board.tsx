@@ -8,6 +8,7 @@ import {
 	cancelMitigationPick,
 	finalizeRollPick,
 	type RollTag,
+	rollLabels,
 	rollOrder,
 	signed,
 	startMitigationPick,
@@ -42,6 +43,12 @@ export function useRollBoard(
 			breakdown.lines[index + offset],
 		]),
 	);
+
+	const labels = rollLabels(character, pick);
+	const rollLines = breakdown.lines.map((line, index) => ({
+		...line,
+		label: labels[index],
+	}));
 
 	const toggle = (id: string) => {
 		// Locked out: this tag paid for the action that caused the consequence
@@ -135,6 +142,7 @@ export function useRollBoard(
 		pick,
 		setPick,
 		breakdown,
+		rollLines,
 		lineOf,
 		toggle,
 		setBurnt,

@@ -7,8 +7,12 @@ import {
 	boardGroups,
 	burningTagId,
 	burnToggleAction,
+	cancelMitigationPick,
+	finalizeRollPick,
 	NO_PICK,
 	rollGroups,
+	rollOrder,
+	startMitigationPick,
 	toRollSelection,
 } from "../roll-selection.ts";
 
@@ -209,4 +213,75 @@ test("boardGroups keeps a nascent theme with zero tags, which rollGroups drops",
 		board.map((group) => group.id),
 		[...character.themes.map((theme) => theme.id), "loadout", "crew"],
 	);
+});
+
+// --- rollOrder: the positional link between power().lines and the tag chips ---
+
+test("rollOrder names the lines in document order, not tap order", () => {
+	// Tapped bottom-up and out of order: a status, a story tag, a loadout
+	// feature, a theme tag.
+	const taps = pick({ ids: ["st-1", "sg-1", "lf-1", "pt-1"] });
+
+	assert.deepEqual(rollOrder(sample, taps), ["pt-1", "lf-1", "sg-1", "st-1"]);
+	assert.deepEqual(
+		power(toRollSelection(sample, taps)).lines.map((line) => line.value),
+		[1, 1, DEFAULT_BURN_VALUE, -4],
+		"one line per id, in the same order",
+	);
+});
+
+test("a rollWith line offsets the ids by one, and a modifier line trails past them", () => {
+	const taps = pick({
+		ids: ["pt-1", "st-1"],
+		rollWith: "noise",
+		modifier: -2,
+	});
+	const ids = rollOrder(sample, taps);
+	const { lines } = power(toRollSelection(sample, taps));
+
+	// The roll screen reads lines[i + 1] for ids[i] whenever rollWith is set.
+	assert.deepEqual(ids, ["pt-1", "st-1"]);
+	assert.equal(lines.length, ids.length + 2);
+	assert.equal(lines[0].value, 2, "the rollWith theme count comes first");
+	assert.equal(lines.at(-1)?.value, -2, "the modifier comes last");
+});
+
+// --- The mitigation lock: one roll can't mitigate its own cause -------------
+
+test("a mitigation roll locks out exactly the tags the mitigated roll spent", () => {
+	const afterAction = finalizeRollPick({ ...NO_PICK, ids: ["fire", "fear"] });
+	assert.deepEqual(afterAction.lastRolledIds, ["fire", "fear"]);
+	assert.deepEqual(afterAction.ids, []);
+
+	const mitigating = startMitigationPick(afterAction);
+	assert.deepEqual(mitigating.mitigationLockedIds, ["fire", "fear"]);
+});
+
+test("finishing the mitigation roll lifts the lock and remembers its own spend", () => {
+	const mitigating = startMitigationPick(
+		finalizeRollPick({ ...NO_PICK, ids: ["fire"] }),
+	);
+	const afterMitigation = finalizeRollPick({ ...mitigating, ids: ["grit"] });
+
+	assert.deepEqual(afterMitigation.mitigationLockedIds, []);
+	assert.deepEqual(afterMitigation.lastRolledIds, ["grit"]);
+});
+
+test("cancelling the mitigation lifts the lock without touching the pick", () => {
+	const mitigating = startMitigationPick(
+		finalizeRollPick({ ...NO_PICK, ids: ["fire"] }),
+	);
+	const cancelled = cancelMitigationPick({ ...mitigating, ids: ["grit"] });
+
+	assert.deepEqual(cancelled.mitigationLockedIds, []);
+	assert.deepEqual(cancelled.ids, ["grit"], "cancel doesn't discard the pick");
+});
+
+test("finalizing clears this roll's burn value overrides", () => {
+	const finalized = finalizeRollPick({
+		...NO_PICK,
+		ids: ["pt-3"],
+		burnValues: { "pt-3": 5 },
+	});
+	assert.deepEqual(finalized.burnValues, {}, "an override is one roll's alone");
 });

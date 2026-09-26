@@ -22,6 +22,7 @@ export function BoardTable({ board }: { board: RollBoard }) {
 	const {
 		pick,
 		breakdown,
+		rollLines,
 		lineOf,
 		toggle,
 		finalizeTagSelection,
@@ -115,6 +116,8 @@ export function BoardTable({ board }: { board: RollBoard }) {
 
 				<RollTotal
 					total={breakdown.total}
+					lines={rollLines}
+					mitigating={pick.mitigationLockedIds.length > 0}
 					modifier={pick.modifier}
 					onRoll={finalizeTagSelection}
 					canMitigate={pick.lastRolledIds.length > 0}

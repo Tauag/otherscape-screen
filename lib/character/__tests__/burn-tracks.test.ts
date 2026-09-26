@@ -66,21 +66,6 @@ test("the Upgrade outcome applies on the cleared track: a new power tag", () => 
 	);
 });
 
-test("the Upgrade outcome applies on the cleared track: a theme special", () => {
-	const cleared = markTrack(past, "upgrade");
-	const taken = {
-		...cleared,
-		specials: [...cleared.specials, "Cold Case: burn this theme for 4."],
-	};
-
-	assert.equal(taken.upgrade, 0);
-	assert.deepEqual(taken.specials, [
-		...past.specials,
-		"Cold Case: burn this theme for 4.",
-	]);
-	assert.deepEqual(taken.powerTags, past.powerTags);
-});
-
 test("a full Decay track wraps back to empty on the next click", () => {
 	const full: Theme = { ...past, decay: 3 };
 
