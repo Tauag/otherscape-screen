@@ -21,9 +21,17 @@ type RosterRow = {
 
 export default async function RosterPage() {
 	const supabase = await createClient();
-	const { data: account } = await supabase.auth.getUser();
-	const user = account.user;
-	if (!user) redirect("/login");
+	// getClaims, not getUser: proxy.ts gates this route on getClaims, and a
+	// page re-checking with the network-verified getUser can disagree with it
+	// (valid JWT, revoked session) and redirect-loop against the proxy.
+	const { data: account } = await supabase.auth.getClaims();
+	const claims = account?.claims;
+	if (!claims) redirect("/login");
+	const user = {
+		id: claims.sub,
+		email: claims.email,
+		user_metadata: claims.user_metadata,
+	};
 
 	const { data: characters, error } = await supabase
 		.from("characters")
@@ -35,7 +43,7 @@ export default async function RosterPage() {
 	const { data: isAdmin } = await supabase.rpc("current_user_is_admin");
 
 	return (
-		<main className="mx-auto flex w-full max-w-md flex-1 flex-col">
+		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
 			<RosterAppBar
 				title="Characters"
 				accountName={accountName(user)}
@@ -58,21 +66,23 @@ export default async function RosterPage() {
 					</div>
 				)}
 
-				{characters?.map((character) => (
-					<CharacterCard
-						key={character.id}
-						id={character.id}
-						name={character.name ?? ""}
-						essence={character.essence ?? ""}
-						shared={character.share_token !== null}
-						updatedAt={character.updated_at}
-						edited={relativeTime(character.updated_at)}
-						summary={parseRosterSummary(character.roster_summary)}
-					/>
-				))}
+				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+					{characters?.map((character) => (
+						<CharacterCard
+							key={character.id}
+							id={character.id}
+							name={character.name ?? ""}
+							essence={character.essence ?? ""}
+							shared={character.share_token !== null}
+							updatedAt={character.updated_at}
+							edited={relativeTime(character.updated_at)}
+							summary={parseRosterSummary(character.roster_summary)}
+						/>
+					))}
+				</div>
 			</div>
 
-			<div className="sticky bottom-0 bg-bg px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+			<div className="sticky bottom-0 mx-auto w-full max-w-md bg-bg px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
 				<NewCharacterBar />
 				<ImportBar />
 			</div>

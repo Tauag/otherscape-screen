@@ -26,11 +26,13 @@ export default async function CampaignsPage() {
 		.overrideTypes<CampaignListRow[], { merge: false }>();
 
 	return (
-		<main className="mx-auto flex w-full max-w-2xl flex-1 flex-col">
+		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
 			<RosterAppBar title="Campaigns" accountName={accountName(user)} isAdmin />
 
 			<div className="flex flex-1 flex-col gap-4 px-5 pb-4">
-				<NewCampaignForm />
+				<div className="mx-auto w-full max-w-2xl">
+					<NewCampaignForm />
+				</div>
 
 				{error && (
 					<p className="font-sans text-sm text-negative-text">
@@ -42,7 +44,7 @@ export default async function CampaignsPage() {
 					<p className="font-sans text-sm text-dim">No campaigns yet.</p>
 				)}
 
-				<div className="flex flex-col gap-1">
+				<div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 					{campaigns?.map((row) => {
 						const campaign = migrate(row.data);
 						return (

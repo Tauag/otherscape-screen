@@ -24,7 +24,7 @@ export default async function AdminPage() {
 	const users = data as InvitedUser[] | null;
 
 	return (
-		<main className="mx-auto flex w-full max-w-md flex-1 flex-col">
+		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
 			<RosterAppBar
 				title="Invited users"
 				accountName={accountName(user)}
@@ -38,9 +38,11 @@ export default async function AdminPage() {
 					</p>
 				)}
 
-				{users?.map((invited) => (
-					<UserRow key={invited.email} invited={invited} />
-				))}
+				<div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+					{users?.map((invited) => (
+						<UserRow key={invited.email} invited={invited} />
+					))}
+				</div>
 			</div>
 		</main>
 	);

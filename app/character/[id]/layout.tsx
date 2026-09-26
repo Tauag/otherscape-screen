@@ -13,8 +13,10 @@ export default async function CharacterLayout({
 	const { id } = await params;
 	const supabase = await createClient();
 
-	const { data: account } = await supabase.auth.getUser();
-	if (!account.user) redirect("/login");
+	// getClaims, not getUser: matches proxy.ts's check, so this can't disagree
+	// with it and redirect-loop.
+	const { data: account } = await supabase.auth.getClaims();
+	if (!account?.claims) redirect("/login");
 
 	const { data: row, error } = await supabase
 		.from("characters")

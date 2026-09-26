@@ -38,7 +38,7 @@ export default async function AdminUserPage({
 	);
 
 	return (
-		<main className="mx-auto flex w-full max-w-md flex-1 flex-col">
+		<main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
 			<RosterAppBar
 				title={target?.display_name ?? "Characters"}
 				accountName={accountName(user)}
@@ -56,22 +56,24 @@ export default async function AdminUserPage({
 					<p className="font-sans text-sm text-dim">No characters yet.</p>
 				)}
 
-				{characters?.map((character) => (
-					<Link
-						key={character.id}
-						href={`/admin/users/${userId}/${character.id}`}
-						className="flex flex-col gap-0.5 rounded-md border border-border bg-surface px-3 py-2.5"
-					>
-						<span className="font-sans text-sm text-text">
-							{character.name?.trim() || "Unnamed"}
-						</span>
-						<span className={LABEL}>
-							{character.essence || "No essence"}
-							{" · edited "}
-							{relativeTime(character.updated_at)}
-						</span>
-					</Link>
-				))}
+				<div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+					{characters?.map((character) => (
+						<Link
+							key={character.id}
+							href={`/admin/users/${userId}/${character.id}`}
+							className="flex flex-col gap-0.5 rounded-md border border-border bg-surface px-3 py-2.5"
+						>
+							<span className="font-sans text-sm text-text">
+								{character.name?.trim() || "Unnamed"}
+							</span>
+							<span className={LABEL}>
+								{character.essence || "No essence"}
+								{" · edited "}
+								{relativeTime(character.updated_at)}
+							</span>
+						</Link>
+					))}
+				</div>
 			</div>
 		</main>
 	);

@@ -61,9 +61,11 @@ const CONFLICT = "This character changed elsewhere. Reopen it.";
 
 async function session() {
 	const supabase = await createClient();
-	const { data, error } = await supabase.auth.getUser();
-	if (error || !data.user) redirect("/login");
-	return { supabase, userId: data.user.id };
+	// getClaims, not getUser: matches proxy.ts's check, so this can't disagree
+	// with it and redirect-loop.
+	const { data, error } = await supabase.auth.getClaims();
+	if (error || !data?.claims) redirect("/login");
+	return { supabase, userId: data.claims.sub };
 }
 
 function isDocument(value: unknown): value is Record<string, unknown> {
