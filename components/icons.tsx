@@ -21,8 +21,8 @@ export function OtherscapeIcon() {
 	return (
 		<svg
 			aria-hidden="true"
-			width="20"
-			height="20"
+			width="30"
+			height="30"
 			viewBox="-179 -221 1408 1408"
 			fill="none"
 			stroke="currentColor"
