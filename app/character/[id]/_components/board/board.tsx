@@ -28,50 +28,52 @@ export function Board() {
 	const warnings = boardWarnings(character);
 
 	return (
-		<div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-bg">
-			{warnings.length > 0 && (
-				<p className="shrink-0 border-b border-edge bg-recess px-5 py-2 font-sans text-sm text-negative-text">
-					{warnings.join(" ")}
-				</p>
-			)}
+		<div className="flex w-full flex-1 flex-col bg-bg">
+			<div className="flex flex-1 items-start">
+				<div className="flex min-w-0 flex-1 flex-col [@media(min-height:800px)]:h-[calc(100dvh-62px)]">
+					{warnings.length > 0 && (
+						<p className="shrink-0 border-b border-edge bg-recess px-5 py-2 font-sans text-sm text-negative-text">
+							{warnings.join(" ")}
+						</p>
+					)}
 
-			<div className="flex min-h-0 flex-1">
-				<div className="grid min-h-0 min-w-0 flex-1 grid-cols-2 content-start gap-3.5 overflow-y-auto p-5 xl:grid-cols-3">
-					{character.themes.map((theme, index) => (
-						<ThemePanel
-							key={theme.id}
-							theme={theme}
-							group={themeGroups[index]}
+					<div className="grid min-w-0 grid-cols-2 content-start gap-3.5 p-5 xl:grid-cols-3 [@media(min-height:800px)]:min-h-0 [@media(min-height:800px)]:flex-1 [@media(min-height:800px)]:auto-rows-fr [@media(min-height:800px)]:content-stretch [@media(min-height:800px)]:overflow-hidden">
+						{character.themes.map((theme, index) => (
+							<ThemePanel
+								key={theme.id}
+								theme={theme}
+								group={themeGroups[index]}
+								tagChip={tagChip}
+								id={id}
+							/>
+						))}
+
+						{character.themes.length < STARTING_THEMES && (
+							<Button
+								type="button"
+								onClick={() =>
+									dispatch({ type: "addTheme", id: crypto.randomUUID() })
+								}
+								className="flex min-h-[88px] items-center justify-center gap-1.5 rounded-md border border-raised border-dashed bg-recess font-display text-xs font-semibold tracking-[0.08em] text-dim uppercase"
+							>
+								<PlusIcon /> Theme card
+							</Button>
+						)}
+
+						<LoadoutPanel
+							loadout={character.loadout}
+							group={loadoutGroup}
 							tagChip={tagChip}
 							id={id}
 						/>
-					))}
 
-					{character.themes.length < STARTING_THEMES && (
-						<Button
-							type="button"
-							onClick={() =>
-								dispatch({ type: "addTheme", id: crypto.randomUUID() })
-							}
-							className="flex min-h-[88px] items-center justify-center gap-1.5 rounded-md border border-raised border-dashed bg-recess font-display text-xs font-semibold tracking-[0.08em] text-dim uppercase"
-						>
-							<PlusIcon /> Theme card
-						</Button>
-					)}
-
-					<LoadoutPanel
-						loadout={character.loadout}
-						group={loadoutGroup}
-						tagChip={tagChip}
-						id={id}
-					/>
-
-					<CrewPanel
-						crewTheme={character.crewTheme}
-						group={crewGroup}
-						tagChip={tagChip}
-						id={id}
-					/>
+						<CrewPanel
+							crewTheme={character.crewTheme}
+							group={crewGroup}
+							tagChip={tagChip}
+							id={id}
+						/>
+					</div>
 				</div>
 
 				<BoardTable board={board} />

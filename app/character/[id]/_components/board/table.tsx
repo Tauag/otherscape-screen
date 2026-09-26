@@ -43,9 +43,10 @@ export function BoardTable({ board }: { board: RollBoard }) {
 	}
 
 	return (
+		// 62px matches BoardBar's fixed h-[62px] header
 		<aside
 			aria-label="The table"
-			className="flex min-h-0 w-[340px] shrink-0 flex-col border-l border-edge bg-chrome/40 xl:w-[370px]"
+			className="flex w-[340px] shrink-0 flex-col border-l border-edge bg-chrome/40 xl:w-[370px] lg:sticky lg:top-0 lg:h-[calc(100dvh-62px)]"
 		>
 			<div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
 				<div className="flex flex-col gap-2">

@@ -18,7 +18,7 @@ export function NpcSection() {
 	}
 
 	return (
-		<div className="flex min-h-0 flex-col gap-3 lg:flex-1">
+		<div className="flex flex-col gap-3">
 			<LabelAction label={`NPCs · ${campaign.npcs.length}`} onClick={addNpc}>
 				+ New NPC
 			</LabelAction>
@@ -26,7 +26,7 @@ export function NpcSection() {
 			{campaign.npcs.length === 0 ? (
 				<p className="font-sans text-sm text-dim">No NPCs yet.</p>
 			) : (
-				<div className="grid gap-4 sm:grid-cols-2 lg:min-h-0 lg:flex-1 lg:auto-rows-min lg:overflow-y-auto lg:pr-1">
+				<div className="grid gap-4 sm:grid-cols-2">
 					{campaign.npcs.map((npc) => (
 						<NpcCard key={npc.id} npc={npc} autoFocus={npc.id === added} />
 					))}
