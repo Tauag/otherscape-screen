@@ -55,7 +55,7 @@ export function SheetMenu({
 					>
 						<Menu.Popup className={MENU_POPUP}>
 							<Menu.Item className={MENU_ITEM} render={<Link href="/" />}>
-								All characters
+								See all characters
 							</Menu.Item>
 							<Menu.Item
 								className={MENU_ITEM}
