@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
+import { DiscordToggle } from "@/app/admin/users/[userId]/_components/discord-toggle";
 import { RosterAppBar } from "@/components/roster-app-bar";
 import { LABEL } from "@/components/styles";
 import { accountName } from "@/lib/account-name";
@@ -13,6 +14,7 @@ type CharacterRow = {
 	name: string | null;
 	essence: string | null;
 	updated_at: string;
+	discord_enabled: boolean;
 };
 
 type InvitedUser = { user_id: string | null; display_name: string | null };
@@ -26,7 +28,7 @@ export default async function AdminUserPage({
 	const [{ data: characters, error }, { data: invited }] = await Promise.all([
 		supabase
 			.from("characters")
-			.select("id, name, essence, updated_at")
+			.select("id, name, essence, updated_at, discord_enabled")
 			.eq("owner", userId)
 			.order("updated_at", { ascending: false })
 			.overrideTypes<CharacterRow[], { merge: false }>(),
@@ -57,22 +59,35 @@ export default async function AdminUserPage({
 				)}
 
 				<div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
-					{characters?.map((character) => (
-						<Link
-							key={character.id}
-							href={`/admin/users/${userId}/${character.id}`}
-							className="flex flex-col gap-0.5 rounded-md border border-border bg-surface px-3 py-2.5"
-						>
-							<span className="font-sans text-sm text-text">
-								{character.name?.trim() || "Unnamed"}
-							</span>
-							<span className={LABEL}>
-								{character.essence || "No essence"}
-								{" · edited "}
-								{relativeTime(character.updated_at)}
-							</span>
-						</Link>
-					))}
+					{characters?.map((character) => {
+						const name = character.name?.trim() || "Unnamed";
+						return (
+							<div
+								key={character.id}
+								className="flex flex-col gap-1 rounded-md border border-border bg-surface px-3 py-2.5"
+							>
+								<Link
+									href={`/admin/users/${userId}/${character.id}`}
+									className="flex flex-col gap-0.5"
+								>
+									<span className="font-sans text-sm text-text">{name}</span>
+									<span className={LABEL}>
+										{character.essence || "No essence"}
+										{" · edited "}
+										{relativeTime(character.updated_at)}
+									</span>
+								</Link>
+								<div className="flex items-center justify-between gap-2 border-t border-border pt-1">
+									<span className={LABEL}>Enable Discord rolls</span>
+									<DiscordToggle
+										characterId={character.id}
+										name={name}
+										enabled={character.discord_enabled}
+									/>
+								</div>
+							</div>
+						);
+					})}
 				</div>
 			</div>
 		</main>

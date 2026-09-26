@@ -33,17 +33,20 @@ export async function rollDice(
 	// RLS returns the row only to a caller who may open this character.
 	const { data: row } = await supabase
 		.from("characters")
-		.select("name")
+		.select("name, discord_enabled")
 		.eq("id", characterId)
 		.maybeSingle()
-		.overrideTypes<{ name: string | null }, { merge: false }>();
+		.overrideTypes<
+			{ name: string | null; discord_enabled: boolean },
+			{ merge: false }
+		>();
 	if (!row) return { error: "Could not find that character." };
 
 	const dice: Dice = [randomInt(1, 7), randomInt(1, 7)];
 
 	let posted = false;
 	const webhook = process.env.DISCORD_WEBHOOK_URL;
-	if (webhook) {
+	if (webhook && row.discord_enabled) {
 		try {
 			const response = await fetch(webhook, {
 				method: "POST",
