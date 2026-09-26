@@ -108,3 +108,28 @@ body {
 button:not(:disabled) {
 	cursor: pointer;
 }
+
+/* Windows/Linux show a permanent classic scrollbar by default; this hides
+ * every scrollable element's thumb until hover, closer to macOS's overlay
+ * look, instead of tagging each scroll container by hand. */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: transparent transparent;
+}
+*:hover {
+	scrollbar-color: var(--color-raised) transparent;
+}
+*::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+	background-color: transparent;
+	border-radius: 9999px;
+}
+*:hover::-webkit-scrollbar-thumb {
+	background-color: var(--color-raised);
+}
