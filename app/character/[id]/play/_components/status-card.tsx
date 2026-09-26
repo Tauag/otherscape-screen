@@ -30,34 +30,49 @@ export function StatusCard({
 }) {
 	const { dispatch } = useCharacter();
 	const [limitOpen, setLimitOpen] = useState(false);
+	const [renaming, setRenaming] = useState(autoFocus);
 	const tier = status.tiers.lastIndexOf(true) + 1;
 	const named = status.name.trim() || "this status";
 	const stopForToggle = onToggle
 		? (event: { stopPropagation: () => void }) => event.stopPropagation()
 		: undefined;
 
-	const name = (className: string) => (
-		<Input
-			type="text"
-			autoComplete="off"
-			value={status.name}
-			autoFocus={autoFocus}
-			onClick={stopForToggle}
-			onChange={(event) =>
-				dispatch({
-					type: "renameStatus",
-					id: status.id,
-					name: event.target.value,
-				})
-			}
-			aria-label="Status name"
-			placeholder="Name this status"
-			className={`${NAME} ${className}`}
-		/>
-	);
+	const name = (className: string) =>
+		renaming ? (
+			<Input
+				type="text"
+				autoComplete="off"
+				value={status.name}
+				autoFocus
+				onClick={stopForToggle}
+				onBlur={() => setRenaming(false)}
+				onKeyDown={(event) => {
+					if (event.key === "Enter") setRenaming(false);
+				}}
+				onChange={(event) =>
+					dispatch({
+						type: "renameStatus",
+						id: status.id,
+						name: event.target.value,
+					})
+				}
+				aria-label="Status name"
+				placeholder="Name this status"
+				className={`${NAME} ${className}`}
+			/>
+		) : (
+			<span
+				className={`${NAME} ${className} ${status.name ? "" : "text-dim"}`}
+			>
+				{status.name || "Name this status"}
+			</span>
+		);
 
 	const menu = (className: string) => (
 		<RowMenu label={`Menu for ${named}`} className={className}>
+			<Menu.Item className={MENU_ITEM} onClick={() => setRenaming(true)}>
+				Rename
+			</Menu.Item>
 			<Menu.Item
 				className={MENU_ITEM}
 				onClick={() =>
@@ -168,7 +183,7 @@ export function StatusCard({
 			data-valence={status.valence}
 			className={
 				onToggle
-					? `flex items-stretch gap-2 rounded-[5px] border border-l-[3px] border-l-[var(--hue)] py-2 pr-2 pl-2.5 ${tone}`
+					? `flex cursor-pointer items-stretch gap-2 rounded-[5px] border border-l-[3px] border-l-[var(--hue)] py-2 pr-2 pl-2.5 ${tone}`
 					: "flex items-stretch gap-2 rounded-[5px] border border-[var(--hue)]/30 border-l-[3px] border-l-[var(--hue)] bg-surface py-2 pr-2 pl-2.5"
 			}
 		>
