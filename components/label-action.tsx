@@ -10,7 +10,9 @@ const CLASSNAME =
 type LabelActionProps = {
 	label: string;
 	onClick?: () => void;
-	children: React.ReactNode;
+	/** Optional so `render={<LabelAction label="..." />}` type-checks; the
+	 *  rendering trigger (e.g. Dialog.Trigger) supplies the real children. */
+	children?: React.ReactNode;
 	href?: string;
 };
 

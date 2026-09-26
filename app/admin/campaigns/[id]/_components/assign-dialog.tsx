@@ -6,6 +6,7 @@ import { Dialog } from "@base-ui/react/dialog";
 import { Input } from "@base-ui/react/input";
 import { useActionState, useState } from "react";
 import { assignCharacters } from "@/app/admin/campaigns/_lib/actions";
+import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 
 type Candidate = {
@@ -20,9 +21,11 @@ type Group = { player: string; characters: Candidate[] };
 
 export function AssignDialog({
 	campaignId,
+	assignedCount,
 	groups,
 }: {
 	campaignId: string;
+	assignedCount: number;
 	groups: Group[];
 }) {
 	const [open, setOpen] = useState(false);
@@ -57,8 +60,10 @@ export function AssignDialog({
 					if (!next) reset();
 				}}
 			>
-				<Dialog.Trigger className="flex min-h-11 items-center justify-center gap-2 rounded-sm border border-dashed border-pip font-mono text-[10px] tracking-[0.08em] text-dim uppercase">
-					+ Assign characters
+				<Dialog.Trigger
+					render={<LabelAction label={`Characters · ${assignedCount}`} />}
+				>
+					+ Character
 				</Dialog.Trigger>
 
 				<Dialog.Portal>

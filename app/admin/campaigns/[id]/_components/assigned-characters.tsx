@@ -1,8 +1,11 @@
+import { Menu } from "@base-ui/react/menu";
 import Link from "next/link";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
 import { AssignDialog } from "@/app/admin/campaigns/[id]/_components/assign-dialog";
+import { CharacterSheetDialog } from "@/app/admin/campaigns/[id]/_components/character-sheet-dialog";
 import { RemoveCharacterForm } from "@/app/admin/campaigns/[id]/_components/remove-character-form";
-import { LABEL } from "@/components/styles";
+import { RowMenu } from "@/components/row-menu";
+import { LABEL, MENU_ITEM } from "@/components/styles";
 import { migrate } from "@/lib/character/migrate";
 
 type InvitedUser = {
@@ -87,9 +90,11 @@ export async function AssignedCharacters({
 
 	return (
 		<section className="flex flex-col gap-2">
-			<div className="flex items-center justify-between gap-2">
-				<span className={LABEL}>Characters · {assigned.length}</span>
-			</div>
+			<AssignDialog
+				campaignId={campaignId}
+				assignedCount={assigned.length}
+				groups={groups}
+			/>
 
 			{assigned.map((character) => {
 				const name = character.name?.trim() || "Unnamed";
@@ -101,10 +106,7 @@ export async function AssignedCharacters({
 						key={character.id}
 						className="flex items-center rounded-md border border-border bg-surface"
 					>
-						<Link
-							href={`/admin/campaigns/${campaignId}/characters/${character.id}`}
-							className="flex min-w-0 flex-1 items-center gap-2.5 px-2.5 py-2"
-						>
+						<CharacterSheetDialog character={migrated} player={player}>
 							<span
 								aria-hidden="true"
 								className="grid size-[34px] shrink-0 place-items-center rounded-full bg-edge font-display text-[13px] font-bold text-quiet"
@@ -132,18 +134,24 @@ export async function AssignedCharacters({
 									))}
 								</span>
 							)}
-						</Link>
+						</CharacterSheetDialog>
 
-						<RemoveCharacterForm
-							campaignId={campaignId}
-							characterId={character.id}
-							name={name}
-						/>
+						<RowMenu label={`Menu for ${name}`}>
+							<Menu.Item
+								className={MENU_ITEM}
+								render={<Link href={`/character/${character.id}`} />}
+							>
+								Edit
+							</Menu.Item>
+							<RemoveCharacterForm
+								campaignId={campaignId}
+								characterId={character.id}
+								name={name}
+							/>
+						</RowMenu>
 					</div>
 				);
 			})}
-
-			<AssignDialog campaignId={campaignId} groups={groups} />
 		</section>
 	);
 }

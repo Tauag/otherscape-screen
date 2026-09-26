@@ -11,17 +11,20 @@ export function ShareSheet({
 	character,
 	subtitle = "Read-only",
 	header,
+	className = "lg:flex lg:h-dvh lg:min-h-0 lg:flex-col lg:overflow-y-auto",
 }: {
 	character: Character;
 	/** e.g. "Read-only · Sam's character" for the admin's campaign roster view. */
 	subtitle?: string;
 	/** Extra content (e.g. back/edit links) that sits above the sheet and shares its scroll area. */
 	header?: ReactNode;
+	/** Outer wrapper classes; override when an ancestor (e.g. a dialog popup) should own the scrollbar instead. */
+	className?: string;
 }) {
 	return (
 		// lg: bounded to the viewport so this div, not the document (which the
 		// root layout disables scroll on), owns the scrollbar.
-		<div className="lg:flex lg:h-dvh lg:min-h-0 lg:flex-col lg:overflow-y-auto">
+		<div className={className}>
 			{header}
 			<main className="mx-auto grid w-full max-w-md flex-1 grid-cols-1 items-start gap-4 px-5 pt-6 pb-8 md:max-w-3xl md:grid-cols-2 xl:max-w-5xl xl:grid-cols-3">
 				<header className="col-span-full flex flex-col gap-[3px]">

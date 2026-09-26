@@ -5,6 +5,7 @@ import { Input } from "@base-ui/react/input";
 import { Toggle } from "@base-ui/react/toggle";
 import { ToggleGroup } from "@base-ui/react/toggle-group";
 import { useId, useState } from "react";
+import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 import type { StoryTag, Valence } from "@/lib/character/types";
 import { useCampaign } from "../_hooks/use-campaign";
@@ -12,8 +13,6 @@ import { StoryTagRow } from "./story-tag-row";
 
 const SEGMENT =
 	"min-h-11 flex-1 px-3 font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
-const ADD_TRIGGER =
-	"flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-dashed border-pip font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
 
 /**
  * A list of story tags, plus the "New story tag" form. `npcId` is the only
@@ -53,6 +52,15 @@ export function StoryTagList({
 
 	return (
 		<div className="flex flex-col gap-2">
+			{collapsed &&
+				(open ? (
+					<span className={LABEL}>Story tags</span>
+				) : (
+					<LabelAction label="Story tags" onClick={() => setOpen(true)}>
+						+ Story tag
+					</LabelAction>
+				))}
+
 			{tags.length === 0 ? (
 				<p className="font-sans text-sm text-dim">No story tags yet.</p>
 			) : (
@@ -120,15 +128,7 @@ export function StoryTagList({
 						</Button>
 					) : null}
 				</form>
-			) : (
-				<Button
-					type="button"
-					onClick={() => setOpen(true)}
-					className={ADD_TRIGGER}
-				>
-					+ Story tag
-				</Button>
-			)}
+			) : null}
 		</div>
 	);
 }

@@ -6,15 +6,14 @@ import { Menu } from "@base-ui/react/menu";
 import { useState } from "react";
 import type { Npc } from "@/app/admin/campaigns/_lib/types";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { LabelAction } from "@/components/label-action";
 import { RowMenu } from "@/components/row-menu";
-import { CARD, CARD_BODY, LABEL, MENU_ITEM } from "@/components/styles";
+import { CARD, CARD_BODY, MENU_ITEM } from "@/components/styles";
 import { useCampaign } from "../_hooks/use-campaign";
 import { NpcStatusRow } from "./npc-status-row";
 import { StoryTagList } from "./story-tag-list";
 
 const STRIPE = "w-[3px] shrink-0 bg-quiet";
-const ADD =
-	"flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-dashed border-pip font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
 
 export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 	const { dispatch } = useCampaign();
@@ -32,7 +31,7 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 		<article className={CARD}>
 			<div aria-hidden="true" className={STRIPE} />
 			<div className={CARD_BODY}>
-				<div className="flex items-start justify-between gap-2">
+				<div className="flex items-center justify-between gap-2">
 					<div className="flex min-w-0 flex-1 flex-col gap-1">
 						<span className="font-display text-[10px] font-semibold tracking-[0.17em] text-dim uppercase">
 							NPC
@@ -81,7 +80,9 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 				/>
 
 				<div className="flex flex-col gap-1.5">
-					<span className={LABEL}>Statuses</span>
+					<LabelAction label="Statuses" onClick={addStatus}>
+						+ Status
+					</LabelAction>
 					{npc.statuses.length === 0 ? (
 						<p className="font-sans text-[13px] text-dim">No statuses.</p>
 					) : (
@@ -96,13 +97,9 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 							))}
 						</ul>
 					)}
-					<Button type="button" onClick={addStatus} className={ADD}>
-						+ Status
-					</Button>
 				</div>
 
 				<div className="flex flex-col gap-1.5">
-					<span className={LABEL}>Story tags</span>
 					<StoryTagList tags={npc.storyTags} npcId={npc.id} collapsed />
 				</div>
 			</div>
