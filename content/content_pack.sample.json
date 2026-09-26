@@ -1,0 +1,941 @@
+{
+  "themebooks": [
+    {
+      "id": "affiliation",
+      "name": "Affiliation",
+      "type": "Self",
+      "summary": "One-line summary of the Affiliation themebook.",
+      "concept": "A sentence or two on what a Affiliation theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Affiliation — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Affiliation — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Affiliation — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Affiliation — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Affiliation — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Affiliation — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Affiliation — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Affiliation — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Affiliation — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Affiliation — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Affiliation — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Affiliation — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Affiliation — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Affiliation — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Affiliation special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Affiliation special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Affiliation special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Affiliation special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Affiliation special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "assets",
+      "name": "Assets",
+      "type": "Self",
+      "summary": "One-line summary of the Assets themebook.",
+      "concept": "A sentence or two on what a Assets theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Assets — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Assets — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Assets — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Assets — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Assets — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Assets — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Assets — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Assets — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Assets — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Assets — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Assets — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Assets — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Assets — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Assets — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Assets special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Assets special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Assets special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Assets special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Assets special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "expertise",
+      "name": "Expertise",
+      "type": "Self",
+      "summary": "One-line summary of the Expertise themebook.",
+      "concept": "A sentence or two on what a Expertise theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Expertise — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Expertise — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Expertise — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Expertise — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Expertise — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Expertise — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Expertise — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Expertise — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Expertise — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Expertise — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Expertise — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Expertise — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Expertise — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Expertise — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Expertise special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Expertise special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Expertise special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Expertise special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Expertise special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "horizon",
+      "name": "Horizon",
+      "type": "Self",
+      "summary": "One-line summary of the Horizon themebook.",
+      "concept": "A sentence or two on what a Horizon theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Horizon — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Horizon — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Horizon — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Horizon — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Horizon — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Horizon — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Horizon — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Horizon — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Horizon — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Horizon — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Horizon — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Horizon — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Horizon — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Horizon — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Horizon special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Horizon special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Horizon special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Horizon special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Horizon special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "personality",
+      "name": "Personality",
+      "type": "Self",
+      "summary": "One-line summary of the Personality themebook.",
+      "concept": "A sentence or two on what a Personality theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Personality — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Personality — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Personality — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Personality — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Personality — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Personality — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Personality — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Personality — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Personality — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Personality — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Personality — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Personality — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Personality — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Personality — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Personality special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Personality special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Personality special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Personality special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Personality special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "troubled-past",
+      "name": "Troubled Past",
+      "type": "Self",
+      "summary": "One-line summary of the Troubled Past themebook.",
+      "concept": "A sentence or two on what a Troubled Past theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Troubled Past — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Troubled Past — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Troubled Past — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Troubled Past — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Troubled Past — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Troubled Past — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Troubled Past — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Troubled Past — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Troubled Past — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Troubled Past — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Troubled Past — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Troubled Past — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Troubled Past — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Troubled Past — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Troubled Past special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Troubled Past special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Troubled Past special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Troubled Past special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Troubled Past special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "artifact",
+      "name": "Artifact",
+      "type": "Mythos",
+      "summary": "One-line summary of the Artifact themebook.",
+      "concept": "A sentence or two on what a Artifact theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Artifact — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Artifact — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Artifact — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Artifact — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Artifact — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Artifact — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Artifact — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Artifact — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Artifact — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Artifact — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Artifact — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Artifact — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Artifact — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Artifact — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Artifact special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Artifact special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Artifact special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Artifact special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Artifact special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "companion",
+      "name": "Companion",
+      "type": "Mythos",
+      "summary": "One-line summary of the Companion themebook.",
+      "concept": "A sentence or two on what a Companion theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Companion — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Companion — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Companion — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Companion — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Companion — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Companion — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Companion — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Companion — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Companion — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Companion — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Companion — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Companion — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Companion — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Companion — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Companion special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Companion special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Companion special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Companion special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Companion special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "esoterica",
+      "name": "Esoterica",
+      "type": "Mythos",
+      "summary": "One-line summary of the Esoterica themebook.",
+      "concept": "A sentence or two on what a Esoterica theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Esoterica — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Esoterica — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Esoterica — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Esoterica — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Esoterica — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Esoterica — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Esoterica — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Esoterica — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Esoterica — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Esoterica — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Esoterica — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Esoterica — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Esoterica — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Esoterica — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Esoterica special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Esoterica special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Esoterica special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Esoterica special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Esoterica special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "exposure",
+      "name": "Exposure",
+      "type": "Mythos",
+      "summary": "One-line summary of the Exposure themebook.",
+      "concept": "A sentence or two on what a Exposure theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Exposure — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Exposure — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Exposure — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Exposure — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Exposure — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Exposure — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Exposure — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Exposure — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Exposure — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Exposure — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Exposure — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Exposure — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Exposure — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Exposure — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Exposure special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Exposure special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Exposure special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Exposure special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Exposure special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "augmentation",
+      "name": "Augmentation",
+      "type": "Noise",
+      "summary": "One-line summary of the Augmentation themebook.",
+      "concept": "A sentence or two on what a Augmentation theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Augmentation — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Augmentation — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Augmentation — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Augmentation — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Augmentation — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Augmentation — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Augmentation — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Augmentation — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Augmentation — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Augmentation — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Augmentation — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Augmentation — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Augmentation — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Augmentation — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Augmentation special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Augmentation special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Augmentation special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Augmentation special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Augmentation special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "cutting-edge",
+      "name": "Cutting Edge",
+      "type": "Noise",
+      "summary": "One-line summary of the Cutting Edge themebook.",
+      "concept": "A sentence or two on what a Cutting Edge theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Cutting Edge — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Cutting Edge — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Cutting Edge — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Cutting Edge — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Cutting Edge — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Cutting Edge — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Cutting Edge — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Cutting Edge — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Cutting Edge — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Cutting Edge — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Cutting Edge — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Cutting Edge — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Cutting Edge — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Cutting Edge — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Cutting Edge special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Cutting Edge special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Cutting Edge special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Cutting Edge special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Cutting Edge special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "cyberspace",
+      "name": "Cyberspace",
+      "type": "Noise",
+      "summary": "One-line summary of the Cyberspace themebook.",
+      "concept": "A sentence or two on what a Cyberspace theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Cyberspace — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Cyberspace — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Cyberspace — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Cyberspace — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Cyberspace — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Cyberspace — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Cyberspace — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Cyberspace — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Cyberspace — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Cyberspace — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Cyberspace — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Cyberspace — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Cyberspace — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Cyberspace — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Cyberspace special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Cyberspace special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Cyberspace special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Cyberspace special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Cyberspace special 5 — replace with the rulebook's wording."
+        }
+      ]
+    },
+    {
+      "id": "drones",
+      "name": "Drones",
+      "type": "Noise",
+      "summary": "One-line summary of the Drones themebook.",
+      "concept": "A sentence or two on what a Drones theme represents and when to take it.",
+      "power_tag_questions": {
+        "A": "Sample power tag question A for Drones — replace with the rulebook's wording.",
+        "B": "Sample power tag question B for Drones — replace with the rulebook's wording.",
+        "C": "Sample power tag question C for Drones — replace with the rulebook's wording.",
+        "D": "Sample power tag question D for Drones — replace with the rulebook's wording.",
+        "E": "Sample power tag question E for Drones — replace with the rulebook's wording.",
+        "F": "Sample power tag question F for Drones — replace with the rulebook's wording.",
+        "G": "Sample power tag question G for Drones — replace with the rulebook's wording.",
+        "H": "Sample power tag question H for Drones — replace with the rulebook's wording.",
+        "I": "Sample power tag question I for Drones — replace with the rulebook's wording.",
+        "J": "Sample power tag question J for Drones — replace with the rulebook's wording."
+      },
+      "weakness_tag_questions": {
+        "A": "Sample weakness tag question A for Drones — replace with the rulebook's wording.",
+        "B": "Sample weakness tag question B for Drones — replace with the rulebook's wording.",
+        "C": "Sample weakness tag question C for Drones — replace with the rulebook's wording.",
+        "D": "Sample weakness tag question D for Drones — replace with the rulebook's wording."
+      },
+      "specials": [
+        {
+          "name": "Sample Special 1",
+          "text": "Placeholder rule text for Drones special 1 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 2",
+          "text": "Placeholder rule text for Drones special 2 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 3",
+          "text": "Placeholder rule text for Drones special 3 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 4",
+          "text": "Placeholder rule text for Drones special 4 — replace with the rulebook's wording."
+        },
+        {
+          "name": "Sample Special 5",
+          "text": "Placeholder rule text for Drones special 5 — replace with the rulebook's wording."
+        }
+      ]
+    }
+  ],
+  "loadout_specials": [
+    {
+      "name": "Sample Special 1",
+      "text": "Placeholder rule text for Loadout special 1 — replace with the rulebook's wording."
+    },
+    {
+      "name": "Sample Special 2",
+      "text": "Placeholder rule text for Loadout special 2 — replace with the rulebook's wording."
+    },
+    {
+      "name": "Sample Special 3",
+      "text": "Placeholder rule text for Loadout special 3 — replace with the rulebook's wording."
+    },
+    {
+      "name": "Sample Special 4",
+      "text": "Placeholder rule text for Loadout special 4 — replace with the rulebook's wording."
+    },
+    {
+      "name": "Sample Special 5",
+      "text": "Placeholder rule text for Loadout special 5 — replace with the rulebook's wording."
+    },
+    {
+      "name": "Sample Special 6",
+      "text": "Placeholder rule text for Loadout special 6 — replace with the rulebook's wording."
+    },
+    {
+      "name": "Sample Special 7",
+      "text": "Placeholder rule text for Loadout special 7 — replace with the rulebook's wording."
+    },
+    {
+      "name": "Sample Special 8",
+      "text": "Placeholder rule text for Loadout special 8 — replace with the rulebook's wording."
+    }
+  ],
+  "crew_theme": {
+    "power_tag_questions": {
+      "A": "Sample power tag question A for the Crew theme — replace with the rulebook's wording.",
+      "B": "Sample power tag question B for the Crew theme — replace with the rulebook's wording.",
+      "C": "Sample power tag question C for the Crew theme — replace with the rulebook's wording.",
+      "D": "Sample power tag question D for the Crew theme — replace with the rulebook's wording.",
+      "E": "Sample power tag question E for the Crew theme — replace with the rulebook's wording.",
+      "F": "Sample power tag question F for the Crew theme — replace with the rulebook's wording.",
+      "G": "Sample power tag question G for the Crew theme — replace with the rulebook's wording.",
+      "H": "Sample power tag question H for the Crew theme — replace with the rulebook's wording.",
+      "I": "Sample power tag question I for the Crew theme — replace with the rulebook's wording.",
+      "J": "Sample power tag question J for the Crew theme — replace with the rulebook's wording."
+    },
+    "weakness_tag_questions": {
+      "A": "Sample weakness tag question A for the Crew theme — replace with the rulebook's wording.",
+      "B": "Sample weakness tag question B for the Crew theme — replace with the rulebook's wording.",
+      "C": "Sample weakness tag question C for the Crew theme — replace with the rulebook's wording.",
+      "D": "Sample weakness tag question D for the Crew theme — replace with the rulebook's wording."
+    },
+    "specials": [
+      {
+        "name": "Sample Special 1",
+        "text": "Placeholder rule text for Crew special 1 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 2",
+        "text": "Placeholder rule text for Crew special 2 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 3",
+        "text": "Placeholder rule text for Crew special 3 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 4",
+        "text": "Placeholder rule text for Crew special 4 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 5",
+        "text": "Placeholder rule text for Crew special 5 — replace with the rulebook's wording."
+      }
+    ]
+  },
+  "reference": {
+    "effects": [
+      {
+        "name": "Attack",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Attack effect."
+      },
+      {
+        "name": "Disrupt",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Disrupt effect."
+      },
+      {
+        "name": "Influence",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Influence effect."
+      },
+      {
+        "name": "Weaken",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Weaken effect."
+      },
+      {
+        "name": "Bestow",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Bestow effect."
+      },
+      {
+        "name": "Create",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Create effect."
+      },
+      {
+        "name": "Enhance",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Enhance effect."
+      },
+      {
+        "name": "Restore",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Restore effect."
+      },
+      {
+        "name": "Advance",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Advance effect."
+      },
+      {
+        "name": "Set Back",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Set Back effect."
+      },
+      {
+        "name": "Discover",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Discover effect."
+      },
+      {
+        "name": "Extra Feat",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Extra Feat effect."
+      }
+    ],
+    "mitigation": [
+      {
+        "name": "Sample Mitigation",
+        "cost": "1 Power",
+        "text": "Placeholder rule text for the Sample Mitigation effect."
+      }
+    ],
+    "scale": [
+      {
+        "name": "Local",
+        "text": "Placeholder rule text for Local."
+      },
+      {
+        "name": "Citywide",
+        "text": "Placeholder rule text for Citywide."
+      },
+      {
+        "name": "National",
+        "text": "Placeholder rule text for National."
+      },
+      {
+        "name": "Global",
+        "text": "Placeholder rule text for Global."
+      },
+      {
+        "name": "Cosmic",
+        "text": "Placeholder rule text for Cosmic."
+      }
+    ],
+    "power_options": [
+      {
+        "name": "Burning a tag",
+        "text": "Placeholder rule text for Burning a tag."
+      },
+      {
+        "name": "Pushing a 10+",
+        "text": "Placeholder rule text for Pushing a 10+."
+      },
+      {
+        "name": "Going Out In a Blaze",
+        "text": "Placeholder rule text for Going Out In a Blaze."
+      }
+    ],
+    "blaze": [
+      {
+        "name": "Going Out In a Blaze — rolling",
+        "text": "Placeholder rule text for Going Out In a Blaze — rolling."
+      },
+      {
+        "name": "Going Out In a Blaze — degree of sacrifice",
+        "text": "Placeholder rule text for Going Out In a Blaze — degree of sacrifice."
+      }
+    ]
+  },
+  "evolution": {
+    "moments": [
+      {
+        "name": "Create a new type of Essence",
+        "text": "Placeholder rule text for Create a new type of Essence."
+      },
+      {
+        "name": "Create another broad power tag",
+        "text": "Placeholder rule text for Create another broad power tag."
+      },
+      {
+        "name": "Gain a Veteran Special",
+        "text": "Placeholder rule text for Gain a Veteran Special."
+      },
+      {
+        "name": "Ride off into the sunset",
+        "text": "Placeholder rule text for Ride off into the sunset."
+      },
+      {
+        "name": "Sunder the cosmology",
+        "text": "Placeholder rule text for Sunder the cosmology."
+      },
+      {
+        "name": "Total Reconstitution",
+        "text": "Placeholder rule text for Total Reconstitution."
+      }
+    ],
+    "veteran_specials": [
+      {
+        "name": "Sample Special 1",
+        "text": "Placeholder rule text for Veteran special 1 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 2",
+        "text": "Placeholder rule text for Veteran special 2 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 3",
+        "text": "Placeholder rule text for Veteran special 3 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 4",
+        "text": "Placeholder rule text for Veteran special 4 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 5",
+        "text": "Placeholder rule text for Veteran special 5 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 6",
+        "text": "Placeholder rule text for Veteran special 6 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 7",
+        "text": "Placeholder rule text for Veteran special 7 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 8",
+        "text": "Placeholder rule text for Veteran special 8 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 9",
+        "text": "Placeholder rule text for Veteran special 9 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 10",
+        "text": "Placeholder rule text for Veteran special 10 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 11",
+        "text": "Placeholder rule text for Veteran special 11 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 12",
+        "text": "Placeholder rule text for Veteran special 12 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 13",
+        "text": "Placeholder rule text for Veteran special 13 — replace with the rulebook's wording."
+      },
+      {
+        "name": "Sample Special 14",
+        "text": "Placeholder rule text for Veteran special 14 — replace with the rulebook's wording."
+      }
+    ]
+  }
+}
