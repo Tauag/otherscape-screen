@@ -58,7 +58,7 @@ export default async function AdminUserPage({
 					<p className="font-sans text-sm text-dim">No characters yet.</p>
 				)}
 
-				<div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 					{characters?.map((character) => {
 						const name = character.name?.trim() || "Unnamed";
 						return (
