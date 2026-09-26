@@ -25,6 +25,7 @@ export function RemoveCharacterForm({
 				<input type="hidden" name="campaignId" value={campaignId} />
 				<input type="hidden" name="characterId" value={characterId} />
 				<Menu.Item
+					nativeButton
 					className={`${MENU_ITEM} text-danger-text`}
 					render={
 						<Button

@@ -2,9 +2,10 @@ import { Chip } from "@/components/chip";
 import { Pips } from "@/components/pips";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import type { Loadout } from "@/lib/character/types";
-import { specialName } from "@/lib/pickers";
+import { specialName, specialText } from "@/lib/pickers";
 import { UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
+import { SpecialTooltip } from "@/components/special-tooltip";
 
 export function LoadoutBlock({ loadout }: { loadout: Loadout }) {
 	const spend = loadoutSpend(loadout);
@@ -88,7 +89,9 @@ export function LoadoutBlock({ loadout }: { loadout: Loadout }) {
 					<ul className="flex flex-col gap-1">
 						{loadout.specials.map((special) => (
 							<li key={special} className="font-sans text-[13px] text-dim">
-								{specialName(special)}
+								<SpecialTooltip text={specialText(special)}>
+									{specialName(special)}
+								</SpecialTooltip>
 							</li>
 						))}
 					</ul>

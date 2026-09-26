@@ -6,7 +6,8 @@ import type {
 	RollGroup,
 	RollTag,
 } from "@/app/character/[id]/_lib/roll-selection";
-import { specialName } from "@/lib/pickers";
+import { specialName, specialText } from "@/lib/pickers";
+import { SpecialTooltip } from "@/components/special-tooltip";
 
 /** The shell every board panel shares: card chrome, header label, tag list,
  *  edit link, and quote line. Composition only, over the same leaf components
@@ -59,9 +60,11 @@ export function SpecialsList({ specials }: { specials: string[] }) {
 					<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-[var(--hue)]/80 uppercase">
 						Special
 					</span>
-					<span className="font-sans text-[13px] text-[var(--hue-text)]">
-						{specialName(special)}
-					</span>
+					<SpecialTooltip text={specialText(special)}>
+						<span className="font-sans text-[13px] text-[var(--hue-text)]">
+							{specialName(special)}
+						</span>
+					</SpecialTooltip>
 				</li>
 			))}
 		</ul>

@@ -3,11 +3,12 @@ import { Pips } from "@/components/pips";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
 import type { CrewRelationship, CrewTheme } from "@/lib/character/types";
-import { specialName } from "@/lib/pickers";
+import { specialName, specialText } from "@/lib/pickers";
 import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
+import { SpecialTooltip } from "@/components/special-tooltip";
 
 export function CrewBlock({
 	crew,
@@ -97,9 +98,11 @@ export function CrewBlock({
 								<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-[var(--hue)]/80 uppercase">
 									Special
 								</span>
-								<span className="font-sans text-[13px] text-[var(--hue-text)]">
-									{specialName(special)}
-								</span>
+								<SpecialTooltip text={specialText(special)}>
+									<span className="font-sans text-[13px] text-[var(--hue-text)]">
+										{specialName(special)}
+									</span>
+								</SpecialTooltip>
 							</li>
 						))}
 					</ul>
