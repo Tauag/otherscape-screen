@@ -209,13 +209,25 @@ const TRACK_LENGTH: Record<TrackName, number> = {
 /**
  * One button, one click, one more box. A full track wraps back to empty on the
  * next click, since that's the only way off a Decay track that stays full
- * until the player loses the theme.
+ * until the player loses the theme. A filled Upgrade track also owes one more
+ * Upgrade - `pendingUpgrades` is the record of that, since the track itself
+ * clears back to 0 and can't carry it.
  */
 export function markTrack(theme: Theme, track: TrackName): Theme {
 	const marked = theme[track];
 	const next = marked >= TRACK_LENGTH[track] ? 0 : ((marked + 1) as MarkCount);
-	// A filled Upgrade track clears itself: the three points buy the Upgrade that
-	// the dialog then takes.
-	const cleared = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
-	return { ...theme, [track]: cleared ? 0 : next };
+	const filled = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
+	return {
+		...theme,
+		[track]: filled ? 0 : next,
+		pendingUpgrades: filled
+			? theme.pendingUpgrades + 1
+			: theme.pendingUpgrades,
+	};
+}
+
+/** Resolves one owed Upgrade, whichever the player picks for it: a power tag
+ *  or a theme special. Both spend the same point, so both call this. */
+export function takeThemeUpgrade(theme: Theme): Theme {
+	return { ...theme, pendingUpgrades: Math.max(0, theme.pendingUpgrades - 1) };
 }

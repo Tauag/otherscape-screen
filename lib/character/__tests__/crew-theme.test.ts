@@ -8,6 +8,7 @@ import {
 	isCrewNascent,
 	markCrewTrack,
 	moveCrewTag,
+	takeCrewUpgrade,
 } from "../crew-theme.ts";
 import type { CrewTheme } from "../types.ts";
 import { sample } from "./sample.ts";
@@ -68,4 +69,22 @@ test("the Upgrade track wraps to empty once it clears, same as a theme's", () =>
 	const full: CrewTheme = { ...crew, upgrade: 2 };
 	assert.equal(markCrewTrack(full, "upgrade").upgrade, 0);
 	assert.equal(markCrewTrack(crew, "decay").decay, crew.decay + 1);
+});
+
+test("filling the crew Upgrade track owes one Upgrade, same as a theme's", () => {
+	const full: CrewTheme = { ...crew, upgrade: 2, pendingUpgrades: 0 };
+	const filled = markCrewTrack(full, "upgrade");
+	assert.equal(filled.pendingUpgrades, 1);
+	assert.equal(markCrewTrack(crew, "decay").pendingUpgrades, crew.pendingUpgrades);
+});
+
+test("taking a crew Upgrade resolves one and never goes below zero", () => {
+	assert.equal(
+		takeCrewUpgrade({ ...crew, pendingUpgrades: 2 }).pendingUpgrades,
+		1,
+	);
+	assert.equal(
+		takeCrewUpgrade({ ...crew, pendingUpgrades: 0 }).pendingUpgrades,
+		0,
+	);
 });

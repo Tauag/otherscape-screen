@@ -215,11 +215,19 @@ export function adjustLoadoutPower(loadout: Loadout, delta: number): Loadout {
 	};
 }
 
+/** Same pendingUpgrades ledger as a theme's Upgrade track (theme.ts's markTrack). */
 export function markLoadoutUpgrade(loadout: Loadout): Loadout {
 	const { upgrade } = loadout;
 	const next =
 		upgrade >= UPGRADE_TRACK_LENGTH ? 0 : ((upgrade + 1) as MarkCount);
-	return { ...loadout, upgrade: next >= UPGRADE_TRACK_LENGTH ? 0 : next };
+	const filled = next >= UPGRADE_TRACK_LENGTH;
+	return {
+		...loadout,
+		upgrade: filled ? 0 : next,
+		pendingUpgrades: filled
+			? loadout.pendingUpgrades + 1
+			: loadout.pendingUpgrades,
+	};
 }
 
 export type UpgradeChoice = "power" | "special";
@@ -231,6 +239,7 @@ export function takeLoadoutUpgrade(
 	return {
 		...loadout,
 		upgrade: 0,
+		pendingUpgrades: Math.max(0, loadout.pendingUpgrades - 1),
 		availablePower: loadout.availablePower + (choice === "power" ? 1 : 0),
 	};
 }

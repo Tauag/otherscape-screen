@@ -7,7 +7,11 @@ import {
 	LoseThemeButton,
 	LoseThemeDialog,
 } from "@/app/character/[id]/_components/lose-theme";
-import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
+import {
+	Track,
+	UpgradeBadge,
+	UpgradeDialog,
+} from "@/app/character/[id]/_components/track";
 import { Chip } from "@/components/chip";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
@@ -59,13 +63,16 @@ export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 									track="upgrade"
 									marked={theme.upgrade}
 									size="sm"
-									onComplete={() => setUpgradeOpen(true)}
 								/>
 								<Track
 									themeId={theme.id}
 									track="decay"
 									marked={theme.decay}
 									size="sm"
+								/>
+								<UpgradeBadge
+									pending={theme.pendingUpgrades}
+									onOpen={() => setUpgradeOpen(true)}
 								/>
 							</div>
 						</div>

@@ -13,7 +13,11 @@ import {
 import { ROW } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
-import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
+import {
+	Track,
+	UpgradeDialog,
+	UpgradeSquareButton,
+} from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
@@ -173,19 +177,22 @@ export default function ThemePage({
 				{title?.text.trim() || "Untitled theme"}
 			</h1>
 
-			<section className="flex gap-[10px]">
+			<section className="flex items-start gap-[10px]">
 				<Track
 					themeId={theme.id}
 					track="upgrade"
 					marked={theme.upgrade}
 					size="lg"
-					onComplete={() => setUpgradeOpen(true)}
 				/>
 				<Track
 					themeId={theme.id}
 					track="decay"
 					marked={theme.decay}
 					size="lg"
+				/>
+				<UpgradeSquareButton
+					pending={theme.pendingUpgrades}
+					onOpen={() => setUpgradeOpen(true)}
 				/>
 			</section>
 

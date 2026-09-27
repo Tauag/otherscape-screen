@@ -54,6 +54,7 @@ const resetLoadout = {
 	specials: sample.loadout.specials,
 	availablePower: sample.loadout.availablePower,
 	upgrade: sample.loadout.upgrade,
+	pendingUpgrades: 0,
 };
 
 // v3's step always resets the crew theme, so every document that walks
@@ -66,6 +67,7 @@ const blankCrewTheme = {
 	specials: [],
 	upgrade: 0,
 	decay: 0,
+	pendingUpgrades: 0,
 };
 
 // v4's step can't know a pre-v5 story tag was burnt - that field didn't exist
@@ -149,6 +151,7 @@ test("v2 -> v3 resets the loadout to the new shape, keeping the budget fields", 
 			specials: ["An old loadout special."],
 			availablePower: 3,
 			upgrade: 2,
+			pendingUpgrades: 0,
 		},
 		crewTheme: blankCrewTheme,
 		storyTags: resetStoryTags,
@@ -230,4 +233,26 @@ test("v7 -> v8 starts the Evolution track empty", () => {
 	delete old.evolutionPoints;
 
 	assert.deepEqual(migrate(old), { ...sample, evolutionPoints: 0 });
+});
+
+test("v8 -> v9 starts pendingUpgrades at 0 everywhere an Upgrade track lives", () => {
+	const stripPending = <T extends { pendingUpgrades?: number }>(value: T) => {
+		const { pendingUpgrades: _pendingUpgrades, ...rest } = value;
+		return rest;
+	};
+	const old: Record<string, unknown> = {
+		...sample,
+		schema_version: 8,
+		themes: sample.themes.map(stripPending),
+		crewTheme: stripPending(sample.crewTheme),
+		loadout: stripPending(sample.loadout),
+		ghostMemories: sample.ghostMemories.map((memory) => ({
+			...memory,
+			theme: stripPending(memory.theme),
+		})),
+	};
+
+	// sample already carries pendingUpgrades: 0 throughout, so a v8 document
+	// missing the field entirely migrates to exactly the same document.
+	assert.deepEqual(migrate(old), sample);
 });

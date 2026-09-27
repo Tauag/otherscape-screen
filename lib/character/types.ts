@@ -66,6 +66,10 @@ export type Theme = {
 	specials: string[];
 	upgrade: MarkCount;
 	decay: MarkCount;
+	/** Times the Upgrade track has filled without being taken yet. A filled
+	 *  track clears itself back to 0, so this is the only record that an
+	 *  Upgrade is still owed. */
+	pendingUpgrades: number;
 };
 
 export type LoadoutFeatureTag = {
@@ -106,6 +110,8 @@ export type Loadout = {
 	/** A budget the app warns against, never enforces. Starts at 1. */
 	availablePower: number;
 	upgrade: MarkCount;
+	/** Same ledger as a theme's, since the loadout's Upgrade track self-clears too. */
+	pendingUpgrades: number;
 };
 
 /** An archived theme, kept whole, because the sheet's three-field version loses the rest. */
@@ -171,6 +177,8 @@ export type CrewTheme = {
 	specials: string[];
 	upgrade: MarkCount;
 	decay: MarkCount;
+	/** Same ledger as a theme's Upgrade track. */
+	pendingUpgrades: number;
 };
 
 /** The fixed Evolution list. Veteran Specials is an x3 box, so it counts. */

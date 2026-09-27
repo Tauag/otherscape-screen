@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY } from "@/app/character/[id]/_components/styles";
-import { TrackPips } from "@/app/character/[id]/_components/track";
+import {
+	TrackPips,
+	UpgradeBadge,
+} from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { Chip } from "@/components/chip";
 import { ChipBadge } from "@/components/chip-badge";
@@ -39,9 +42,7 @@ export function LoadoutCard({
 		// The card is a single Link to the loadout screen; preventDefault stops
 		// that navigation so the click only marks the track.
 		event.preventDefault();
-		const willComplete = loadout.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
 		dispatch({ type: "markLoadoutUpgrade" });
-		if (willComplete) setUpgradeOpen(true);
 	}
 
 	function take(choice: UpgradeChoice) {
@@ -76,15 +77,21 @@ export function LoadoutCard({
 							Loadout · {spend.spent} of {spend.available} Power
 						</span>
 
-						<TrackPips
-							name="Upgrade"
-							short="UPG"
-							length={UPGRADE_TRACK_LENGTH}
-							marked={loadout.upgrade}
-							size="sm"
-							active
-							onMark={mark}
-						/>
+						<div className="flex items-center gap-3">
+							<TrackPips
+								name="Upgrade"
+								short="UPG"
+								length={UPGRADE_TRACK_LENGTH}
+								marked={loadout.upgrade}
+								size="sm"
+								active
+								onMark={mark}
+							/>
+							<UpgradeBadge
+								pending={loadout.pendingUpgrades}
+								onOpen={() => setUpgradeOpen(true)}
+							/>
+						</div>
 					</div>
 
 					{spend.warning && (

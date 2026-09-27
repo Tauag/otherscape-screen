@@ -12,7 +12,10 @@ import {
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
 import { PRIMARY } from "@/app/character/[id]/_components/styles";
-import { TrackPips } from "@/app/character/[id]/_components/track";
+import {
+	TrackPips,
+	UpgradeBadge,
+} from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -40,9 +43,7 @@ export function LoadoutPanel({
 	const empty = group.tags.length === 0;
 
 	function mark() {
-		const willComplete = loadout.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
 		dispatch({ type: "markLoadoutUpgrade" });
-		if (willComplete) setUpgradeOpen(true);
 	}
 
 	function take(choice: UpgradeChoice) {
@@ -59,18 +60,22 @@ export function LoadoutPanel({
 				>
 					Loadout · {spend.spent} of {spend.available} Power
 				</span>
-				<div className="flex items-center gap-3">
-					<TrackPips
-						name="Upgrade"
-						short="UPG"
-						length={UPGRADE_TRACK_LENGTH}
-						marked={loadout.upgrade}
-						size="sm"
-						active
-						onMark={mark}
-					/>
-					<EditLink href={href} label="Edit the loadout" />
-				</div>
+				<EditLink href={href} label="Edit the loadout" />
+			</div>
+			<div className="flex items-center gap-3.5">
+				<TrackPips
+					name="Upgrade"
+					short="UPG"
+					length={UPGRADE_TRACK_LENGTH}
+					marked={loadout.upgrade}
+					size="sm"
+					active
+					onMark={mark}
+				/>
+				<UpgradeBadge
+					pending={loadout.pendingUpgrades}
+					onOpen={() => setUpgradeOpen(true)}
+				/>
 			</div>
 
 			{empty ? (

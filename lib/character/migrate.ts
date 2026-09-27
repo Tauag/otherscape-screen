@@ -1,7 +1,7 @@
 import { DEFAULT_STATUS_LIMIT } from "../rules/constants.ts";
 import type { Character } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 8;
+export const CURRENT_SCHEMA_VERSION = 9;
 
 type Doc = Record<string, unknown>;
 
@@ -109,6 +109,27 @@ steps.set(6, (doc) => {
 // of Evolution but nothing counting the points that build toward one, so this
 // step starts the track empty.
 steps.set(7, (doc) => ({ ...doc, evolutionPoints: 0 }));
+
+// v8 predates a filled Upgrade track owing a pendingUpgrades count: the track
+// itself self-clears to 0 the instant it fills, so a v8 document has never
+// recorded one owed. It starts at 0 everywhere a track lives - nothing was
+// lost, since v8 had nowhere to keep it either.
+steps.set(8, (doc) => {
+	const themes = (doc.themes ?? []) as Record<string, unknown>[];
+	const crewTheme = (doc.crewTheme ?? {}) as Doc;
+	const loadout = (doc.loadout ?? {}) as Doc;
+	const ghostMemories = (doc.ghostMemories ?? []) as Record<string, unknown>[];
+	return {
+		...doc,
+		themes: themes.map((theme) => ({ ...theme, pendingUpgrades: 0 })),
+		crewTheme: { ...crewTheme, pendingUpgrades: 0 },
+		loadout: { ...loadout, pendingUpgrades: 0 },
+		ghostMemories: ghostMemories.map((memory) => ({
+			...memory,
+			theme: { ...(memory.theme as Doc), pendingUpgrades: 0 },
+		})),
+	};
+});
 
 /**
  * Upgrade a document read from the database. This is a trust boundary, so it

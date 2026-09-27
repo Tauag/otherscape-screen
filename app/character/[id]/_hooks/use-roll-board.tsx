@@ -13,6 +13,7 @@ import {
 	signed,
 	startMitigationPick,
 	toRollSelection,
+	weaknessTagCounts,
 } from "@/app/character/[id]/_lib/roll-selection";
 import { RollChip } from "@/app/character/[id]/roll/_components/roll-chip";
 import type { Character } from "@/lib/character/types";
@@ -88,6 +89,23 @@ export function useRollBoard(
 			if (!relationship.burnt && pick.ids.includes(relationship.id)) {
 				dispatch({ type: "burnCrewRelationship", id: relationship.id });
 			}
+		}
+		// A weakness tag used in a roll ticks its card's upgrade track once per
+		// tag, so using two from the same card ticks it twice.
+		const { themeCounts, crewCount, loadoutCount } = weaknessTagCounts(
+			character,
+			pick,
+		);
+		for (const [themeId, count] of themeCounts) {
+			for (let i = 0; i < count; i++) {
+				dispatch({ type: "markTrack", themeId, track: "upgrade" });
+			}
+		}
+		for (let i = 0; i < crewCount; i++) {
+			dispatch({ type: "markCrewTrack", track: "upgrade" });
+		}
+		for (let i = 0; i < loadoutCount; i++) {
+			dispatch({ type: "markLoadoutUpgrade" });
 		}
 		setPick(finalizeRollPick);
 	};

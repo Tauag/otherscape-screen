@@ -8,6 +8,7 @@ import {
 	editCrewWeaknessTag,
 	markCrewTrack,
 	moveCrewTag,
+	takeCrewUpgrade,
 	unburnCrewTag,
 } from "@/lib/character/crew-theme";
 import { loseTheme } from "@/lib/character/loss";
@@ -24,6 +25,7 @@ import {
 	markTrack,
 	moveTag,
 	type TagKind,
+	takeThemeUpgrade,
 	type TrackName,
 	toggleBroadTag,
 	unburnTag,
@@ -129,6 +131,7 @@ export type CharacterAction =
 	| { type: "burnTag"; themeId: string; tagId: string; burnValue: number }
 	| { type: "unburnTag"; themeId: string; tagId: string }
 	| { type: "markTrack"; themeId: string; track: TrackName }
+	| { type: "takeThemeUpgrade"; themeId: string }
 	| { type: "addTheme"; id: string }
 	| {
 			type: "loseTheme";
@@ -205,6 +208,7 @@ export type CharacterAction =
 	| { type: "burnCrewTag"; tagId: string; burnValue: number }
 	| { type: "unburnCrewTag"; tagId: string }
 	| { type: "markCrewTrack"; track: TrackName }
+	| { type: "takeCrewUpgrade" }
 	| { type: "addCrewRelationship"; id: string }
 	| {
 			type: "editCrewRelationship";
@@ -383,6 +387,8 @@ export function reduce(
 			return inTheme(character, action.themeId, (theme) =>
 				markTrack(theme, action.track),
 			);
+		case "takeThemeUpgrade":
+			return inTheme(character, action.themeId, takeThemeUpgrade);
 		case "addTheme": {
 			// No-op past the cap: the button hides at STARTING_THEMES, but this
 			// guards a dispatch that outraces the re-render (e.g. a double click).
@@ -612,6 +618,8 @@ export function reduce(
 			return withCrew(character, (crew) => unburnCrewTag(crew, action.tagId));
 		case "markCrewTrack":
 			return withCrew(character, (crew) => markCrewTrack(crew, action.track));
+		case "takeCrewUpgrade":
+			return withCrew(character, takeCrewUpgrade);
 		case "addCrewRelationship":
 			return {
 				...character,

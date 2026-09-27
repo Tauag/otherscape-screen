@@ -25,6 +25,7 @@ function loadout(
 		specials: [],
 		availablePower,
 		upgrade: 0,
+		pendingUpgrades: 0,
 		...overrides,
 	};
 }

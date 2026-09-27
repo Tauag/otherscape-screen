@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
-import { TrackPips } from "@/app/character/[id]/_components/track";
+import {
+	TrackPips,
+	UpgradeSquareButton,
+} from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -31,9 +34,7 @@ export default function LoadoutPage({
 	const [open, setOpen] = useState(false);
 
 	function mark() {
-		const willComplete = loadout.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
 		dispatch({ type: "markLoadoutUpgrade" });
-		if (willComplete) setOpen(true);
 	}
 
 	function take(choice: UpgradeChoice) {
@@ -85,7 +86,7 @@ export default function LoadoutPage({
 				)}
 			</section>
 
-			<section className="flex flex-col gap-2 pb-2">
+			<section className="flex items-start gap-3 pb-2">
 				<TrackPips
 					name="Upgrade"
 					short="UPG"
@@ -94,6 +95,10 @@ export default function LoadoutPage({
 					size="lg"
 					active
 					onMark={mark}
+				/>
+				<UpgradeSquareButton
+					pending={loadout.pendingUpgrades}
+					onOpen={() => setOpen(true)}
 				/>
 			</section>
 

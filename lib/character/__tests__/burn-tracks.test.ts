@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { burnValueOf } from "../../rules/power.ts";
-import { addPowerTag, burnTag, markTrack, unburnTag } from "../theme.ts";
+import {
+	addPowerTag,
+	burnTag,
+	markTrack,
+	takeThemeUpgrade,
+	unburnTag,
+} from "../theme.ts";
 import type { PowerTag, Theme } from "../types.ts";
 import { sample } from "./sample.ts";
 
@@ -48,9 +54,35 @@ test("a burn touches one tag and nothing else on the theme", () => {
 	assert.deepEqual(burned.weaknessTags, past.weaknessTags);
 });
 
-test("marking the third Upgrade box clears the track", () => {
+test("marking the third Upgrade box clears the track and owes one Upgrade", () => {
 	assert.equal(past.upgrade, 2);
-	assert.equal(markTrack(past, "upgrade").upgrade, 0);
+	assert.equal(past.pendingUpgrades, 0);
+	const filled = markTrack(past, "upgrade");
+	assert.equal(filled.upgrade, 0);
+	assert.equal(filled.pendingUpgrades, 1);
+});
+
+test("filling the track twice without taking either owes two Upgrades", () => {
+	const empty: Theme = { ...past, upgrade: 0, pendingUpgrades: 0 };
+	const fillOnce = (theme: Theme) =>
+		markTrack(markTrack(markTrack(theme, "upgrade"), "upgrade"), "upgrade");
+
+	assert.equal(fillOnce(empty).pendingUpgrades, 1);
+	assert.equal(fillOnce(fillOnce(empty)).pendingUpgrades, 2);
+});
+
+test("marking a track below the third box owes nothing yet", () => {
+	assert.equal(markTrack({ ...past, upgrade: 0 }, "upgrade").pendingUpgrades, 0);
+});
+
+test("marking the Decay track never touches pendingUpgrades", () => {
+	assert.equal(markTrack(past, "decay").pendingUpgrades, past.pendingUpgrades);
+});
+
+test("taking an owed Upgrade resolves one, and never goes below zero", () => {
+	const owedTwo = { ...past, pendingUpgrades: 2 };
+	assert.equal(takeThemeUpgrade(owedTwo).pendingUpgrades, 1);
+	assert.equal(takeThemeUpgrade(past).pendingUpgrades, 0);
 });
 
 test("the Upgrade outcome applies on the cleared track: a new power tag", () => {

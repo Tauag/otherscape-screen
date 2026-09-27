@@ -32,6 +32,7 @@ export function newCharacter(): Character {
 			specials: [],
 			upgrade: 0,
 			decay: 0,
+			pendingUpgrades: 0,
 		},
 		themes: [],
 		loadout: {
@@ -40,6 +41,7 @@ export function newCharacter(): Character {
 			specials: [],
 			availablePower: STARTING_LOADOUT_POWER,
 			upgrade: 0,
+			pendingUpgrades: 0,
 		},
 		ghostMemories: [],
 		statuses: [],
@@ -60,5 +62,6 @@ export function newTheme(id: string): Theme {
 		specials: [],
 		upgrade: 0,
 		decay: 0,
+		pendingUpgrades: 0,
 	};
 }

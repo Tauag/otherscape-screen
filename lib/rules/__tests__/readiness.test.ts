@@ -22,6 +22,7 @@ function theme(
 		specials: [],
 		upgrade: 0,
 		decay: 0,
+		pendingUpgrades: 0,
 		...over,
 	};
 }

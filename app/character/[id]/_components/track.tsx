@@ -2,6 +2,7 @@
 
 import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
+import { UpArrowIcon } from "@/app/character/[id]/_components/icons";
 import { FILLED } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -115,23 +116,14 @@ export function TrackPips({
 	);
 }
 
-/** Required on the Upgrade track and rejected on Decay, so a caller that
- *  forgets to open UpgradeDialog fails to compile rather than silently doing
- *  nothing. The caller owns that dialog so it can sit outside a card's
- *  wrapping Link: a dialog rendered under the Link portals out of the DOM but
- *  stays in the React tree, so its clicks bubble into the Link and navigate. */
-type TrackProps = { themeId: string; marked: number; size: TrackSize } & (
-	| { track: "upgrade"; onComplete: () => void }
-	| { track: "decay"; onComplete?: never }
-);
+type TrackProps = {
+	themeId: string;
+	track: TrackName;
+	marked: number;
+	size: TrackSize;
+};
 
-export function Track({
-	themeId,
-	track,
-	marked,
-	size,
-	onComplete,
-}: TrackProps) {
+export function Track({ themeId, track, marked, size }: TrackProps) {
 	const { dispatch } = useCharacter();
 	const { name, short, length } = TRACKS[track];
 
@@ -139,9 +131,7 @@ export function Track({
 		// The sheet's card is a single Link to the theme screen; preventDefault stops
 		// that navigation so a track click only marks the box.
 		event.preventDefault();
-		const willComplete = track === "upgrade" && marked + 1 >= length;
 		dispatch({ type: "markTrack", themeId, track });
-		if (willComplete) onComplete?.();
 	}
 
 	return (
@@ -154,6 +144,78 @@ export function Track({
 			active={track === "upgrade"}
 			onMark={mark}
 		/>
+	);
+}
+
+/**
+ * A filled Upgrade track clears itself, so it can't stay visibly "full" to
+ * remind the player an Upgrade is owed - this badge is that reminder instead,
+ * persisted on the card so it survives a reload or a session's worth of
+ * rolls. Shown next to the track; opens the same UpgradeDialog a manual mark
+ * used to open automatically. Always calls preventDefault, same as Track's
+ * mark, so it's safe under a card's wrapping Link too.
+ */
+export function UpgradeBadge({
+	pending,
+	onOpen,
+}: {
+	pending: number;
+	onOpen: () => void;
+}) {
+	if (pending <= 0) return null;
+
+	function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+		event.preventDefault();
+		onOpen();
+	}
+
+	return (
+		<Button
+			type="button"
+			aria-label={
+				pending > 1 ? `${pending} upgrades pending` : "1 upgrade pending"
+			}
+			onClick={handleClick}
+			className="shrink-0 rounded-full border border-[var(--hue,var(--color-muted))] bg-[var(--hue,var(--color-muted))]/12 px-2 py-0.5 font-mono text-[9px] font-bold tracking-[0.08em] text-[var(--hue,var(--color-muted))] uppercase"
+		>
+			{pending > 1 ? `↑ x ${pending}` : "↑"}
+		</Button>
+	);
+}
+
+/**
+ * The theme screen's larger, square take on UpgradeBadge: an up arrow over
+ * the word "Upgrade", both inside one button. Same trigger, same
+ * preventDefault safety, just a different shape for a page with more room.
+ */
+export function UpgradeSquareButton({
+	pending,
+	onOpen,
+}: {
+	pending: number;
+	onOpen: () => void;
+}) {
+	if (pending <= 0) return null;
+
+	function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+		event.preventDefault();
+		onOpen();
+	}
+
+	return (
+		<Button
+			type="button"
+			onClick={handleClick}
+			aria-label={
+				pending > 1 ? `${pending} upgrades pending` : "1 upgrade pending"
+			}
+			className="flex flex-col h-[64px] w-[64px] items-center justify-center gap-0.5 rounded-sm border border-[var(--hue,var(--color-muted))] bg-[var(--hue,var(--color-muted))]/12 text-[var(--hue,var(--color-muted))]"
+		>
+			<UpArrowIcon />
+			<span className="font-mono text-[10px] font-bold tracking-[0.06em] uppercase">
+				Upgrade
+			</span>
+		</Button>
 	);
 }
 
@@ -178,11 +240,13 @@ export function UpgradeDialog({
 		// here knows the questions. Upgrade path: T29's picker route.
 		const id = crypto.randomUUID();
 		dispatch({ type: "addPowerTag", themeId, id, letter: "A" });
+		dispatch({ type: "takeThemeUpgrade", themeId });
 		onOpenChange(false);
 		router.push(`${themeHref}#tag-${id}`);
 	}
 
 	function takeSpecial() {
+		dispatch({ type: "takeThemeUpgrade", themeId });
 		onOpenChange(false);
 		router.push(`${themeHref}/specials`);
 	}

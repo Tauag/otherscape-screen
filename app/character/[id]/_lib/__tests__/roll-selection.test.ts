@@ -14,6 +14,7 @@ import {
 	rollOrder,
 	startMitigationPick,
 	toRollSelection,
+	weaknessTagCounts,
 } from "../roll-selection.ts";
 
 const pick = (over: Partial<typeof NO_PICK>) => ({ ...NO_PICK, ...over });
@@ -191,6 +192,7 @@ test("boardGroups keeps a nascent theme with zero tags, which rollGroups drops",
 		specials: [],
 		upgrade: 0 as const,
 		decay: 0 as const,
+		pendingUpgrades: 0,
 	};
 	const character = { ...sample, themes: [...sample.themes, nascent] };
 
@@ -284,4 +286,93 @@ test("finalizing clears this roll's burn value overrides", () => {
 		burnValues: { "pt-3": 5 },
 	});
 	assert.deepEqual(finalized.burnValues, {}, "an override is one roll's alone");
+});
+
+// --- weaknessTagCounts: how many upgrade ticks a roll's weaknesses are worth ---
+
+test("an empty pick counts no weaknesses anywhere", () => {
+	const counts = weaknessTagCounts(sample, NO_PICK);
+	assert.deepEqual(counts.themeCounts, new Map());
+	assert.equal(counts.crewCount, 0);
+	assert.equal(counts.loadoutCount, 0);
+});
+
+test("a theme's own weakness tag counts once against that theme", () => {
+	// wt-1 belongs to th-past.
+	const counts = weaknessTagCounts(sample, pick({ ids: ["wt-1"] }));
+	assert.deepEqual(counts.themeCounts, new Map([["th-past", 1]]));
+	assert.equal(counts.crewCount, 0);
+	assert.equal(counts.loadoutCount, 0);
+});
+
+test("two weakness tags from the same theme count twice against it", () => {
+	// A second weakness on th-past, alongside its existing wt-1.
+	const character = {
+		...sample,
+		themes: sample.themes.map((theme) =>
+			theme.id === "th-past"
+				? {
+						...theme,
+						weaknessTags: [
+							...theme.weaknessTags,
+							{
+								id: "wt-1b",
+								letter: "C" as const,
+								text: "an old grudge resurfaces",
+							},
+						],
+					}
+				: theme,
+		),
+	};
+	const counts = weaknessTagCounts(
+		character,
+		pick({ ids: ["wt-1", "wt-1b"] }),
+	);
+	assert.deepEqual(counts.themeCounts, new Map([["th-past", 2]]));
+});
+
+test("weakness tags from different themes each count against their own theme", () => {
+	// wt-1 is th-past's, wt-2 is th-lantern's.
+	const counts = weaknessTagCounts(sample, pick({ ids: ["wt-1", "wt-2"] }));
+	assert.deepEqual(
+		counts.themeCounts,
+		new Map([
+			["th-past", 1],
+			["th-lantern", 1],
+		]),
+	);
+});
+
+test("a crew weakness tag counts against the crew, not any theme", () => {
+	// cwt-1 is the crew theme's weakness tag.
+	const counts = weaknessTagCounts(sample, pick({ ids: ["cwt-1"] }));
+	assert.deepEqual(counts.themeCounts, new Map());
+	assert.equal(counts.crewCount, 1);
+});
+
+test("a loaded set's weakness tag counts against the loadout as a whole", () => {
+	// lw-1 is ls-1's weakness, and ls-1 is loaded in the sample.
+	const counts = weaknessTagCounts(sample, pick({ ids: ["lw-1"] }));
+	assert.equal(counts.loadoutCount, 1);
+	assert.equal(counts.crewCount, 0);
+	assert.deepEqual(counts.themeCounts, new Map());
+});
+
+test("weaknesses from a theme, the crew, and the loadout all count in one roll", () => {
+	const counts = weaknessTagCounts(
+		sample,
+		pick({ ids: ["wt-1", "cwt-1", "lw-1"] }),
+	);
+	assert.deepEqual(counts.themeCounts, new Map([["th-past", 1]]));
+	assert.equal(counts.crewCount, 1);
+	assert.equal(counts.loadoutCount, 1);
+});
+
+test("a picked id that isn't a weakness tag counts nowhere", () => {
+	// pt-1 is a power tag, not a weakness.
+	const counts = weaknessTagCounts(sample, pick({ ids: ["pt-1"] }));
+	assert.deepEqual(counts.themeCounts, new Map());
+	assert.equal(counts.crewCount, 0);
+	assert.equal(counts.loadoutCount, 0);
 });

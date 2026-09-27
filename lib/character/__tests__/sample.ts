@@ -64,6 +64,7 @@ export const sample: Character = {
 		specials: ["Huddle"],
 		upgrade: 1,
 		decay: 0,
+		pendingUpgrades: 0,
 	},
 	themes: [
 		{
@@ -104,6 +105,7 @@ export const sample: Character = {
 			specials: [],
 			upgrade: 2,
 			decay: 1,
+			pendingUpgrades: 0,
 		},
 		{
 			id: "th-lantern",
@@ -145,6 +147,7 @@ export const sample: Character = {
 			],
 			upgrade: 0,
 			decay: 3,
+			pendingUpgrades: 0,
 		},
 		{
 			id: "th-chrome",
@@ -173,6 +176,7 @@ export const sample: Character = {
 			specials: [],
 			upgrade: 3,
 			decay: 0,
+			pendingUpgrades: 0,
 		},
 		{
 			id: "th-dive",
@@ -192,6 +196,7 @@ export const sample: Character = {
 			specials: [],
 			upgrade: 0,
 			decay: 0,
+			pendingUpgrades: 0,
 		},
 	],
 	loadout: {
@@ -232,6 +237,7 @@ export const sample: Character = {
 		specials: [],
 		availablePower: 4,
 		upgrade: 1,
+		pendingUpgrades: 0,
 	},
 	ghostMemories: [
 		{
@@ -270,6 +276,7 @@ export const sample: Character = {
 				specials: [],
 				upgrade: 1,
 				decay: 3,
+				pendingUpgrades: 0,
 			},
 		},
 	],

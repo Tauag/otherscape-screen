@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FILLED } from "@/app/character/[id]/_components/styles";
-import { TrackPips } from "@/app/character/[id]/_components/track";
+import {
+	TrackPips,
+	UpgradeBadge,
+} from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { Chip } from "@/components/chip";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -40,9 +43,7 @@ export function CrewCard({
 		// The card is a single Link to the crew screen; preventDefault stops that
 		// navigation so a track click only marks the box.
 		event.preventDefault();
-		const willComplete = crew.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
 		dispatch({ type: "markCrewTrack", track: "upgrade" });
-		if (willComplete) setUpgradeOpen(true);
 	}
 
 	function markDecay(event: React.MouseEvent<HTMLButtonElement>) {
@@ -53,11 +54,13 @@ export function CrewCard({
 	function takeTag() {
 		const id = crypto.randomUUID();
 		dispatch({ type: "addCrewPowerTag", id, letter: "A" });
+		dispatch({ type: "takeCrewUpgrade" });
 		setUpgradeOpen(false);
 		router.push(`${href}#tag-${id}`);
 	}
 
 	function takeSpecial() {
+		dispatch({ type: "takeCrewUpgrade" });
 		setUpgradeOpen(false);
 		router.push(`${href}/specials`);
 	}
@@ -112,6 +115,10 @@ export function CrewCard({
 									size="sm"
 									active={false}
 									onMark={markDecay}
+								/>
+								<UpgradeBadge
+									pending={crew.pendingUpgrades}
+									onOpen={() => setUpgradeOpen(true)}
 								/>
 							</div>
 						</div>

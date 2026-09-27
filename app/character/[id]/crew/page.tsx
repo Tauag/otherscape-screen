@@ -8,7 +8,10 @@ import { BurnButton } from "@/app/character/[id]/_components/burn-button";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
-import { TrackPips } from "@/app/character/[id]/_components/track";
+import {
+	TrackPips,
+	UpgradeSquareButton,
+} from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { LabelAction } from "@/components/label-action";
@@ -49,19 +52,19 @@ export default function CrewPage({
 	const here = `/character/${id}/crew`;
 
 	function mark() {
-		const willComplete = crew.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
 		dispatch({ type: "markCrewTrack", track: "upgrade" });
-		if (willComplete) setUpgradeOpen(true);
 	}
 
 	function takeTag() {
 		const tagId = crypto.randomUUID();
 		dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
+		dispatch({ type: "takeCrewUpgrade" });
 		setUpgradeOpen(false);
 		router.push(`${here}#tag-${tagId}`);
 	}
 
 	function takeSpecial() {
+		dispatch({ type: "takeCrewUpgrade" });
 		setUpgradeOpen(false);
 		router.push(`${here}/specials`);
 	}
@@ -75,7 +78,7 @@ export default function CrewPage({
 				{title?.text.trim() || "Untitled crew"}
 			</h1>
 
-			<section className="flex gap-[10px]">
+			<section className="flex items-start gap-[10px]">
 				<TrackPips
 					name="Upgrade"
 					short="UPG"
@@ -93,6 +96,10 @@ export default function CrewPage({
 					size="lg"
 					active={false}
 					onMark={() => dispatch({ type: "markCrewTrack", track: "decay" })}
+				/>
+				<UpgradeSquareButton
+					pending={crew.pendingUpgrades}
+					onOpen={() => setUpgradeOpen(true)}
 				/>
 			</section>
 

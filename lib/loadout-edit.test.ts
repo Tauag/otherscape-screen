@@ -207,13 +207,15 @@ test("one click, one more box, wrapping back to empty once it fills", () => {
 		0,
 		"the third click clears the track in the same click",
 	);
+	assert.equal(full.pendingUpgrades, zero.pendingUpgrades + 1);
 });
 
 test("taking the Upgrade as Power clears the track and adds 1 available Power", () => {
-	const full: Loadout = { ...loadout, upgrade: 2 };
+	const full: Loadout = { ...loadout, upgrade: 2, pendingUpgrades: 1 };
 	const taken = takeLoadoutUpgrade(full, "power");
 
 	assert.equal(taken.upgrade, 0);
+	assert.equal(taken.pendingUpgrades, 0);
 	assert.equal(taken.availablePower, loadout.availablePower + 1);
 	assert.deepEqual(taken.specials, loadout.specials);
 	assert.equal(
@@ -225,12 +227,18 @@ test("taking the Upgrade as Power clears the track and adds 1 available Power", 
 test("taking the Upgrade as a special clears the track and leaves specials alone", () => {
 	// Picking one is the loadout specials picker's job, same as a theme
 	// special: the Upgrade choice itself only clears the track.
-	const full: Loadout = { ...loadout, upgrade: 2 };
+	const full: Loadout = { ...loadout, upgrade: 2, pendingUpgrades: 1 };
 	const taken = takeLoadoutUpgrade(full, "special");
 
 	assert.equal(taken.upgrade, 0);
+	assert.equal(taken.pendingUpgrades, 0);
 	assert.deepEqual(taken.specials, loadout.specials);
 	assert.equal(taken.availablePower, loadout.availablePower);
+});
+
+test("taking an Upgrade never drops pendingUpgrades below zero", () => {
+	const full: Loadout = { ...loadout, upgrade: 2, pendingUpgrades: 0 };
+	assert.equal(takeLoadoutUpgrade(full, "power").pendingUpgrades, 0);
 });
 
 test("the fixture's spend matches what's actually loaded", () => {

@@ -13,7 +13,11 @@ import {
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
-import { Track, UpgradeDialog } from "@/app/character/[id]/_components/track";
+import {
+	Track,
+	UpgradeBadge,
+	UpgradeDialog,
+} from "@/app/character/[id]/_components/track";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
@@ -67,13 +71,16 @@ export function ThemePanel({
 					track="upgrade"
 					marked={theme.upgrade}
 					size="sm"
-					onComplete={() => setUpgradeOpen(true)}
 				/>
 				<Track
 					themeId={theme.id}
 					track="decay"
 					marked={theme.decay}
 					size="sm"
+				/>
+				<UpgradeBadge
+					pending={theme.pendingUpgrades}
+					onOpen={() => setUpgradeOpen(true)}
 				/>
 			</div>
 

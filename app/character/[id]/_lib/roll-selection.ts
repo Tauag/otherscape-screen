@@ -397,6 +397,31 @@ export function toRollSelection(
 }
 
 /**
+ * How many weakness tags were spent in this roll, per card: one entry per
+ * theme with at least one used, plus the crew theme and the loadout as a
+ * whole (a loadout set has no upgrade track of its own — core rules give the
+ * loadout a single shared one).
+ */
+export function weaknessTagCounts(
+	character: Character,
+	pick: RollPick,
+): { themeCounts: Map<string, number>; crewCount: number; loadoutCount: number } {
+	const chosen = (id: string) => pick.ids.includes(id);
+	const themeCounts = new Map<string, number>();
+	for (const theme of character.themes) {
+		const count = theme.weaknessTags.filter((tag) => chosen(tag.id)).length;
+		if (count > 0) themeCounts.set(theme.id, count);
+	}
+	const crewCount = character.crewTheme.weaknessTags.filter((tag) =>
+		chosen(tag.id),
+	).length;
+	const loadoutCount = character.loadout.sets
+		.flatMap((set) => set.weaknesses)
+		.filter((tag) => chosen(tag.id)).length;
+	return { themeCounts, crewCount, loadoutCount };
+}
+
+/**
  * The ids behind `power().lines`, in the same order: tags first, then statuses.
  * A `rollWith` line comes before them, so the caller offsets by one.
  */

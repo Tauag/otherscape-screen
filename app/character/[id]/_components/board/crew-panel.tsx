@@ -14,7 +14,10 @@ import {
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
 import { FILLED } from "@/app/character/[id]/_components/styles";
-import { TrackPips } from "@/app/character/[id]/_components/track";
+import {
+	TrackPips,
+	UpgradeBadge,
+} from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -44,9 +47,7 @@ export function CrewPanel({
 	const nascent = isCrewNascent(crewTheme);
 
 	function markUpgrade() {
-		const willComplete = crewTheme.upgrade + 1 >= UPGRADE_TRACK_LENGTH;
 		dispatch({ type: "markCrewTrack", track: "upgrade" });
-		if (willComplete) setUpgradeOpen(true);
 	}
 
 	function markDecay() {
@@ -56,11 +57,13 @@ export function CrewPanel({
 	function takeTag() {
 		const tagId = crypto.randomUUID();
 		dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
+		dispatch({ type: "takeCrewUpgrade" });
 		setUpgradeOpen(false);
 		router.push(`${href}#tag-${tagId}`);
 	}
 
 	function takeSpecial() {
+		dispatch({ type: "takeCrewUpgrade" });
 		setUpgradeOpen(false);
 		router.push(`${href}/specials`);
 	}
@@ -69,30 +72,34 @@ export function CrewPanel({
 		<section data-type="crew" className={empty ? EMPTY_SHELL : SHELL}>
 			<div className="flex items-center justify-between gap-2">
 				<span className={HEADER_LABEL}>Crew</span>
-				<div className="flex items-center gap-3">
-					<TrackPips
-						name="Upgrade"
-						short="UPG"
-						length={UPGRADE_TRACK_LENGTH}
-						marked={crewTheme.upgrade}
-						size="sm"
-						active
-						onMark={markUpgrade}
-					/>
-					<TrackPips
-						name="Decay"
-						short="DEC"
-						length={DECAY_TRACK_LENGTH}
-						marked={crewTheme.decay}
-						size="sm"
-						active={false}
-						onMark={markDecay}
-					/>
-					<EditLink
-						href={href}
-						label={`Edit ${crewTitle(crewTheme)?.text.trim() || "the crew theme"}`}
-					/>
-				</div>
+				<EditLink
+					href={href}
+					label={`Edit ${crewTitle(crewTheme)?.text.trim() || "the crew theme"}`}
+				/>
+			</div>
+			<div className="flex items-center gap-3.5">
+				<TrackPips
+					name="Upgrade"
+					short="UPG"
+					length={UPGRADE_TRACK_LENGTH}
+					marked={crewTheme.upgrade}
+					size="sm"
+					active
+					onMark={markUpgrade}
+				/>
+				<TrackPips
+					name="Decay"
+					short="DEC"
+					length={DECAY_TRACK_LENGTH}
+					marked={crewTheme.decay}
+					size="sm"
+					active={false}
+					onMark={markDecay}
+				/>
+				<UpgradeBadge
+					pending={crewTheme.pendingUpgrades}
+					onOpen={() => setUpgradeOpen(true)}
+				/>
 			</div>
 
 			{empty ? (

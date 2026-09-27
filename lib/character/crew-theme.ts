@@ -152,10 +152,20 @@ const TRACK_LENGTH: Record<TrackName, number> = {
 	decay: DECAY_TRACK_LENGTH,
 };
 
-/** Same wrap-to-empty rule as a theme's track (theme.ts's markTrack). */
+/** Same wrap-to-empty rule as a theme's track (theme.ts's markTrack), and the
+ *  same pendingUpgrades ledger for a filled Upgrade track. */
 export function markCrewTrack(crew: CrewTheme, track: TrackName): CrewTheme {
 	const marked = crew[track];
 	const next = marked >= TRACK_LENGTH[track] ? 0 : ((marked + 1) as MarkCount);
-	const cleared = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
-	return { ...crew, [track]: cleared ? 0 : next };
+	const filled = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
+	return {
+		...crew,
+		[track]: filled ? 0 : next,
+		pendingUpgrades: filled ? crew.pendingUpgrades + 1 : crew.pendingUpgrades,
+	};
+}
+
+/** Same as theme.ts's takeThemeUpgrade, for the crew theme's own ledger. */
+export function takeCrewUpgrade(crew: CrewTheme): CrewTheme {
+	return { ...crew, pendingUpgrades: Math.max(0, crew.pendingUpgrades - 1) };
 }
