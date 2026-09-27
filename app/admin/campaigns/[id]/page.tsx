@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
-import { AssignedCharacters } from "@/app/admin/campaigns/[id]/_components/assigned-characters";
 import { migrate } from "@/app/admin/campaigns/_lib/migrate";
+import { AssignedCharacters } from "@/app/admin/campaigns/[id]/_components/assigned-characters";
 import { accountName } from "@/lib/account-name";
 import { CampaignProvider } from "./_components/campaign-provider";
 import { CampaignScreen } from "./_components/campaign-screen";

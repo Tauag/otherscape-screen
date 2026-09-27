@@ -1,5 +1,6 @@
 import { Chip } from "@/components/chip";
 import { Pips } from "@/components/pips";
+import { SpecialTooltip } from "@/components/special-tooltip";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
@@ -9,7 +10,6 @@ import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
-import { SpecialTooltip } from "@/components/special-tooltip";
 
 export function ThemeBlock({ theme }: { theme: Theme }) {
 	const title = themeTitle(theme);

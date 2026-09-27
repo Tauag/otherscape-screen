@@ -25,8 +25,8 @@ import {
 	markTrack,
 	moveTag,
 	type TagKind,
-	takeThemeUpgrade,
 	type TrackName,
+	takeThemeUpgrade,
 	toggleBroadTag,
 	unburnTag,
 } from "@/lib/character/theme";

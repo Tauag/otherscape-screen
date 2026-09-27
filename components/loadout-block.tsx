@@ -1,11 +1,11 @@
 import { Chip } from "@/components/chip";
 import { Pips } from "@/components/pips";
+import { SpecialTooltip } from "@/components/special-tooltip";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import type { Loadout } from "@/lib/character/types";
 import { specialName, specialText } from "@/lib/pickers";
 import { UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
-import { SpecialTooltip } from "@/components/special-tooltip";
 
 export function LoadoutBlock({ loadout }: { loadout: Loadout }) {
 	const spend = loadoutSpend(loadout);

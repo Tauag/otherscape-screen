@@ -1,5 +1,6 @@
 import { Chip } from "@/components/chip";
 import { Pips } from "@/components/pips";
+import { SpecialTooltip } from "@/components/special-tooltip";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
 import type { CrewRelationship, CrewTheme } from "@/lib/character/types";
@@ -8,7 +9,6 @@ import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
-import { SpecialTooltip } from "@/components/special-tooltip";
 
 export function CrewBlock({
 	crew,
