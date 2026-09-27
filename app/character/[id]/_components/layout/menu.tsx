@@ -54,9 +54,6 @@ export function SheetMenu({
 						className="outline-none"
 					>
 						<Menu.Popup className={MENU_POPUP}>
-							<Menu.Item className={MENU_ITEM} render={<Link href="/" />}>
-								See all characters
-							</Menu.Item>
 							<Menu.Item
 								className={MENU_ITEM}
 								onClick={() => setGhostsOpen(true)}
