@@ -3,7 +3,6 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
-import Link from "next/link";
 import { useState } from "react";
 import {
 	DANGER,
