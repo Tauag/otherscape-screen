@@ -1,5 +1,4 @@
 #!/bin/sh
 set -e
-npm run format
-npm run lint
+npm ci
 npm test
