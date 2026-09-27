@@ -220,9 +220,7 @@ export function markTrack(theme: Theme, track: TrackName): Theme {
 	return {
 		...theme,
 		[track]: filled ? 0 : next,
-		pendingUpgrades: filled
-			? theme.pendingUpgrades + 1
-			: theme.pendingUpgrades,
+		pendingUpgrades: filled ? theme.pendingUpgrades + 1 : theme.pendingUpgrades,
 	};
 }
 

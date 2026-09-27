@@ -405,7 +405,11 @@ export function toRollSelection(
 export function weaknessTagCounts(
 	character: Character,
 	pick: RollPick,
-): { themeCounts: Map<string, number>; crewCount: number; loadoutCount: number } {
+): {
+	themeCounts: Map<string, number>;
+	crewCount: number;
+	loadoutCount: number;
+} {
 	const chosen = (id: string) => pick.ids.includes(id);
 	const themeCounts = new Map<string, number>();
 	for (const theme of character.themes) {

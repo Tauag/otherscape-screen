@@ -325,10 +325,7 @@ test("two weakness tags from the same theme count twice against it", () => {
 				: theme,
 		),
 	};
-	const counts = weaknessTagCounts(
-		character,
-		pick({ ids: ["wt-1", "wt-1b"] }),
-	);
+	const counts = weaknessTagCounts(character, pick({ ids: ["wt-1", "wt-1b"] }));
 	assert.deepEqual(counts.themeCounts, new Map([["th-past", 2]]));
 });
 

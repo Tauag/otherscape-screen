@@ -75,7 +75,10 @@ test("filling the crew Upgrade track owes one Upgrade, same as a theme's", () =>
 	const full: CrewTheme = { ...crew, upgrade: 2, pendingUpgrades: 0 };
 	const filled = markCrewTrack(full, "upgrade");
 	assert.equal(filled.pendingUpgrades, 1);
-	assert.equal(markCrewTrack(crew, "decay").pendingUpgrades, crew.pendingUpgrades);
+	assert.equal(
+		markCrewTrack(crew, "decay").pendingUpgrades,
+		crew.pendingUpgrades,
+	);
 });
 
 test("taking a crew Upgrade resolves one and never goes below zero", () => {

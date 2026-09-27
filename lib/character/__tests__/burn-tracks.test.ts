@@ -72,7 +72,10 @@ test("filling the track twice without taking either owes two Upgrades", () => {
 });
 
 test("marking a track below the third box owes nothing yet", () => {
-	assert.equal(markTrack({ ...past, upgrade: 0 }, "upgrade").pendingUpgrades, 0);
+	assert.equal(
+		markTrack({ ...past, upgrade: 0 }, "upgrade").pendingUpgrades,
+		0,
+	);
 });
 
 test("marking the Decay track never touches pendingUpgrades", () => {
