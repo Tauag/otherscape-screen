@@ -49,8 +49,6 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 # Optional: enables the Discord webhook write path
 DISCORD_WEBHOOK_URL=
 
-# Optional: required only by app/api/keepalive
-CRON_SECRET=
 ```
 
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is read as

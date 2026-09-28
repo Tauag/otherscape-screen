@@ -65,7 +65,7 @@ test("only same-origin GETs outside /api and /auth are handled", () => {
 	assert.equal(strategy("GET", at("/character/1")), "page");
 	assert.equal(strategy("GET", at("/character/1?_rsc=abc")), "page");
 	assert.equal(strategy("POST", at("/character/1")), null);
-	assert.equal(strategy("GET", at("/api/keepalive")), null);
+	assert.equal(strategy("GET", at("/api/health")), null);
 	assert.equal(strategy("GET", at("/auth/callback")), null);
 	assert.equal(strategy("GET", new URL("https://x.supabase.co/rest/v1")), null);
 });
