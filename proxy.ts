@@ -91,6 +91,6 @@ export async function proxy(request: NextRequest) {
 // The keepalive cron has no session and checks its own secret.
 export const config = {
 	matcher: [
-		"/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon/|apple-icon|sw.js|api/keepalive|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
+		"/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon/|apple-icon|sw.js|api/keepalive|monitoring|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
 	],
 };
