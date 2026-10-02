@@ -9,6 +9,12 @@ test("outcome tiers break at 7 and 10", () => {
 	assert.equal(outcome(10), "Strong hit");
 });
 
+test("snake eyes always miss and boxcars always strong-hit", () => {
+	assert.equal(outcome(12, [1, 1]), "Miss");
+	assert.equal(outcome(0, [6, 6]), "Strong hit");
+	assert.equal(outcome(9, [4, 5]), "Mixed hit");
+});
+
 test("cleanLines rejects anything off-shape", () => {
 	assert.equal(cleanLines("nope"), null);
 	assert.equal(cleanLines([{ label: "a", value: 1.5, counted: true }]), null);

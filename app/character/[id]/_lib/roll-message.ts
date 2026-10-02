@@ -45,7 +45,10 @@ export function powerOf(lines: RollLine[]): number {
 
 const COLOR = { "Strong hit": 0x57f287, "Mixed hit": 0xfee75c, Miss: 0xed4245 };
 
-export function outcome(score: number): keyof typeof COLOR {
+/** Snake eyes always miss and boxcars always strong-hit, whatever the power. */
+export function outcome(score: number, dice?: Dice): keyof typeof COLOR {
+	if (dice?.[0] === 1 && dice[1] === 1) return "Miss";
+	if (dice?.[0] === 6 && dice[1] === 6) return "Strong hit";
 	if (score >= 10) return "Strong hit";
 	if (score >= 7) return "Mixed hit";
 	return "Miss";
@@ -64,7 +67,7 @@ export function rollMessage(
 ) {
 	const power = powerOf(lines);
 	const score = dice[0] + dice[1] + power;
-	const result = outcome(score);
+	const result = outcome(score, dice);
 	const breakdown = lines.map((line) => {
 		const text = `\`${signed(line.value)}\` ${escapeMarkdown(line.label)}`;
 		return line.counted ? text : `~~${text}~~`;

@@ -178,9 +178,9 @@ export function RollTotal({
 							) : (
 								<>
 									<span
-										className={`font-display text-[28px] font-bold ${OUTCOME_CLASS[outcome(score)]}`}
+										className={`font-display text-[28px] font-bold ${OUTCOME_CLASS[outcome(score, roll.dice)]}`}
 									>
-										{score} · {outcome(score)}
+										{score} · {outcome(score, roll.dice)}
 									</span>
 									<span className="sr-only">
 										Dice {roll.dice[0]} and {roll.dice[1]}, power{" "}
