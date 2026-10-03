@@ -284,7 +284,7 @@ nine-screen set.
 
 ## 8. Campaign
 
-The GM's workspace: campaign story tags, NPCs, and the characters currently
+The GM's workspace: campaign story tags, challenges, and the characters currently
 assigned to the campaign. Admin-only, reached from `/admin`. Desktop is the
 only case that matters here; a GM preps a campaign at a desk, not at the
 table mid-session.
@@ -299,7 +299,7 @@ the two are never confused in conversation or in code.
 
 ### 8.1 Campaign list
 - One list of campaigns: name and a create control.
-- Deleting a campaign asks for confirmation, then removes it and every NPC
+- Deleting a campaign asks for confirmation, then removes it and every challenge
   and story tag inside it. An assigned character is unaffected; only its
   link to the campaign is removed.
 
@@ -309,7 +309,7 @@ Three sections on one screen:
 | Section | Holds | Actions |
 |---|---|---|
 | Story tags | The campaign's own story tags, positive or negative | Create, rename, set valence, burn, mark crispy, delete |
-| NPCs | Any number, each with its own story tags and statuses | Create, edit, delete an NPC; within it, the same story tag actions plus mark and clear a status tier |
+| challenges | Any number, each with its own story tags and statuses | Create, edit, delete a challenge; within it, the same story tag actions plus mark and clear a status tier |
 | Assigned characters | Every character added to this campaign | Add from a picker of all characters, remove |
 
 A story tag or status here reads exactly like the player board's: the same

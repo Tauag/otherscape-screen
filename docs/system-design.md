@@ -220,12 +220,10 @@ character one: only the GM edits it, so it reuses the same `version` column,
 the same `bump_version` trigger, and the same optimistic-concurrency check and
 conflict UI (section 8) that characters already have.
 
-Shape: `{ name, notes, storyTags: StoryTag[], npcs: Npc[] }`, where
-`Npc = { id, name, notes, storyTags: StoryTag[], statuses: Status[] }`.
-`StoryTag` and `Status` are `lib/character/types.ts`'s existing types,
-unchanged. An NPC carries no `themes` field yet; PRD section 10 has full NPC
-sheets, built from the theme model, as later work, and the shape leaves room
-for a `themes` field when that lands.
+Shape: `{ name, notes, storyTags: StoryTag[], challenges: Challenge[] }`, where
+`Challenge = { id, name, notes, storyTags: StoryTag[], statuses: Status[],
+specials: { id, text }[], inScene: boolean }`. `StoryTag` and `Status` are
+`lib/character/types.ts`'s existing types, unchanged.
 
 `campaign_characters` links a campaign to existing `characters` rows. A
 character can sit in more than one campaign, so the primary key is the pair,
@@ -410,7 +408,7 @@ the conflict dialog as before.
 
 /admin                             requireAdmin() gates every route below
   /admin/campaigns                 campaign list: create, delete
-  /admin/campaigns/[id]            campaign screen: story tags, NPCs, assigned characters
+  /admin/campaigns/[id]            campaign screen: story tags, challenges, assigned characters
   /admin/campaigns/[id]/characters/[characterId]
                                     read-only character view, reusing components/share-sheet.tsx
 ```
@@ -569,7 +567,7 @@ building before that test happens.
 
 A pure reducer in `app/admin/campaigns/_lib`, on the same pattern as the
 character reducer (section 8): actions are the domain verbs (`addStoryTag`,
-`burnStoryTag`, `addNpc`, `markNpcStatus`, …), and the
+`burnStoryTag`, `addChallenge`, `markChallengeStatus`, …), and the
 document is the state. Character assignment is not a reducer action: it writes
 `campaign_characters` rows through server actions in `lib/actions.ts` style. `node --test`, matching `lib/character/__tests__`,
 covers it before any screen calls it.
@@ -582,7 +580,7 @@ lifting it means parameterizing the type and the key prefix, not rewriting
 the debounce, park, or conflict logic.
 
 Display reuses `components/story-tag-chip.tsx` and `components/status-row.tsx`
-unchanged; a campaign story tag and an NPC status are the same `StoryTag` and
+unchanged; a campaign story tag and a challenge status are the same `StoryTag` and
 `Status` values a character has. Editing them needs campaign-scoped
 equivalents, because the board's editable versions
 (`app/character/[id]/play/_components/*`) are coupled to the character

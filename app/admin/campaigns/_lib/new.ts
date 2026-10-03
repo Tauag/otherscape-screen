@@ -1,5 +1,5 @@
 import { CURRENT_SCHEMA_VERSION } from "./migrate.ts";
-import type { Campaign, Npc } from "./types.ts";
+import type { Campaign, Challenge } from "./types.ts";
 
 /** A blank document at the current schema version. */
 export function newCampaign(): Campaign {
@@ -8,11 +8,19 @@ export function newCampaign(): Campaign {
 		name: "",
 		notes: "",
 		storyTags: [],
-		npcs: [],
+		challenges: [],
 	};
 }
 
-/** A blank NPC, ready to name. The id comes from the caller. */
-export function newNpc(id: string): Npc {
-	return { id, name: "", notes: "", storyTags: [], statuses: [] };
+/** A blank challenge, ready to name. The id comes from the caller. */
+export function newChallenge(id: string): Challenge {
+	return {
+		id,
+		name: "",
+		notes: "",
+		storyTags: [],
+		statuses: [],
+		specials: [],
+		inScene: true,
+	};
 }

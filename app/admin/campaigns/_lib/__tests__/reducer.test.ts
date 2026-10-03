@@ -205,51 +205,71 @@ test("removeStoryTag drops one tag and keeps the rest", () => {
 	);
 });
 
-// --- NPCs --------------------------------------------------------------
+// --- challenges --------------------------------------------------------------
 
-test("addNpc appends a blank NPC", () => {
-	const campaign = reduce(newCampaign(), { type: "addNpc", id: "npc-1" });
-	assert.deepEqual(campaign.npcs, [
-		{ id: "npc-1", name: "", notes: "", storyTags: [], statuses: [] },
+test("addChallenge appends a blank challenge", () => {
+	const campaign = reduce(newCampaign(), {
+		type: "addChallenge",
+		id: "challenge-1",
+	});
+	assert.deepEqual(campaign.challenges, [
+		{
+			id: "challenge-1",
+			name: "",
+			notes: "",
+			storyTags: [],
+			statuses: [],
+			specials: [],
+			inScene: true,
+		},
 	]);
 });
 
-test("renameNpc and setNpcNotes edit one NPC and leave the rest alone", () => {
-	let campaign = reduce(newCampaign(), { type: "addNpc", id: "npc-1" });
-	campaign = reduce(campaign, { type: "addNpc", id: "npc-2" });
+test("renameChallenge and setChallengeNotes edit one challenge and leave the rest alone", () => {
+	let campaign = reduce(newCampaign(), {
+		type: "addChallenge",
+		id: "challenge-1",
+	});
+	campaign = reduce(campaign, { type: "addChallenge", id: "challenge-2" });
 	campaign = reduce(campaign, {
-		type: "renameNpc",
-		npcId: "npc-1",
+		type: "renameChallenge",
+		challengeId: "challenge-1",
 		name: "Detective Oyelaran",
 	});
 	campaign = reduce(campaign, {
-		type: "setNpcNotes",
-		npcId: "npc-1",
+		type: "setChallengeNotes",
+		challengeId: "challenge-1",
 		notes: "Owed a favour.",
 	});
-	assert.equal(campaign.npcs[0].name, "Detective Oyelaran");
-	assert.equal(campaign.npcs[0].notes, "Owed a favour.");
-	assert.equal(campaign.npcs[1].name, "");
+	assert.equal(campaign.challenges[0].name, "Detective Oyelaran");
+	assert.equal(campaign.challenges[0].notes, "Owed a favour.");
+	assert.equal(campaign.challenges[1].name, "");
 });
 
-test("removeNpc drops one NPC and keeps the rest", () => {
-	let campaign = reduce(newCampaign(), { type: "addNpc", id: "npc-1" });
-	campaign = reduce(campaign, { type: "addNpc", id: "npc-2" });
-	campaign = reduce(campaign, { type: "removeNpc", npcId: "npc-1" });
+test("removeChallenge drops one challenge and keeps the rest", () => {
+	let campaign = reduce(newCampaign(), {
+		type: "addChallenge",
+		id: "challenge-1",
+	});
+	campaign = reduce(campaign, { type: "addChallenge", id: "challenge-2" });
+	campaign = reduce(campaign, {
+		type: "removeChallenge",
+		challengeId: "challenge-1",
+	});
 	assert.deepEqual(
-		campaign.npcs.map((npc) => npc.id),
-		["npc-2"],
+		campaign.challenges.map((challenge) => challenge.id),
+		["challenge-2"],
 	);
 });
 
-// --- An NPC's story tags: same verbs, scoped to one NPC ------------------
+// --- A challenge's story tags: same verbs, scoped to one challenge ------------------
 
-function withNpc(): Campaign {
-	return reduce(newCampaign(), { type: "addNpc", id: "npc-1" });
+function withChallenge(): Campaign {
+	return reduce(newCampaign(), { type: "addChallenge", id: "challenge-1" });
 }
 
-test("an NPC's story tags are created, edited, and removed independently of the campaign's own", () => {
-	let campaign = withNpc();
+test("a challenge's story tags are created, edited, and removed independently of the campaign's own", () => {
+	let campaign = withChallenge();
 	campaign = reduce(campaign, {
 		type: "addStoryTag",
 		id: "cst-1",
@@ -258,50 +278,50 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 	});
 	campaign = reduce(campaign, {
 		type: "addStoryTag",
-		npcId: "npc-1",
+		challengeId: "challenge-1",
 		id: "nst-1",
 		name: "",
 		valence: "negative",
 	});
 	assert.equal(campaign.storyTags.length, 1);
-	assert.deepEqual(campaign.npcs[0].storyTags, [
+	assert.deepEqual(campaign.challenges[0].storyTags, [
 		{ id: "nst-1", name: "", valence: "negative", burnt: false, crispy: false },
 	]);
 
 	campaign = reduce(campaign, {
 		type: "renameStoryTag",
-		npcId: "npc-1",
+		challengeId: "challenge-1",
 		id: "nst-1",
 		name: "still has friends in corpsec",
 	});
 	assert.equal(
-		campaign.npcs[0].storyTags[0].name,
+		campaign.challenges[0].storyTags[0].name,
 		"still has friends in corpsec",
 	);
 	assert.equal(campaign.storyTags[0].name, ""); // the campaign's own tag, untouched
 
 	campaign = reduce(campaign, {
 		type: "setStoryTagValence",
-		npcId: "npc-1",
+		challengeId: "challenge-1",
 		id: "nst-1",
 		valence: "positive",
 	});
-	assert.equal(campaign.npcs[0].storyTags[0].valence, "positive");
+	assert.equal(campaign.challenges[0].storyTags[0].valence, "positive");
 
 	campaign = reduce(campaign, {
 		type: "burnStoryTag",
-		npcId: "npc-1",
+		challengeId: "challenge-1",
 		id: "nst-1",
 		burnValue: DEFAULT_BURN_VALUE,
 	});
-	assert.equal(campaign.npcs[0].storyTags[0].burnt, true);
+	assert.equal(campaign.challenges[0].storyTags[0].burnt, true);
 
 	campaign = reduce(campaign, {
 		type: "toggleStoryTagCrispy",
-		npcId: "npc-1",
+		challengeId: "challenge-1",
 		id: "nst-1",
 	});
-	assert.deepEqual(campaign.npcs[0].storyTags[0], {
+	assert.deepEqual(campaign.challenges[0].storyTags[0], {
 		id: "nst-1",
 		name: "still has friends in corpsec",
 		valence: "positive",
@@ -311,36 +331,36 @@ test("an NPC's story tags are created, edited, and removed independently of the 
 
 	campaign = reduce(campaign, {
 		type: "removeStoryTag",
-		npcId: "npc-1",
+		challengeId: "challenge-1",
 		id: "nst-1",
 	});
-	assert.deepEqual(campaign.npcs[0].storyTags, []);
+	assert.deepEqual(campaign.challenges[0].storyTags, []);
 });
 
-test("an NPC story tag verb touches only its own NPC", () => {
-	let campaign = withNpc();
-	campaign = reduce(campaign, { type: "addNpc", id: "npc-2" });
+test("a challenge story tag verb touches only its own challenge", () => {
+	let campaign = withChallenge();
+	campaign = reduce(campaign, { type: "addChallenge", id: "challenge-2" });
 	campaign = reduce(campaign, {
 		type: "addStoryTag",
-		npcId: "npc-1",
+		challengeId: "challenge-1",
 		id: "nst-1",
 		name: "",
 		valence: "positive",
 	});
-	assert.equal(campaign.npcs[0].storyTags.length, 1);
-	assert.equal(campaign.npcs[1].storyTags.length, 0);
+	assert.equal(campaign.challenges[0].storyTags.length, 1);
+	assert.equal(campaign.challenges[1].storyTags.length, 0);
 });
 
-// --- An NPC's statuses -----------------------------------------------------
+// --- A challenge's statuses -----------------------------------------------------
 
-test("addNpcStatus creates a status marked at tier 1, at the default limit", () => {
-	const campaign = reduce(withNpc(), {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+test("addChallengeStatus creates a status marked at tier 1, at the default limit", () => {
+	const campaign = reduce(withChallenge(), {
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "negative",
 	});
-	assert.deepEqual(campaign.npcs[0].statuses, [
+	assert.deepEqual(campaign.challenges[0].statuses, [
 		{
 			id: "nss-1",
 			name: "",
@@ -351,53 +371,56 @@ test("addNpcStatus creates a status marked at tier 1, at the default limit", () 
 	]);
 });
 
-test("renameNpcStatus normalizes to lowercase kebab-case", () => {
-	let campaign = reduce(withNpc(), {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+test("renameChallengeStatus normalizes to lowercase kebab-case", () => {
+	let campaign = reduce(withChallenge(), {
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "negative",
 	});
 	campaign = reduce(campaign, {
-		type: "renameNpcStatus",
-		npcId: "npc-1",
+		type: "renameChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		name: "Hunted By The Syndicate",
 	});
-	assert.equal(campaign.npcs[0].statuses[0].name, "hunted-by-the-syndicate");
+	assert.equal(
+		campaign.challenges[0].statuses[0].name,
+		"hunted-by-the-syndicate",
+	);
 });
 
-test("setNpcStatusValence flips a status's valence", () => {
-	let campaign = reduce(withNpc(), {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+test("setChallengeStatusValence flips a status's valence", () => {
+	let campaign = reduce(withChallenge(), {
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "negative",
 	});
 	campaign = reduce(campaign, {
-		type: "setNpcStatusValence",
-		npcId: "npc-1",
+		type: "setChallengeStatusValence",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "positive",
 	});
-	assert.equal(campaign.npcs[0].statuses[0].valence, "positive");
+	assert.equal(campaign.challenges[0].statuses[0].valence, "positive");
 });
 
-test("markNpcStatusTier stacks: marking an already-marked tier marks one higher", () => {
-	let campaign = reduce(withNpc(), {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+test("markChallengeStatusTier stacks: marking an already-marked tier marks one higher", () => {
+	let campaign = reduce(withChallenge(), {
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "negative",
 	});
-	// Tier 1 is already marked by addNpcStatus.
+	// Tier 1 is already marked by addChallengeStatus.
 	campaign = reduce(campaign, {
-		type: "markNpcStatusTier",
-		npcId: "npc-1",
+		type: "markChallengeStatusTier",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		tier: 1,
 	});
-	assert.deepEqual(campaign.npcs[0].statuses[0].tiers, [
+	assert.deepEqual(campaign.challenges[0].statuses[0].tiers, [
 		true,
 		true,
 		false,
@@ -407,26 +430,26 @@ test("markNpcStatusTier stacks: marking an already-marked tier marks one higher"
 	]);
 });
 
-test("clearNpcStatusTier clears exactly the one tier, with no shift of the rest", () => {
-	let campaign = reduce(withNpc(), {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+test("clearChallengeStatusTier clears exactly the one tier, with no shift of the rest", () => {
+	let campaign = reduce(withChallenge(), {
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "negative",
 	});
 	campaign = reduce(campaign, {
-		type: "markNpcStatusTier",
-		npcId: "npc-1",
+		type: "markChallengeStatusTier",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		tier: 3,
 	});
 	campaign = reduce(campaign, {
-		type: "clearNpcStatusTier",
-		npcId: "npc-1",
+		type: "clearChallengeStatusTier",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		tier: 1,
 	});
-	assert.deepEqual(campaign.npcs[0].statuses[0].tiers, [
+	assert.deepEqual(campaign.challenges[0].statuses[0].tiers, [
 		false,
 		false,
 		true,
@@ -436,39 +459,39 @@ test("clearNpcStatusTier clears exactly the one tier, with no shift of the rest"
 	]);
 });
 
-test("removeNpcStatus drops one status and keeps the rest", () => {
-	let campaign = reduce(withNpc(), {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+test("removeChallengeStatus drops one status and keeps the rest", () => {
+	let campaign = reduce(withChallenge(), {
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "negative",
 	});
 	campaign = reduce(campaign, {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-2",
 		valence: "positive",
 	});
 	campaign = reduce(campaign, {
-		type: "removeNpcStatus",
-		npcId: "npc-1",
+		type: "removeChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 	});
 	assert.deepEqual(
-		campaign.npcs[0].statuses.map((status) => status.id),
+		campaign.challenges[0].statuses.map((status) => status.id),
 		["nss-2"],
 	);
 });
 
-test("an NPC status verb touches only its own NPC", () => {
-	let campaign = withNpc();
-	campaign = reduce(campaign, { type: "addNpc", id: "npc-2" });
+test("a challenge status verb touches only its own challenge", () => {
+	let campaign = withChallenge();
+	campaign = reduce(campaign, { type: "addChallenge", id: "challenge-2" });
 	campaign = reduce(campaign, {
-		type: "addNpcStatus",
-		npcId: "npc-1",
+		type: "addChallengeStatus",
+		challengeId: "challenge-1",
 		id: "nss-1",
 		valence: "negative",
 	});
-	assert.equal(campaign.npcs[0].statuses.length, 1);
-	assert.equal(campaign.npcs[1].statuses.length, 0);
+	assert.equal(campaign.challenges[0].statuses.length, 1);
+	assert.equal(campaign.challenges[1].statuses.length, 0);
 });

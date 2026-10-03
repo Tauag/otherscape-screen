@@ -4,26 +4,37 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { useState } from "react";
-import type { Npc } from "@/app/admin/campaigns/_lib/types";
+import type { Challenge } from "@/app/admin/campaigns/_lib/types";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { LabelAction } from "@/components/label-action";
 import { RowMenu } from "@/components/row-menu";
 import { CARD, CARD_BODY, MENU_ITEM } from "@/components/styles";
 import { useCampaign } from "../_hooks/use-campaign";
-import { NpcStatusRow } from "./npc-status-row";
+import { ChallengeStatusRow } from "./challenge-status-row";
 import { StoryTagList } from "./story-tag-list";
 
 const STRIPE = "w-[3px] shrink-0 bg-quiet";
 
-export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
+export function ChallengeCard({
+	challenge,
+	autoFocus,
+}: {
+	challenge: Challenge;
+	autoFocus: boolean;
+}) {
 	const { dispatch } = useCampaign();
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [addedStatus, setAddedStatus] = useState<string | null>(null);
-	const named = npc.name.trim() || "this NPC";
+	const named = challenge.name.trim() || "this challenge";
 
 	function addStatus() {
 		const id = crypto.randomUUID();
-		dispatch({ type: "addNpcStatus", npcId: npc.id, id, valence: "positive" });
+		dispatch({
+			type: "addChallengeStatus",
+			challengeId: challenge.id,
+			id,
+			valence: "positive",
+		});
 		setAddedStatus(id);
 	}
 
@@ -33,22 +44,19 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 			<div className={CARD_BODY}>
 				<div className="flex items-center justify-between gap-2">
 					<div className="flex min-w-0 flex-1 flex-col gap-1">
-						<span className="font-display text-[10px] font-semibold tracking-[0.17em] text-dim uppercase">
-							NPC
-						</span>
 						<Input
 							type="text"
 							autoComplete="off"
 							autoFocus={autoFocus}
-							value={npc.name}
+							value={challenge.name}
 							onChange={(event) =>
 								dispatch({
-									type: "renameNpc",
-									npcId: npc.id,
+									type: "renameChallenge",
+									challengeId: challenge.id,
 									name: event.target.value,
 								})
 							}
-							aria-label="NPC name"
+							aria-label="Challenge name"
 							placeholder="Unnamed"
 							className="w-full min-w-0 bg-transparent font-display text-lg font-bold tracking-[0.05em] text-text uppercase placeholder:text-dim placeholder:normal-case"
 						/>
@@ -65,17 +73,17 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 				</div>
 
 				<textarea
-					value={npc.notes}
+					value={challenge.notes}
 					onChange={(event) =>
 						dispatch({
-							type: "setNpcNotes",
-							npcId: npc.id,
+							type: "setChallengeNotes",
+							challengeId: challenge.id,
 							notes: event.target.value,
 						})
 					}
 					rows={2}
 					aria-label={`Notes for ${named}`}
-					placeholder="What this NPC wants, or what they know"
+					placeholder="What this challenge wants, or what they know"
 					className="min-h-11 resize-none rounded-sm border border-border bg-bg p-2.5 font-sans text-[13px] text-text placeholder:text-dim"
 				/>
 
@@ -83,14 +91,14 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 					<LabelAction label="Statuses" onClick={addStatus}>
 						+ Status
 					</LabelAction>
-					{npc.statuses.length === 0 ? (
+					{challenge.statuses.length === 0 ? (
 						<p className="font-sans text-[13px] text-dim">No statuses.</p>
 					) : (
 						<ul className="flex flex-col gap-1.5">
-							{npc.statuses.map((status) => (
-								<NpcStatusRow
+							{challenge.statuses.map((status) => (
+								<ChallengeStatusRow
 									key={status.id}
-									npcId={npc.id}
+									challengeId={challenge.id}
 									status={status}
 									autoFocus={status.id === addedStatus}
 								/>
@@ -100,7 +108,11 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 				</div>
 
 				<div className="flex flex-col gap-1.5">
-					<StoryTagList tags={npc.storyTags} npcId={npc.id} collapsed />
+					<StoryTagList
+						tags={challenge.storyTags}
+						challengeId={challenge.id}
+						collapsed
+					/>
 				</div>
 			</div>
 
@@ -108,16 +120,16 @@ export function NpcCard({ npc, autoFocus }: { npc: Npc; autoFocus: boolean }) {
 				open={deleteOpen}
 				onOpenChange={setDeleteOpen}
 				title={`Delete ${named}?`}
-				description={`This deletes its ${npc.statuses.length} status${
-					npc.statuses.length === 1 ? "" : "es"
-				} and ${npc.storyTags.length} story tag${
-					npc.storyTags.length === 1 ? "" : "s"
+				description={`This deletes its ${challenge.statuses.length} status${
+					challenge.statuses.length === 1 ? "" : "es"
+				} and ${challenge.storyTags.length} story tag${
+					challenge.storyTags.length === 1 ? "" : "s"
 				}.`}
 			>
 				<Button
 					type="button"
 					onClick={() => {
-						dispatch({ type: "removeNpc", npcId: npc.id });
+						dispatch({ type: "removeChallenge", challengeId: challenge.id });
 						setDeleteOpen(false);
 					}}
 					className="inline-flex min-h-11 items-center self-start rounded-sm bg-danger px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"

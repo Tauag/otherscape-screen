@@ -1,15 +1,24 @@
 import type { Campaign } from "./types.ts";
 
-export const CURRENT_SCHEMA_VERSION = 1;
+export const CURRENT_SCHEMA_VERSION = 2;
 
 type Doc = Record<string, unknown>;
 
-/** A step upgrades a version-n document to version n+1. None exist yet: this
- *  is the schema's first version. lib/character/migrate.ts's `steps` map
- *  shows the pattern a later version follows. */
+/** A step upgrades a version-n document to version n+1. */
 type Step = (doc: Doc) => Doc;
 
 const steps = new Map<number, Step>();
+
+// v1 called challenges `npcs`, and had no specials or scene flag. Every
+// existing challenge starts in the scene, so nothing disappears from view.
+steps.set(1, ({ npcs, ...doc }) => ({
+	...doc,
+	challenges: ((npcs ?? []) as Doc[]).map((challenge) => ({
+		...challenge,
+		specials: [],
+		inScene: true,
+	})),
+}));
 
 /**
  * Upgrade a document read from the database. This is a trust boundary, so it

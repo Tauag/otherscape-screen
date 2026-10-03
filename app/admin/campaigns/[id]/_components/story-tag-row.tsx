@@ -11,13 +11,19 @@ import type { StoryTag } from "@/lib/character/types";
 import { useCampaign } from "../_hooks/use-campaign";
 
 /**
- * One story tag, campaign- or NPC-scoped (`npcId` absent means the
+ * One story tag, campaign- or challenge-scoped (`challengeId` absent means the
  * campaign's own list). Looks like components/story-tag-chip.tsx's read-only
  * chip - the same "story"/"story · 1x" label and burnt treatment - but every
  * field is editable, per design.md 8.2: a GM's tag reads exactly like the
  * player board's.
  */
-export function StoryTagRow({ tag, npcId }: { tag: StoryTag; npcId?: string }) {
+export function StoryTagRow({
+	tag,
+	challengeId,
+}: {
+	tag: StoryTag;
+	challengeId?: string;
+}) {
 	const { dispatch } = useCampaign();
 	const [renaming, setRenaming] = useState(false);
 	const named = tag.name.trim() || "this tag";
@@ -32,13 +38,6 @@ export function StoryTagRow({ tag, npcId }: { tag: StoryTag; npcId?: string }) {
 			}`}
 		>
 			<div className="flex min-h-11 min-w-0 flex-1 items-center gap-[7px] px-[9px] py-1.5">
-				<span
-					className={`shrink-0 font-mono text-[9px] font-bold ${
-						tag.burnt ? "text-faint" : "text-[var(--hue)]/80"
-					}`}
-				>
-					{tag.crispy ? "story · 1x" : "story"}
-				</span>
 				<span
 					className={`truncate font-display text-[13px] ${
 						tag.burnt ? "text-muted line-through" : "text-[var(--hue-text)]"
@@ -58,7 +57,7 @@ export function StoryTagRow({ tag, npcId }: { tag: StoryTag; npcId?: string }) {
 					onClick={() =>
 						dispatch({
 							type: "setStoryTagValence",
-							npcId,
+							challengeId,
 							id: tag.id,
 							valence: tag.valence === "positive" ? "negative" : "positive",
 						})
@@ -69,7 +68,7 @@ export function StoryTagRow({ tag, npcId }: { tag: StoryTag; npcId?: string }) {
 				<Menu.Item
 					className={MENU_ITEM}
 					onClick={() =>
-						dispatch({ type: "removeStoryTag", npcId, id: tag.id })
+						dispatch({ type: "removeStoryTag", challengeId, id: tag.id })
 					}
 				>
 					Delete
@@ -93,7 +92,7 @@ export function StoryTagRow({ tag, npcId }: { tag: StoryTag; npcId?: string }) {
 						onChange={(event) =>
 							dispatch({
 								type: "renameStoryTag",
-								npcId,
+								challengeId,
 								id: tag.id,
 								name: event.target.value,
 							})

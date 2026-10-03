@@ -15,19 +15,19 @@ const SEGMENT =
 	"min-h-11 flex-1 px-3 font-mono text-[10px] tracking-[0.08em] text-dim uppercase";
 
 /**
- * A list of story tags, plus the "New story tag" form. `npcId` is the only
- * thing that varies between the campaign's own aside section and one NPC's
+ * A list of story tags, plus the "New story tag" form. `challengeId` is the only
+ * thing that varies between the campaign's own aside section and one challenge's
  * card (T66): everything else - the rows, the add form - is unchanged.
  */
 export function StoryTagList({
 	tags,
-	npcId,
+	challengeId,
 	collapsed,
 }: {
 	tags: StoryTag[];
-	npcId?: string;
+	challengeId?: string;
 	/** Show a "+ Story tag" trigger instead of the always-open form, for a
-	 *  dense NPC card (T66), with a Cancel to collapse it again. */
+	 *  dense challenge card (T66), with a Cancel to collapse it again. */
 	collapsed?: boolean;
 }) {
 	const { dispatch } = useCampaign();
@@ -42,7 +42,7 @@ export function StoryTagList({
 		if (!trimmed) return;
 		dispatch({
 			type: "addStoryTag",
-			npcId,
+			challengeId,
 			id: crypto.randomUUID(),
 			name: trimmed,
 			valence,
@@ -66,7 +66,7 @@ export function StoryTagList({
 			) : (
 				<ul className="flex flex-col gap-1.5">
 					{tags.map((tag) => (
-						<StoryTagRow key={tag.id} tag={tag} npcId={npcId} />
+						<StoryTagRow key={tag.id} tag={tag} challengeId={challengeId} />
 					))}
 				</ul>
 			)}

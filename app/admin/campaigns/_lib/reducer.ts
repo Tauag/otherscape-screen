@@ -5,7 +5,7 @@ import {
 	raiseStatus,
 	resizeStatusLimit,
 } from "@/lib/rules/status";
-import { newNpc } from "./new.ts";
+import { newChallenge } from "./new.ts";
 import {
 	addStoryTag,
 	burnStoryTag,
@@ -15,79 +15,111 @@ import {
 	toggleStoryTagCrispy,
 	unburnStoryTag,
 } from "./story-tag.ts";
-import type { Campaign, Npc } from "./types.ts";
+import type { Campaign, Challenge } from "./types.ts";
 
 export type CampaignAction =
 	| { type: "replace"; document: Campaign }
 	| { type: "setNotes"; notes: string }
-	// A story tag verb below omits `npcId` for the campaign's own list, or
-	// carries it for one NPC's - one UI (story-tag-list.tsx) serves both.
+	// A story tag verb below omits `challengeId` for the campaign's own list, or
+	// carries it for one challenge's - one UI (story-tag-list.tsx) serves both.
 	| {
 			type: "addStoryTag";
-			npcId?: string;
+			challengeId?: string;
 			id: string;
 			name: string;
 			valence: Valence;
 	  }
-	| { type: "renameStoryTag"; npcId?: string; id: string; name: string }
-	| { type: "setStoryTagValence"; npcId?: string; id: string; valence: Valence }
-	| { type: "burnStoryTag"; npcId?: string; id: string; burnValue: number }
-	| { type: "unburnStoryTag"; npcId?: string; id: string }
-	| { type: "toggleStoryTagCrispy"; npcId?: string; id: string }
-	| { type: "removeStoryTag"; npcId?: string; id: string }
-	| { type: "addNpc"; id: string }
-	| { type: "renameNpc"; npcId: string; name: string }
-	| { type: "setNpcNotes"; npcId: string; notes: string }
-	| { type: "removeNpc"; npcId: string }
-	| { type: "addNpcStatus"; npcId: string; id: string; valence: Valence }
-	| { type: "renameNpcStatus"; npcId: string; id: string; name: string }
+	| { type: "renameStoryTag"; challengeId?: string; id: string; name: string }
 	| {
-			type: "setNpcStatusValence";
-			npcId: string;
+			type: "setStoryTagValence";
+			challengeId?: string;
 			id: string;
 			valence: Valence;
 	  }
-	| { type: "removeNpcStatus"; npcId: string; id: string }
-	| { type: "markNpcStatusTier"; npcId: string; id: string; tier: number }
-	| { type: "clearNpcStatusTier"; npcId: string; id: string; tier: number };
+	| {
+			type: "burnStoryTag";
+			challengeId?: string;
+			id: string;
+			burnValue: number;
+	  }
+	| { type: "unburnStoryTag"; challengeId?: string; id: string }
+	| { type: "toggleStoryTagCrispy"; challengeId?: string; id: string }
+	| { type: "removeStoryTag"; challengeId?: string; id: string }
+	| { type: "addChallenge"; id: string }
+	| { type: "renameChallenge"; challengeId: string; name: string }
+	| { type: "setChallengeNotes"; challengeId: string; notes: string }
+	| { type: "removeChallenge"; challengeId: string }
+	| {
+			type: "addChallengeStatus";
+			challengeId: string;
+			id: string;
+			valence: Valence;
+	  }
+	| {
+			type: "renameChallengeStatus";
+			challengeId: string;
+			id: string;
+			name: string;
+	  }
+	| {
+			type: "setChallengeStatusValence";
+			challengeId: string;
+			id: string;
+			valence: Valence;
+	  }
+	| { type: "removeChallengeStatus"; challengeId: string; id: string }
+	| {
+			type: "markChallengeStatusTier";
+			challengeId: string;
+			id: string;
+			tier: number;
+	  }
+	| {
+			type: "clearChallengeStatusTier";
+			challengeId: string;
+			id: string;
+			tier: number;
+	  };
 
-/** Every NPC verb below edits one NPC and leaves the rest alone. */
-function inNpc(
+/** Every challenge verb below edits one challenge and leaves the rest alone. */
+function inChallenge(
 	campaign: Campaign,
-	npcId: string,
-	edit: (npc: Npc) => Npc,
+	challengeId: string,
+	edit: (challenge: Challenge) => Challenge,
 ): Campaign {
 	return {
 		...campaign,
-		npcs: campaign.npcs.map((npc) => (npc.id === npcId ? edit(npc) : npc)),
+		challenges: campaign.challenges.map((challenge) =>
+			challenge.id === challengeId ? edit(challenge) : challenge,
+		),
 	};
 }
 
-function inNpcStatus(
-	npc: Npc,
+function inChallengeStatus(
+	challenge: Challenge,
 	id: string,
 	edit: (status: Status) => Status,
-): Npc {
+): Challenge {
 	return {
-		...npc,
-		statuses: npc.statuses.map((status) =>
+		...challenge,
+		statuses: challenge.statuses.map((status) =>
 			status.id === id ? edit(status) : status,
 		),
 	};
 }
 
 /** Every story-tag verb below edits one list: the campaign's own (no
- *  `npcId`) or one NPC's. */
+ *  `challengeId`) or one challenge's. */
 function inStoryTags(
 	campaign: Campaign,
-	npcId: string | undefined,
+	challengeId: string | undefined,
 	edit: (tags: StoryTag[]) => StoryTag[],
 ): Campaign {
-	if (npcId === undefined)
+	if (challengeId === undefined)
 		return { ...campaign, storyTags: edit(campaign.storyTags) };
-	return inNpc(campaign, npcId, (npc) => ({
-		...npc,
-		storyTags: edit(npc.storyTags),
+	return inChallenge(campaign, challengeId, (challenge) => ({
+		...challenge,
+		storyTags: edit(challenge.storyTags),
 	}));
 }
 
@@ -98,51 +130,56 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 		case "setNotes":
 			return { ...campaign, notes: action.notes };
 		case "addStoryTag":
-			return inStoryTags(campaign, action.npcId, (tags) =>
+			return inStoryTags(campaign, action.challengeId, (tags) =>
 				addStoryTag(tags, action.id, action.name, action.valence),
 			);
 		case "renameStoryTag":
-			return inStoryTags(campaign, action.npcId, (tags) =>
+			return inStoryTags(campaign, action.challengeId, (tags) =>
 				renameStoryTag(tags, action.id, action.name),
 			);
 		case "setStoryTagValence":
-			return inStoryTags(campaign, action.npcId, (tags) =>
+			return inStoryTags(campaign, action.challengeId, (tags) =>
 				setStoryTagValence(tags, action.id, action.valence),
 			);
 		case "burnStoryTag":
-			return inStoryTags(campaign, action.npcId, (tags) =>
+			return inStoryTags(campaign, action.challengeId, (tags) =>
 				burnStoryTag(tags, action.id, action.burnValue),
 			);
 		case "unburnStoryTag":
-			return inStoryTags(campaign, action.npcId, (tags) =>
+			return inStoryTags(campaign, action.challengeId, (tags) =>
 				unburnStoryTag(tags, action.id),
 			);
 		case "toggleStoryTagCrispy":
-			return inStoryTags(campaign, action.npcId, (tags) =>
+			return inStoryTags(campaign, action.challengeId, (tags) =>
 				toggleStoryTagCrispy(tags, action.id),
 			);
 		case "removeStoryTag":
-			return inStoryTags(campaign, action.npcId, (tags) =>
+			return inStoryTags(campaign, action.challengeId, (tags) =>
 				removeStoryTag(tags, action.id),
 			);
-		case "addNpc":
-			return { ...campaign, npcs: [...campaign.npcs, newNpc(action.id)] };
-		case "renameNpc":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				name: action.name,
-			}));
-		case "setNpcNotes":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				notes: action.notes,
-			}));
-		case "removeNpc":
+		case "addChallenge":
 			return {
 				...campaign,
-				npcs: campaign.npcs.filter((npc) => npc.id !== action.npcId),
+				challenges: [...campaign.challenges, newChallenge(action.id)],
 			};
-		case "addNpcStatus": {
+		case "renameChallenge":
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				name: action.name,
+			}));
+		case "setChallengeNotes":
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				notes: action.notes,
+			}));
+		case "removeChallenge":
+			return {
+				...campaign,
+				challenges: campaign.challenges.filter(
+					(challenge) => challenge.id !== action.challengeId,
+				),
+			};
+		case "addChallengeStatus": {
 			const status: Status = {
 				id: action.id,
 				name: "",
@@ -150,42 +187,44 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 				tiers: resizeStatusLimit([true], DEFAULT_STATUS_LIMIT),
 				limit: DEFAULT_STATUS_LIMIT,
 			};
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				statuses: [...npc.statuses, status],
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				statuses: [...challenge.statuses, status],
 			}));
 		}
-		case "renameNpcStatus":
-			return inNpc(campaign, action.npcId, (npc) =>
-				inNpcStatus(npc, action.id, (status) => ({
+		case "renameChallengeStatus":
+			return inChallenge(campaign, action.challengeId, (challenge) =>
+				inChallengeStatus(challenge, action.id, (status) => ({
 					...status,
 					// Same shorthand rule as lib/character/reducer.ts's renameStatus:
 					// exhausted-2, amped-up-2.
 					name: action.name.toLowerCase().replaceAll(" ", "-"),
 				})),
 			);
-		case "setNpcStatusValence":
-			return inNpc(campaign, action.npcId, (npc) =>
-				inNpcStatus(npc, action.id, (status) => ({
+		case "setChallengeStatusValence":
+			return inChallenge(campaign, action.challengeId, (challenge) =>
+				inChallengeStatus(challenge, action.id, (status) => ({
 					...status,
 					valence: action.valence,
 				})),
 			);
-		case "removeNpcStatus":
-			return inNpc(campaign, action.npcId, (npc) => ({
-				...npc,
-				statuses: npc.statuses.filter((status) => status.id !== action.id),
+		case "removeChallengeStatus":
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				statuses: challenge.statuses.filter(
+					(status) => status.id !== action.id,
+				),
 			}));
-		case "markNpcStatusTier":
-			return inNpc(campaign, action.npcId, (npc) =>
-				inNpcStatus(npc, action.id, (status) => ({
+		case "markChallengeStatusTier":
+			return inChallenge(campaign, action.challengeId, (challenge) =>
+				inChallengeStatus(challenge, action.id, (status) => ({
 					...status,
 					tiers: raiseStatus(status.tiers, action.tier, status.limit),
 				})),
 			);
-		case "clearNpcStatusTier":
-			return inNpc(campaign, action.npcId, (npc) =>
-				inNpcStatus(npc, action.id, (status) => ({
+		case "clearChallengeStatusTier":
+			return inChallenge(campaign, action.challengeId, (challenge) =>
+				inChallengeStatus(challenge, action.id, (status) => ({
 					...status,
 					tiers: clearStatusTier(status.tiers, action.tier),
 				})),

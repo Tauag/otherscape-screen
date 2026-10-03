@@ -1,20 +1,22 @@
 // The whole campaign, as it sits in `campaigns.data`. Types only.
 // sysdesign 3, 14: StoryTag and Status are lib/character/types.ts's existing
-// types, unchanged - a campaign story tag and an NPC status are the same
+// types, unchanged - a campaign story tag and a challenge status are the same
 // shape a character's are.
 
 import type { Status, StoryTag } from "@/lib/character/types";
 
-/**
- * No `themes` field yet: PRD section 10 has full NPC sheets, built from the
- * theme model, as later work. The shape leaves room for it when that lands.
- */
-export type Npc = {
+/** A unique behavior a challenge can do, a few sentences of free text. */
+export type Special = { id: string; text: string };
+
+export type Challenge = {
 	id: string;
 	name: string;
 	notes: string;
 	storyTags: StoryTag[];
 	statuses: Status[];
+	specials: Special[];
+	/** In the current scene, or benched (prepped but idle). */
+	inScene: boolean;
 };
 
 export type Campaign = {
@@ -24,5 +26,5 @@ export type Campaign = {
 	name: string;
 	notes: string;
 	storyTags: StoryTag[];
-	npcs: Npc[];
+	challenges: Challenge[];
 };

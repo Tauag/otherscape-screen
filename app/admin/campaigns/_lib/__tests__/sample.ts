@@ -2,7 +2,7 @@ import { CURRENT_SCHEMA_VERSION } from "../migrate.ts";
 import type { Campaign } from "../types.ts";
 
 /** An invented campaign, exercising a burnt and a crispy story tag, and an
- *  NPC with its own story tags and a non-contiguous status. */
+ *  challenge with its own story tags and a non-contiguous status. */
 export const sample: Campaign = {
 	schema_version: CURRENT_SCHEMA_VERSION,
 	name: "The Lantern Street Job",
@@ -23,9 +23,9 @@ export const sample: Campaign = {
 			crispy: false,
 		},
 	],
-	npcs: [
+	challenges: [
 		{
-			id: "npc-1",
+			id: "challenge-1",
 			name: "Detective Oyelaran",
 			notes: "Owed a favour by Kira. Doesn't know it yet.",
 			storyTags: [
@@ -46,6 +46,13 @@ export const sample: Campaign = {
 					limit: 6,
 				},
 			],
+			specials: [
+				{
+					id: "csp-1",
+					text: "Calls in a corpsec patrol when cornered.",
+				},
+			],
+			inScene: false,
 		},
 	],
 };

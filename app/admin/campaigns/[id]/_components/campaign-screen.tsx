@@ -4,11 +4,11 @@ import { RosterAppBar } from "@/components/roster-app-bar";
 import { LABEL } from "@/components/styles";
 import { useCampaign } from "../_hooks/use-campaign";
 import { SAVE_STATUS_MESSAGE } from "./campaign-provider";
-import { NpcSection } from "./npc-section";
+import { ChallengeSection } from "./challenge-section";
 import { StoryTagList } from "./story-tag-list";
 
 /**
- * The campaign screen (design.md 8.2): campaign name and notes, then NPCs,
+ * The campaign screen (design.md 8.2): campaign name and notes, then challenges,
  * then the story tags and assigned-characters aside. `characters` comes in
  * as a prop because AssignedCharacters (T67) is an async server component,
  * and this screen is a client component.
@@ -63,7 +63,7 @@ export function CampaignScreen({
 						/>
 					</label>
 
-					<NpcSection />
+					<ChallengeSection />
 				</div>
 
 				<aside className="flex min-w-0 flex-col gap-6 lg:w-[340px] lg:shrink-0">

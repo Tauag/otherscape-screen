@@ -14,7 +14,7 @@ import { LABEL } from "@/components/styles";
 type Props = {
 	id: string;
 	name: string;
-	npcCount: number;
+	challengeCount: number;
 	storyTagCount: number;
 	characterCount: number;
 	/** ISO 8601, for the machine-readable <time>. */
@@ -30,7 +30,7 @@ function plural(count: number, noun: string): string {
 export function CampaignRow({
 	id,
 	name,
-	npcCount,
+	challengeCount,
 	storyTagCount,
 	characterCount,
 	updatedAt,
@@ -81,7 +81,8 @@ export function CampaignRow({
 						{label}
 					</span>
 					<span className={LABEL}>
-						{plural(npcCount, "NPC")} · {plural(storyTagCount, "story tag")} ·{" "}
+						{plural(challengeCount, "challenge")} ·{" "}
+						{plural(storyTagCount, "story tag")} ·{" "}
 						{plural(characterCount, "character")}
 					</span>
 				</Link>
@@ -127,7 +128,7 @@ export function CampaignRow({
 							Delete {label}?
 						</AlertDialog.Title>
 						<AlertDialog.Description className="mt-2 font-sans text-sm text-dim">
-							This deletes its {plural(npcCount, "NPC")} and{" "}
+							This deletes its {plural(challengeCount, "challenge")} and{" "}
 							{plural(storyTagCount, "story tag")}. The {characterCount}{" "}
 							assigned{" "}
 							{characterCount === 1 ? "character stays" : "characters stay"} as{" "}

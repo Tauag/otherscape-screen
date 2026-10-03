@@ -15,16 +15,16 @@ const LIT = `${BOX} bg-[var(--hue)] shadow-[0_0_8px_color-mix(in_oklab,var(--hue
 const UNLIT = `${BOX} border border-[var(--hue)]/30`;
 
 /**
- * One NPC's status: components/status-card.tsx's play-board sibling, minus
+ * One challenge's status: components/status-card.tsx's play-board sibling, minus
  * what that one supports and this one doesn't - toggling for roll selection,
  * and the tier-limit dialog (out of scope for T66).
  */
-export function NpcStatusRow({
-	npcId,
+export function ChallengeStatusRow({
+	challengeId,
 	status,
 	autoFocus,
 }: {
-	npcId: string;
+	challengeId: string;
 	status: Status;
 	autoFocus: boolean;
 }) {
@@ -45,8 +45,8 @@ export function NpcStatusRow({
 					autoFocus={autoFocus}
 					onChange={(event) =>
 						dispatch({
-							type: "renameNpcStatus",
-							npcId,
+							type: "renameChallengeStatus",
+							challengeId,
 							id: status.id,
 							name: event.target.value,
 						})
@@ -75,14 +75,14 @@ export function NpcStatusRow({
 									dispatch(
 										marked
 											? {
-													type: "clearNpcStatusTier",
-													npcId,
+													type: "clearChallengeStatusTier",
+													challengeId,
 													id: status.id,
 													tier: tierNumber,
 												}
 											: {
-													type: "markNpcStatusTier",
-													npcId,
+													type: "markChallengeStatusTier",
+													challengeId,
 													id: status.id,
 													tier: tierNumber,
 												},
@@ -106,8 +106,8 @@ export function NpcStatusRow({
 						className={MENU_ITEM}
 						onClick={() =>
 							dispatch({
-								type: "setNpcStatusValence",
-								npcId,
+								type: "setChallengeStatusValence",
+								challengeId,
 								id: status.id,
 								valence:
 									status.valence === "positive" ? "negative" : "positive",
@@ -121,7 +121,11 @@ export function NpcStatusRow({
 					<Menu.Item
 						className={MENU_ITEM}
 						onClick={() =>
-							dispatch({ type: "removeNpcStatus", npcId, id: status.id })
+							dispatch({
+								type: "removeChallengeStatus",
+								challengeId,
+								id: status.id,
+							})
 						}
 					>
 						Delete

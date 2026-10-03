@@ -35,3 +35,20 @@ test("a document newer than this client is rejected, and the error names the ver
 		new RegExp(String(future)),
 	);
 });
+
+test("v1 renames npcs to challenges, each with no specials and in the scene", () => {
+	const { challenges, ...rest } = sample;
+	const v1 = {
+		...rest,
+		schema_version: 1,
+		npcs: challenges.map(({ specials, inScene, ...challenge }) => challenge),
+	};
+	assert.deepEqual(migrate(v1), {
+		...sample,
+		challenges: challenges.map((challenge) => ({
+			...challenge,
+			specials: [],
+			inScene: true,
+		})),
+	});
+});

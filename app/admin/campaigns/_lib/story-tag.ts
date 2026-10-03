@@ -1,7 +1,7 @@
 // Pure StoryTag[] verbs, shared by the campaign's own story tags and every
-// NPC's. lib/character/reducer.ts writes this same logic inline for a
+// challenge's. lib/character/reducer.ts writes this same logic inline for a
 // character's storyTags (there's only ever one list there); a campaign has
-// two list sites (the campaign, and each NPC), so it's pulled out once here
+// two list sites (the campaign, and each challenge), so it's pulled out once here
 // instead of copied twice.
 
 import type { StoryTag, Valence } from "@/lib/character/types";

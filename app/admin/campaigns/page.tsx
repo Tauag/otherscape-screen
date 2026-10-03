@@ -52,7 +52,7 @@ export default async function CampaignsPage() {
 								key={row.id}
 								id={row.id}
 								name={campaign.name}
-								npcCount={campaign.npcs.length}
+								challengeCount={campaign.challenges.length}
 								storyTagCount={campaign.storyTags.length}
 								characterCount={row.campaign_characters[0]?.count ?? 0}
 								updatedAt={row.updated_at}
