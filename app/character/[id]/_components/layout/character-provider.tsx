@@ -94,6 +94,48 @@ export function CharacterProvider({
 		setStatus(next);
 	}, []);
 
+	// The newest version a live ping announced. A ping that lands mid-save is
+	// remembered here and pulled once the save settles.
+	const announced = useRef(version);
+
+	// Take a newer server copy (a GM edit, another device) only while this one
+	// has nothing unsaved. With unsaved edits, the next save's version check
+	// raises the conflict dialog instead, so no edit is overwritten.
+	const pull = useCallback(async () => {
+		const clean = () =>
+			statusRef.current === "saved" && !saver.current?.pending();
+		if (!clean()) return;
+		const before = characterRef.current;
+
+		const { data: row } = await createClient()
+			.from("characters")
+			.select("data, version")
+			.eq("id", id)
+			.maybeSingle()
+			.overrideTypes<{ data: unknown; version: number }, { merge: false }>();
+
+		if (!row || row.version <= versionRef.current) return;
+		if (!clean() || characterRef.current !== before) return;
+
+		let document: Character;
+		try {
+			document = migrate(row.data);
+		} catch {
+			return;
+		}
+		versionRef.current = row.version;
+		// Marked handled before the dispatch, as in keepTheirs, so the dirty
+		// effect does not save the server's own document straight back.
+		handled.current = document;
+		dispatch({ type: "replace", document });
+		writeLocal(id, {
+			version: row.version,
+			dirty: false,
+			savedAt: new Date().toISOString(),
+			document,
+		});
+	}, [id]);
+
 	const save = useCallback(async () => {
 		const snapshot = characterRef.current;
 		show("saving");
@@ -121,6 +163,7 @@ export function CharacterProvider({
 				document: characterRef.current,
 			});
 			show("saved");
+			if (announced.current > versionRef.current) void pull();
 			return;
 		}
 
@@ -159,7 +202,7 @@ export function CharacterProvider({
 			);
 		}
 		show("conflict");
-	}, [id, show]);
+	}, [id, show, pull]);
 
 	const saveRef = useRef(save);
 	useEffect(() => {
@@ -194,10 +237,41 @@ export function CharacterProvider({
 		};
 	}, []);
 
+	// Live updates: the characters_notify_changed trigger pings this topic on
+	// every save, including this tab's own (ignored: its version is not newer).
+	useEffect(() => {
+		const supabase = createClient();
+		let joined = false;
+		const channel = supabase
+			.channel(`character:${id}`)
+			.on("broadcast", { event: "changed" }, ({ payload }) => {
+				const next = Number(payload?.version);
+				if (!(next > versionRef.current)) return;
+				announced.current = Math.max(announced.current, next);
+				void pull();
+			})
+			.subscribe((status) => {
+				if (status !== "SUBSCRIBED") return;
+				// A rejoin after a dropped socket: pings sent meanwhile are gone.
+				if (joined) void pull();
+				joined = true;
+			});
+
+		// A sleeping phone can miss pings before the socket notices it dropped.
+		const onVisibility = () => {
+			if (window.document.visibilityState === "visible") void pull();
+		};
+		window.document.addEventListener("visibilitychange", onVisibility);
+
+		return () => {
+			window.document.removeEventListener("visibilitychange", onVisibility);
+			void supabase.removeChannel(channel);
+		};
+	}, [id, pull]);
+
 	// Mount: decide between this browser's copy and the server's. localStorage
 	// exists only on the client, so the first render has to be the server
 	// document and the browser's copy has to arrive after it.
-	/* eslint-disable react-hooks/set-state-in-effect */
 	useEffect(() => {
 		if (hydrated.current) return;
 		hydrated.current = true;

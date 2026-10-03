@@ -189,7 +189,6 @@ export function CampaignProvider({
 	// Mount: decide between this browser's copy and the server's. localStorage
 	// exists only on the client, so the first render has to be the server
 	// document and the browser's copy has to arrive after it.
-	/* eslint-disable react-hooks/set-state-in-effect */
 	useEffect(() => {
 		if (hydrated.current) return;
 		hydrated.current = true;

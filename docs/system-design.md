@@ -383,7 +383,15 @@ On a version conflict the client keeps the local document and asks which to
 keep. It never discards an edit to resolve a conflict, because the PRD says no
 offline edit is lost.
 `lazy:` manual resolution, no merge. One player with two devices hits this
-rarely, and the two documents are both readable.
+rarely, and the two documents are both readable. Ceiling: a GM editing during
+play adds a second writer. Upgrade path: a three-way merge (tasks.md T72).
+
+Live updates: an `after update of data` trigger sends a Realtime broadcast
+holding only the new version, to `character:<id>` and `share:<token>`. Open
+viewers refetch through RLS or `shared_character()`; read-only pages use
+`router.refresh()` (`components/live-refresh.tsx`). An open editor takes the
+newer copy only when it has no unsaved edits. Otherwise the next save raises
+the conflict dialog as before.
 
 ## 9. Routes
 

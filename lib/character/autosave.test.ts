@@ -71,6 +71,28 @@ test("a cancel drops the pending run", () => {
 	mock.timers.reset();
 });
 
+test("scheduling only when idle runs once per delay under a steady stream", () => {
+	mock.timers.enable({ apis: ["setTimeout"] });
+	let runs = 0;
+	const refresh = scheduler(() => runs++, 1000);
+	const ping = () => {
+		if (!refresh.pending()) refresh.schedule();
+	};
+
+	// A ping every 300 ms for 3 s: a plain debounce would never run.
+	for (let elapsed = 0; elapsed < 3000; elapsed += 300) {
+		ping();
+		mock.timers.tick(300);
+	}
+	assert.equal(runs, 2);
+
+	// The last ping's run still lands after the stream stops.
+	mock.timers.tick(1000);
+	assert.equal(runs, 3);
+	assert.equal(refresh.pending(), false);
+	mock.timers.reset();
+});
+
 const entry = (version: number, dirty: boolean): LocalEntry => ({
 	version,
 	dirty,

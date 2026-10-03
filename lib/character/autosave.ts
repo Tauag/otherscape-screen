@@ -144,6 +144,8 @@ export type Scheduler = {
 	/** Run a pending call now. Does nothing when none is pending. */
 	flush: () => void;
 	cancel: () => void;
+	/** True while a run is scheduled but has not started. */
+	pending: () => boolean;
 };
 
 export function scheduler(run: () => void, delay: number): Scheduler {
@@ -169,5 +171,6 @@ export function scheduler(run: () => void, delay: number): Scheduler {
 			run();
 		},
 		cancel,
+		pending: () => timer !== null,
 	};
 }

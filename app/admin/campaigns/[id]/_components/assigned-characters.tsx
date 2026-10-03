@@ -4,6 +4,7 @@ import { requireAdmin } from "@/app/admin/_lib/require-admin";
 import { AssignDialog } from "@/app/admin/campaigns/[id]/_components/assign-dialog";
 import { CharacterSheetDialog } from "@/app/admin/campaigns/[id]/_components/character-sheet-dialog";
 import { RemoveCharacterForm } from "@/app/admin/campaigns/[id]/_components/remove-character-form";
+import { LiveRefresh } from "@/components/live-refresh";
 import { RowMenu } from "@/components/row-menu";
 import { LABEL, MENU_ITEM } from "@/components/styles";
 import { migrate } from "@/lib/character/migrate";
@@ -90,6 +91,9 @@ export async function AssignedCharacters({
 
 	return (
 		<section className="flex flex-col gap-2">
+			<LiveRefresh
+				topics={assigned.map((character) => `character:${character.id}`)}
+			/>
 			<AssignDialog
 				campaignId={campaignId}
 				assignedCount={assigned.length}
