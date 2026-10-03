@@ -495,3 +495,32 @@ test("a challenge status verb touches only its own challenge", () => {
 	assert.equal(campaign.challenges[0].statuses.length, 1);
 	assert.equal(campaign.challenges[1].statuses.length, 0);
 });
+
+// --- A challenge's specials -------------------------------------------------
+
+test("challenge specials are added blank, edited, and removed, one challenge at a time", () => {
+	let campaign = withChallenge();
+	campaign = reduce(campaign, { type: "addChallenge", id: "challenge-2" });
+	for (const id of ["sp-1", "sp-2"]) {
+		campaign = reduce(campaign, {
+			type: "addChallengeSpecial",
+			challengeId: "challenge-1",
+			id,
+		});
+	}
+	campaign = reduce(campaign, {
+		type: "setChallengeSpecialText",
+		challengeId: "challenge-1",
+		id: "sp-2",
+		text: "Splits in two when it takes harm.",
+	});
+	campaign = reduce(campaign, {
+		type: "removeChallengeSpecial",
+		challengeId: "challenge-1",
+		id: "sp-1",
+	});
+	assert.deepEqual(campaign.challenges[0].specials, [
+		{ id: "sp-2", text: "Splits in two when it takes harm." },
+	]);
+	assert.deepEqual(campaign.challenges[1].specials, []);
+});

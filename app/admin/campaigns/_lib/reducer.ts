@@ -79,7 +79,15 @@ export type CampaignAction =
 			challengeId: string;
 			id: string;
 			tier: number;
-	  };
+	  }
+	| { type: "addChallengeSpecial"; challengeId: string; id: string }
+	| {
+			type: "setChallengeSpecialText";
+			challengeId: string;
+			id: string;
+			text: string;
+	  }
+	| { type: "removeChallengeSpecial"; challengeId: string; id: string };
 
 /** Every challenge verb below edits one challenge and leaves the rest alone. */
 function inChallenge(
@@ -229,5 +237,26 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 					tiers: clearStatusTier(status.tiers, action.tier),
 				})),
 			);
+		case "addChallengeSpecial":
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				specials: [...challenge.specials, { id: action.id, text: "" }],
+			}));
+		case "setChallengeSpecialText":
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				specials: challenge.specials.map((special) =>
+					special.id === action.id
+						? { ...special, text: action.text }
+						: special,
+				),
+			}));
+		case "removeChallengeSpecial":
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				specials: challenge.specials.filter(
+					(special) => special.id !== action.id,
+				),
+			}));
 	}
 }

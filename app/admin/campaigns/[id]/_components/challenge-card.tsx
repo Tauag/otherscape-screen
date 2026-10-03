@@ -10,6 +10,7 @@ import { LabelAction } from "@/components/label-action";
 import { RowMenu } from "@/components/row-menu";
 import { CARD, CARD_BODY, MENU_ITEM } from "@/components/styles";
 import { useCampaign } from "../_hooks/use-campaign";
+import { ChallengeSpecialRow } from "./challenge-special-row";
 import { ChallengeStatusRow } from "./challenge-status-row";
 import { StoryTagList } from "./story-tag-list";
 
@@ -25,6 +26,7 @@ export function ChallengeCard({
 	const { dispatch } = useCampaign();
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [addedStatus, setAddedStatus] = useState<string | null>(null);
+	const [addedSpecial, setAddedSpecial] = useState<string | null>(null);
 	const named = challenge.name.trim() || "this challenge";
 
 	function addStatus() {
@@ -36,6 +38,12 @@ export function ChallengeCard({
 			valence: "positive",
 		});
 		setAddedStatus(id);
+	}
+
+	function addSpecial() {
+		const id = crypto.randomUUID();
+		dispatch({ type: "addChallengeSpecial", challengeId: challenge.id, id });
+		setAddedSpecial(id);
 	}
 
 	return (
@@ -108,6 +116,26 @@ export function ChallengeCard({
 				</div>
 
 				<div className="flex flex-col gap-1.5">
+					<LabelAction label="Specials" onClick={addSpecial}>
+						+ Special
+					</LabelAction>
+					{challenge.specials.length === 0 ? (
+						<p className="font-sans text-[13px] text-dim">No specials.</p>
+					) : (
+						<ul className="flex flex-col gap-1.5">
+							{challenge.specials.map((special) => (
+								<ChallengeSpecialRow
+									key={special.id}
+									challengeId={challenge.id}
+									special={special}
+									autoFocus={special.id === addedSpecial}
+								/>
+							))}
+						</ul>
+					)}
+				</div>
+
+				<div className="flex flex-col gap-1.5">
 					<StoryTagList
 						tags={challenge.storyTags}
 						challengeId={challenge.id}
@@ -122,7 +150,9 @@ export function ChallengeCard({
 				title={`Delete ${named}?`}
 				description={`This deletes its ${challenge.statuses.length} status${
 					challenge.statuses.length === 1 ? "" : "es"
-				} and ${challenge.storyTags.length} story tag${
+				}, ${challenge.specials.length} special${
+					challenge.specials.length === 1 ? "" : "s"
+				}, and ${challenge.storyTags.length} story tag${
 					challenge.storyTags.length === 1 ? "" : "s"
 				}.`}
 			>
