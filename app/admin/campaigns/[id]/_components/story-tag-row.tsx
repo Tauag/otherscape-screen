@@ -31,7 +31,7 @@ export function StoryTagRow({
 	return (
 		<li
 			data-valence={tag.valence}
-			className={`flex items-center rounded-sm border ${
+			className={`flex max-w-full items-center rounded-sm border ${
 				tag.burnt
 					? "border-dashed border-pip bg-[repeating-linear-gradient(135deg,transparent_0_4px,rgba(255,255,255,.025)_4px_8px)]"
 					: "border-[var(--hue)]/32 bg-[var(--hue)]/7"

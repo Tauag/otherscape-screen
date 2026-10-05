@@ -70,3 +70,22 @@ export function MoreIcon() {
 		</svg>
 	);
 }
+
+export function ArrowDownIcon({ className }: { className?: string }) {
+	return (
+		<svg
+			aria-hidden="true"
+			width="18"
+			height="18"
+			viewBox="0 0 24 24"
+			className={className}
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<path d="M12 5v14M6 13l6 6 6-6" />
+		</svg>
+	);
+}

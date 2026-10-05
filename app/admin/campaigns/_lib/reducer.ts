@@ -87,7 +87,8 @@ export type CampaignAction =
 			id: string;
 			text: string;
 	  }
-	| { type: "removeChallengeSpecial"; challengeId: string; id: string };
+	| { type: "removeChallengeSpecial"; challengeId: string; id: string }
+	| { type: "setChallengeInScene"; challengeId: string; inScene: boolean };
 
 /** Every challenge verb below edits one challenge and leaves the rest alone. */
 function inChallenge(
@@ -257,6 +258,11 @@ export function reduce(campaign: Campaign, action: CampaignAction): Campaign {
 				specials: challenge.specials.filter(
 					(special) => special.id !== action.id,
 				),
+			}));
+		case "setChallengeInScene":
+			return inChallenge(campaign, action.challengeId, (challenge) => ({
+				...challenge,
+				inScene: action.inScene,
 			}));
 	}
 }

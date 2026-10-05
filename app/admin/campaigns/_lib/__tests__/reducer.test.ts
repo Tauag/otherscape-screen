@@ -524,3 +524,17 @@ test("challenge specials are added blank, edited, and removed, one challenge at 
 	]);
 	assert.deepEqual(campaign.challenges[1].specials, []);
 });
+
+test("setChallengeInScene benches one challenge and leaves the rest in the scene", () => {
+	let campaign = withChallenge();
+	campaign = reduce(campaign, { type: "addChallenge", id: "challenge-2" });
+	campaign = reduce(campaign, {
+		type: "setChallengeInScene",
+		challengeId: "challenge-1",
+		inScene: false,
+	});
+	assert.deepEqual(
+		campaign.challenges.map((challenge) => challenge.inScene),
+		[false, true],
+	);
+});

@@ -100,62 +100,65 @@ export async function AssignedCharacters({
 				groups={groups}
 			/>
 
-			{assigned.map((character) => {
-				const name = character.name?.trim() || "Unnamed";
-				const migrated = migrate(character.data);
-				const player = playerName(invitedUsers, character.owner);
+			{/* Scrolls sideways on a phone, wraps from md up. */}
+			<ul className="flex gap-2 overflow-x-auto md:flex-wrap md:overflow-visible">
+				{assigned.map((character) => {
+					const name = character.name?.trim() || "Unnamed";
+					const migrated = migrate(character.data);
+					const player = playerName(invitedUsers, character.owner);
 
-				return (
-					<div
-						key={character.id}
-						className="flex items-center rounded-md border border-border bg-surface"
-					>
-						<CharacterSheetDialog character={migrated} player={player}>
-							<span
-								aria-hidden="true"
-								className="grid size-[34px] shrink-0 place-items-center rounded-full bg-edge font-display text-[13px] font-bold text-quiet"
-							>
-								{monogram(name)}
-							</span>
-							<span className="flex min-w-0 flex-1 flex-col gap-0.5">
-								<span className="truncate font-display text-sm font-bold tracking-[0.05em] text-text uppercase">
-									{name}
+					return (
+						<li
+							key={character.id}
+							className="flex w-64 shrink-0 items-center rounded-md border border-border bg-surface"
+						>
+							<CharacterSheetDialog character={migrated} player={player}>
+								<span
+									aria-hidden="true"
+									className="grid size-[34px] shrink-0 place-items-center rounded-full bg-edge font-display text-[13px] font-bold text-quiet"
+								>
+									{monogram(name)}
 								</span>
-								<span className={LABEL}>
-									{player} · {migrated.statuses.length}{" "}
-									{migrated.statuses.length === 1 ? "status" : "statuses"}
+								<span className="flex min-w-0 flex-1 flex-col gap-0.5">
+									<span className="truncate font-display text-sm font-bold tracking-[0.05em] text-text uppercase">
+										{name}
+									</span>
+									<span className={LABEL}>
+										{player} · {migrated.statuses.length}{" "}
+										{migrated.statuses.length === 1 ? "status" : "statuses"}
+									</span>
 								</span>
-							</span>
-							{migrated.themes.length > 0 && (
-								<span aria-hidden="true" className="flex shrink-0 gap-[3px]">
-									{migrated.themes.map((theme, index) => (
-										<span
-											// biome-ignore lint/suspicious/noArrayIndexKey: decorative swatch, order is server-fixed.
-											key={index}
-											data-type={theme.type}
-											className="size-2 rounded-[1px] bg-[var(--hue)]"
-										/>
-									))}
-								</span>
-							)}
-						</CharacterSheetDialog>
+								{migrated.themes.length > 0 && (
+									<span aria-hidden="true" className="flex shrink-0 gap-[3px]">
+										{migrated.themes.map((theme, index) => (
+											<span
+												// biome-ignore lint/suspicious/noArrayIndexKey: decorative swatch, order is server-fixed.
+												key={index}
+												data-type={theme.type}
+												className="size-2 rounded-[1px] bg-[var(--hue)]"
+											/>
+										))}
+									</span>
+								)}
+							</CharacterSheetDialog>
 
-						<RowMenu label={`Menu for ${name}`}>
-							<Menu.Item
-								className={MENU_ITEM}
-								render={<Link href={`/character/${character.id}`} />}
-							>
-								Edit
-							</Menu.Item>
-							<RemoveCharacterForm
-								campaignId={campaignId}
-								characterId={character.id}
-								name={name}
-							/>
-						</RowMenu>
-					</div>
-				);
-			})}
+							<RowMenu label={`Menu for ${name}`}>
+								<Menu.Item
+									className={MENU_ITEM}
+									render={<Link href={`/character/${character.id}`} />}
+								>
+									Edit
+								</Menu.Item>
+								<RemoveCharacterForm
+									campaignId={campaignId}
+									characterId={character.id}
+									name={name}
+								/>
+							</RowMenu>
+						</li>
+					);
+				})}
+			</ul>
 		</section>
 	);
 }
