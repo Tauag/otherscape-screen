@@ -151,7 +151,6 @@ export function ChallengeCard({
 					</p>
 				)}
 
-				{/* `contents` keeps CARD_BODY's gap between the sections. */}
 				<div
 					className={
 						open ? "contents" : scene ? "hidden md:contents" : "hidden"
@@ -166,10 +165,9 @@ export function ChallengeCard({
 								notes: event.target.value,
 							})
 						}
-						rows={2}
 						aria-label={`Notes for ${named}`}
 						placeholder="What this challenge wants, or what they know"
-						className="min-h-11 resize-none rounded-sm border border-border bg-bg p-2.5 font-sans text-[13px] text-text placeholder:text-dim"
+						className="field-sizing-content max-h-[calc(5lh+1.25rem+2px)] min-h-11 resize-none rounded-sm border border-border bg-bg p-2.5 font-sans text-[13px] text-text placeholder:text-dim"
 					/>
 
 					<div className="flex flex-col gap-1.5">

@@ -66,7 +66,7 @@ export function CampaignScreen({
 				<div className="flex flex-col gap-2">
 					<div className="flex items-center justify-between gap-2">
 						<span className={LABEL}>
-							Story tags · {campaign.storyTags.length}
+							Environmental Story tags · {campaign.storyTags.length}
 						</span>
 						<span className={LABEL}>Not on any sheet</span>
 					</div>
