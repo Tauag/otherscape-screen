@@ -1,9 +1,12 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { Toggle } from "@base-ui/react/toggle";
+import Link from "next/link";
+import { LABEL, QUIET } from "@/components/styles";
 import type { ThemeType } from "@/lib/character/types";
-import type { Special } from "@/lib/content/pack";
-import { formatSpecial } from "@/lib/pickers";
+import { type Question, questionLabel, type Special } from "@/lib/content/pack";
+import { answerCounts, formatSpecial } from "@/lib/pickers";
 
 export const PAGE =
 	"mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-3 pb-8";
@@ -34,6 +37,73 @@ export function PickerFrame({
 
 			{children}
 		</main>
+	);
+}
+
+/** What a picker shows when its theme or tag went while it was open: another
+ *  device can delete one. */
+export function Missing({
+	href,
+	label,
+	sentence,
+}: {
+	href: string;
+	label: string;
+	sentence: string;
+}) {
+	return (
+		<main className={PAGE}>
+			<p className="font-sans text-base text-dim">{sentence}</p>
+			<Link href={href} className={`${QUIET} self-start`}>
+				{label}
+			</Link>
+		</main>
+	);
+}
+
+/** A tag's question choices, each with how many of `tags` already answer it. */
+export function QuestionList<L extends string>({
+	kind,
+	questions,
+	tags,
+	onPick,
+}: {
+	kind: "power" | "weakness";
+	questions: Question<L>[];
+	tags: readonly { letter: string }[];
+	onPick: (letter: L) => void;
+}) {
+	const counts = answerCounts(tags);
+
+	return (
+		<ul className="flex flex-col gap-2">
+			{questions.map(({ letter, text }) => {
+				const count = counts[letter] ?? 0;
+				return (
+					<li key={letter}>
+						<Button
+							type="button"
+							onClick={() => onPick(letter)}
+							className={ROW}
+						>
+							<span className="flex items-baseline gap-2">
+								<span className="font-mono text-[13px] text-[var(--hue)]">
+									{letter}
+								</span>
+								<span className={ROW_TEXT}>
+									{text || questionLabel(kind, letter)}
+								</span>
+							</span>
+							{count > 0 && (
+								<span className={LABEL}>
+									Already answered by {count} {count === 1 ? "tag" : "tags"}
+								</span>
+							)}
+						</Button>
+					</li>
+				);
+			})}
+		</ul>
 	);
 }
 

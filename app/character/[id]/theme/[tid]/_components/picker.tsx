@@ -1,29 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { PAGE } from "@/app/character/[id]/_components/picker";
-import { QUIET } from "@/components/styles";
+import { Missing } from "@/app/character/[id]/_components/picker";
 
-function Missing({
-	href,
-	label,
-	sentence,
-}: {
-	href: string;
-	label: string;
-	sentence: string;
-}) {
-	return (
-		<main className={PAGE}>
-			<p className="font-sans text-base text-dim">{sentence}</p>
-			<Link href={href} className={`${QUIET} self-start`}>
-				{label}
-			</Link>
-		</main>
-	);
-}
-
-/** The theme went while a picker was open: another device can lose one. */
 export const MissingTheme = ({ id }: { id: string }) => (
 	<Missing
 		href={`/character/${id}`}

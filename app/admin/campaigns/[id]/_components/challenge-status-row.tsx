@@ -1,18 +1,15 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { RowMenu } from "@/components/row-menu";
 import { MENU_ITEM } from "@/components/styles";
+import { TierTrack } from "@/components/tier-track";
 import type { Status } from "@/lib/character/types";
 import { useCampaign } from "../_hooks/use-campaign";
 
 const NAME =
 	"min-w-[7ch] max-w-full bg-transparent font-display text-base font-semibold tracking-[0.04em] text-[var(--hue-text)] placeholder:text-dim field-sizing-content";
-const BOX = "h-3.5 w-9";
-const LIT = `${BOX} bg-[var(--hue)] shadow-[0_0_8px_color-mix(in_oklab,var(--hue)_55%,transparent)]`;
-const UNLIT = `${BOX} border border-[var(--hue)]/30`;
 
 /**
  * One challenge's status: components/status-card.tsx's play-board sibling, minus
@@ -56,45 +53,22 @@ export function ChallengeStatusRow({
 					className={NAME}
 				/>
 
-				<fieldset
-					aria-label={`Tier, ${tier} of ${status.limit} marked`}
-					className="m-0 flex flex-wrap gap-1.5 border-0 p-0"
-				>
-					{status.tiers.map((marked, index) => {
-						const tierNumber = index + 1;
-						return (
-							<Button
-								// biome-ignore lint/suspicious/noArrayIndexKey: a fixed-length tier track, position is the identity.
-								key={index}
-								type="button"
-								aria-pressed={marked}
-								aria-label={
-									marked ? `Tier ${tierNumber}, marked` : `Tier ${tierNumber}`
-								}
-								onClick={() =>
-									dispatch(
-										marked
-											? {
-													type: "clearChallengeStatusTier",
-													challengeId,
-													id: status.id,
-													tier: tierNumber,
-												}
-											: {
-													type: "markChallengeStatusTier",
-													challengeId,
-													id: status.id,
-													tier: tierNumber,
-												},
-									)
-								}
-								className="flex h-9 w-9 items-center justify-center"
-							>
-								<span aria-hidden className={marked ? LIT : UNLIT} />
-							</Button>
-						);
-					})}
-				</fieldset>
+				<TierTrack
+					status={status}
+					label={(tier, marked) =>
+						marked ? `Tier ${tier}, marked` : `Tier ${tier}`
+					}
+					onTier={(tier, marked) =>
+						dispatch({
+							type: marked
+								? "clearChallengeStatusTier"
+								: "markChallengeStatusTier",
+							challengeId,
+							id: status.id,
+							tier,
+						})
+					}
+				/>
 			</div>
 
 			<div className="flex shrink-0 items-center gap-1 self-center">

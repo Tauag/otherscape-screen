@@ -204,7 +204,7 @@ test("boardGroups keeps a nascent theme with zero tags, which rollGroups drops",
 	);
 
 	const board = boardGroups(character);
-	const panel = board.find((group) => group.id === "th-nascent");
+	const panel = board.themes.find((group) => group.id === "th-nascent");
 	assert.deepEqual(panel, {
 		id: "th-nascent",
 		hue: "noise",
@@ -212,10 +212,10 @@ test("boardGroups keeps a nascent theme with zero tags, which rollGroups drops",
 		tags: [],
 	});
 
-	// One panel per theme, in order, plus loadout and crew last.
+	// One panel per theme, in order.
 	assert.deepEqual(
-		board.map((group) => group.id),
-		[...character.themes.map((theme) => theme.id), "loadout", "crew"],
+		board.themes.map((group) => group.id),
+		character.themes.map((theme) => theme.id),
 	);
 });
 

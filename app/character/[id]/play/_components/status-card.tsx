@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { Toggle } from "@base-ui/react/toggle";
@@ -9,13 +8,11 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { StatusLimitDialog } from "@/app/character/[id]/play/_components/status-limit-dialog";
 import { RowMenu } from "@/components/row-menu";
 import { MENU_ITEM } from "@/components/styles";
+import { TierTrack } from "@/components/tier-track";
 import type { Status } from "@/lib/character/types";
 
 const NAME =
 	"min-w-[7ch] max-w-full bg-transparent font-display tracking-[0.04em] placeholder:text-dim field-sizing-content";
-const BOX = "h-3.5 w-9";
-const LIT = `${BOX} bg-[var(--hue)] shadow-[0_0_8px_color-mix(in_oklab,var(--hue)_55%,transparent)]`;
-const UNLIT = `${BOX} border border-[var(--hue)]/30`;
 
 export function StatusCard({
 	status,
@@ -115,46 +112,20 @@ export function StatusCard({
 			<div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
 				{name("text-base font-semibold text-[var(--hue-text)]")}
 
-				<fieldset
-					aria-label={`Tier, ${tier} of ${status.limit} marked`}
-					className="m-0 flex flex-wrap gap-1.5 border-0 p-0"
-				>
-					{status.tiers.map((marked, index) => {
-						const tierNumber = index + 1;
-						return (
-							<Button
-								// biome-ignore lint/suspicious/noArrayIndexKey: a fixed-length tier track, position is the identity.
-								key={index}
-								type="button"
-								aria-pressed={marked}
-								aria-label={
-									marked
-										? `Clear tier ${tierNumber} of ${named}`
-										: `Apply tier ${tierNumber} of ${named}`
-								}
-								onClick={(event) => {
-									stopForToggle?.(event);
-									dispatch(
-										marked
-											? {
-													type: "clearStatusTier",
-													id: status.id,
-													tier: tierNumber,
-												}
-											: {
-													type: "markStatusTier",
-													id: status.id,
-													tier: tierNumber,
-												},
-									);
-								}}
-								className="flex h-9 w-9 items-center justify-center"
-							>
-								<span aria-hidden className={marked ? LIT : UNLIT} />
-							</Button>
-						);
-					})}
-				</fieldset>
+				<TierTrack
+					status={status}
+					label={(tier, marked) =>
+						`${marked ? "Clear" : "Apply"} tier ${tier} of ${named}`
+					}
+					onTier={(tier, marked, event) => {
+						stopForToggle?.(event);
+						dispatch({
+							type: marked ? "clearStatusTier" : "markStatusTier",
+							id: status.id,
+							tier,
+						});
+					}}
+				/>
 			</div>
 
 			<div className="flex shrink-0 items-center gap-1 self-center">

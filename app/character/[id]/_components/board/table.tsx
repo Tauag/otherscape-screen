@@ -1,16 +1,15 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
 import { useState } from "react";
 import { BoardStoryTagRow } from "@/app/character/[id]/_components/board/story-tag-row";
 import { PlusIcon } from "@/app/character/[id]/_components/icons";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollBoard } from "@/app/character/[id]/_hooks/use-roll-board";
 import { StatusCard } from "@/app/character/[id]/play/_components/status-card";
+import { MitigationBanner } from "@/app/character/[id]/roll/_components/mitigation-banner";
 import { RollControls } from "@/app/character/[id]/roll/_components/roll-controls";
 import { RollTotal } from "@/app/character/[id]/roll/_components/roll-total";
 import { LabelAction } from "@/components/label-action";
-import { SMALL_BUTTON } from "@/components/styles";
 
 /** The board's right rail: what the scene put on the table, and the roll
  *  builder that spends it. */
@@ -97,20 +96,10 @@ export function BoardTable({ board }: { board: RollBoard }) {
 
 			<div className="flex shrink-0 flex-col gap-3 border-t border-edge bg-chrome p-3">
 				{pick.mitigationLockedIds.length > 0 ? (
-					<div className="flex items-center justify-between gap-3 rounded-[5px] border border-hairline bg-recess p-3">
-						<p className="font-sans text-xs text-dim">
-							Mitigating — {pick.mitigationLockedIds.length} tag
-							{pick.mitigationLockedIds.length === 1 ? "" : "s"} from that
-							action locked out.
-						</p>
-						<Button
-							type="button"
-							onClick={cancelMitigation}
-							className={SMALL_BUTTON}
-						>
-							Cancel
-						</Button>
-					</div>
+					<MitigationBanner
+						locked={pick.mitigationLockedIds.length}
+						onCancel={cancelMitigation}
+					/>
 				) : (
 					<RollControls />
 				)}

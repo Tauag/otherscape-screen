@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useRollBoard } from "@/app/character/[id]/_hooks/use-roll-board";
 import {
@@ -9,10 +8,11 @@ import {
 	storyRollTag,
 } from "@/app/character/[id]/_lib/roll-selection";
 import { BurnOverride } from "@/app/character/[id]/roll/_components/burn-override";
+import { MitigationBanner } from "@/app/character/[id]/roll/_components/mitigation-banner";
 import { RollChip } from "@/app/character/[id]/roll/_components/roll-chip";
 import { RollControls } from "@/app/character/[id]/roll/_components/roll-controls";
 import { RollTotal } from "@/app/character/[id]/roll/_components/roll-total";
-import { LABEL, SMALL_BUTTON } from "@/components/styles";
+import { LABEL } from "@/components/styles";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 export default function RollPage() {
@@ -24,8 +24,6 @@ export default function RollPage() {
 		rollLines,
 		lineOf,
 		toggle,
-		setBurnt,
-		burning,
 		tagChip,
 		finalizeTagSelection,
 		startMitigation,
@@ -39,20 +37,10 @@ export default function RollPage() {
 		<main className="mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col pb-8">
 			<div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto px-5 py-3.5">
 				{pick.mitigationLockedIds.length > 0 && (
-					<div className="flex items-center justify-between gap-2 rounded-sm border border-border bg-recess px-3 py-2">
-						<p className="font-sans text-xs text-dim">
-							Mitigating — {pick.mitigationLockedIds.length} tag
-							{pick.mitigationLockedIds.length === 1 ? "" : "s"} from that
-							action locked out.
-						</p>
-						<Button
-							type="button"
-							onClick={cancelMitigation}
-							className={SMALL_BUTTON}
-						>
-							Cancel
-						</Button>
-					</div>
+					<MitigationBanner
+						locked={pick.mitigationLockedIds.length}
+						onCancel={cancelMitigation}
+					/>
 				)}
 
 				{rollGroups(character).map((group) => {
@@ -124,48 +112,7 @@ export default function RollPage() {
 						<p className="font-sans text-sm text-dim">Nothing in the scene.</p>
 					) : (
 						<ul className="flex flex-wrap gap-1.5">
-							{character.storyTags.map((tag) => {
-								const rollTag = storyRollTag(tag);
-								const line = lineOf.get(tag.id);
-								const selected = line !== undefined;
-								const burnt = rollTag.burnValue !== null;
-								const locked = pick.mitigationLockedIds.includes(tag.id);
-								const canBurnControl =
-									selected && (burnt || (rollTag.canBurn && burning === null));
-								return (
-									<RollChip
-										key={tag.id}
-										text={tag.name}
-										valence={tag.valence}
-										burnt={burnt}
-										selected={selected}
-										counted={line?.counted ?? false}
-										value={line && signed(line.value)}
-										badge={
-											burnt
-												? "BURNT"
-												: locked
-													? "locked"
-													: tag.crispy
-														? "crispy"
-														: undefined
-										}
-										onToggle={
-											burnt || locked ? undefined : () => toggle(tag.id)
-										}
-										onValueClick={
-											selected && burnt
-												? () => setOverriding(rollTag)
-												: undefined
-										}
-										onBurntChange={
-											canBurnControl
-												? (next) => setBurnt(tag.id, next)
-												: undefined
-										}
-									/>
-								);
-							})}
+							{character.storyTags.map((tag) => tagChip(storyRollTag(tag)))}
 						</ul>
 					)}
 				</section>

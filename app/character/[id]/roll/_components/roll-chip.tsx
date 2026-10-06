@@ -30,8 +30,8 @@ type Props = {
 	/** Set on a selected burnt tag, to open the burn value override. */
 	onValueClick?: () => void;
 	/**
-	 * Set on a selected tag that can burn: burnt already (to un-burn, undoing
-	 * a misclick) or not yet and free to (only one tag burns per roll).
+	 * Set on a burnt tag (to un-burn, selected or not), or on a selected tag
+	 * that is free to burn (only one tag burns per roll).
 	 */
 	onBurntChange?: (burnt: boolean) => void;
 };

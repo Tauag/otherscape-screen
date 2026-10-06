@@ -1,7 +1,8 @@
 // The whole character sheet, as it sits in `characters.data`. Types only.
 
 /** Lowercase to match the `data-type` values in app/globals.css. */
-export type ThemeType = "self" | "mythos" | "noise";
+export const THEME_TYPES = ["self", "mythos", "noise"] as const;
+export type ThemeType = (typeof THEME_TYPES)[number];
 
 /** Lowercase to match the `data-valence` values in app/globals.css. */
 export type Valence = "positive" | "negative";

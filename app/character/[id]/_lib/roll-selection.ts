@@ -295,15 +295,19 @@ export function rollGroups(character: Character): RollGroup[] {
 }
 
 /**
- * Every panel the board shows: one per theme, plus loadout and crew, in that
- * order, even when a group has no tags yet. `rollGroups` drops an empty group
+ * Every panel the board shows: one per theme, in order, plus loadout and crew,
+ * even when a group has no tags yet. `rollGroups` drops an empty group
  * because a roll has nothing to spend there, but a nascent theme (or an empty
  * loadout, or a crew with no tags) still needs a panel on the board.
  */
-export function boardGroups(character: Character): RollGroup[] {
+export function boardGroups(character: Character): {
+	themes: RollGroup[];
+	loadout: RollGroup;
+	crew: RollGroup;
+} {
 	const byId = new Map(rollGroups(character).map((group) => [group.id, group]));
 
-	const themeGroups: RollGroup[] = character.themes.map((theme) => {
+	const themes: RollGroup[] = character.themes.map((theme) => {
 		const existing = byId.get(theme.id);
 		if (existing) return existing;
 		return {
@@ -314,21 +318,21 @@ export function boardGroups(character: Character): RollGroup[] {
 		};
 	});
 
-	const loadoutGroup: RollGroup = byId.get("loadout") ?? {
+	const loadout: RollGroup = byId.get("loadout") ?? {
 		id: "loadout",
 		hue: "loadout",
 		label: "loadout",
 		tags: [],
 	};
 
-	const crewGroup: RollGroup = byId.get("crew") ?? {
+	const crew: RollGroup = byId.get("crew") ?? {
 		id: "crew",
 		hue: MOTIVATION_TYPE[character.crewTheme.motivation],
 		label: `crew · ${character.crewTheme.motivation}`,
 		tags: [],
 	};
 
-	return [...themeGroups, loadoutGroup, crewGroup];
+	return { themes, loadout, crew };
 }
 
 type TagEntry = { id: string; label: string; tag: SelectedTag };

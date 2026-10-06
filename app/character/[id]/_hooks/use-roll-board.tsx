@@ -7,6 +7,7 @@ import {
 	burnToggleAction,
 	cancelMitigationPick,
 	finalizeRollPick,
+	type RollGroup,
 	type RollTag,
 	rollLabels,
 	rollOrder,
@@ -125,7 +126,8 @@ export function useRollBoard(
 		if (action) dispatch(action);
 	};
 
-	const tagChip = (tag: RollTag, hue?: string) => {
+	/** `hue` is the group's; a story tag has none and wears its valence. */
+	const tagChip = (tag: RollTag, hue?: RollGroup["hue"]) => {
 		const line = lineOf.get(tag.id);
 		const selected = line !== undefined;
 		// Already burnt on the sheet: spent, so it can't be picked for a roll.
@@ -137,8 +139,8 @@ export function useRollBoard(
 			<RollChip
 				key={tag.id}
 				text={tag.text}
-				type={tag.valence === "positive" ? (hue as never) : undefined}
-				valence={tag.valence === "negative" ? "negative" : undefined}
+				type={tag.valence === "positive" ? hue : undefined}
+				valence={hue && tag.valence === "positive" ? undefined : tag.valence}
 				burnt={burnt}
 				broad={tag.broad}
 				selected={selected}
@@ -169,8 +171,6 @@ export function useRollBoard(
 		rollLines,
 		lineOf,
 		toggle,
-		setBurnt,
-		burning,
 		tagChip,
 		finalizeTagSelection,
 		startMitigation,

@@ -22,9 +22,6 @@ export function Board() {
 		board;
 
 	const groups = boardGroups(character);
-	const themeGroups = groups.slice(0, character.themes.length);
-	const loadoutGroup = groups[character.themes.length];
-	const crewGroup = groups[character.themes.length + 1];
 	const warnings = boardWarnings(character);
 
 	return (
@@ -42,7 +39,7 @@ export function Board() {
 							<ThemePanel
 								key={theme.id}
 								theme={theme}
-								group={themeGroups[index]}
+								group={groups.themes[index]}
 								tagChip={tagChip}
 								id={id}
 							/>
@@ -62,14 +59,14 @@ export function Board() {
 
 						<LoadoutPanel
 							loadout={character.loadout}
-							group={loadoutGroup}
+							group={groups.loadout}
 							tagChip={tagChip}
 							id={id}
 						/>
 
 						<CrewPanel
 							crewTheme={character.crewTheme}
-							group={crewGroup}
+							group={groups.crew}
 							tagChip={tagChip}
 							id={id}
 						/>

@@ -4,8 +4,7 @@ import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollBoard } from "@/app/character/[id]/_hooks/use-roll-board";
-import { signed, storyRollTag } from "@/app/character/[id]/_lib/roll-selection";
-import { RollChip } from "@/app/character/[id]/roll/_components/roll-chip";
+import { storyRollTag } from "@/app/character/[id]/_lib/roll-selection";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { RowMenu } from "@/components/row-menu";
 import { MENU_ITEM } from "@/components/styles";
@@ -26,45 +25,11 @@ export function BoardStoryTagRow({
 	onRenamingChange: (open: boolean) => void;
 }) {
 	const { dispatch } = useCharacter();
-	const { pick, lineOf, toggle, setBurnt, burning, setOverriding } = board;
-
-	const rollTag = storyRollTag(tag);
-	const line = lineOf.get(tag.id);
-	const selected = line !== undefined;
-	const burnt = rollTag.burnValue !== null;
-	const locked = pick.mitigationLockedIds.includes(tag.id);
-	const canBurnControl =
-		burnt || (selected && rollTag.canBurn && burning === null);
 	const named = tag.name.trim() || "this tag";
 
 	return (
 		<li className="flex items-center gap-1">
-			<ul className="min-w-0 flex-1">
-				<RollChip
-					text={tag.name}
-					valence={tag.valence}
-					burnt={burnt}
-					selected={selected}
-					counted={line?.counted ?? false}
-					value={line && signed(line.value)}
-					badge={
-						burnt
-							? "BURNT"
-							: locked
-								? "locked"
-								: tag.crispy
-									? "crispy"
-									: undefined
-					}
-					onToggle={burnt || locked ? undefined : () => toggle(tag.id)}
-					onValueClick={
-						selected && burnt ? () => setOverriding(rollTag) : undefined
-					}
-					onBurntChange={
-						canBurnControl ? (next) => setBurnt(tag.id, next) : undefined
-					}
-				/>
-			</ul>
+			<ul className="min-w-0 flex-1">{board.tagChip(storyRollTag(tag))}</ul>
 
 			<RowMenu label={`Menu for ${named}`}>
 				<Menu.Item

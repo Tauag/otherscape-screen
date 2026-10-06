@@ -1,6 +1,4 @@
-import type { ThemeType } from "./character/types.ts";
-
-const THEME_TYPES = new Set<ThemeType>(["self", "mythos", "noise"]);
+import { THEME_TYPES, type ThemeType } from "./character/types.ts";
 
 export type RosterTheme = {
 	/** Null when the theme has no type yet. Render as --color-pip, never var(--hue). */
@@ -31,7 +29,7 @@ export function parseRosterSummary(value: unknown): RosterSummary {
 				const record = entry as Record<string, unknown>;
 				const type =
 					typeof record.type === "string" &&
-					THEME_TYPES.has(record.type as ThemeType)
+					THEME_TYPES.includes(record.type as ThemeType)
 						? (record.type as ThemeType)
 						: null;
 				return [{ type, nascent: record.nascent === true }];

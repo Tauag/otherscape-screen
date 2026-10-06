@@ -1,6 +1,5 @@
 "use client";
 
-import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { BackIcon, OtherscapeIcon } from "@/components/icons";
@@ -8,12 +7,13 @@ import { isNascent } from "@/lib/character/theme";
 import { useCharacter } from "../../_hooks/use-character";
 import { backTarget } from "../../_lib/back-target";
 import { SheetMenu } from "./menu";
+import { NameField } from "./name-field";
 
 const BACK =
 	"-m-1 flex size-11 shrink-0 items-center justify-center p-1 text-dim";
 
 export function AppBar({ shareToken }: { shareToken: string | null }) {
-	const { character, dispatch } = useCharacter();
+	const { character } = useCharacter();
 	const { id } = useParams<{ id: string }>();
 	const pathname = usePathname();
 
@@ -32,19 +32,7 @@ export function AppBar({ shareToken }: { shareToken: string | null }) {
 			</Link>
 
 			<div className="flex min-w-0 flex-1 flex-col gap-[3px]">
-				{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label; biome can't see through the component boundary. */}
-				<label className="-my-[14px] flex w-full items-center py-[14px]">
-					<span className="sr-only">Name</span>
-					<Input
-						value={character.name}
-						autoComplete="off"
-						onChange={(event) =>
-							dispatch({ type: "rename", name: event.target.value })
-						}
-						placeholder="Unnamed"
-						className="w-full min-w-0 bg-transparent font-display text-[17px] leading-none font-bold tracking-[0.05em] text-text uppercase placeholder:text-dim"
-					/>
-				</label>
+				<NameField className="-my-[14px] w-full py-[14px]" />
 
 				{/* Repeats what the theme cards already say, so a screen reader does
             not read it twice. */}

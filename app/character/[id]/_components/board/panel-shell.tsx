@@ -12,7 +12,7 @@ import type {
  *  routes use (design.md 5, decision 4); the quote and specials lines come
  *  from components/card-parts.tsx. */
 
-export type TagChip = (tag: RollTag, hue?: string) => React.ReactNode;
+export type TagChip = (tag: RollTag, hue?: RollGroup["hue"]) => React.ReactNode;
 
 export const HEADER_LABEL =
 	"font-display text-[10px] font-semibold tracking-[0.17em] text-dim uppercase";

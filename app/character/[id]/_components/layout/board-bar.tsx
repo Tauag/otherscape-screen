@@ -1,21 +1,19 @@
 "use client";
 
-import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SAVE_STATUS_MESSAGE } from "@/app/character/[id]/_components/layout/character-provider";
 import { SheetMenu } from "@/app/character/[id]/_components/layout/menu";
+import { NameField } from "@/app/character/[id]/_components/layout/name-field";
+import { TABS } from "@/app/character/[id]/_components/layout/tabs";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { backTarget } from "@/app/character/[id]/_lib/back-target";
 import { BackIcon, OtherscapeIcon } from "@/components/icons";
 
 const BACK = "grid size-9 shrink-0 place-items-center text-dim";
 
-const NAV = (id: string) => [
-	{ label: "Board", href: `/character/${id}` },
-	{ label: "Evolution", href: `/character/${id}/evolution` },
-	{ label: "Ref", href: `/character/${id}/reference` },
-];
+// The board takes over the sheet and play tabs, and its dock builds the roll.
+const NAV = TABS.filter((tab) => tab.segment !== "/play");
 
 /** The board's app bar: the phone's `AppBar` plus `TabBar` folded into one
  *  strip. Every character route renders it, so a screen the board's panels do
@@ -27,7 +25,7 @@ export function BoardBar({
 	id: string;
 	shareToken: string | null;
 }) {
-	const { character, dispatch, status } = useCharacter();
+	const { character, status } = useCharacter();
 	const pathname = usePathname();
 
 	return (
@@ -45,19 +43,7 @@ export function BoardBar({
 			</Link>
 
 			<div className="flex min-w-0 flex-col gap-0.5">
-				{/* biome-ignore lint/a11y/noLabelWithoutControl: Base UI's Input renders a real <input> inside this label. */}
-				<label className="-my-2 flex items-center py-2">
-					<span className="sr-only">Name</span>
-					<Input
-						value={character.name}
-						autoComplete="off"
-						onChange={(event) =>
-							dispatch({ type: "rename", name: event.target.value })
-						}
-						placeholder="Unnamed"
-						className="min-w-0 bg-transparent font-display text-[17px] leading-none font-bold tracking-[0.05em] text-text uppercase placeholder:text-dim"
-					/>
-				</label>
+				<NameField className="-my-2 py-2" />
 				{character.essence && (
 					<span className="font-display text-[10px] font-semibold tracking-[0.18em] text-dim uppercase">
 						{character.essence}
@@ -68,12 +54,13 @@ export function BoardBar({
 			<div className="flex-1" />
 
 			<nav aria-label="Character screens" className="flex items-center gap-1">
-				{NAV(id).map((item) => {
-					const active = pathname === item.href;
+				{NAV.map((tab) => {
+					const href = `/character/${id}${tab.segment}`;
+					const active = pathname === href;
 					return (
 						<Link
-							key={item.href}
-							href={item.href}
+							key={href}
+							href={href}
 							aria-current={active ? "page" : undefined}
 							className={`flex h-11 items-center border-b-2 px-3 font-display text-[11px] font-semibold tracking-[0.12em] uppercase ${
 								active
@@ -81,7 +68,7 @@ export function BoardBar({
 									: "border-transparent text-muted"
 							}`}
 						>
-							{item.label}
+							{tab.segment === "" ? "Board" : tab.label}
 						</Link>
 					);
 				})}
