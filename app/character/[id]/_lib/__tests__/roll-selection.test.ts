@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { sample } from "@/lib/character/__tests__/sample";
+import { CREW_THEME_ID } from "@/lib/character/crew-theme";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
 import {
@@ -113,7 +114,8 @@ test("burnToggleAction finds a theme power tag by id", () => {
 
 test("burnToggleAction finds a crew power tag, a story tag, and a loadout feature", () => {
 	assert.deepEqual(burnToggleAction(sample, "cpt-1", true), {
-		type: "burnCrewTag",
+		type: "burnTag",
+		themeId: CREW_THEME_ID,
 		tagId: "cpt-1",
 		burnValue: DEFAULT_BURN_VALUE,
 	});

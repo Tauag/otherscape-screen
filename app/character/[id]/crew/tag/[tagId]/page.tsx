@@ -12,7 +12,7 @@ import { usePick } from "@/app/character/[id]/_hooks/use-pick";
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import { MissingCrewTag } from "@/app/character/[id]/crew/_components/picker";
 import { LABEL } from "@/components/styles";
-import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
+import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { useContentPack } from "@/lib/content/load";
 import { questionLabel } from "@/lib/content/pack";
 import {
@@ -49,7 +49,8 @@ export default function CrewQuestionPicker({
 				text: question.text || questionLabel("power", question.letter),
 				count: counts[question.letter] ?? 0,
 				action: {
-					type: "editCrewPowerTag",
+					type: "editPowerTag",
+					themeId: CREW_THEME_ID,
 					tagId,
 					edit: { letter: question.letter },
 				},
@@ -59,7 +60,8 @@ export default function CrewQuestionPicker({
 				text: question.text || questionLabel("weakness", question.letter),
 				count: counts[question.letter] ?? 0,
 				action: {
-					type: "editCrewWeaknessTag",
+					type: "editWeaknessTag",
+					themeId: CREW_THEME_ID,
 					tagId,
 					edit: { letter: question.letter },
 				},

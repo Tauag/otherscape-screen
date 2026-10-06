@@ -29,13 +29,25 @@ export function themeLine(type: ThemeType): string {
 	return LINE_NAME[type];
 }
 
+/** What a theme and the crew theme share. Every verb below takes either. */
+export type ThemeCard = Pick<
+	Theme,
+	| "powerTags"
+	| "weaknessTags"
+	| "quote"
+	| "specials"
+	| "upgrade"
+	| "decay"
+	| "pendingUpgrades"
+> & { themebook?: string };
+
 /** A theme reads as under construction until it has all three power tags. */
-export function isNascent(theme: Theme): boolean {
+export function isNascent(theme: ThemeCard): boolean {
 	return theme.powerTags.length < 3;
 }
 
 /** The theme card's name: the first power tag answering question A. */
-export function themeTitle(theme: Theme): PowerTag | undefined {
+export function themeTitle(theme: ThemeCard): PowerTag | undefined {
 	return theme.powerTags.find((tag) => tag.letter === "A");
 }
 
@@ -63,14 +75,15 @@ export type TagKind = "power" | "weakness";
 export type MoveDirection = "up" | "down";
 
 /** The id comes from the caller, because a reducer has to stay pure. */
-export function addPowerTag(
-	theme: Theme,
+export function addPowerTag<T extends ThemeCard>(
+	theme: T,
 	id: string,
 	letter: PowerQuestionLetter,
-): Theme {
+): T {
 	const tag: PowerTag = {
 		id,
-		themebook: theme.themebook,
+		// The crew theme has no themebook to borrow from.
+		themebook: theme.themebook ?? "",
 		letter,
 		text: "",
 		burnt: false,
@@ -78,22 +91,22 @@ export function addPowerTag(
 	return { ...theme, powerTags: [...theme.powerTags, tag] };
 }
 
-export function addWeaknessTag(
-	theme: Theme,
+export function addWeaknessTag<T extends ThemeCard>(
+	theme: T,
 	id: string,
 	letter: WeaknessQuestionLetter,
-): Theme {
+): T {
 	return {
 		...theme,
 		weaknessTags: [...theme.weaknessTags, { id, letter, text: "" }],
 	};
 }
 
-export function editPowerTag(
-	theme: Theme,
+export function editPowerTag<T extends ThemeCard>(
+	theme: T,
 	tagId: string,
 	edit: Partial<Pick<PowerTag, "themebook" | "letter" | "text">>,
-): Theme {
+): T {
 	return {
 		...theme,
 		powerTags: theme.powerTags.map((tag) =>
@@ -102,11 +115,11 @@ export function editPowerTag(
 	};
 }
 
-export function editWeaknessTag(
-	theme: Theme,
+export function editWeaknessTag<T extends ThemeCard>(
+	theme: T,
 	tagId: string,
 	edit: Partial<Pick<WeaknessTag, "letter" | "text">>,
-): Theme {
+): T {
 	return {
 		...theme,
 		weaknessTags: theme.weaknessTags.map((tag) =>
@@ -115,14 +128,20 @@ export function editWeaknessTag(
 	};
 }
 
-export function deletePowerTag(theme: Theme, tagId: string): Theme {
+export function deletePowerTag<T extends ThemeCard>(
+	theme: T,
+	tagId: string,
+): T {
 	return {
 		...theme,
 		powerTags: theme.powerTags.filter((tag) => tag.id !== tagId),
 	};
 }
 
-export function deleteWeaknessTag(theme: Theme, tagId: string): Theme {
+export function deleteWeaknessTag<T extends ThemeCard>(
+	theme: T,
+	tagId: string,
+): T {
 	return {
 		...theme,
 		weaknessTags: theme.weaknessTags.filter((tag) => tag.id !== tagId),
@@ -148,12 +167,12 @@ function swapped<T extends { id: string }>(
  * theme with many tags, where dragging would be quicker. The upgrade path is
  * `dnd-kit` on the tag list alone.
  */
-export function moveTag(
-	theme: Theme,
+export function moveTag<T extends ThemeCard>(
+	theme: T,
 	kind: TagKind,
 	tagId: string,
 	direction: MoveDirection,
-): Theme {
+): T {
 	return kind === "power"
 		? { ...theme, powerTags: swapped(theme.powerTags, tagId, direction) }
 		: { ...theme, weaknessTags: swapped(theme.weaknessTags, tagId, direction) };
@@ -168,7 +187,11 @@ function burnt(tag: PowerTag, burnValue: number): PowerTag {
 }
 
 /** The dialog always sends a number, so a re-burn cannot keep the earlier value. */
-export function burnTag(theme: Theme, tagId: string, burnValue: number): Theme {
+export function burnTag<T extends ThemeCard>(
+	theme: T,
+	tagId: string,
+	burnValue: number,
+): T {
 	return {
 		...theme,
 		powerTags: theme.powerTags.map((tag) =>
@@ -178,7 +201,7 @@ export function burnTag(theme: Theme, tagId: string, burnValue: number): Theme {
 }
 
 /** The value belongs to the burn and not to the tag, so un-burning drops it. */
-export function unburnTag(theme: Theme, tagId: string): Theme {
+export function unburnTag<T extends ThemeCard>(theme: T, tagId: string): T {
 	return {
 		...theme,
 		powerTags: theme.powerTags.map((tag) => {
@@ -190,7 +213,10 @@ export function unburnTag(theme: Theme, tagId: string): Theme {
 	};
 }
 
-export function toggleBroadTag(theme: Theme, tagId: string): Theme {
+export function toggleBroadTag<T extends ThemeCard>(
+	theme: T,
+	tagId: string,
+): T {
 	return {
 		...theme,
 		powerTags: theme.powerTags.map((tag) =>
@@ -213,7 +239,7 @@ const TRACK_LENGTH: Record<TrackName, number> = {
  * Upgrade - `pendingUpgrades` is the record of that, since the track itself
  * clears back to 0 and can't carry it.
  */
-export function markTrack(theme: Theme, track: TrackName): Theme {
+export function markTrack<T extends ThemeCard>(theme: T, track: TrackName): T {
 	const marked = theme[track];
 	const next = marked >= TRACK_LENGTH[track] ? 0 : ((marked + 1) as MarkCount);
 	const filled = track === "upgrade" && next >= UPGRADE_TRACK_LENGTH;
@@ -226,6 +252,6 @@ export function markTrack(theme: Theme, track: TrackName): Theme {
 
 /** Resolves one owed Upgrade, whichever the player picks for it: a power tag
  *  or a theme special. Both spend the same point, so both call this. */
-export function takeThemeUpgrade(theme: Theme): Theme {
+export function takeThemeUpgrade<T extends ThemeCard>(theme: T): T {
 	return { ...theme, pendingUpgrades: Math.max(0, theme.pendingUpgrades - 1) };
 }

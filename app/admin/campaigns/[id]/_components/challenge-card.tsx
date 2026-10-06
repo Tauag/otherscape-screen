@@ -9,7 +9,13 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ArrowDownIcon } from "@/components/icons";
 import { LabelAction } from "@/components/label-action";
 import { RowMenu } from "@/components/row-menu";
-import { CARD, CARD_BODY, LABEL, MENU_ITEM } from "@/components/styles";
+import {
+	CARD,
+	CARD_BODY,
+	DANGER_FILLED,
+	LABEL,
+	MENU_ITEM,
+} from "@/components/styles";
 import { useCampaign } from "../_hooks/use-campaign";
 import { ChallengeSpecialRow } from "./challenge-special-row";
 import { ChallengeStatusRow } from "./challenge-status-row";
@@ -238,7 +244,7 @@ export function ChallengeCard({
 						dispatch({ type: "removeChallenge", challengeId: challenge.id });
 						setDeleteOpen(false);
 					}}
-					className="inline-flex min-h-11 items-center self-start rounded-sm bg-danger px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
+					className={`${DANGER_FILLED} self-start`}
 				>
 					Delete
 				</Button>

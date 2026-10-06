@@ -1,16 +1,4 @@
-import {
-	addCrewPowerTag,
-	addCrewWeaknessTag,
-	burnCrewTag,
-	deleteCrewPowerTag,
-	deleteCrewWeaknessTag,
-	editCrewPowerTag,
-	editCrewWeaknessTag,
-	markCrewTrack,
-	moveCrewTag,
-	takeCrewUpgrade,
-	unburnCrewTag,
-} from "@/lib/character/crew-theme";
+import { CREW_THEME_ID } from "@/lib/character/crew-theme";
 import { loseTheme } from "@/lib/character/loss";
 import { newTheme } from "@/lib/character/new";
 import {
@@ -25,6 +13,7 @@ import {
 	markTrack,
 	moveTag,
 	type TagKind,
+	type ThemeCard,
 	type TrackName,
 	takeThemeUpgrade,
 	toggleBroadTag,
@@ -34,7 +23,6 @@ import type {
 	Character,
 	CrewMotivation,
 	CrewRelationship,
-	CrewTheme,
 	Essence,
 	Evolutions,
 	Loadout,
@@ -85,6 +73,11 @@ import {
 	resizeStatusLimit,
 } from "@/lib/rules/status";
 
+/**
+ * Every action with a `themeId` edits that theme, or the crew theme when it is
+ * CREW_THEME_ID, except setThemeType, setThemebook, and loseTheme, which only
+ * a self/mythos/noise theme has.
+ */
 export type CharacterAction =
 	| { type: "replace"; document: Character }
 	| { type: "rename"; name: string }
@@ -182,33 +175,6 @@ export type CharacterAction =
 	| { type: "addLoadoutSpecial"; special: string }
 	| { type: "removeLoadoutSpecial"; special: string }
 	| { type: "setCrewMotivation"; motivation: CrewMotivation }
-	| { type: "setCrewQuote"; quote: string }
-	| { type: "addCrewSpecial"; special: string }
-	| { type: "removeCrewSpecial"; special: string }
-	| { type: "addCrewPowerTag"; id: string; letter: PowerQuestionLetter }
-	| { type: "addCrewWeaknessTag"; id: string; letter: WeaknessQuestionLetter }
-	| {
-			type: "editCrewPowerTag";
-			tagId: string;
-			edit: Partial<Pick<PowerTag, "letter" | "text">>;
-	  }
-	| {
-			type: "editCrewWeaknessTag";
-			tagId: string;
-			edit: Partial<Pick<WeaknessTag, "letter" | "text">>;
-	  }
-	| { type: "deleteCrewPowerTag"; tagId: string }
-	| { type: "deleteCrewWeaknessTag"; tagId: string }
-	| {
-			type: "moveCrewTag";
-			kind: TagKind;
-			tagId: string;
-			direction: MoveDirection;
-	  }
-	| { type: "burnCrewTag"; tagId: string; burnValue: number }
-	| { type: "unburnCrewTag"; tagId: string }
-	| { type: "markCrewTrack"; track: TrackName }
-	| { type: "takeCrewUpgrade" }
 	| { type: "addCrewRelationship"; id: string }
 	| {
 			type: "editCrewRelationship";
@@ -235,7 +201,7 @@ export type CharacterAction =
 	| { type: "toggleStoryTagCrispy"; id: string }
 	| { type: "removeStoryTag"; id: string };
 
-/** Every theme verb below edits one theme and leaves the rest alone. */
+/** Edits one theme and leaves the rest alone. */
 function inTheme(
 	character: Character,
 	themeId: string,
@@ -247,6 +213,17 @@ function inTheme(
 			theme.id === themeId ? edit(theme) : theme,
 		),
 	};
+}
+
+/** inTheme, or the crew theme when `themeId` is CREW_THEME_ID. */
+function inCard(
+	character: Character,
+	themeId: string,
+	edit: <T extends ThemeCard>(card: T) => T,
+): Character {
+	return themeId === CREW_THEME_ID
+		? { ...character, crewTheme: edit(character.crewTheme) }
+		: inTheme(character, themeId, edit);
 }
 
 const withLoadout = (
@@ -277,14 +254,6 @@ const inStoryTag = (
 	storyTags: character.storyTags.map((tag) =>
 		tag.id === id ? edit(tag) : tag,
 	),
-});
-
-const withCrew = (
-	character: Character,
-	edit: (crew: CrewTheme) => CrewTheme,
-): Character => ({
-	...character,
-	crewTheme: edit(character.crewTheme),
 });
 
 function autoEssence(
@@ -326,69 +295,69 @@ export function reduce(
 				themebook: action.themebook,
 			}));
 		case "setThemeQuote":
-			return inTheme(character, action.themeId, (theme) => ({
+			return inCard(character, action.themeId, (theme) => ({
 				...theme,
 				quote: action.quote,
 			}));
 		case "addThemeSpecial":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				theme.specials.includes(action.special)
 					? theme
 					: { ...theme, specials: [...theme.specials, action.special] },
 			);
 		case "removeThemeSpecial":
-			return inTheme(character, action.themeId, (theme) => ({
+			return inCard(character, action.themeId, (theme) => ({
 				...theme,
 				specials: theme.specials.filter(
 					(special) => special !== action.special,
 				),
 			}));
 		case "addPowerTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				addPowerTag(theme, action.id, action.letter),
 			);
 		case "addWeaknessTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				addWeaknessTag(theme, action.id, action.letter),
 			);
 		case "editPowerTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				editPowerTag(theme, action.tagId, action.edit),
 			);
 		case "editWeaknessTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				editWeaknessTag(theme, action.tagId, action.edit),
 			);
 		case "deletePowerTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				deletePowerTag(theme, action.tagId),
 			);
 		case "deleteWeaknessTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				deleteWeaknessTag(theme, action.tagId),
 			);
 		case "moveTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				moveTag(theme, action.kind, action.tagId, action.direction),
 			);
 		case "burnTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				burnTag(theme, action.tagId, action.burnValue),
 			);
 		case "unburnTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				unburnTag(theme, action.tagId),
 			);
 		case "toggleBroadTag":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				toggleBroadTag(theme, action.tagId),
 			);
 		case "markTrack":
-			return inTheme(character, action.themeId, (theme) =>
+			return inCard(character, action.themeId, (theme) =>
 				markTrack(theme, action.track),
 			);
 		case "takeThemeUpgrade":
-			return inTheme(character, action.themeId, takeThemeUpgrade);
+			return inCard(character, action.themeId, takeThemeUpgrade);
 		case "addTheme": {
 			// No-op past the cap: the button hides at STARTING_THEMES, but this
 			// guards a dispatch that outraces the re-render (e.g. a double click).
@@ -565,61 +534,10 @@ export function reduce(
 				),
 			});
 		case "setCrewMotivation":
-			return withCrew(character, (crew) => ({
-				...crew,
-				motivation: action.motivation,
-			}));
-		case "setCrewQuote":
-			return withCrew(character, (crew) => ({ ...crew, quote: action.quote }));
-		case "addCrewSpecial":
-			return withCrew(character, (crew) =>
-				crew.specials.includes(action.special)
-					? crew
-					: { ...crew, specials: [...crew.specials, action.special] },
-			);
-		case "removeCrewSpecial":
-			return withCrew(character, (crew) => ({
-				...crew,
-				specials: crew.specials.filter((special) => special !== action.special),
-			}));
-		case "addCrewPowerTag":
-			return withCrew(character, (crew) =>
-				addCrewPowerTag(crew, action.id, action.letter),
-			);
-		case "addCrewWeaknessTag":
-			return withCrew(character, (crew) =>
-				addCrewWeaknessTag(crew, action.id, action.letter),
-			);
-		case "editCrewPowerTag":
-			return withCrew(character, (crew) =>
-				editCrewPowerTag(crew, action.tagId, action.edit),
-			);
-		case "editCrewWeaknessTag":
-			return withCrew(character, (crew) =>
-				editCrewWeaknessTag(crew, action.tagId, action.edit),
-			);
-		case "deleteCrewPowerTag":
-			return withCrew(character, (crew) =>
-				deleteCrewPowerTag(crew, action.tagId),
-			);
-		case "deleteCrewWeaknessTag":
-			return withCrew(character, (crew) =>
-				deleteCrewWeaknessTag(crew, action.tagId),
-			);
-		case "moveCrewTag":
-			return withCrew(character, (crew) =>
-				moveCrewTag(crew, action.kind, action.tagId, action.direction),
-			);
-		case "burnCrewTag":
-			return withCrew(character, (crew) =>
-				burnCrewTag(crew, action.tagId, action.burnValue),
-			);
-		case "unburnCrewTag":
-			return withCrew(character, (crew) => unburnCrewTag(crew, action.tagId));
-		case "markCrewTrack":
-			return withCrew(character, (crew) => markCrewTrack(crew, action.track));
-		case "takeCrewUpgrade":
-			return withCrew(character, takeCrewUpgrade);
+			return {
+				...character,
+				crewTheme: { ...character.crewTheme, motivation: action.motivation },
+			};
 		case "addCrewRelationship":
 			return {
 				...character,

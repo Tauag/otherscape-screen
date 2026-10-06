@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import { SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { useRollBoard } from "@/app/character/[id]/_hooks/use-roll-board";
 import {
@@ -13,7 +12,7 @@ import { BurnOverride } from "@/app/character/[id]/roll/_components/burn-overrid
 import { RollChip } from "@/app/character/[id]/roll/_components/roll-chip";
 import { RollControls } from "@/app/character/[id]/roll/_components/roll-controls";
 import { RollTotal } from "@/app/character/[id]/roll/_components/roll-total";
-import { LABEL } from "@/components/styles";
+import { LABEL, SMALL_BUTTON } from "@/components/styles";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 export default function RollPage() {

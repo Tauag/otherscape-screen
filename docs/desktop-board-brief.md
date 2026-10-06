@@ -83,9 +83,9 @@ Do this first, on its own, with no visible change. `npm test` must stay green.
    the mapping is mechanical: `#e85a5f` → `--color-self` → `self`. A hue that
    comes from data rides the cascade via `data-type`, never an interpolated class
    name. See system-design.md section 10.
-5. **Loadout and crew tracks differ from a theme's.** `Track` takes a `themeId`;
-   the loadout uses `TrackPips` with `markLoadoutUpgrade`, and the crew uses
-   `markCrewTrack`. The panel header branches on group kind.
+5. **The loadout track differs from a theme's.** `Track` takes a `themeId`, and
+   the crew theme passes `CREW_THEME_ID`; the loadout uses `TrackPips` with
+   `markLoadoutUpgrade`. The panel header branches on group kind.
 
 ## 5. Resolved layout questions
 

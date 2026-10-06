@@ -4,16 +4,18 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
 import { useState } from "react";
-import {
-	DANGER,
-	PRIMARY,
-	SMALL_BUTTON,
-} from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { Chip } from "@/components/chip";
+import { TagChips } from "@/components/card-parts";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { MoreIcon } from "@/components/icons";
-import { LABEL, MENU_ITEM, MENU_POPUP } from "@/components/styles";
+import {
+	DANGER,
+	LABEL,
+	MENU_ITEM,
+	MENU_POPUP,
+	PRIMARY,
+	SMALL_BUTTON,
+} from "@/components/styles";
 import { generateShareLink, revokeShareLink } from "@/lib/actions";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Character, Essence, GhostMemory } from "@/lib/character/types";
@@ -332,19 +334,7 @@ function GhostEntry({ memory }: { memory: GhostMemory }) {
 					Read it back
 				</summary>
 
-				<ul className="flex flex-wrap gap-1.5">
-					{theme.powerTags.map((tag) => (
-						<Chip
-							key={tag.id}
-							label={tag.letter}
-							text={tag.text}
-							burnt={tag.burnt}
-						/>
-					))}
-					{theme.weaknessTags.map((tag) => (
-						<Chip key={tag.id} label={tag.letter} text={tag.text} negative />
-					))}
-				</ul>
+				<TagChips theme={theme} />
 
 				{theme.quote.trim() && (
 					<p className="pt-1 font-sans text-[13px] text-dim">

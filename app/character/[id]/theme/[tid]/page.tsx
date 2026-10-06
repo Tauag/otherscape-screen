@@ -14,7 +14,7 @@ import {
 	EDITOR_PAGE,
 	EDITOR_TITLE,
 	EDITOR_TRACKS,
-	HUE_PANEL,
+	FIELD,
 	PANEL,
 	SaveLink,
 } from "@/app/character/[id]/_components/editor";
@@ -23,29 +23,24 @@ import {
 	LoseThemeDialog,
 } from "@/app/character/[id]/_components/lose-theme";
 import { ROW } from "@/app/character/[id]/_components/picker";
-import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import {
-	Track,
+	TagSections,
+	ThemeSpecialsPanel,
+} from "@/app/character/[id]/_components/tag-sections";
+import {
+	CardTracks,
 	UpgradeDialog,
-	UpgradeSquareButton,
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { MissingTheme } from "@/app/character/[id]/theme/[tid]/_components/picker";
-import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { ThemeType } from "@/lib/character/types";
 import { useContentPack } from "@/lib/content/load";
 import { findThemebook, themebooksOfType } from "@/lib/content/pack";
-import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
-import { PlusIcon } from "../../_components/icons";
 
 const THEME_TYPES: ThemeType[] = ["self", "mythos", "noise"];
-
-const FIELD =
-	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
 
 const POPUP =
 	"z-40 max-h-[70vh] w-[var(--anchor-width)] overflow-y-auto rounded-sm border border-border bg-surface p-1.5 outline-none";
@@ -183,21 +178,11 @@ export default function ThemePage({
 				</div>
 
 				<section className={EDITOR_TRACKS}>
-					<Track
+					<CardTracks
 						themeId={theme.id}
-						track="upgrade"
-						marked={theme.upgrade}
+						card={theme}
 						size="lg"
-					/>
-					<Track
-						themeId={theme.id}
-						track="decay"
-						marked={theme.decay}
-						size="lg"
-					/>
-					<UpgradeSquareButton
-						pending={theme.pendingUpgrades}
-						onOpen={() => setUpgradeOpen(true)}
+						onUpgrade={() => setUpgradeOpen(true)}
 					/>
 				</section>
 			</header>
@@ -212,136 +197,7 @@ export default function ThemePage({
 
 			<div className={EDITOR_GRID}>
 				<div className={EDITOR_COLUMN}>
-					<section className={HUE_PANEL}>
-						<LabelAction
-							label="Power tags"
-							onClick={() => {
-								const tagId = crypto.randomUUID();
-								dispatch({
-									type: "addPowerTag",
-									themeId: theme.id,
-									id: tagId,
-									letter: "A",
-								});
-								router.push(`${here}#tag-${tagId}`);
-							}}
-						>
-							<PlusIcon /> power tag
-						</LabelAction>
-						<ul className="@container flex flex-col gap-3">
-							{theme.powerTags.map((tag, index) => (
-								<TagRow
-									key={tag.id}
-									kind="power"
-									tag={tag}
-									href={`${here}/tag/${tag.id}`}
-									index={index}
-									count={theme.powerTags.length}
-									onTextChange={(text) =>
-										dispatch({
-											type: "editPowerTag",
-											themeId: theme.id,
-											tagId: tag.id,
-											edit: { text },
-										})
-									}
-									onMove={(direction) =>
-										dispatch({
-											type: "moveTag",
-											themeId: theme.id,
-											kind: "power",
-											tagId: tag.id,
-											direction,
-										})
-									}
-									onDelete={() =>
-										dispatch({
-											type: "deletePowerTag",
-											themeId: theme.id,
-											tagId: tag.id,
-										})
-									}
-									onBurntChange={(burnt) =>
-										dispatch(
-											burnt
-												? {
-														type: "burnTag",
-														themeId: theme.id,
-														tagId: tag.id,
-														burnValue: DEFAULT_BURN_VALUE,
-													}
-												: {
-														type: "unburnTag",
-														themeId: theme.id,
-														tagId: tag.id,
-													},
-										)
-									}
-									onBroadChange={() =>
-										dispatch({
-											type: "toggleBroadTag",
-											themeId: theme.id,
-											tagId: tag.id,
-										})
-									}
-								/>
-							))}
-						</ul>
-					</section>
-
-					<section data-valence="negative" className={HUE_PANEL}>
-						<LabelAction
-							label="Weakness tags"
-							onClick={() => {
-								const tagId = crypto.randomUUID();
-								dispatch({
-									type: "addWeaknessTag",
-									themeId: theme.id,
-									id: tagId,
-									letter: "A",
-								});
-								router.push(`${here}#tag-${tagId}`);
-							}}
-						>
-							<PlusIcon /> weakness tag
-						</LabelAction>
-						<ul className="@container flex flex-col gap-3">
-							{theme.weaknessTags.map((tag, index) => (
-								<TagRow
-									key={tag.id}
-									kind="weakness"
-									tag={tag}
-									href={`${here}/tag/${tag.id}`}
-									index={index}
-									count={theme.weaknessTags.length}
-									onTextChange={(text) =>
-										dispatch({
-											type: "editWeaknessTag",
-											themeId: theme.id,
-											tagId: tag.id,
-											edit: { text },
-										})
-									}
-									onMove={(direction) =>
-										dispatch({
-											type: "moveTag",
-											themeId: theme.id,
-											kind: "weakness",
-											tagId: tag.id,
-											direction,
-										})
-									}
-									onDelete={() =>
-										dispatch({
-											type: "deleteWeaknessTag",
-											themeId: theme.id,
-											tagId: tag.id,
-										})
-									}
-								/>
-							))}
-						</ul>
-					</section>
+					<TagSections themeId={theme.id} card={theme} here={here} />
 				</div>
 
 				<aside className={EDITOR_ASIDE}>
@@ -364,27 +220,11 @@ export default function ThemePage({
 						/>
 					</label>
 
-					<section className={PANEL}>
-						<LabelAction label="Theme specials" href={`${here}/specials`}>
-							<PlusIcon /> theme special
-						</LabelAction>
-						{theme.specials.length === 0 ? (
-							<p className="font-sans text-sm text-dim">
-								No theme specials yet.
-							</p>
-						) : (
-							<SpecialList
-								specials={theme.specials}
-								onRemove={(special) =>
-									dispatch({
-										type: "removeThemeSpecial",
-										themeId: theme.id,
-										special,
-									})
-								}
-							/>
-						)}
-					</section>
+					<ThemeSpecialsPanel
+						themeId={theme.id}
+						specials={theme.specials}
+						here={here}
+					/>
 
 					<section className="flex flex-col gap-2 pb-2 lg:pb-0">
 						<div className="flex gap-3.5">

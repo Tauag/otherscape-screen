@@ -13,37 +13,26 @@ import {
 	EDITOR_PAGE,
 	EDITOR_TITLE,
 	EDITOR_TRACKS,
-	HUE_PANEL,
+	FIELD,
 	PANEL,
 	SaveLink,
 } from "@/app/character/[id]/_components/editor";
-import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import { FILLED } from "@/app/character/[id]/_components/styles";
-import { TagRow } from "@/app/character/[id]/_components/tag-row";
+import { PlusIcon } from "@/app/character/[id]/_components/icons";
 import {
-	TrackPips,
-	UpgradeSquareButton,
+	TagSections,
+	ThemeSpecialsPanel,
+} from "@/app/character/[id]/_components/tag-sections";
+import {
+	CardTracks,
+	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { ConfirmDialog } from "@/components/confirm-dialog";
 import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
-import {
-	crewTitle,
-	isCrewNascent,
-	MOTIVATION_TYPE,
-} from "@/lib/character/crew-theme";
+import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
+import { isNascent, themeTitle } from "@/lib/character/theme";
 import type { CrewMotivation } from "@/lib/character/types";
-import {
-	DECAY_TRACK_LENGTH,
-	DEFAULT_BURN_VALUE,
-	UPGRADE_TRACK_LENGTH,
-} from "@/lib/rules/constants";
-import { PlusIcon } from "../_components/icons";
-
-const FIELD =
-	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
 
 const MOTIVATIONS: CrewMotivation[] = ["Identity", "Ritual", "Itch"];
 
@@ -54,29 +43,10 @@ export default function CrewPage({
 	const { character, dispatch } = useCharacter();
 	const router = useRouter();
 	const crew = character.crewTheme;
-	const title = crewTitle(crew);
-	const nascent = isCrewNascent(crew);
+	const title = themeTitle(crew);
 	const [upgradeOpen, setUpgradeOpen] = useState(false);
 
 	const here = `/character/${id}/crew`;
-
-	function mark() {
-		dispatch({ type: "markCrewTrack", track: "upgrade" });
-	}
-
-	function takeTag() {
-		const tagId = crypto.randomUUID();
-		dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
-		dispatch({ type: "takeCrewUpgrade" });
-		setUpgradeOpen(false);
-		router.push(`${here}#tag-${tagId}`);
-	}
-
-	function takeSpecial() {
-		dispatch({ type: "takeCrewUpgrade" });
-		setUpgradeOpen(false);
-		router.push(`${here}/specials`);
-	}
 
 	return (
 		<main data-type={MOTIVATION_TYPE[crew.motivation]} className={EDITOR_PAGE}>
@@ -86,153 +56,26 @@ export default function CrewPage({
 				</h1>
 
 				<section className={EDITOR_TRACKS}>
-					<TrackPips
-						name="Upgrade"
-						short="UPG"
-						length={UPGRADE_TRACK_LENGTH}
-						marked={crew.upgrade}
+					<CardTracks
+						themeId={CREW_THEME_ID}
+						card={crew}
 						size="lg"
-						active
-						onMark={mark}
-					/>
-					<TrackPips
-						name="Decay"
-						short="DEC"
-						length={DECAY_TRACK_LENGTH}
-						marked={crew.decay}
-						size="lg"
-						active={false}
-						onMark={() => dispatch({ type: "markCrewTrack", track: "decay" })}
-					/>
-					<UpgradeSquareButton
-						pending={crew.pendingUpgrades}
-						onOpen={() => setUpgradeOpen(true)}
+						onUpgrade={() => setUpgradeOpen(true)}
 					/>
 				</section>
 			</header>
 
-			<ConfirmDialog
+			<UpgradeDialog
+				themeId={CREW_THEME_ID}
+				themeHref={here}
+				nascent={isNascent(crew)}
 				open={upgradeOpen}
 				onOpenChange={setUpgradeOpen}
-				title="Take an Upgrade"
-				description={
-					nascent
-						? "Three points, one Upgrade. A nascent crew theme takes a new power tag until it has all three."
-						: "Three points, one Upgrade. Take a new power tag, which may answer any question, or a crew theme special."
-				}
-			>
-				<Button type="button" onClick={takeTag} className={FILLED}>
-					+ power tag
-				</Button>
-				{!nascent && (
-					<Button type="button" onClick={takeSpecial} className={FILLED}>
-						+ crew theme special
-					</Button>
-				)}
-			</ConfirmDialog>
+			/>
 
 			<div className={EDITOR_GRID}>
 				<div className={EDITOR_COLUMN}>
-					<section className={HUE_PANEL}>
-						<LabelAction
-							label="Power tags"
-							onClick={() => {
-								const tagId = crypto.randomUUID();
-								dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
-								router.push(`${here}#tag-${tagId}`);
-							}}
-						>
-							<PlusIcon /> power tag
-						</LabelAction>
-						<ul className="@container flex flex-col gap-3">
-							{crew.powerTags.map((tag, index) => (
-								<TagRow
-									key={tag.id}
-									kind="power"
-									tag={tag}
-									href={`${here}/tag/${tag.id}`}
-									index={index}
-									count={crew.powerTags.length}
-									onTextChange={(text) =>
-										dispatch({
-											type: "editCrewPowerTag",
-											tagId: tag.id,
-											edit: { text },
-										})
-									}
-									onMove={(direction) =>
-										dispatch({
-											type: "moveCrewTag",
-											kind: "power",
-											tagId: tag.id,
-											direction,
-										})
-									}
-									onDelete={() =>
-										dispatch({ type: "deleteCrewPowerTag", tagId: tag.id })
-									}
-									onBurntChange={(burnt) =>
-										dispatch(
-											burnt
-												? {
-														type: "burnCrewTag",
-														tagId: tag.id,
-														burnValue: DEFAULT_BURN_VALUE,
-													}
-												: { type: "unburnCrewTag", tagId: tag.id },
-										)
-									}
-								/>
-							))}
-						</ul>
-					</section>
-
-					<section data-valence="negative" className={HUE_PANEL}>
-						<LabelAction
-							label="Weakness tags"
-							onClick={() => {
-								const tagId = crypto.randomUUID();
-								dispatch({
-									type: "addCrewWeaknessTag",
-									id: tagId,
-									letter: "A",
-								});
-								router.push(`${here}#tag-${tagId}`);
-							}}
-						>
-							<PlusIcon /> weakness tag
-						</LabelAction>
-						<ul className="@container flex flex-col gap-3">
-							{crew.weaknessTags.map((tag, index) => (
-								<TagRow
-									key={tag.id}
-									kind="weakness"
-									tag={tag}
-									href={`${here}/tag/${tag.id}`}
-									index={index}
-									count={crew.weaknessTags.length}
-									onTextChange={(text) =>
-										dispatch({
-											type: "editCrewWeaknessTag",
-											tagId: tag.id,
-											edit: { text },
-										})
-									}
-									onMove={(direction) =>
-										dispatch({
-											type: "moveCrewTag",
-											kind: "weakness",
-											tagId: tag.id,
-											direction,
-										})
-									}
-									onDelete={() =>
-										dispatch({ type: "deleteCrewWeaknessTag", tagId: tag.id })
-									}
-								/>
-							))}
-						</ul>
-					</section>
+					<TagSections themeId={CREW_THEME_ID} card={crew} here={here} />
 
 					<section className={PANEL}>
 						<LabelAction
@@ -363,7 +206,11 @@ export default function CrewPage({
 								autoComplete="off"
 								value={crew.quote}
 								onChange={(event) =>
-									dispatch({ type: "setCrewQuote", quote: event.target.value })
+									dispatch({
+										type: "setThemeQuote",
+										themeId: CREW_THEME_ID,
+										quote: event.target.value,
+									})
 								}
 								placeholder={`Create your ${crew.motivation}`}
 								className={FIELD}
@@ -371,23 +218,11 @@ export default function CrewPage({
 						</label>
 					</div>
 
-					<section className={PANEL}>
-						<LabelAction label="Crew theme specials" href={`${here}/specials`}>
-							<PlusIcon /> crew theme special
-						</LabelAction>
-						{crew.specials.length === 0 ? (
-							<p className="font-sans text-sm text-dim">
-								No crew theme specials yet.
-							</p>
-						) : (
-							<SpecialList
-								specials={crew.specials}
-								onRemove={(special) =>
-									dispatch({ type: "removeCrewSpecial", special })
-								}
-							/>
-						)}
-					</section>
+					<ThemeSpecialsPanel
+						themeId={CREW_THEME_ID}
+						specials={crew.specials}
+						here={here}
+					/>
 
 					<SaveLink href={`/character/${id}`} />
 					{decayFull(crew) && (

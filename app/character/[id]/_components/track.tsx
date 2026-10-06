@@ -3,10 +3,12 @@
 import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
 import { UpArrowIcon } from "@/app/character/[id]/_components/icons";
-import { FILLED } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import type { TrackName } from "@/lib/character/theme";
+import { FILLED, PRIMARY } from "@/components/styles";
+import { CREW_THEME_ID } from "@/lib/character/crew-theme";
+import type { ThemeCard, TrackName } from "@/lib/character/theme";
+import type { UpgradeChoice } from "@/lib/loadout-edit";
 import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
@@ -117,6 +119,7 @@ export function TrackPips({
 }
 
 type TrackProps = {
+	/** A theme's id, or CREW_THEME_ID. */
 	themeId: string;
 	track: TrackName;
 	marked: number;
@@ -219,6 +222,44 @@ export function UpgradeSquareButton({
 	);
 }
 
+/** A theme or crew card's Upgrade and Decay tracks, and the pending-Upgrade
+ *  button beside them. The caller owns the dialog the button opens, since a
+ *  sheet card must render it outside its Link. */
+export function CardTracks({
+	themeId,
+	card,
+	size,
+	onUpgrade,
+}: {
+	/** A theme's id, or CREW_THEME_ID. */
+	themeId: string;
+	card: Pick<ThemeCard, "upgrade" | "decay" | "pendingUpgrades">;
+	size: TrackSize;
+	onUpgrade: () => void;
+}) {
+	return (
+		<>
+			<Track
+				themeId={themeId}
+				track="upgrade"
+				marked={card.upgrade}
+				size={size}
+			/>
+			<Track themeId={themeId} track="decay" marked={card.decay} size={size} />
+			{size === "sm" ? (
+				<UpgradeBadge pending={card.pendingUpgrades} onOpen={onUpgrade} />
+			) : (
+				<UpgradeSquareButton
+					pending={card.pendingUpgrades}
+					onOpen={onUpgrade}
+				/>
+			)}
+		</>
+	);
+}
+
+/** Spends one pending Upgrade on a theme or, with CREW_THEME_ID, the crew
+ *  theme: a power tag, a weakness tag, or a special. */
 export function UpgradeDialog({
 	themeId,
 	themeHref,
@@ -234,6 +275,7 @@ export function UpgradeDialog({
 }) {
 	const { dispatch } = useCharacter();
 	const router = useRouter();
+	const noun = themeId === CREW_THEME_ID ? "crew theme" : "theme";
 
 	function takeTag() {
 		const id = crypto.randomUUID();
@@ -246,6 +288,7 @@ export function UpgradeDialog({
 	function takeWeakness() {
 		const id = crypto.randomUUID();
 		dispatch({ type: "addWeaknessTag", themeId, id, letter: "A" });
+		dispatch({ type: "takeThemeUpgrade", themeId });
 		onOpenChange(false);
 		router.push(`${themeHref}#tag-${id}`);
 	}
@@ -263,8 +306,8 @@ export function UpgradeDialog({
 			title="Take an Upgrade"
 			description={
 				nascent
-					? "Three points, one Upgrade. A nascent theme takes a new power tag until it has all three."
-					: "Three points, one Upgrade. Take a new power tag, which may answer any question, or a theme special."
+					? `Three points, one Upgrade. A nascent ${noun} takes a new power tag until it has all three.`
+					: `Three points, one Upgrade. Take a new power tag, weakness tag, or a ${noun} special.`
 			}
 		>
 			<Button type="button" onClick={takeTag} className={FILLED}>
@@ -277,9 +320,44 @@ export function UpgradeDialog({
 			)}
 			{!nascent && (
 				<Button type="button" onClick={takeSpecial} className={FILLED}>
-					+ theme special
+					+ {noun} special
 				</Button>
 			)}
+		</ConfirmDialog>
+	);
+}
+
+export function LoadoutUpgradeDialog({
+	loadoutHref,
+	open,
+	onOpenChange,
+}: {
+	loadoutHref: string;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
+	const { dispatch } = useCharacter();
+	const router = useRouter();
+
+	function take(choice: UpgradeChoice) {
+		dispatch({ type: "takeLoadoutUpgrade", choice });
+		onOpenChange(false);
+		if (choice === "special") router.push(`${loadoutHref}/specials`);
+	}
+
+	return (
+		<ConfirmDialog
+			open={open}
+			onOpenChange={onOpenChange}
+			title="Take the loadout Upgrade"
+			description="The track is full. Take one of the two. The track clears either way."
+		>
+			<Button type="button" onClick={() => take("power")} className={PRIMARY}>
+				1 more available Power
+			</Button>
+			<Button type="button" onClick={() => take("special")} className={PRIMARY}>
+				A loadout special
+			</Button>
 		</ConfirmDialog>
 	);
 }

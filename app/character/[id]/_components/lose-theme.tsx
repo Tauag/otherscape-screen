@@ -3,10 +3,9 @@
 import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
 import { useState } from "react";
-import { DANGER } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { LABEL, QUIET } from "@/components/styles";
+import { DANGER, DANGER_FILLED, LABEL, QUIET } from "@/components/styles";
 
 /** Split from its dialog so the sheet's card can keep the button inside its
  *  Link and put the dialog outside: a dialog under that Link portals out of
@@ -90,10 +89,7 @@ export function LoseThemeDialog({
 				</label>
 
 				<div className="flex flex-wrap gap-2">
-					<Button
-						type="submit"
-						className="inline-flex min-h-11 items-center rounded-sm text-bg bg-danger px-4 font-display text-sm font-bold tracking-[0.08em] uppercase"
-					>
+					<Button type="submit" className={DANGER_FILLED}>
 						Lose the theme
 					</Button>
 					<Dialog.Close className={QUIET}>Cancel</Dialog.Close>

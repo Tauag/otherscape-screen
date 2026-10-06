@@ -15,17 +15,15 @@ import {
 	SaveLink,
 } from "@/app/character/[id]/_components/editor";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import { PRIMARY, SMALL_BUTTON } from "@/app/character/[id]/_components/styles";
 import {
+	LoadoutUpgradeDialog,
 	TrackPips,
 	UpgradeSquareButton,
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { SetCard } from "@/app/character/[id]/loadout/_components/set-card";
-import { ConfirmDialog } from "@/components/confirm-dialog";
 import { LabelAction } from "@/components/label-action";
-import { LABEL } from "@/components/styles";
-import type { UpgradeChoice } from "@/lib/loadout-edit";
+import { LABEL, SMALL_BUTTON } from "@/components/styles";
 import { UPGRADE_TRACK_LENGTH, WILDCARD_TAG_COST } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
 import { PlusIcon } from "../_components/icons";
@@ -46,12 +44,6 @@ export default function LoadoutPage({
 
 	function mark() {
 		dispatch({ type: "markLoadoutUpgrade" });
-	}
-
-	function take(choice: UpgradeChoice) {
-		dispatch({ type: "takeLoadoutUpgrade", choice });
-		setOpen(false);
-		if (choice === "special") router.push(`/character/${id}/loadout/specials`);
 	}
 
 	return (
@@ -201,23 +193,11 @@ export default function LoadoutPage({
 				</aside>
 			</div>
 
-			<ConfirmDialog
+			<LoadoutUpgradeDialog
+				loadoutHref={`/character/${id}/loadout`}
 				open={open}
 				onOpenChange={setOpen}
-				title="Take the loadout Upgrade"
-				description="The track is full. Take one of the two. The track clears either way."
-			>
-				<Button type="button" onClick={() => take("power")} className={PRIMARY}>
-					1 more available Power
-				</Button>
-				<Button
-					type="button"
-					onClick={() => take("special")}
-					className={PRIMARY}
-				>
-					A loadout special
-				</Button>
-			</ConfirmDialog>
+			/>
 		</main>
 	);
 }

@@ -4,7 +4,7 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { useActionState } from "react";
 import { createCampaign } from "@/app/admin/campaigns/_lib/actions";
-import { LABEL } from "@/components/styles";
+import { LABEL, PRIMARY } from "@/components/styles";
 
 export function NewCampaignForm() {
 	const [error, create, pending] = useActionState(createCampaign, null);
@@ -25,7 +25,7 @@ export function NewCampaignForm() {
 				<Button
 					type="submit"
 					disabled={pending}
-					className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
+					className={`${PRIMARY} shrink-0 gap-2`}
 				>
 					<span aria-hidden="true" className="text-base leading-none">
 						+

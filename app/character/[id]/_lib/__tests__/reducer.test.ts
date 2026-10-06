@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { CREW_THEME_ID } from "@/lib/character/crew-theme";
 import { newCharacter } from "@/lib/character/new";
 import type { Character, TierMarks } from "@/lib/character/types";
 import { STARTING_THEMES } from "@/lib/rules/constants";
@@ -261,14 +262,16 @@ test("a loadout set goes from added, to titled, to loaded, to holding a loaded f
 test("the crew theme takes a power tag, gets a title, and marks its tracks", () => {
 	let character = newCharacter();
 	character = reduce(character, {
-		type: "addCrewPowerTag",
+		type: "addPowerTag",
+		themeId: CREW_THEME_ID,
 		id: "cpt-1",
 		letter: "A",
 	});
 	assert.equal(character.crewTheme.powerTags[0].text, "");
 
 	character = reduce(character, {
-		type: "editCrewPowerTag",
+		type: "editPowerTag",
+		themeId: CREW_THEME_ID,
 		tagId: "cpt-1",
 		edit: { text: "the Lantern Street crew" },
 	});
@@ -283,7 +286,11 @@ test("the crew theme takes a power tag, gets a title, and marks its tracks", () 
 	});
 	assert.equal(character.crewTheme.motivation, "Ritual");
 
-	character = reduce(character, { type: "markCrewTrack", track: "decay" });
+	character = reduce(character, {
+		type: "markTrack",
+		themeId: CREW_THEME_ID,
+		track: "decay",
+	});
 	assert.equal(character.crewTheme.decay, 1);
 
 	// Untouched: the crew theme lives outside themes[], so this stays 0.
@@ -750,7 +757,11 @@ test("a special is added once however often it is picked, and removed by its tex
 			themeId: "t1",
 			special,
 		});
-		character = reduce(character, { type: "addCrewSpecial", special });
+		character = reduce(character, {
+			type: "addThemeSpecial",
+			themeId: CREW_THEME_ID,
+			special,
+		});
 		character = reduce(character, { type: "addLoadoutSpecial", special });
 	}
 	assert.deepEqual(character.themes[0].specials, [special]);
@@ -762,7 +773,11 @@ test("a special is added once however often it is picked, and removed by its tex
 		themeId: "t1",
 		special,
 	});
-	character = reduce(character, { type: "removeCrewSpecial", special });
+	character = reduce(character, {
+		type: "removeThemeSpecial",
+		themeId: CREW_THEME_ID,
+		special,
+	});
 	character = reduce(character, { type: "removeLoadoutSpecial", special });
 	assert.deepEqual(character.themes[0].specials, []);
 	assert.deepEqual(character.crewTheme.specials, []);

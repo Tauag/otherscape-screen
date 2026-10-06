@@ -1,5 +1,5 @@
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
-import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
+import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import type {
 	Character,
 	CrewRelationship,
@@ -201,22 +201,21 @@ export function burnToggleAction(
 	tagId: string,
 	burn: boolean,
 ): CharacterAction | null {
-	for (const theme of character.themes) {
-		if (theme.powerTags.some((tag) => tag.id === tagId)) {
+	const cards = [
+		...character.themes,
+		{ ...character.crewTheme, id: CREW_THEME_ID },
+	];
+	for (const card of cards) {
+		if (card.powerTags.some((tag) => tag.id === tagId)) {
 			return burn
 				? {
 						type: "burnTag",
-						themeId: theme.id,
+						themeId: card.id,
 						tagId,
 						burnValue: DEFAULT_BURN_VALUE,
 					}
-				: { type: "unburnTag", themeId: theme.id, tagId };
+				: { type: "unburnTag", themeId: card.id, tagId };
 		}
-	}
-	if (character.crewTheme.powerTags.some((tag) => tag.id === tagId)) {
-		return burn
-			? { type: "burnCrewTag", tagId, burnValue: DEFAULT_BURN_VALUE }
-			: { type: "unburnCrewTag", tagId };
 	}
 	if (character.storyTags.some((tag) => tag.id === tagId)) {
 		return burn

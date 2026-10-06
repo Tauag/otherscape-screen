@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FILLED } from "@/app/character/[id]/_components/styles";
+import { FILLED } from "@/components/styles";
 
 // The editor routes' layout (theme, crew, loadout): one column on the phone,
 // and at lg a header over a main column and a sticky side column.
@@ -18,6 +18,9 @@ export const EDITOR_GRID =
 	"grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6";
 export const EDITOR_COLUMN = "flex flex-col gap-5 lg:gap-6";
 export const EDITOR_ASIDE = "flex flex-col gap-5 lg:sticky lg:top-6 lg:gap-4";
+
+export const FIELD =
+	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
 
 /** Flat on the phone; at lg each section becomes a board-style panel. */
 export const PANEL =

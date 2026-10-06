@@ -4,7 +4,6 @@ import { Button } from "@base-ui/react/button";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { CopyIcon } from "@/app/character/[id]/_components/icons";
-import { REMOVE_BUTTON } from "@/app/character/[id]/_components/styles";
 import { rollDice } from "@/app/character/[id]/_lib/roll-action";
 import {
 	type Dice,
@@ -13,7 +12,7 @@ import {
 } from "@/app/character/[id]/_lib/roll-message";
 import { signed } from "@/app/character/[id]/_lib/roll-selection";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { LABEL, QUIET } from "@/components/styles";
+import { LABEL, QUIET, REMOVE_BUTTON } from "@/components/styles";
 
 /** The Discord slash command that reproduces this roll's power modifier. */
 function rollCommand(total: number): string {

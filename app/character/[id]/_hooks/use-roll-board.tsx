@@ -16,6 +16,7 @@ import {
 	weaknessTagCounts,
 } from "@/app/character/[id]/_lib/roll-selection";
 import { RollChip } from "@/app/character/[id]/roll/_components/roll-chip";
+import { CREW_THEME_ID } from "@/lib/character/crew-theme";
 import type { Character } from "@/lib/character/types";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import { power } from "@/lib/rules/power";
@@ -79,7 +80,8 @@ export function useRollBoard(
 		for (const tag of character.crewTheme.powerTags) {
 			if (!tag.burnt && pick.ids.includes(tag.id)) {
 				dispatch({
-					type: "burnCrewTag",
+					type: "burnTag",
+					themeId: CREW_THEME_ID,
 					tagId: tag.id,
 					burnValue: DEFAULT_BURN_VALUE,
 				});
@@ -102,7 +104,11 @@ export function useRollBoard(
 			}
 		}
 		for (let i = 0; i < crewCount; i++) {
-			dispatch({ type: "markCrewTrack", track: "upgrade" });
+			dispatch({
+				type: "markTrack",
+				themeId: CREW_THEME_ID,
+				track: "upgrade",
+			});
 		}
 		for (let i = 0; i < loadoutCount; i++) {
 			dispatch({ type: "markLoadoutUpgrade" });

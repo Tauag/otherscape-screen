@@ -7,7 +7,14 @@ import { Input } from "@base-ui/react/input";
 import { useActionState, useState } from "react";
 import { assignCharacters } from "@/app/admin/campaigns/_lib/actions";
 import { LabelAction } from "@/components/label-action";
-import { LABEL } from "@/components/styles";
+import {
+	DIALOG_BACKDROP,
+	DIALOG_POPUP,
+	HEADING,
+	LABEL,
+	PRIMARY,
+	QUIET,
+} from "@/components/styles";
 
 type Candidate = {
 	id: string;
@@ -67,11 +74,9 @@ export function AssignDialog({
 				</Dialog.Trigger>
 
 				<Dialog.Portal>
-					<Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
-					<Dialog.Popup className="fixed inset-0 m-auto flex h-fit max-h-[85vh] w-[85vw] max-w-[420px] flex-col gap-3.5 overflow-y-auto rounded-md border border-border bg-surface p-5 text-text">
-						<Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
-							Assign characters
-						</Dialog.Title>
+					<Dialog.Backdrop className={DIALOG_BACKDROP} />
+					<Dialog.Popup className={`${DIALOG_POPUP} flex flex-col gap-3.5`}>
+						<Dialog.Title className={HEADING}>Assign characters</Dialog.Title>
 
 						<Input
 							autoFocus
@@ -168,13 +173,11 @@ export function AssignDialog({
 							</div>
 
 							<div className="flex items-center justify-end gap-2 pt-1">
-								<Dialog.Close className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase">
-									Cancel
-								</Dialog.Close>
+								<Dialog.Close className={QUIET}>Cancel</Dialog.Close>
 								<Button
 									type="submit"
 									disabled={selected.size === 0 || pending}
-									className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase disabled:opacity-40"
+									className={`${PRIMARY} disabled:opacity-40`}
 								>
 									Assign {selected.size}
 								</Button>

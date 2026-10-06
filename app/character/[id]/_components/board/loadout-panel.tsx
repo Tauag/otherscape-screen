@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
 	EditLink,
@@ -11,16 +9,14 @@ import {
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
-import { PRIMARY } from "@/app/character/[id]/_components/styles";
 import {
+	LoadoutUpgradeDialog,
 	TrackPips,
 	UpgradeBadge,
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
-import { ConfirmDialog } from "@/components/confirm-dialog";
 import type { Loadout } from "@/lib/character/types";
-import type { UpgradeChoice } from "@/lib/loadout-edit";
 import { UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
 
@@ -36,7 +32,6 @@ export function LoadoutPanel({
 	id: string;
 }) {
 	const { dispatch } = useCharacter();
-	const router = useRouter();
 	const [upgradeOpen, setUpgradeOpen] = useState(false);
 	const href = `/character/${id}/loadout`;
 	const spend = loadoutSpend(loadout);
@@ -51,12 +46,6 @@ export function LoadoutPanel({
 
 	function mark() {
 		dispatch({ type: "markLoadoutUpgrade" });
-	}
-
-	function take(choice: UpgradeChoice) {
-		dispatch({ type: "takeLoadoutUpgrade", choice });
-		setUpgradeOpen(false);
-		if (choice === "special") router.push(`${href}/specials`);
 	}
 
 	return (
@@ -99,23 +88,11 @@ export function LoadoutPanel({
 				</div>
 			)}
 
-			<ConfirmDialog
+			<LoadoutUpgradeDialog
+				loadoutHref={href}
 				open={upgradeOpen}
 				onOpenChange={setUpgradeOpen}
-				title="Take the loadout Upgrade"
-				description="The track is full. Take one of the two. The track clears either way."
-			>
-				<Button type="button" onClick={() => take("power")} className={PRIMARY}>
-					1 more available Power
-				</Button>
-				<Button
-					type="button"
-					onClick={() => take("special")}
-					className={PRIMARY}
-				>
-					A loadout special
-				</Button>
-			</ConfirmDialog>
+			/>
 		</section>
 	);
 }

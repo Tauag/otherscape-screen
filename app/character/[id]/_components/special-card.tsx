@@ -2,7 +2,7 @@
 
 import { Accordion } from "@base-ui/react/accordion";
 import { Button } from "@base-ui/react/button";
-import { REMOVE_BUTTON } from "@/app/character/[id]/_components/styles";
+import { REMOVE_BUTTON } from "@/components/styles";
 import { specialName, specialText } from "@/lib/pickers";
 
 function RemoveButton({

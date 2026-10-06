@@ -6,19 +6,16 @@ import {
 	EditLink,
 	EMPTY_SHELL,
 	HEADER_LABEL,
-	NASCENT_BADGE,
-	PanelQuote,
 	SHELL,
-	SpecialsList,
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
 import {
-	Track,
-	UpgradeBadge,
+	CardTracks,
 	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
+import { NascentBadge, QuoteLine, SpecialsList } from "@/components/card-parts";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
 
@@ -43,7 +40,7 @@ export function ThemePanel({
 			<section data-type={theme.type} className={EMPTY_SHELL}>
 				<div className="flex items-center justify-between gap-2">
 					<span className={`${HEADER_LABEL} text-muted`}>{group.label}</span>
-					<span className={NASCENT_BADGE}>NASCENT</span>
+					<NascentBadge />
 				</div>
 				<Link
 					href={href}
@@ -66,27 +63,17 @@ export function ThemePanel({
 			</div>
 
 			<div className="flex items-center gap-3.5">
-				<Track
+				<CardTracks
 					themeId={theme.id}
-					track="upgrade"
-					marked={theme.upgrade}
+					card={theme}
 					size="sm"
-				/>
-				<Track
-					themeId={theme.id}
-					track="decay"
-					marked={theme.decay}
-					size="sm"
-				/>
-				<UpgradeBadge
-					pending={theme.pendingUpgrades}
-					onOpen={() => setUpgradeOpen(true)}
+					onUpgrade={() => setUpgradeOpen(true)}
 				/>
 			</div>
 
 			<TagList group={group} tagChip={tagChip} />
 
-			<PanelQuote label={themeLine(theme.type)} quote={theme.quote} />
+			<QuoteLine label={themeLine(theme.type)} quote={theme.quote} />
 
 			<SpecialsList specials={theme.specials} />
 

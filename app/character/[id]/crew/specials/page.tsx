@@ -7,7 +7,7 @@ import {
 	SpecialGrid,
 } from "@/app/character/[id]/_components/picker";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
-import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
+import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { useContentPack } from "@/lib/content/load";
 import { crewSpecialsOf } from "@/lib/pickers";
 
@@ -22,8 +22,8 @@ export default function CrewSpecialsPicker({
 	const toggle = (special: string) =>
 		dispatch(
 			crew.specials.includes(special)
-				? { type: "removeCrewSpecial", special }
-				: { type: "addCrewSpecial", special },
+				? { type: "removeThemeSpecial", themeId: CREW_THEME_ID, special }
+				: { type: "addThemeSpecial", themeId: CREW_THEME_ID, special },
 		);
 
 	return (

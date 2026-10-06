@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import { Dialog } from "@base-ui/react/dialog";
 import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { LinkIcon } from "@/app/_components/icons";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { DANGER_FILLED } from "@/components/styles";
 import {
 	createCharacter,
 	deleteCharacter,
@@ -168,35 +169,19 @@ export function CharacterCard({
 				{busy ? "Working" : (error ?? "")}
 			</p>
 
-			<Dialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
-				<Dialog.Portal>
-					<Dialog.Backdrop className="fixed inset-0 bg-bg/80" />
-					<Dialog.Popup className="fixed inset-0 m-auto h-fit max-h-[85vh] w-[85vw] max-w-[320px] overflow-y-auto rounded-md border border-border bg-surface p-5 text-text">
-						<Dialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
-							Delete {label}?
-						</Dialog.Title>
-						<p className="mt-2 font-sans text-sm text-dim">
-							The character and its sheet go for good. This cannot be undone.
-						</p>
-
-						<div className="mt-5 flex items-center justify-end gap-2">
-							<Dialog.Close className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase">
-								Cancel
-							</Dialog.Close>
-
-							<form action={remove} onSubmit={() => setDeleteOpen(false)}>
-								<input type="hidden" name="id" value={id} />
-								<Button
-									type="submit"
-									className="inline-flex min-h-11 items-center rounded-sm bg-danger px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-								>
-									Delete
-								</Button>
-							</form>
-						</div>
-					</Dialog.Popup>
-				</Dialog.Portal>
-			</Dialog.Root>
+			<ConfirmDialog
+				open={deleteOpen}
+				onOpenChange={setDeleteOpen}
+				title={`Delete ${label}?`}
+				description="The character and its sheet go for good. This cannot be undone."
+			>
+				<form action={remove} onSubmit={() => setDeleteOpen(false)}>
+					<input type="hidden" name="id" value={id} />
+					<Button type="submit" className={DANGER_FILLED}>
+						Delete
+					</Button>
+				</form>
+			</ConfirmDialog>
 		</article>
 	);
 }

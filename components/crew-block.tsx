@@ -1,14 +1,9 @@
-import { Chip } from "@/components/chip";
+import { NascentBadge, SpecialsList, TagChips } from "@/components/card-parts";
 import { Pips } from "@/components/pips";
-import { SpecialTooltip } from "@/components/special-tooltip";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
-import {
-	crewTitle,
-	isCrewNascent,
-	MOTIVATION_TYPE,
-} from "@/lib/character/crew-theme";
+import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
+import { isNascent, themeTitle } from "@/lib/character/theme";
 import type { CrewRelationship, CrewTheme } from "@/lib/character/types";
-import { specialName, specialText } from "@/lib/pickers";
 import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
@@ -21,8 +16,7 @@ export function CrewBlock({
 	crew: CrewTheme;
 	relationships: CrewRelationship[];
 }) {
-	const title = crewTitle(crew);
-	const nascent = isCrewNascent(crew);
+	const title = themeTitle(crew);
 
 	if (
 		crew.powerTags.length === 0 &&
@@ -41,11 +35,7 @@ export function CrewBlock({
 						Crew · {crew.motivation}
 					</span>
 					<div className="flex items-center gap-3">
-						{nascent && (
-							<span className="border border-pip px-[5px] py-0.5 font-mono text-[8px] font-bold tracking-[0.1em] text-dim">
-								NASCENT
-							</span>
-						)}
+						{isNascent(crew) && <NascentBadge />}
 						<Pips
 							name="UPG"
 							marked={crew.upgrade}
@@ -63,21 +53,7 @@ export function CrewBlock({
 					{title?.text.trim() || "No title tag yet."}
 				</h2>
 
-				<ul className="flex flex-wrap gap-1.5">
-					{crew.powerTags
-						.filter((tag) => tag.id !== title?.id)
-						.map((tag) => (
-							<Chip
-								key={tag.id}
-								label={tag.letter}
-								text={tag.text}
-								burnt={tag.burnt}
-							/>
-						))}
-					{crew.weaknessTags.map((tag) => (
-						<Chip key={tag.id} label={tag.letter} text={tag.text} negative />
-					))}
-				</ul>
+				<TagChips theme={crew} />
 
 				{relationships.length > 0 && (
 					<ul className="flex flex-col gap-1">
@@ -95,22 +71,7 @@ export function CrewBlock({
 					</ul>
 				)}
 
-				{crew.specials.length > 0 && (
-					<ul className="flex flex-col gap-1">
-						{crew.specials.map((special) => (
-							<li key={special} className="flex items-baseline gap-[7px]">
-								<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-[var(--hue)]/80 uppercase">
-									Special
-								</span>
-								<SpecialTooltip text={specialText(special)}>
-									<span className="font-sans text-[13px] text-[var(--hue-text)]">
-										{specialName(special)}
-									</span>
-								</SpecialTooltip>
-							</li>
-						))}
-					</ul>
-				)}
+				<SpecialsList specials={crew.specials} />
 			</div>
 		</article>
 	);

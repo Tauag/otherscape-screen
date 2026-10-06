@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { sample } from "@/lib/character/__tests__/sample";
+import { CREW_THEME_ID } from "@/lib/character/crew-theme";
 import { newCharacter } from "@/lib/character/new";
 import type { Character } from "@/lib/character/types";
 import { DECAY_TRACK_LENGTH } from "@/lib/rules/constants";
@@ -69,7 +70,11 @@ test("an untitled theme's full Decay track still names something", () => {
 test("the crew's own full Decay track is reported separately", () => {
 	let character = reduce(newCharacter(), { type: "addTheme", id: "t1" });
 	for (let i = 0; i < DECAY_TRACK_LENGTH; i++) {
-		character = reduce(character, { type: "markCrewTrack", track: "decay" });
+		character = reduce(character, {
+			type: "markTrack",
+			themeId: CREW_THEME_ID,
+			track: "decay",
+		});
 	}
 	assert.ok(
 		boardWarnings(character).includes("The crew's Decay track is full."),

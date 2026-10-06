@@ -1,36 +1,23 @@
 "use client";
 
-import { Button } from "@base-ui/react/button";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
 	EditLink,
 	EMPTY_SHELL,
 	HEADER_LABEL,
-	PanelQuote,
 	SHELL,
-	SpecialsList,
 	type TagChip,
 	TagList,
 } from "@/app/character/[id]/_components/board/panel-shell";
-import { FILLED } from "@/app/character/[id]/_components/styles";
 import {
-	TrackPips,
-	UpgradeBadge,
+	CardTracks,
+	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
-import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
-import { ConfirmDialog } from "@/components/confirm-dialog";
-import {
-	crewTitle,
-	isCrewNascent,
-	MOTIVATION_TYPE,
-} from "@/lib/character/crew-theme";
+import { QuoteLine, SpecialsList } from "@/components/card-parts";
+import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
+import { isNascent, themeTitle } from "@/lib/character/theme";
 import type { CrewTheme } from "@/lib/character/types";
-import {
-	DECAY_TRACK_LENGTH,
-	UPGRADE_TRACK_LENGTH,
-} from "@/lib/rules/constants";
 
 export function CrewPanel({
 	crewTheme,
@@ -43,34 +30,9 @@ export function CrewPanel({
 	tagChip: TagChip;
 	id: string;
 }) {
-	const { dispatch } = useCharacter();
-	const router = useRouter();
 	const [upgradeOpen, setUpgradeOpen] = useState(false);
 	const href = `/character/${id}/crew`;
 	const empty = group.tags.length === 0;
-	const nascent = isCrewNascent(crewTheme);
-
-	function markUpgrade() {
-		dispatch({ type: "markCrewTrack", track: "upgrade" });
-	}
-
-	function markDecay() {
-		dispatch({ type: "markCrewTrack", track: "decay" });
-	}
-
-	function takeTag() {
-		const tagId = crypto.randomUUID();
-		dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
-		dispatch({ type: "takeCrewUpgrade" });
-		setUpgradeOpen(false);
-		router.push(`${href}#tag-${tagId}`);
-	}
-
-	function takeSpecial() {
-		dispatch({ type: "takeCrewUpgrade" });
-		setUpgradeOpen(false);
-		router.push(`${href}/specials`);
-	}
 
 	return (
 		<section
@@ -81,31 +43,15 @@ export function CrewPanel({
 				<span className={HEADER_LABEL}>Crew</span>
 				<EditLink
 					href={href}
-					label={`Edit ${crewTitle(crewTheme)?.text.trim() || "the crew theme"}`}
+					label={`Edit ${themeTitle(crewTheme)?.text.trim() || "the crew theme"}`}
 				/>
 			</div>
 			<div className="flex items-center gap-3.5">
-				<TrackPips
-					name="Upgrade"
-					short="UPG"
-					length={UPGRADE_TRACK_LENGTH}
-					marked={crewTheme.upgrade}
+				<CardTracks
+					themeId={CREW_THEME_ID}
+					card={crewTheme}
 					size="sm"
-					active
-					onMark={markUpgrade}
-				/>
-				<TrackPips
-					name="Decay"
-					short="DEC"
-					length={DECAY_TRACK_LENGTH}
-					marked={crewTheme.decay}
-					size="sm"
-					active={false}
-					onMark={markDecay}
-				/>
-				<UpgradeBadge
-					pending={crewTheme.pendingUpgrades}
-					onOpen={() => setUpgradeOpen(true)}
+					onUpgrade={() => setUpgradeOpen(true)}
 				/>
 			</div>
 
@@ -115,29 +61,17 @@ export function CrewPanel({
 				<TagList group={group} tagChip={tagChip} />
 			)}
 
-			<PanelQuote label={crewTheme.motivation} quote={crewTheme.quote} />
+			<QuoteLine label={crewTheme.motivation} quote={crewTheme.quote} />
 
 			<SpecialsList specials={crewTheme.specials} />
 
-			<ConfirmDialog
+			<UpgradeDialog
+				themeId={CREW_THEME_ID}
+				themeHref={href}
+				nascent={isNascent(crewTheme)}
 				open={upgradeOpen}
 				onOpenChange={setUpgradeOpen}
-				title="Take an Upgrade"
-				description={
-					nascent
-						? "Three points, one Upgrade. A nascent crew theme takes a new power tag until it has all three."
-						: "Three points, one Upgrade. Take a new power tag, which may answer any question, or a crew theme special."
-				}
-			>
-				<Button type="button" onClick={takeTag} className={FILLED}>
-					+ power tag
-				</Button>
-				{!nascent && (
-					<Button type="button" onClick={takeSpecial} className={FILLED}>
-						+ crew theme special
-					</Button>
-				)}
-			</ConfirmDialog>
+			/>
 		</section>
 	);
 }

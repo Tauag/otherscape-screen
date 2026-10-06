@@ -1,5 +1,6 @@
 import { Button } from "@base-ui/react/button";
 import type { Campaign } from "@/app/admin/campaigns/_lib/types";
+import { PRIMARY, QUIET } from "@/components/styles";
 
 type Props = {
 	label: string;
@@ -37,17 +38,13 @@ export function Side({ label, document: value, at, action, onKeep }: Props) {
 			</details>
 
 			<div className="mt-2 flex items-center gap-2">
-				<Button
-					type="button"
-					onClick={onKeep}
-					className="inline-flex min-h-11 items-center rounded-sm bg-primary px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
-				>
+				<Button type="button" onClick={onKeep} className={PRIMARY}>
 					{action}
 				</Button>
 				<Button
 					type="button"
 					onClick={() => void navigator.clipboard?.writeText(json)}
-					className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
+					className={QUIET}
 				>
 					Copy
 				</Button>

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
 import {
@@ -8,15 +7,23 @@ import {
 	LoseThemeDialog,
 } from "@/app/character/[id]/_components/lose-theme";
 import {
-	Track,
-	UpgradeBadge,
+	SheetCard,
+	SheetCardLabel,
+	SheetCardTitle,
+} from "@/app/character/[id]/_components/sheet/sheet-card";
+import {
+	CardTracks,
 	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
-import { Chip } from "@/components/chip";
+import {
+	NascentBadge,
+	QuoteLine,
+	SpecialsList,
+	TagChips,
+} from "@/components/card-parts";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
-import { specialName } from "@/lib/pickers";
 
 export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 	const title = themeTitle(theme);
@@ -27,128 +34,41 @@ export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 
 	return (
 		<>
-			<Link
-				href={href}
-				data-type={theme.type}
-				className={`flex overflow-hidden rounded-md border transition-colors ${
-					nascent
-						? "border-dashed border-raised bg-recess hover:border-[var(--hue)]/60"
-						: "border-border bg-surface hover:border-[var(--hue)]"
-				}`}
-			>
-				<div
-					aria-hidden="true"
-					className={`w-[3px] shrink-0 ${nascent ? "bg-[var(--hue)]/35" : "bg-[var(--hue)]"}`}
-				/>
+			<SheetCard href={href} type={theme.type} faded={nascent}>
+				<div className="flex items-center justify-between gap-2">
+					<SheetCardLabel faded={nascent}>
+						{theme.type} · {theme.themebook.trim() || "No themebook"}
+					</SheetCardLabel>
 
-				<div className="flex min-w-0 flex-1 flex-col gap-[9px] px-3 pt-[11px] pb-2.5">
-					<div className="flex items-center justify-between gap-2">
-						<span
-							className={`font-display text-[10px] font-semibold tracking-[0.17em] uppercase ${
-								nascent ? "text-muted" : "text-dim"
-							}`}
-						>
-							{theme.type} · {theme.themebook.trim() || "No themebook"}
-						</span>
-
-						<div className="flex items-center gap-3">
-							{nascent && (
-								<span className="border border-pip px-[5px] py-0.5 font-mono text-[8px] font-bold tracking-[0.1em] text-dim">
-									NASCENT
-								</span>
-							)}
-							<div className="flex items-center gap-4">
-								<Track
-									themeId={theme.id}
-									track="upgrade"
-									marked={theme.upgrade}
-									size="sm"
-								/>
-								<Track
-									themeId={theme.id}
-									track="decay"
-									marked={theme.decay}
-									size="sm"
-								/>
-								<UpgradeBadge
-									pending={theme.pendingUpgrades}
-									onOpen={() => setUpgradeOpen(true)}
-								/>
-							</div>
+					<div className="flex items-center gap-3">
+						{nascent && <NascentBadge />}
+						<div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-1.5">
+							<CardTracks
+								themeId={theme.id}
+								card={theme}
+								size="sm"
+								onUpgrade={() => setUpgradeOpen(true)}
+							/>
 						</div>
 					</div>
-
-					{title ? (
-						<h2
-							data-burnt={title.burnt ? "true" : undefined}
-							className={`font-display text-[21px] leading-tight font-bold tracking-[0.045em] uppercase ${
-								title.burnt ? "line-through" : ""
-							} ${
-								nascent
-									? "text-[var(--hue-title)]/60"
-									: "text-[var(--hue-title)] [text-shadow:0_0_20px_color-mix(in_oklab,var(--hue)_38%,transparent)]"
-							}`}
-						>
-							{title.text}
-						</h2>
-					) : (
-						<h2 className="min-h-11 content-center font-sans text-sm text-dim">
-							No title tag yet.
-						</h2>
-					)}
-
-					<ul className="flex flex-wrap gap-1.5">
-						{theme.powerTags
-							.filter((tag) => tag.id !== title?.id)
-							.map((tag) => (
-								<Chip
-									key={tag.id}
-									label={tag.letter}
-									text={tag.text}
-									burnt={tag.burnt}
-									broad={tag.broad}
-								/>
-							))}
-
-						{theme.weaknessTags.map((tag) => (
-							<Chip key={tag.id} label={tag.letter} text={tag.text} negative />
-						))}
-					</ul>
-
-					{theme.quote.trim() && (
-						<div className="flex items-baseline gap-[7px] pt-0.5">
-							<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-faint uppercase">
-								{themeLine(theme.type)}
-							</span>
-							<span className="font-sans text-[12.5px] text-quiet italic">
-								{theme.quote}
-							</span>
-						</div>
-					)}
-
-					{theme.specials.length > 0 && (
-						<ul className="flex flex-col gap-1">
-							{theme.specials.map((special) => (
-								<li key={special} className="flex items-baseline gap-[7px]">
-									<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-[var(--hue)]/80 uppercase">
-										Special
-									</span>
-									<span className="font-sans text-[13px] text-[var(--hue-text)]">
-										{specialName(special)}
-									</span>
-								</li>
-							))}
-						</ul>
-					)}
-
-					{decayFull(theme) && (
-						<>
-							<DecayWarning />
-							<LoseThemeButton named={named} onOpen={() => setLoseOpen(true)} />
-						</>
-					)}
 				</div>
-			</Link>
+
+				<SheetCardTitle
+					text={title?.text}
+					burnt={title?.burnt ?? false}
+					nascent={nascent}
+				/>
+				<TagChips theme={theme} />
+				<QuoteLine label={themeLine(theme.type)} quote={theme.quote} />
+				<SpecialsList specials={theme.specials} />
+
+				{decayFull(theme) && (
+					<>
+						<DecayWarning />
+						<LoseThemeButton named={named} onOpen={() => setLoseOpen(true)} />
+					</>
+				)}
+			</SheetCard>
 
 			{/* Both dialogs sit outside the Link: a portalled dialog leaves the DOM
           but stays in the React tree, so under the Link its clicks navigate. */}

@@ -9,7 +9,14 @@ import {
 	deleteCampaign,
 	renameCampaign,
 } from "@/app/admin/campaigns/_lib/actions";
-import { LABEL } from "@/components/styles";
+import {
+	DANGER_FILLED,
+	DIALOG_BACKDROP,
+	DIALOG_POPUP,
+	HEADING,
+	LABEL,
+	QUIET,
+} from "@/components/styles";
 
 type Props = {
 	id: string;
@@ -122,9 +129,9 @@ export function CampaignRow({
 
 			<AlertDialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
 				<AlertDialog.Portal>
-					<AlertDialog.Backdrop className="fixed inset-0 bg-bg/80" />
-					<AlertDialog.Popup className="fixed inset-0 m-auto h-fit max-h-[85vh] w-[85vw] max-w-[380px] overflow-y-auto rounded-md border border-border bg-surface p-5 text-text">
-						<AlertDialog.Title className="font-display text-base font-bold tracking-[0.08em] uppercase">
+					<AlertDialog.Backdrop className={DIALOG_BACKDROP} />
+					<AlertDialog.Popup className={DIALOG_POPUP}>
+						<AlertDialog.Title className={HEADING}>
 							Delete {label}?
 						</AlertDialog.Title>
 						<AlertDialog.Description className="mt-2 font-sans text-sm text-dim">
@@ -138,16 +145,14 @@ export function CampaignRow({
 						</AlertDialog.Description>
 
 						<div className="mt-5 flex items-center justify-end gap-2">
-							<AlertDialog.Close className="inline-flex min-h-11 items-center rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase">
-								Cancel
-							</AlertDialog.Close>
+							<AlertDialog.Close className={QUIET}>Cancel</AlertDialog.Close>
 
 							<form action={remove} onSubmit={() => setDeleteOpen(false)}>
 								<input type="hidden" name="id" value={id} />
 								<Button
 									type="submit"
 									disabled={pending}
-									className="inline-flex min-h-11 items-center rounded-sm bg-danger px-4 font-display text-sm font-bold tracking-[0.08em] text-bg uppercase"
+									className={DANGER_FILLED}
 								>
 									Delete
 								</Button>
