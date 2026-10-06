@@ -1,16 +1,21 @@
 "use client";
 
 import { Toggle } from "@base-ui/react/toggle";
+import Link from "next/link";
 import { use } from "react";
 import {
 	PickerFrame,
 	ROW,
 	ROW_TEXT,
 } from "@/app/character/[id]/_components/picker";
+import { FILLED } from "@/app/character/[id]/_components/styles";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { MissingTheme } from "@/app/character/[id]/theme/[tid]/_components/picker";
 import { useContentPack } from "@/lib/content/load";
 import { formatSpecial, specialsOf } from "@/lib/pickers";
+
+const CARD =
+	"flex h-full w-full flex-col gap-1.5 rounded-md border border-border bg-surface px-4 py-3 text-left transition-colors hover:border-[var(--hue)]/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-pressed:border-[var(--hue)] aria-pressed:bg-[var(--hue)]/7";
 
 export default function SpecialsPicker({
 	params,
@@ -33,7 +38,7 @@ export default function SpecialsPicker({
 		);
 
 	return (
-		<PickerFrame type={theme.type} title="Theme specials">
+		<PickerFrame type={theme.type} title="Theme specials" wide>
 			{specials.length === 0 ? (
 				<p className="font-sans text-sm text-dim">
 					{theme.themebook.trim()
@@ -43,13 +48,14 @@ export default function SpecialsPicker({
 			) : (
 				<>
 					<p className="font-sans text-sm text-dim">
-						The five {theme.themebook} specials. Tap one to take it, and tap it
-						again to give it back.
+						The five {theme.themebook} specials. Choose one to take it, and
+						choose it again to give it back.
 					</p>
 
-					<ul className="flex flex-col gap-2">
+					<ul className="grid gap-2 lg:grid-cols-2 lg:gap-3 xl:grid-cols-3">
 						{specials.map((special, index) => {
 							const stored = formatSpecial(special);
+							const taken = theme.specials.includes(stored);
 
 							if (stored === "") {
 								return (
@@ -67,14 +73,23 @@ export default function SpecialsPicker({
 								// biome-ignore lint/suspicious/noArrayIndexKey: specials come from a fixed content-pack list that is never reordered.
 								<li key={index}>
 									<Toggle
-										pressed={theme.specials.includes(stored)}
+										pressed={taken}
 										onPressedChange={() => toggle(stored)}
-										className={ROW}
+										className={CARD}
 									>
-										<span className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
-											{special.name}
+										<span className="flex items-baseline justify-between gap-3">
+											<span className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
+												{special.name}
+											</span>
+											{taken && (
+												<span className="shrink-0 font-mono text-[9px] font-bold tracking-[0.14em] text-[var(--hue)] uppercase">
+													Taken ✓
+												</span>
+											)}
 										</span>
-										<span className={ROW_TEXT}>{special.text}</span>
+										<span className="font-sans text-sm leading-relaxed text-dim">
+											{special.text}
+										</span>
 									</Toggle>
 								</li>
 							);
@@ -82,6 +97,11 @@ export default function SpecialsPicker({
 					</ul>
 				</>
 			)}
+
+			{/* Every toggle already autosaves, so Save is only the way back. */}
+			<Link href={`/character/${id}/theme/${tid}`} className={FILLED}>
+				Save
+			</Link>
 		</PickerFrame>
 	);
 }

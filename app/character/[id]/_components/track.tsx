@@ -236,11 +236,16 @@ export function UpgradeDialog({
 	const router = useRouter();
 
 	function takeTag() {
-		// lazy: the tag lands on question A and the player moves it, since nothing
-		// here knows the questions. Upgrade path: T29's picker route.
 		const id = crypto.randomUUID();
 		dispatch({ type: "addPowerTag", themeId, id, letter: "A" });
 		dispatch({ type: "takeThemeUpgrade", themeId });
+		onOpenChange(false);
+		router.push(`${themeHref}#tag-${id}`);
+	}
+
+	function takeWeakness() {
+		const id = crypto.randomUUID();
+		dispatch({ type: "addWeaknessTag", themeId, id, letter: "A" });
 		onOpenChange(false);
 		router.push(`${themeHref}#tag-${id}`);
 	}
@@ -265,6 +270,11 @@ export function UpgradeDialog({
 			<Button type="button" onClick={takeTag} className={FILLED}>
 				+ power tag
 			</Button>
+			{!nascent && (
+				<Button type="button" onClick={takeWeakness} className={FILLED}>
+					+ weakness tag
+				</Button>
+			)}
 			{!nascent && (
 				<Button type="button" onClick={takeSpecial} className={FILLED}>
 					+ theme special

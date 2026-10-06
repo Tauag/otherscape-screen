@@ -11,14 +11,20 @@ export const ROW_TEXT = "font-sans text-[13px] text-dim";
 export function PickerFrame({
 	type,
 	title,
+	wide = false,
 	children,
 }: {
 	type?: ThemeType | "crew";
 	title: string;
+	/** At lg, widen past the phone column for a picker laid out as a grid. */
+	wide?: boolean;
 	children: React.ReactNode;
 }) {
 	return (
-		<main data-type={type} className={PAGE}>
+		<main
+			data-type={type}
+			className={`${PAGE} ${wide ? "lg:max-w-5xl lg:gap-5 lg:px-8 lg:pt-6" : ""}`}
+		>
 			<h1 className="font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title,var(--color-text))] uppercase">
 				{title}
 			</h1>

@@ -77,9 +77,9 @@ export function TagRow({
 			id={`tag-${tag.id}`}
 			data-burnt={tag.burnt ? "true" : undefined}
 			data-valence={power ? undefined : "negative"}
-			className="flex scroll-mt-20 flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2"
+			className="flex scroll-mt-20 flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2 @xl:flex-row @xl:items-center"
 		>
-			<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border">
+			<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border @xl:min-w-0 @xl:flex-1">
 				<Link
 					href={href}
 					aria-label={`Question ${label} for ${named}`}
@@ -117,7 +117,8 @@ export function TagRow({
 				)}
 			</div>
 
-			<div className="flex flex-wrap items-center">
+			{/* Under a wide `@container`, the controls join the field on one line. */}
+			<div className="flex flex-wrap items-center gap-1.5 @xl:shrink-0 @xl:flex-nowrap">
 				{power && tag.broad && <ChipBadge>BROAD POWER TAG</ChipBadge>}
 
 				<div className="ml-auto flex divide-x divide-border overflow-hidden rounded-sm border border-border">

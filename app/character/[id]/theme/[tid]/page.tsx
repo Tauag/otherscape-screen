@@ -44,6 +44,11 @@ const THEMEBOOK_POPUP =
 	"z-40 max-h-[75vh] w-[min(92vw,380px)] overflow-y-auto rounded-sm border border-border bg-surface p-2 outline-none";
 const THEMEBOOK_ITEM = `${ROW} cursor-pointer border-[var(--hue)] outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)]`;
 
+/** Flat on the phone; at lg each section becomes a board-style panel. */
+const PANEL =
+	"flex flex-col gap-2 lg:rounded-md lg:border lg:border-border lg:bg-surface lg:p-4";
+const HUE_PANEL = `${PANEL} lg:border-t-[3px] lg:border-t-[var(--hue)]`;
+
 export default function ThemePage({
 	params,
 }: PageProps<"/character/[id]/theme/[tid]">) {
@@ -83,118 +88,130 @@ export default function ThemePage({
 	return (
 		<main
 			data-type={theme.type}
-			className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3 pb-8"
+			className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3 pb-8 lg:max-w-6xl lg:gap-6 lg:px-8 lg:pt-6"
 		>
-			<section className="flex divide-x divide-[var(--hue)] overflow-hidden rounded-sm border border-[var(--hue)]">
-				<Select.Root
-					value={theme.type}
-					onValueChange={(themeType) => {
-						if (themeType)
-							dispatch({ type: "setThemeType", themeId: theme.id, themeType });
-					}}
-				>
-					<Select.Trigger className="flex min-h-11 min-w-30 shrink-0 items-center justify-center gap-1.5 bg-bg px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase">
-						{theme.type}
-						<Select.Icon aria-hidden className="text-xs">
-							▾
-						</Select.Icon>
-					</Select.Trigger>
-					<Select.Portal>
-						<Select.Positioner sideOffset={4} align="start">
-							<Select.Popup className={POPUP}>
-								<Select.List>
-									{THEME_TYPES.map((value) => (
-										<Select.Item
-											key={value}
-											value={value}
-											className={TYPE_ITEM}
-										>
-											<Select.ItemText>{value}</Select.ItemText>
-										</Select.Item>
-									))}
-								</Select.List>
-							</Select.Popup>
-						</Select.Positioner>
-					</Select.Portal>
-				</Select.Root>
-
-				<Select.Root
-					open={themebookOpen}
-					onOpenChange={(open) => {
-						setThemebookOpen(open);
-					}}
-					value={chosenBook?.name ?? null}
-					onValueChange={(themebook) => {
-						if (themebook)
-							dispatch({ type: "setThemebook", themeId: theme.id, themebook });
-					}}
-				>
-					<Select.Trigger
-						aria-label={`Themebook: ${theme.themebook.trim() || "none yet"}. Tap to change.`}
-						className={THEMEBOOK_TRIGGER}
-					>
-						<span
-							className={
-								theme.themebook.trim()
-									? "truncate font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase"
-									: "font-sans text-base text-dim"
-							}
+			<header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:gap-8 lg:border-b lg:border-edge lg:pb-6">
+				<div className="flex min-w-0 flex-col gap-5 lg:flex-1 lg:gap-3">
+					<section className="flex divide-x divide-[var(--hue)] overflow-hidden rounded-sm border border-[var(--hue)]">
+						<Select.Root
+							value={theme.type}
+							onValueChange={(themeType) => {
+								if (themeType)
+									dispatch({
+										type: "setThemeType",
+										themeId: theme.id,
+										themeType,
+									});
+							}}
 						>
-							{theme.themebook.trim() || "Choose a themebook"}
-						</span>
-						<Select.Icon aria-hidden className="shrink-0 text-xs text-dim">
-							▾
-						</Select.Icon>
-					</Select.Trigger>
-					<Select.Portal>
-						<Select.Positioner sideOffset={4} align="start">
-							<Select.Popup className={THEMEBOOK_POPUP}>
-								<Select.List className="flex flex-col gap-1.5">
-									{themebooksOfType(pack, theme.type).map((book) => (
-										<Select.Item
-											key={book.id}
-											value={book.name}
-											className={THEMEBOOK_ITEM}
-										>
-											<Select.ItemText className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
-												{book.name}
-											</Select.ItemText>
-										</Select.Item>
-									))}
-								</Select.List>
-							</Select.Popup>
-						</Select.Positioner>
-					</Select.Portal>
-				</Select.Root>
-			</section>
+							<Select.Trigger className="flex min-h-11 min-w-30 shrink-0 items-center justify-center gap-1.5 bg-bg px-4 font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase">
+								{theme.type}
+								<Select.Icon aria-hidden className="text-xs">
+									▾
+								</Select.Icon>
+							</Select.Trigger>
+							<Select.Portal>
+								<Select.Positioner sideOffset={4} align="start">
+									<Select.Popup className={POPUP}>
+										<Select.List>
+											{THEME_TYPES.map((value) => (
+												<Select.Item
+													key={value}
+													value={value}
+													className={TYPE_ITEM}
+												>
+													<Select.ItemText>{value}</Select.ItemText>
+												</Select.Item>
+											))}
+										</Select.List>
+									</Select.Popup>
+								</Select.Positioner>
+							</Select.Portal>
+						</Select.Root>
 
-			<h1
-				data-burnt={title?.burnt ? "true" : undefined}
-				className={`font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase ${
-					title?.burnt ? "line-through" : ""
-				}`}
-			>
-				{title?.text.trim() || "Untitled theme"}
-			</h1>
+						<Select.Root
+							open={themebookOpen}
+							onOpenChange={(open) => {
+								setThemebookOpen(open);
+							}}
+							value={chosenBook?.name ?? null}
+							onValueChange={(themebook) => {
+								if (themebook)
+									dispatch({
+										type: "setThemebook",
+										themeId: theme.id,
+										themebook,
+									});
+							}}
+						>
+							<Select.Trigger
+								aria-label={`Themebook: ${theme.themebook.trim() || "none yet"}. Tap to change.`}
+								className={THEMEBOOK_TRIGGER}
+							>
+								<span
+									className={
+										theme.themebook.trim()
+											? "truncate font-display text-sm font-semibold tracking-[0.08em] text-[var(--hue)] uppercase"
+											: "font-sans text-base text-dim"
+									}
+								>
+									{theme.themebook.trim() || "Choose a themebook"}
+								</span>
+								<Select.Icon aria-hidden className="shrink-0 text-xs text-dim">
+									▾
+								</Select.Icon>
+							</Select.Trigger>
+							<Select.Portal>
+								<Select.Positioner sideOffset={4} align="start">
+									<Select.Popup className={THEMEBOOK_POPUP}>
+										<Select.List className="flex flex-col gap-1.5">
+											{themebooksOfType(pack, theme.type).map((book) => (
+												<Select.Item
+													key={book.id}
+													value={book.name}
+													className={THEMEBOOK_ITEM}
+												>
+													<Select.ItemText className="font-display text-[15px] font-semibold tracking-[0.03em] text-[var(--hue-title)] uppercase">
+														{book.name}
+													</Select.ItemText>
+												</Select.Item>
+											))}
+										</Select.List>
+									</Select.Popup>
+								</Select.Positioner>
+							</Select.Portal>
+						</Select.Root>
+					</section>
 
-			<section className="flex items-start gap-[10px]">
-				<Track
-					themeId={theme.id}
-					track="upgrade"
-					marked={theme.upgrade}
-					size="lg"
-				/>
-				<Track
-					themeId={theme.id}
-					track="decay"
-					marked={theme.decay}
-					size="lg"
-				/>
-				<UpgradeSquareButton
-					pending={theme.pendingUpgrades}
-					onOpen={() => setUpgradeOpen(true)}
-				/>
-			</section>
+					<h1
+						data-burnt={title?.burnt ? "true" : undefined}
+						className={`font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase [text-shadow:0_0_20px_color-mix(in_oklab,var(--hue)_38%,transparent)] lg:text-[34px] ${
+							title?.burnt ? "line-through" : ""
+						}`}
+					>
+						{title?.text.trim() || "Untitled theme"}
+					</h1>
+				</div>
+
+				<section className="flex items-start gap-[10px] lg:w-[440px] lg:shrink-0">
+					<Track
+						themeId={theme.id}
+						track="upgrade"
+						marked={theme.upgrade}
+						size="lg"
+					/>
+					<Track
+						themeId={theme.id}
+						track="decay"
+						marked={theme.decay}
+						size="lg"
+					/>
+					<UpgradeSquareButton
+						pending={theme.pendingUpgrades}
+						onOpen={() => setUpgradeOpen(true)}
+					/>
+				</section>
+			</header>
 
 			<UpgradeDialog
 				themeId={theme.id}
@@ -204,187 +221,198 @@ export default function ThemePage({
 				onOpenChange={setUpgradeOpen}
 			/>
 
-			<section className="flex flex-col gap-2">
-				<LabelAction
-					label="Power tags"
-					onClick={() => {
-						const tagId = crypto.randomUUID();
-						dispatch({
-							type: "addPowerTag",
-							themeId: theme.id,
-							id: tagId,
-							letter: "A",
-						});
-						router.push(`${here}#tag-${tagId}`);
-					}}
-				>
-					<PlusIcon /> power tag
-				</LabelAction>
-				<ul className="flex flex-col gap-3">
-					{theme.powerTags.map((tag, index) => (
-						<TagRow
-							key={tag.id}
-							kind="power"
-							tag={tag}
-							href={`${here}/tag/${tag.id}`}
-							index={index}
-							count={theme.powerTags.length}
-							onTextChange={(text) =>
+			<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
+				<div className="flex flex-col gap-5 lg:gap-6">
+					<section className={HUE_PANEL}>
+						<LabelAction
+							label="Power tags"
+							onClick={() => {
+								const tagId = crypto.randomUUID();
 								dispatch({
-									type: "editPowerTag",
+									type: "addPowerTag",
 									themeId: theme.id,
-									tagId: tag.id,
-									edit: { text },
+									id: tagId,
+									letter: "A",
+								});
+								router.push(`${here}#tag-${tagId}`);
+							}}
+						>
+							<PlusIcon /> power tag
+						</LabelAction>
+						<ul className="@container flex flex-col gap-3">
+							{theme.powerTags.map((tag, index) => (
+								<TagRow
+									key={tag.id}
+									kind="power"
+									tag={tag}
+									href={`${here}/tag/${tag.id}`}
+									index={index}
+									count={theme.powerTags.length}
+									onTextChange={(text) =>
+										dispatch({
+											type: "editPowerTag",
+											themeId: theme.id,
+											tagId: tag.id,
+											edit: { text },
+										})
+									}
+									onMove={(direction) =>
+										dispatch({
+											type: "moveTag",
+											themeId: theme.id,
+											kind: "power",
+											tagId: tag.id,
+											direction,
+										})
+									}
+									onDelete={() =>
+										dispatch({
+											type: "deletePowerTag",
+											themeId: theme.id,
+											tagId: tag.id,
+										})
+									}
+									onBurntChange={(burnt) =>
+										dispatch(
+											burnt
+												? {
+														type: "burnTag",
+														themeId: theme.id,
+														tagId: tag.id,
+														burnValue: DEFAULT_BURN_VALUE,
+													}
+												: {
+														type: "unburnTag",
+														themeId: theme.id,
+														tagId: tag.id,
+													},
+										)
+									}
+									onBroadChange={() =>
+										dispatch({
+											type: "toggleBroadTag",
+											themeId: theme.id,
+											tagId: tag.id,
+										})
+									}
+								/>
+							))}
+						</ul>
+					</section>
+
+					<section data-valence="negative" className={HUE_PANEL}>
+						<LabelAction
+							label="Weakness tags"
+							onClick={() => {
+								const tagId = crypto.randomUUID();
+								dispatch({
+									type: "addWeaknessTag",
+									themeId: theme.id,
+									id: tagId,
+									letter: "A",
+								});
+								router.push(`${here}#tag-${tagId}`);
+							}}
+						>
+							<PlusIcon /> weakness tag
+						</LabelAction>
+						<ul className="@container flex flex-col gap-3">
+							{theme.weaknessTags.map((tag, index) => (
+								<TagRow
+									key={tag.id}
+									kind="weakness"
+									tag={tag}
+									href={`${here}/tag/${tag.id}`}
+									index={index}
+									count={theme.weaknessTags.length}
+									onTextChange={(text) =>
+										dispatch({
+											type: "editWeaknessTag",
+											themeId: theme.id,
+											tagId: tag.id,
+											edit: { text },
+										})
+									}
+									onMove={(direction) =>
+										dispatch({
+											type: "moveTag",
+											themeId: theme.id,
+											kind: "weakness",
+											tagId: tag.id,
+											direction,
+										})
+									}
+									onDelete={() =>
+										dispatch({
+											type: "deleteWeaknessTag",
+											themeId: theme.id,
+											tagId: tag.id,
+										})
+									}
+								/>
+							))}
+						</ul>
+					</section>
+				</div>
+
+				<aside className="flex flex-col gap-5 lg:sticky lg:top-6 lg:gap-4">
+					<label htmlFor={`theme-quote-${theme.id}`} className={PANEL}>
+						<span className={LABEL}>{themeLine(theme.type)}</span>
+						<Input
+							id={`theme-quote-${theme.id}`}
+							type="text"
+							autoComplete="off"
+							value={theme.quote}
+							onChange={(event) =>
+								dispatch({
+									type: "setThemeQuote",
+									themeId: theme.id,
+									quote: event.target.value,
 								})
 							}
-							onMove={(direction) =>
-								dispatch({
-									type: "moveTag",
-									themeId: theme.id,
-									kind: "power",
-									tagId: tag.id,
-									direction,
-								})
-							}
-							onDelete={() =>
-								dispatch({
-									type: "deletePowerTag",
-									themeId: theme.id,
-									tagId: tag.id,
-								})
-							}
-							onBurntChange={(burnt) =>
-								dispatch(
-									burnt
-										? {
-												type: "burnTag",
-												themeId: theme.id,
-												tagId: tag.id,
-												burnValue: DEFAULT_BURN_VALUE,
-											}
-										: { type: "unburnTag", themeId: theme.id, tagId: tag.id },
-								)
-							}
-							onBroadChange={() =>
-								dispatch({
-									type: "toggleBroadTag",
-									themeId: theme.id,
-									tagId: tag.id,
-								})
-							}
+							placeholder={`Create your ${themeLine(theme.type)}`}
+							className={FIELD}
 						/>
-					))}
-				</ul>
+					</label>
 
-				<LabelAction
-					label="Weakness tags"
-					onClick={() => {
-						const tagId = crypto.randomUUID();
-						dispatch({
-							type: "addWeaknessTag",
-							themeId: theme.id,
-							id: tagId,
-							letter: "A",
-						});
-						router.push(`${here}#tag-${tagId}`);
-					}}
-				>
-					<PlusIcon /> weakness tag
-				</LabelAction>
-				<ul className="flex flex-col gap-3">
-					{theme.weaknessTags.map((tag, index) => (
-						<TagRow
-							key={tag.id}
-							kind="weakness"
-							tag={tag}
-							href={`${here}/tag/${tag.id}`}
-							index={index}
-							count={theme.weaknessTags.length}
-							onTextChange={(text) =>
-								dispatch({
-									type: "editWeaknessTag",
-									themeId: theme.id,
-									tagId: tag.id,
-									edit: { text },
-								})
-							}
-							onMove={(direction) =>
-								dispatch({
-									type: "moveTag",
-									themeId: theme.id,
-									kind: "weakness",
-									tagId: tag.id,
-									direction,
-								})
-							}
-							onDelete={() =>
-								dispatch({
-									type: "deleteWeaknessTag",
-									themeId: theme.id,
-									tagId: tag.id,
-								})
-							}
+					<section className={PANEL}>
+						<LabelAction label="Theme specials" href={`${here}/specials`}>
+							<PlusIcon /> theme special
+						</LabelAction>
+						{theme.specials.length === 0 ? (
+							<p className="font-sans text-sm text-dim">
+								No theme specials yet.
+							</p>
+						) : (
+							<SpecialList
+								specials={theme.specials}
+								onRemove={(special) =>
+									dispatch({
+										type: "removeThemeSpecial",
+										themeId: theme.id,
+										special,
+									})
+								}
+							/>
+						)}
+					</section>
+
+					<section className="flex flex-col gap-2 pb-2 lg:pb-0">
+						{decayFull(theme) && <DecayWarning />}
+						<LoseThemeButton
+							named={title?.text.trim() || "this theme"}
+							onOpen={() => setLoseOpen(true)}
 						/>
-					))}
-				</ul>
-			</section>
-
-			<label
-				htmlFor={`theme-quote-${theme.id}`}
-				className="flex flex-col gap-1"
-			>
-				<span className={LABEL}>{themeLine(theme.type)}</span>
-				<Input
-					id={`theme-quote-${theme.id}`}
-					type="text"
-					autoComplete="off"
-					value={theme.quote}
-					onChange={(event) =>
-						dispatch({
-							type: "setThemeQuote",
-							themeId: theme.id,
-							quote: event.target.value,
-						})
-					}
-					placeholder={`Create your ${themeLine(theme.type)}`}
-					className={FIELD}
-				/>
-			</label>
-
-			<section className="flex flex-col gap-1.5">
-				<LabelAction label="Theme specials" href={`${here}/specials`}>
-					<PlusIcon /> theme special
-				</LabelAction>
-				{theme.specials.length === 0 ? (
-					<p className="font-sans text-sm text-dim">No theme specials yet.</p>
-				) : (
-					<SpecialList
-						specials={theme.specials}
-						onRemove={(special) =>
-							dispatch({
-								type: "removeThemeSpecial",
-								themeId: theme.id,
-								special,
-							})
-						}
-					/>
-				)}
-			</section>
-
-			<section className="flex flex-col gap-2 pb-2">
-				{decayFull(theme) && <DecayWarning />}
-				<LoseThemeButton
-					named={title?.text.trim() || "this theme"}
-					onOpen={() => setLoseOpen(true)}
-				/>
-				<LoseThemeDialog
-					themeId={theme.id}
-					named={title?.text.trim() || "this theme"}
-					open={loseOpen}
-					onOpenChange={setLoseOpen}
-					onLost={() => router.replace(back)}
-				/>
-			</section>
+						<LoseThemeDialog
+							themeId={theme.id}
+							named={title?.text.trim() || "this theme"}
+							open={loseOpen}
+							onOpenChange={setLoseOpen}
+							onLost={() => router.replace(back)}
+						/>
+					</section>
+				</aside>
+			</div>
 		</main>
 	);
 }
