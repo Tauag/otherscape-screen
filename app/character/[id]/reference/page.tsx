@@ -17,7 +17,7 @@ export default function ReferencePage() {
 	const found = filter(sections(pack.reference), query);
 
 	return (
-		<main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-6 pb-8">
+		<main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-6 pb-8 lg:max-w-6xl">
 			<h1 className={HEADING}>Reference</h1>
 
 			<p className="font-sans text-sm text-dim">
@@ -54,7 +54,7 @@ export default function ReferencePage() {
 							The content pack has not filled this section yet.
 						</p>
 					) : (
-						<ul className="flex flex-col gap-1.5">
+						<ul className="grid gap-1.5 lg:grid-cols-2 xl:grid-cols-3">
 							{section.rows.map((row, index) => (
 								<ReferenceRow
 									// biome-ignore lint/suspicious/noArrayIndexKey: the rows come from a fixed content-pack list that is never reordered, and an unfilled row has no name to key on.

@@ -330,11 +330,10 @@ export default function CrewPage({
 				</div>
 
 				<aside className={EDITOR_ASIDE}>
-					{/* One panel: the motivation names the quote's line. */}
 					<div className={`${PANEL} lg:gap-4`}>
 						<fieldset className="flex flex-col gap-1.5">
 							<legend className={LABEL}>Identity, Ritual, or Itch</legend>
-							<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border">
+							<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border mt-1">
 								{MOTIVATIONS.map((motivation) => (
 									<Button
 										key={motivation}
