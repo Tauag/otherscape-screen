@@ -21,7 +21,11 @@ import {
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
+import {
+	crewTitle,
+	isCrewNascent,
+	MOTIVATION_TYPE,
+} from "@/lib/character/crew-theme";
 import type { CrewTheme } from "@/lib/character/types";
 import {
 	DECAY_TRACK_LENGTH,
@@ -69,7 +73,10 @@ export function CrewPanel({
 	}
 
 	return (
-		<section data-type="crew" className={empty ? EMPTY_SHELL : SHELL}>
+		<section
+			data-type={MOTIVATION_TYPE[crewTheme.motivation]}
+			className={empty ? EMPTY_SHELL : SHELL}
+		>
 			<div className="flex items-center justify-between gap-2">
 				<span className={HEADER_LABEL}>Crew</span>
 				<EditLink

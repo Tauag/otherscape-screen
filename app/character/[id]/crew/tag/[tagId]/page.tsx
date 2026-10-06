@@ -12,6 +12,7 @@ import { usePick } from "@/app/character/[id]/_hooks/use-pick";
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
 import { MissingCrewTag } from "@/app/character/[id]/crew/_components/picker";
 import { LABEL } from "@/components/styles";
+import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { useContentPack } from "@/lib/content/load";
 import { questionLabel } from "@/lib/content/pack";
 import {
@@ -66,7 +67,7 @@ export default function CrewQuestionPicker({
 
 	return (
 		<PickerFrame
-			type="crew"
+			type={MOTIVATION_TYPE[crew.motivation]}
 			title={power ? "Power tag question" : "Weakness tag question"}
 		>
 			<p className="font-sans text-sm text-dim">

@@ -17,7 +17,7 @@ export function PickerFrame({
 	wide = false,
 	children,
 }: {
-	type?: ThemeType | "crew" | "loadout";
+	type?: ThemeType | "loadout";
 	title: string;
 	/** At lg, widen past the phone column for a picker laid out as a grid. */
 	wide?: boolean;

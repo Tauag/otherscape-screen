@@ -15,7 +15,7 @@ type Props = {
 	/** BURNT on a burnt tag; outranked or crispy on a chip that adds nothing to
 	 *  spend; locked on a chip a mitigation roll can't use. */
 	badge?: "BURNT" | "outranked" | "crispy" | "locked";
-	type?: ThemeType | "crew" | "loadout";
+	type?: ThemeType | "loadout";
 	valence?: Valence;
 	burnt?: boolean;
 	/** The tag an Evolution unlocked. Independent of `badge`: a broad tag can also be burnt. */

@@ -1,7 +1,3 @@
-// Pure edit functions for the crew theme, mirroring theme.ts's tag and track
-// verbs. Kept separate because a crew theme has no type and no themebook, so
-// the tag verbs here never touch either.
-
 import {
 	DECAY_TRACK_LENGTH,
 	DEFAULT_BURN_VALUE,
@@ -9,13 +5,22 @@ import {
 } from "../rules/constants.ts";
 import type { MoveDirection, TagKind, TrackName } from "./theme.ts";
 import type {
+	CrewMotivation,
 	CrewTheme,
 	MarkCount,
 	PowerQuestionLetter,
 	PowerTag,
+	ThemeType,
 	WeaknessQuestionLetter,
 	WeaknessTag,
 } from "./types.ts";
+
+/** Identity is the Self line, Ritual is Mythos, Itch is Noise, on every themebook. A crew takes the hue of its line. */
+export const MOTIVATION_TYPE: Record<CrewMotivation, ThemeType> = {
+	Identity: "self",
+	Ritual: "mythos",
+	Itch: "noise",
+};
 
 /** Reads as under construction until it has all three power tags, same as any other theme. */
 export function isCrewNascent(crew: CrewTheme): boolean {

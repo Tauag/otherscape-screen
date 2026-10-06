@@ -7,6 +7,7 @@ import {
 	SpecialGrid,
 } from "@/app/character/[id]/_components/picker";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { useContentPack } from "@/lib/content/load";
 import { crewSpecialsOf } from "@/lib/pickers";
 
@@ -26,7 +27,11 @@ export default function CrewSpecialsPicker({
 		);
 
 	return (
-		<PickerFrame type="crew" title="Crew theme specials" wide>
+		<PickerFrame
+			type={MOTIVATION_TYPE[crew.motivation]}
+			title="Crew theme specials"
+			wide
+		>
 			<p className="font-sans text-sm text-dim">
 				The five crew theme specials. Choose one to take it, and choose it again
 				to give it back.

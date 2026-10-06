@@ -1,8 +1,5 @@
-// The roll builder's throwaway selection, and the projection that turns it
-// plus the character document into the `RollSelection` that `power()` reads.
-// Pure: no React, so the projection is testable on its own.
-
 import type { CharacterAction } from "@/app/character/[id]/_lib/reducer";
+import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import type {
 	Character,
 	CrewRelationship,
@@ -103,7 +100,7 @@ export type RollTag = {
 export type RollGroup = {
 	id: string;
 	/** The hue the group and its chips wear. */
-	hue: ThemeType | "crew" | "loadout";
+	hue: ThemeType | "loadout";
 	label: string;
 	tags: RollTag[];
 };
@@ -274,7 +271,7 @@ export function rollGroups(character: Character): RollGroup[] {
 
 	groups.push({
 		id: "crew",
-		hue: "crew",
+		hue: MOTIVATION_TYPE[character.crewTheme.motivation],
 		label: `crew · ${character.crewTheme.motivation}`,
 		tags: [
 			// A crew's power and relationship tags are always crispy (core rules,
@@ -327,7 +324,7 @@ export function boardGroups(character: Character): RollGroup[] {
 
 	const crewGroup: RollGroup = byId.get("crew") ?? {
 		id: "crew",
-		hue: "crew",
+		hue: MOTIVATION_TYPE[character.crewTheme.motivation],
 		label: `crew · ${character.crewTheme.motivation}`,
 		tags: [],
 	};

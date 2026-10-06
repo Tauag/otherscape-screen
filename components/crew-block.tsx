@@ -2,7 +2,11 @@ import { Chip } from "@/components/chip";
 import { Pips } from "@/components/pips";
 import { SpecialTooltip } from "@/components/special-tooltip";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
-import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
+import {
+	crewTitle,
+	isCrewNascent,
+	MOTIVATION_TYPE,
+} from "@/lib/character/crew-theme";
 import type { CrewRelationship, CrewTheme } from "@/lib/character/types";
 import { specialName, specialText } from "@/lib/pickers";
 import {
@@ -29,7 +33,7 @@ export function CrewBlock({
 	}
 
 	return (
-		<article data-type="crew" className={CARD}>
+		<article data-type={MOTIVATION_TYPE[crew.motivation]} className={CARD}>
 			<div aria-hidden="true" className={CARD_STRIPE} />
 			<div className={CARD_BODY}>
 				<div className="flex items-center justify-between gap-2">

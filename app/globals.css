@@ -14,9 +14,6 @@
 	--color-loadout: #8fa3b8;
 	--color-loadout-title: #a8bccf;
 	--color-loadout-text: #c2d2e0;
-	--color-crew: #a9bc4d;
-	--color-crew-title: #c4d185;
-	--color-crew-text: #d8e0ae;
 
 	/* Valence: statuses, story tags, weakness tags, warnings. */
 	--color-positive: #5de8a8;
@@ -73,11 +70,6 @@
 	--hue: var(--color-loadout);
 	--hue-title: var(--color-loadout-title);
 	--hue-text: var(--color-loadout-text);
-}
-[data-type="crew"] {
-	--hue: var(--color-crew);
-	--hue-title: var(--color-crew-title);
-	--hue-text: var(--color-crew-text);
 }
 
 [data-valence="positive"] {

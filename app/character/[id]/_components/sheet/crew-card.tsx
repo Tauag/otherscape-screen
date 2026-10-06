@@ -12,7 +12,11 @@ import {
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { Chip } from "@/components/chip";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
+import {
+	crewTitle,
+	isCrewNascent,
+	MOTIVATION_TYPE,
+} from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
 import type { CrewRelationship, CrewTheme } from "@/lib/character/types";
 import { specialName } from "@/lib/pickers";
@@ -21,9 +25,6 @@ import {
 	UPGRADE_TRACK_LENGTH,
 } from "@/lib/rules/constants";
 
-/** The sheet's summary of the crew theme, mirroring ThemeCard: a read-only
- *  card that links to the full crew screen. No self/mythos/noise type and no
- *  themebook - a crew is not built from one. */
 export function CrewCard({
 	crew,
 	relationships,
@@ -69,7 +70,7 @@ export function CrewCard({
 		<>
 			<Link
 				href={href}
-				data-type="crew"
+				data-type={MOTIVATION_TYPE[crew.motivation]}
 				className={`flex overflow-hidden rounded-md border transition-colors ${
 					nascent
 						? "border-dashed border-raised bg-recess hover:border-[var(--hue)]/60"

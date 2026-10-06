@@ -28,9 +28,13 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
-import { crewTitle, isCrewNascent } from "@/lib/character/crew-theme";
+import {
+	crewTitle,
+	isCrewNascent,
+	MOTIVATION_TYPE,
+} from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
-import type { CrewMotivation, ThemeType } from "@/lib/character/types";
+import type { CrewMotivation } from "@/lib/character/types";
 import {
 	DECAY_TRACK_LENGTH,
 	DEFAULT_BURN_VALUE,
@@ -42,13 +46,6 @@ const FIELD =
 	"min-h-11 rounded-sm border border-border bg-bg px-3 font-sans text-base";
 
 const MOTIVATIONS: CrewMotivation[] = ["Identity", "Ritual", "Itch"];
-
-/** Identity is the Self line, Ritual is Mythos, Itch is Noise, on every themebook. */
-const MOTIVATION_TYPE: Record<CrewMotivation, ThemeType> = {
-	Identity: "self",
-	Ritual: "mythos",
-	Itch: "noise",
-};
 
 export default function CrewPage({
 	params,
@@ -82,7 +79,7 @@ export default function CrewPage({
 	}
 
 	return (
-		<main data-type="crew" className={EDITOR_PAGE}>
+		<main data-type={MOTIVATION_TYPE[crew.motivation]} className={EDITOR_PAGE}>
 			<header className={EDITOR_HEADER}>
 				<h1 className={`${EDITOR_TITLE} lg:flex-1`}>
 					{title?.text.trim() || "Untitled crew"}
