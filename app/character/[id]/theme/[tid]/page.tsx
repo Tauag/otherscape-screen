@@ -12,6 +12,7 @@ import {
 } from "@/app/character/[id]/_components/lose-theme";
 import { ROW } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
+import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import {
 	Track,
@@ -398,11 +399,16 @@ export default function ThemePage({
 					</section>
 
 					<section className="flex flex-col gap-2 pb-2 lg:pb-0">
+						<div className="flex flex gap-3.5">
+							<Link href={back} className={FILLED}>
+								Save
+							</Link>
+							<LoseThemeButton
+								named={title?.text.trim() || "this theme"}
+								onOpen={() => setLoseOpen(true)}
+							/>
+						</div>
 						{decayFull(theme) && <DecayWarning />}
-						<LoseThemeButton
-							named={title?.text.trim() || "this theme"}
-							onOpen={() => setLoseOpen(true)}
-						/>
 						<LoseThemeDialog
 							themeId={theme.id}
 							named={title?.text.trim() || "this theme"}
