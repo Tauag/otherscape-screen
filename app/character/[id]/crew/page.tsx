@@ -5,6 +5,18 @@ import { Input } from "@base-ui/react/input";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
+import {
+	EDITOR_ASIDE,
+	EDITOR_COLUMN,
+	EDITOR_GRID,
+	EDITOR_HEADER,
+	EDITOR_PAGE,
+	EDITOR_TITLE,
+	EDITOR_TRACKS,
+	HUE_PANEL,
+	PANEL,
+	SaveLink,
+} from "@/app/character/[id]/_components/editor";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
 import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
@@ -70,38 +82,37 @@ export default function CrewPage({
 	}
 
 	return (
-		<main
-			data-type="crew"
-			className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3 pb-8"
-		>
-			<h1 className="font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase">
-				{title?.text.trim() || "Untitled crew"}
-			</h1>
+		<main data-type="crew" className={EDITOR_PAGE}>
+			<header className={EDITOR_HEADER}>
+				<h1 className={`${EDITOR_TITLE} lg:flex-1`}>
+					{title?.text.trim() || "Untitled crew"}
+				</h1>
 
-			<section className="flex items-start gap-[10px]">
-				<TrackPips
-					name="Upgrade"
-					short="UPG"
-					length={UPGRADE_TRACK_LENGTH}
-					marked={crew.upgrade}
-					size="lg"
-					active
-					onMark={mark}
-				/>
-				<TrackPips
-					name="Decay"
-					short="DEC"
-					length={DECAY_TRACK_LENGTH}
-					marked={crew.decay}
-					size="lg"
-					active={false}
-					onMark={() => dispatch({ type: "markCrewTrack", track: "decay" })}
-				/>
-				<UpgradeSquareButton
-					pending={crew.pendingUpgrades}
-					onOpen={() => setUpgradeOpen(true)}
-				/>
-			</section>
+				<section className={EDITOR_TRACKS}>
+					<TrackPips
+						name="Upgrade"
+						short="UPG"
+						length={UPGRADE_TRACK_LENGTH}
+						marked={crew.upgrade}
+						size="lg"
+						active
+						onMark={mark}
+					/>
+					<TrackPips
+						name="Decay"
+						short="DEC"
+						length={DECAY_TRACK_LENGTH}
+						marked={crew.decay}
+						size="lg"
+						active={false}
+						onMark={() => dispatch({ type: "markCrewTrack", track: "decay" })}
+					/>
+					<UpgradeSquareButton
+						pending={crew.pendingUpgrades}
+						onOpen={() => setUpgradeOpen(true)}
+					/>
+				</section>
+			</header>
 
 			<ConfirmDialog
 				open={upgradeOpen}
@@ -123,258 +134,274 @@ export default function CrewPage({
 				)}
 			</ConfirmDialog>
 
-			<section className="flex flex-col gap-2">
-				<LabelAction
-					label="Power tags"
-					onClick={() => {
-						const tagId = crypto.randomUUID();
-						dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
-						router.push(`${here}#tag-${tagId}`);
-					}}
-				>
-					<PlusIcon /> power tag
-				</LabelAction>
-				<ul className="flex flex-col gap-3">
-					{crew.powerTags.map((tag, index) => (
-						<TagRow
-							key={tag.id}
-							kind="power"
-							tag={tag}
-							href={`${here}/tag/${tag.id}`}
-							index={index}
-							count={crew.powerTags.length}
-							onTextChange={(text) =>
-								dispatch({
-									type: "editCrewPowerTag",
-									tagId: tag.id,
-									edit: { text },
-								})
-							}
-							onMove={(direction) =>
-								dispatch({
-									type: "moveCrewTag",
-									kind: "power",
-									tagId: tag.id,
-									direction,
-								})
-							}
-							onDelete={() =>
-								dispatch({ type: "deleteCrewPowerTag", tagId: tag.id })
-							}
-							onBurntChange={(burnt) =>
-								dispatch(
-									burnt
-										? {
-												type: "burnCrewTag",
-												tagId: tag.id,
-												burnValue: DEFAULT_BURN_VALUE,
-											}
-										: { type: "unburnCrewTag", tagId: tag.id },
-								)
-							}
-						/>
-					))}
-				</ul>
-
-				<h2 className={LABEL}>Weakness tags</h2>
-				<LabelAction
-					label="Weakness tags"
-					onClick={() => {
-						const tagId = crypto.randomUUID();
-						dispatch({ type: "addCrewWeaknessTag", id: tagId, letter: "A" });
-						router.push(`${here}#tag-${tagId}`);
-					}}
-				>
-					<PlusIcon /> weakness tag
-				</LabelAction>
-				<ul className="flex flex-col gap-3">
-					{crew.weaknessTags.map((tag, index) => (
-						<TagRow
-							key={tag.id}
-							kind="weakness"
-							tag={tag}
-							href={`${here}/tag/${tag.id}`}
-							index={index}
-							count={crew.weaknessTags.length}
-							onTextChange={(text) =>
-								dispatch({
-									type: "editCrewWeaknessTag",
-									tagId: tag.id,
-									edit: { text },
-								})
-							}
-							onMove={(direction) =>
-								dispatch({
-									type: "moveCrewTag",
-									kind: "weakness",
-									tagId: tag.id,
-									direction,
-								})
-							}
-							onDelete={() =>
-								dispatch({ type: "deleteCrewWeaknessTag", tagId: tag.id })
-							}
-						/>
-					))}
-				</ul>
-			</section>
-
-			<fieldset className="flex flex-col gap-1.5">
-				<legend className={LABEL}>Identity, Ritual, or Itch</legend>
-				<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border">
-					{MOTIVATIONS.map((motivation) => (
-						<Button
-							key={motivation}
-							type="button"
-							data-type={MOTIVATION_TYPE[motivation]}
-							aria-pressed={crew.motivation === motivation}
-							onClick={() =>
-								dispatch({ type: "setCrewMotivation", motivation })
-							}
-							className={`flex-1 px-3 py-2 font-display text-sm font-semibold tracking-[0.08em] uppercase ${
-								crew.motivation === motivation
-									? "bg-[var(--hue)] text-bg"
-									: "text-[var(--hue)]"
-							}`}
+			<div className={EDITOR_GRID}>
+				<div className={EDITOR_COLUMN}>
+					<section className={HUE_PANEL}>
+						<LabelAction
+							label="Power tags"
+							onClick={() => {
+								const tagId = crypto.randomUUID();
+								dispatch({ type: "addCrewPowerTag", id: tagId, letter: "A" });
+								router.push(`${here}#tag-${tagId}`);
+							}}
 						>
-							{motivation}
-						</Button>
-					))}
+							<PlusIcon /> power tag
+						</LabelAction>
+						<ul className="@container flex flex-col gap-3">
+							{crew.powerTags.map((tag, index) => (
+								<TagRow
+									key={tag.id}
+									kind="power"
+									tag={tag}
+									href={`${here}/tag/${tag.id}`}
+									index={index}
+									count={crew.powerTags.length}
+									onTextChange={(text) =>
+										dispatch({
+											type: "editCrewPowerTag",
+											tagId: tag.id,
+											edit: { text },
+										})
+									}
+									onMove={(direction) =>
+										dispatch({
+											type: "moveCrewTag",
+											kind: "power",
+											tagId: tag.id,
+											direction,
+										})
+									}
+									onDelete={() =>
+										dispatch({ type: "deleteCrewPowerTag", tagId: tag.id })
+									}
+									onBurntChange={(burnt) =>
+										dispatch(
+											burnt
+												? {
+														type: "burnCrewTag",
+														tagId: tag.id,
+														burnValue: DEFAULT_BURN_VALUE,
+													}
+												: { type: "unburnCrewTag", tagId: tag.id },
+										)
+									}
+								/>
+							))}
+						</ul>
+					</section>
+
+					<section data-valence="negative" className={HUE_PANEL}>
+						<LabelAction
+							label="Weakness tags"
+							onClick={() => {
+								const tagId = crypto.randomUUID();
+								dispatch({
+									type: "addCrewWeaknessTag",
+									id: tagId,
+									letter: "A",
+								});
+								router.push(`${here}#tag-${tagId}`);
+							}}
+						>
+							<PlusIcon /> weakness tag
+						</LabelAction>
+						<ul className="@container flex flex-col gap-3">
+							{crew.weaknessTags.map((tag, index) => (
+								<TagRow
+									key={tag.id}
+									kind="weakness"
+									tag={tag}
+									href={`${here}/tag/${tag.id}`}
+									index={index}
+									count={crew.weaknessTags.length}
+									onTextChange={(text) =>
+										dispatch({
+											type: "editCrewWeaknessTag",
+											tagId: tag.id,
+											edit: { text },
+										})
+									}
+									onMove={(direction) =>
+										dispatch({
+											type: "moveCrewTag",
+											kind: "weakness",
+											tagId: tag.id,
+											direction,
+										})
+									}
+									onDelete={() =>
+										dispatch({ type: "deleteCrewWeaknessTag", tagId: tag.id })
+									}
+								/>
+							))}
+						</ul>
+					</section>
+
+					<section className={PANEL}>
+						<LabelAction
+							label="Crew Relationships"
+							onClick={() => {
+								const relationshipId = crypto.randomUUID();
+								dispatch({ type: "addCrewRelationship", id: relationshipId });
+								router.push(`${here}#crew-relationship-${relationshipId}`);
+							}}
+						>
+							<PlusIcon /> relationship tag
+						</LabelAction>
+						{character.crew.length === 0 ? (
+							<p className="font-sans text-sm text-dim">
+								No crew relationships yet.
+							</p>
+						) : (
+							<ul className="flex flex-col gap-2">
+								{character.crew.map((relationship) => {
+									const named =
+										relationship.member.trim() || "this crew member";
+									return (
+										<li
+											key={relationship.id}
+											id={`crew-relationship-${relationship.id}`}
+											className="flex scroll-mt-20 divide-x divide-border overflow-hidden rounded-sm border border-border"
+										>
+											<Input
+												type="text"
+												autoComplete="off"
+												value={relationship.member}
+												onChange={(event) =>
+													dispatch({
+														type: "editCrewRelationship",
+														id: relationship.id,
+														edit: { member: event.target.value },
+													})
+												}
+												aria-label="Crew member's name"
+												placeholder="Name"
+												className="min-h-11 w-2/5 bg-bg px-3 font-sans text-base"
+											/>
+											<Input
+												type="text"
+												autoComplete="off"
+												value={relationship.tag}
+												onChange={(event) =>
+													dispatch({
+														type: "editCrewRelationship",
+														id: relationship.id,
+														edit: { tag: event.target.value },
+													})
+												}
+												aria-label={`Relationship tag with ${named}`}
+												placeholder="Relationship tag"
+												className={`min-h-11 flex-1 bg-bg px-3 font-sans text-base ${relationship.burnt ? "line-through" : ""}`}
+											/>
+											<BurnButton
+												burnt={relationship.burnt}
+												onBurntChange={(burnt) =>
+													dispatch(
+														burnt
+															? {
+																	type: "burnCrewRelationship",
+																	id: relationship.id,
+																}
+															: {
+																	type: "unburnCrewRelationship",
+																	id: relationship.id,
+																},
+													)
+												}
+												named={`the relationship with ${named}`}
+												square
+											/>
+											<Button
+												type="button"
+												onClick={() =>
+													dispatch({
+														type: "removeCrewRelationship",
+														id: relationship.id,
+													})
+												}
+												aria-label={`Remove ${named}`}
+												className="grid size-11 shrink-0 place-items-center text-dim"
+											>
+												<span aria-hidden>✕</span>
+											</Button>
+										</li>
+									);
+								})}
+							</ul>
+						)}
+					</section>
 				</div>
-			</fieldset>
 
-			<label htmlFor="crew-quote" className="flex flex-col gap-1">
-				<span className={LABEL}>{crew.motivation}</span>
-				<Input
-					id="crew-quote"
-					type="text"
-					autoComplete="off"
-					value={crew.quote}
-					onChange={(event) =>
-						dispatch({ type: "setCrewQuote", quote: event.target.value })
-					}
-					placeholder={`Create your ${crew.motivation}`}
-					className={FIELD}
-				/>
-			</label>
-
-			<section className="flex flex-col gap-1.5">
-				<LabelAction
-					label="Crew Relationships"
-					onClick={() => {
-						const relationshipId = crypto.randomUUID();
-						dispatch({ type: "addCrewRelationship", id: relationshipId });
-						router.push(`${here}#crew-relationship-${relationshipId}`);
-					}}
-				>
-					<PlusIcon /> relationship tag
-				</LabelAction>
-				{character.crew.length === 0 ? (
-					<p className="font-sans text-sm text-dim">
-						No crew relationships yet.
-					</p>
-				) : (
-					<ul className="flex flex-col gap-2">
-						{character.crew.map((relationship) => {
-							const named = relationship.member.trim() || "this crew member";
-							return (
-								<li
-									key={relationship.id}
-									id={`crew-relationship-${relationship.id}`}
-									className="flex scroll-mt-20 divide-x divide-border overflow-hidden rounded-sm border border-border"
-								>
-									<Input
-										type="text"
-										autoComplete="off"
-										value={relationship.member}
-										onChange={(event) =>
-											dispatch({
-												type: "editCrewRelationship",
-												id: relationship.id,
-												edit: { member: event.target.value },
-											})
-										}
-										aria-label="Crew member's name"
-										placeholder="Name"
-										className="min-h-11 w-2/5 bg-bg px-3 font-sans text-base"
-									/>
-									<Input
-										type="text"
-										autoComplete="off"
-										value={relationship.tag}
-										onChange={(event) =>
-											dispatch({
-												type: "editCrewRelationship",
-												id: relationship.id,
-												edit: { tag: event.target.value },
-											})
-										}
-										aria-label={`Relationship tag with ${named}`}
-										placeholder="Relationship tag"
-										className={`min-h-11 flex-1 bg-bg px-3 font-sans text-base ${relationship.burnt ? "line-through" : ""}`}
-									/>
-									<BurnButton
-										burnt={relationship.burnt}
-										onBurntChange={(burnt) =>
-											dispatch(
-												burnt
-													? {
-															type: "burnCrewRelationship",
-															id: relationship.id,
-														}
-													: {
-															type: "unburnCrewRelationship",
-															id: relationship.id,
-														},
-											)
-										}
-										named={`the relationship with ${named}`}
-										square
-									/>
+				<aside className={EDITOR_ASIDE}>
+					{/* One panel: the motivation names the quote's line. */}
+					<div className={`${PANEL} lg:gap-4`}>
+						<fieldset className="flex flex-col gap-1.5">
+							<legend className={LABEL}>Identity, Ritual, or Itch</legend>
+							<div className="flex divide-x divide-border overflow-hidden rounded-sm border border-border">
+								{MOTIVATIONS.map((motivation) => (
 									<Button
+										key={motivation}
 										type="button"
+										data-type={MOTIVATION_TYPE[motivation]}
+										aria-pressed={crew.motivation === motivation}
 										onClick={() =>
-											dispatch({
-												type: "removeCrewRelationship",
-												id: relationship.id,
-											})
+											dispatch({ type: "setCrewMotivation", motivation })
 										}
-										aria-label={`Remove ${named}`}
-										className="grid size-11 shrink-0 place-items-center text-dim"
+										className={`flex-1 px-3 py-2 font-display text-sm font-semibold tracking-[0.08em] uppercase ${
+											crew.motivation === motivation
+												? "bg-[var(--hue)] text-bg"
+												: "text-[var(--hue)]"
+										}`}
 									>
-										<span aria-hidden>✕</span>
+										{motivation}
 									</Button>
-								</li>
-							);
-						})}
-					</ul>
-				)}
-			</section>
+								))}
+							</div>
+						</fieldset>
 
-			<section className="flex flex-col gap-1.5">
-				<LabelAction label="Crew theme specials" href={`${here}/specials`}>
-					<PlusIcon /> crew theme special
-				</LabelAction>
-				{crew.specials.length === 0 ? (
-					<p className="font-sans text-sm text-dim">
-						No crew theme specials yet.
-					</p>
-				) : (
-					<SpecialList
-						specials={crew.specials}
-						onRemove={(special) =>
-							dispatch({ type: "removeCrewSpecial", special })
-						}
-					/>
-				)}
-			</section>
+						<label htmlFor="crew-quote" className="flex flex-col gap-1">
+							<span className={LABEL}>{crew.motivation}</span>
+							<Input
+								id="crew-quote"
+								type="text"
+								autoComplete="off"
+								value={crew.quote}
+								onChange={(event) =>
+									dispatch({ type: "setCrewQuote", quote: event.target.value })
+								}
+								placeholder={`Create your ${crew.motivation}`}
+								className={FIELD}
+							/>
+						</label>
+					</div>
 
-			{decayFull(crew) && (
-				<p className="font-sans text-sm text-negative-text">
-					The Decay track is full. Together, decide what this means for the
-					crew.
-				</p>
-			)}
+					<section className={PANEL}>
+						<LabelAction label="Crew theme specials" href={`${here}/specials`}>
+							<PlusIcon /> crew theme special
+						</LabelAction>
+						{crew.specials.length === 0 ? (
+							<p className="font-sans text-sm text-dim">
+								No crew theme specials yet.
+							</p>
+						) : (
+							<SpecialList
+								specials={crew.specials}
+								onRemove={(special) =>
+									dispatch({ type: "removeCrewSpecial", special })
+								}
+							/>
+						)}
+					</section>
+
+					<SaveLink href={`/character/${id}`} />
+					{decayFull(crew) && (
+						<p className="font-sans text-sm text-negative-text">
+							The Decay track is full. Together, decide what this means for the
+							crew.
+						</p>
+					)}
+				</aside>
+			</div>
 		</main>
 	);
 }

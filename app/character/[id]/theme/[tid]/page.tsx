@@ -2,17 +2,28 @@
 
 import { Input } from "@base-ui/react/input";
 import { Select } from "@base-ui/react/select";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { DecayWarning } from "@/app/character/[id]/_components/decay-warning";
+import {
+	EDITOR_ASIDE,
+	EDITOR_COLUMN,
+	EDITOR_GRID,
+	EDITOR_HEADER,
+	EDITOR_HEADING,
+	EDITOR_PAGE,
+	EDITOR_TITLE,
+	EDITOR_TRACKS,
+	HUE_PANEL,
+	PANEL,
+	SaveLink,
+} from "@/app/character/[id]/_components/editor";
 import {
 	LoseThemeButton,
 	LoseThemeDialog,
 } from "@/app/character/[id]/_components/lose-theme";
 import { ROW } from "@/app/character/[id]/_components/picker";
 import { SpecialList } from "@/app/character/[id]/_components/special-card";
-import { FILLED } from "@/app/character/[id]/_components/styles";
 import { TagRow } from "@/app/character/[id]/_components/tag-row";
 import {
 	Track,
@@ -20,6 +31,7 @@ import {
 	UpgradeSquareButton,
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { MissingTheme } from "@/app/character/[id]/theme/[tid]/_components/picker";
 import { LabelAction } from "@/components/label-action";
 import { LABEL } from "@/components/styles";
 import { decayFull } from "@/lib/character/loss";
@@ -45,11 +57,6 @@ const THEMEBOOK_POPUP =
 	"z-40 max-h-[75vh] w-[min(92vw,380px)] overflow-y-auto rounded-sm border border-border bg-surface p-2 outline-none";
 const THEMEBOOK_ITEM = `${ROW} cursor-pointer border-[var(--hue)] outline-none data-[highlighted]:border-dim data-[selected]:border-[var(--hue)]`;
 
-/** Flat on the phone; at lg each section becomes a board-style panel. */
-const PANEL =
-	"flex flex-col gap-2 lg:rounded-md lg:border lg:border-border lg:bg-surface lg:p-4";
-const HUE_PANEL = `${PANEL} lg:border-t-[3px] lg:border-t-[var(--hue)]`;
-
 export default function ThemePage({
 	params,
 }: PageProps<"/character/[id]/theme/[tid]">) {
@@ -67,32 +74,15 @@ export default function ThemePage({
 	const back = `/character/${id}`;
 	const here = `${back}/theme/${tid}`;
 
-	if (!theme) {
-		return (
-			<main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pt-6">
-				<p className="font-sans text-base text-dim">
-					This character has no such theme. It may have been lost or replaced.
-				</p>
-				<Link
-					href={back}
-					className="inline-flex min-h-11 items-center self-start rounded-sm border border-border px-4 font-display text-sm font-semibold tracking-[0.08em] uppercase"
-				>
-					Back to the sheet
-				</Link>
-			</main>
-		);
-	}
+	if (!theme) return <MissingTheme id={id} />;
 
 	const title = themeTitle(theme);
 	const nascent = isNascent(theme);
 
 	return (
-		<main
-			data-type={theme.type}
-			className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pt-3 pb-8 lg:max-w-6xl lg:gap-6 lg:px-8 lg:pt-6"
-		>
-			<header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:gap-8 lg:border-b lg:border-edge lg:pb-6">
-				<div className="flex min-w-0 flex-col gap-5 lg:flex-1 lg:gap-3">
+		<main data-type={theme.type} className={EDITOR_PAGE}>
+			<header className={EDITOR_HEADER}>
+				<div className={EDITOR_HEADING}>
 					<section className="flex divide-x divide-[var(--hue)] overflow-hidden rounded-sm border border-[var(--hue)]">
 						<Select.Root
 							value={theme.type}
@@ -186,15 +176,13 @@ export default function ThemePage({
 
 					<h1
 						data-burnt={title?.burnt ? "true" : undefined}
-						className={`font-display text-[26px] leading-tight font-bold tracking-[0.05em] text-[var(--hue-title)] uppercase [text-shadow:0_0_20px_color-mix(in_oklab,var(--hue)_38%,transparent)] lg:text-[34px] ${
-							title?.burnt ? "line-through" : ""
-						}`}
+						className={`${EDITOR_TITLE} ${title?.burnt ? "line-through" : ""}`}
 					>
 						{title?.text.trim() || "Untitled theme"}
 					</h1>
 				</div>
 
-				<section className="flex items-start gap-[10px] lg:w-[440px] lg:shrink-0">
+				<section className={EDITOR_TRACKS}>
 					<Track
 						themeId={theme.id}
 						track="upgrade"
@@ -222,8 +210,8 @@ export default function ThemePage({
 				onOpenChange={setUpgradeOpen}
 			/>
 
-			<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
-				<div className="flex flex-col gap-5 lg:gap-6">
+			<div className={EDITOR_GRID}>
+				<div className={EDITOR_COLUMN}>
 					<section className={HUE_PANEL}>
 						<LabelAction
 							label="Power tags"
@@ -356,7 +344,7 @@ export default function ThemePage({
 					</section>
 				</div>
 
-				<aside className="flex flex-col gap-5 lg:sticky lg:top-6 lg:gap-4">
+				<aside className={EDITOR_ASIDE}>
 					<label htmlFor={`theme-quote-${theme.id}`} className={PANEL}>
 						<span className={LABEL}>{themeLine(theme.type)}</span>
 						<Input
@@ -399,10 +387,8 @@ export default function ThemePage({
 					</section>
 
 					<section className="flex flex-col gap-2 pb-2 lg:pb-0">
-						<div className="flex flex gap-3.5">
-							<Link href={back} className={FILLED}>
-								Save
-							</Link>
+						<div className="flex gap-3.5">
+							<SaveLink href={back} />
 							<LoseThemeButton
 								named={title?.text.trim() || "this theme"}
 								onOpen={() => setLoseOpen(true)}

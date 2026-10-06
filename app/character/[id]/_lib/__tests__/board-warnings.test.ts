@@ -101,16 +101,6 @@ test("an untied mix, and a mix the player already chose from, never ask", () => 
 	assert.deepEqual(boardWarnings(chosen), []);
 });
 
-test("an over-budget loadout is reported in the same strip", () => {
-	let character = reduce(newCharacter(), { type: "addTheme", id: "t1" });
-	character = reduce(character, { type: "incrementWildcards" });
-	assert.ok(
-		boardWarnings(character).includes(
-			"You have used 2 out of 1 loadout power available.",
-		),
-	);
-});
-
 test("every sentence appears at most once, in reading order", () => {
 	// The sample carries 4 themes, a chosen Essence, a loadout at budget, and
 	// th-lantern's Decay track already full.

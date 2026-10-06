@@ -17,7 +17,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 	return (
 		<section
 			id={`loadout-set-${set.id}`}
-			className="flex scroll-mt-20 flex-col gap-3 rounded-md border border-border bg-surface p-4"
+			className="flex scroll-mt-20 flex-col gap-3 rounded-md border border-border bg-surface p-4 lg:border-t-[3px] lg:border-t-[var(--hue)]"
 		>
 			<div className="flex items-center gap-2">
 				<Toggle
