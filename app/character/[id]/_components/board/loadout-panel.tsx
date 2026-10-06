@@ -41,6 +41,13 @@ export function LoadoutPanel({
 	const href = `/character/${id}/loadout`;
 	const spend = loadoutSpend(loadout);
 	const empty = group.tags.length === 0;
+	// A set's title tag opens its run of tags, so each set starts a new segment.
+	const setIds = new Set(loadout.sets.map((set) => set.id));
+	const segments = group.tags.reduce<RollGroup["tags"][]>((acc, tag) => {
+		if (setIds.has(tag.id) || acc.length === 0) acc.push([]);
+		acc[acc.length - 1].push(tag);
+		return acc;
+	}, []);
 
 	function mark() {
 		dispatch({ type: "markLoadoutUpgrade" });
@@ -81,7 +88,15 @@ export function LoadoutPanel({
 			{empty ? (
 				<p className="font-sans text-sm text-dim">Nothing loaded.</p>
 			) : (
-				<TagList group={group} tagChip={tagChip} />
+				<div className="flex flex-col divide-y divide-border *:py-2.5 *:first:pt-0 *:last:pb-0">
+					{segments.map((tags) => (
+						<TagList
+							key={tags[0].id}
+							group={{ ...group, tags }}
+							tagChip={tagChip}
+						/>
+					))}
+				</div>
 			)}
 
 			<ConfirmDialog
