@@ -125,3 +125,47 @@ button:not(:disabled) {
 *:hover::-webkit-scrollbar-thumb {
 	background-color: var(--color-raised);
 }
+
+/* Top-right and bottom-left corners cut off. The clip removes the border
+   there, so each pseudo-element redraws it as a rotated line that inherits
+   the parent's border, keeping color, width, and state changes in sync.
+   --bt and --bl: the parent's top and left border widths, when not 1px.
+   In the components layer so a Tailwind utility can override them, and so a
+   nested .notched resets what it would otherwise inherit. */
+@layer components {
+	.notched {
+		--n: 8px;
+		--bt: 1px;
+		--bl: 1px;
+		position: relative;
+		clip-path: polygon(
+			0 0,
+			calc(100% - var(--n)) 0,
+			100% var(--n),
+			100% 100%,
+			var(--n) 100%,
+			0 calc(100% - var(--n))
+		);
+	}
+	.notched::before,
+	.notched::after {
+		content: "";
+		position: absolute;
+		width: calc(var(--n) * 1.4142);
+		height: 0;
+		pointer-events: none;
+		transform: rotate(45deg);
+	}
+	.notched::before {
+		border-top: inherit;
+		top: calc(var(--bt) * -1);
+		right: calc(var(--n) - 1px - var(--n) * 1.4142);
+		transform-origin: 0 0;
+	}
+	.notched::after {
+		border-bottom: inherit;
+		bottom: calc(var(--n) - 1px);
+		left: calc(var(--bl) * -1);
+		transform-origin: 0 100%;
+	}
+}

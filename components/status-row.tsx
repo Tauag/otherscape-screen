@@ -4,7 +4,7 @@ export function StatusRow({ status }: { status: Status }) {
 	return (
 		<div
 			data-valence={status.valence}
-			className="flex items-center justify-between gap-2 rounded-sm border border-[var(--hue)]/32 bg-[var(--hue)]/7 px-[9px] py-1.5"
+			className="notched flex items-center justify-between gap-2 border border-[var(--hue)]/32 bg-[var(--hue)]/7 px-[9px] py-1.5"
 		>
 			<span className="font-display text-[13px] text-[var(--hue-text)]">
 				{status.name || "Unnamed"}

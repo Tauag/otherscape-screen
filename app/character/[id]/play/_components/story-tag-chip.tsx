@@ -28,7 +28,7 @@ export function StoryTagChip({
 	return (
 		<li
 			data-valence={tag.valence}
-			className={`flex items-center rounded-sm border pr-1 pl-3 ${
+			className={`notched flex items-center border pr-1 pl-3 ${
 				tag.burnt
 					? "border-dashed border-pip"
 					: "border-[var(--hue)]/40 bg-[var(--hue)]/7"

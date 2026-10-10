@@ -18,7 +18,7 @@ export function Chip({
 		<li
 			data-burnt={burnt ? "true" : undefined}
 			data-valence={negative ? "negative" : undefined}
-			className={`flex items-center gap-[7px] rounded-sm border px-[9px] py-1.5 ${
+			className={`notched flex items-center gap-[7px] border px-[9px] py-1.5 ${
 				burnt
 					? "border-dashed border-pip bg-[repeating-linear-gradient(135deg,transparent_0_4px,rgba(255,255,255,.025)_4px_8px)]"
 					: "border-[var(--hue)]/32 bg-[var(--hue)]/7"

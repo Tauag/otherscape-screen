@@ -90,7 +90,7 @@ export function RollChip({
 			data-type={type}
 			data-valence={valence}
 			data-burnt={burnt ? "true" : undefined}
-			className={`flex rounded-sm border ${tone}`}
+			className={`notched flex border ${tone}`}
 		>
 			{onToggle ? (
 				<Toggle

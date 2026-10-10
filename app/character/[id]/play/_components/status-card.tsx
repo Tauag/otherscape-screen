@@ -152,8 +152,8 @@ export function StatusCard({
 			data-valence={status.valence}
 			className={
 				onToggle
-					? `flex cursor-pointer items-stretch gap-2 rounded-[5px] border border-l-[3px] border-l-[var(--hue)] py-2 pr-2 pl-2.5 ${tone}`
-					: "flex items-stretch gap-2 rounded-[5px] border border-[var(--hue)]/30 border-l-[3px] border-l-[var(--hue)] bg-surface py-2 pr-2 pl-2.5"
+					? `notched flex cursor-pointer items-stretch gap-2 border [--bl:3px] border-l-[3px] border-l-[var(--hue)] py-2 pr-2 pl-2.5 ${tone}`
+					: "notched flex items-stretch gap-2 border border-[var(--hue)]/30 [--bl:3px] border-l-[3px] border-l-[var(--hue)] bg-surface py-2 pr-2 pl-2.5"
 			}
 		>
 			{onToggle ? (

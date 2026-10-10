@@ -51,7 +51,7 @@ export function Board() {
 								onClick={() =>
 									dispatch({ type: "addTheme", id: crypto.randomUUID() })
 								}
-								className="flex min-h-[88px] items-center justify-center gap-1.5 rounded-md border border-raised border-dashed bg-recess font-display text-xs font-semibold tracking-[0.08em] text-dim uppercase"
+								className="notched flex min-h-[88px] items-center justify-center gap-1.5 border border-raised border-dashed bg-recess font-display text-xs font-semibold tracking-[0.08em] text-dim uppercase"
 							>
 								<PlusIcon /> Theme card
 							</Button>

@@ -20,7 +20,7 @@ export function SheetCard({
 		<Link
 			href={href}
 			data-type={type}
-			className={`flex overflow-hidden rounded-md border transition-colors ${
+			className={`notched flex overflow-hidden border transition-colors ${
 				faded
 					? "border-dashed border-raised bg-recess hover:border-[var(--hue)]/60"
 					: "border-border bg-surface hover:border-[var(--hue)]"
