@@ -34,25 +34,32 @@ export async function proxy(request: NextRequest) {
 	// lazy: a thrown error (bad/partial cookie, JWKS fetch failure) is treated
 	// the same as "no session" instead of retried, so a broken cookie fails
 	// closed to /login rather than flapping the route decision across requests.
-	const email = await (async () => {
+	const claims = await (async () => {
 		try {
 			const { data } = await supabase.auth.getClaims();
-			return data?.claims.email as string | undefined;
+			return data?.claims;
 		} catch {
 			return undefined;
 		}
 	})();
+	const email = claims?.email as string | undefined;
+	// The access token hook sets invited at issue time. Anything but true (hook
+	// off, old token, or invited since) re-checks live so nobody is locked out.
+	// lazy: a true claim is trusted, so a revoked invite lasts until the token
+	// expires (jwt_expiry, 1h). For instant revocation, drop the claim check.
 	const invited =
-		email && !isAuthCallbackPath(pathname)
-			? await (async () => {
-					try {
-						const { data } = await supabase.rpc("current_user_invited");
-						return data === true;
-					} catch {
-						return false;
-					}
-				})()
-			: undefined;
+		claims?.invited === true
+			? true
+			: email && !isAuthCallbackPath(pathname)
+				? await (async () => {
+						try {
+							const { data } = await supabase.rpc("current_user_invited");
+							return data === true;
+						} catch {
+							return false;
+						}
+					})()
+				: undefined;
 	const route = decideRoute({ pathname, email, invited });
 
 	if (route === "not-invited") {
