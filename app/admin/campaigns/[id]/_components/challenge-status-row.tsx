@@ -32,7 +32,7 @@ export function ChallengeStatusRow({
 	return (
 		<li
 			data-valence={status.valence}
-			className="flex items-stretch gap-2 rounded-[5px] border border-[var(--hue)]/30 border-l-[3px] border-l-[var(--hue)] bg-surface py-2 pr-2 pl-2.5"
+			className="notched flex items-stretch gap-2 border border-[var(--hue)]/30 [--bl:3px] border-l-[3px] border-l-[var(--hue)] bg-surface py-2 pr-2 pl-2.5"
 		>
 			<div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
 				<Input

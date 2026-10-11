@@ -110,7 +110,7 @@ export async function AssignedCharacters({
 					return (
 						<li
 							key={character.id}
-							className="flex w-64 shrink-0 items-center rounded-md border border-border bg-surface"
+							className="notched flex w-64 shrink-0 items-center border border-border bg-surface"
 						>
 							<CharacterSheetDialog character={migrated} player={player}>
 								<span
