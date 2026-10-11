@@ -17,26 +17,6 @@ export function ChevronRightIcon({ className }: { className?: string }) {
 	);
 }
 
-export function OtherscapeIcon() {
-	return (
-		<svg
-			aria-hidden="true"
-			width="30"
-			height="30"
-			viewBox="-179 -221 1408 1408"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="63"
-		>
-			<path d="M229 512V447L102 200L152 108H897L947 200L820 447V512" />
-			<path d="M316 580L473 859H576L733 580" />
-			<path d="M230 456A298.5 298.5 0 0 1 820 456" />
-			<path d="M229 447A434 434 0 0 1 820 447V512A434 434 0 0 1 229 512Z" />
-			<circle cx="525" cy="432" r="95.5" />
-		</svg>
-	);
-}
-
 export function BackIcon() {
 	return (
 		<svg

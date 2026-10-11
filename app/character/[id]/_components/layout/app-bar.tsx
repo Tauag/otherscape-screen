@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
-import { BackIcon, OtherscapeIcon } from "@/components/icons";
+import { BackIcon } from "@/components/icons";
+import { OtherscapeIcon } from "@/components/otherscape-icon";
 import { isNascent } from "@/lib/character/theme";
 import { useCharacter } from "../../_hooks/use-character";
 import { backTarget } from "../../_lib/back-target";
@@ -28,7 +29,7 @@ export function AppBar({ shareToken }: { shareToken: string | null }) {
 			</Link>
 
 			<Link href="/" aria-label="Home" className={BACK}>
-				<OtherscapeIcon />
+				<OtherscapeIcon themes={character.themes} />
 			</Link>
 
 			<div className="flex min-w-0 flex-1 flex-col gap-[3px]">

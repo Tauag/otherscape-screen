@@ -3,14 +3,11 @@
 import { Menu } from "@base-ui/react/menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BackIcon, ChevronRightIcon, OtherscapeIcon } from "@/components/icons";
+import { BackIcon, ChevronRightIcon } from "@/components/icons";
+import { OtherscapeIcon } from "@/components/otherscape-icon";
 import { MENU_ITEM, MENU_POPUP } from "@/components/styles";
 import { signOut } from "@/lib/actions";
 
-/** "/" is the top of this section; "/admin/users" and "/admin/campaigns" sit
- *  directly under it, and every other admin route sits one or two levels
- *  under one of those. The parent is a direct lookup rather than
- *  router.back()'s free-form history. */
 function backTarget(pathname: string): string | null {
 	if (pathname === "/") return null;
 	if (pathname === "/admin/users") return "/";
@@ -28,8 +25,6 @@ export function RosterAppBar({
 	title: string;
 	accountName: string;
 	isAdmin: boolean;
-	/** A live status line (e.g. a campaign's save state), next to the account
-	 *  menu. Absent everywhere else, so this bar looks unchanged for them. */
 	status?: React.ReactNode;
 }) {
 	const pathname = usePathname();

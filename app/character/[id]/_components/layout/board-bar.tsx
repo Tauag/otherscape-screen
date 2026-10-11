@@ -8,7 +8,8 @@ import { NameField } from "@/app/character/[id]/_components/layout/name-field";
 import { TABS } from "@/app/character/[id]/_components/layout/tabs";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { backTarget } from "@/app/character/[id]/_lib/back-target";
-import { BackIcon, OtherscapeIcon } from "@/components/icons";
+import { BackIcon } from "@/components/icons";
+import { OtherscapeIcon } from "@/components/otherscape-icon";
 
 const BACK = "grid size-9 shrink-0 place-items-center text-dim";
 
@@ -39,7 +40,7 @@ export function BoardBar({
 			</Link>
 
 			<Link href="/" aria-label="Home" className={BACK}>
-				<OtherscapeIcon />
+				<OtherscapeIcon themes={character.themes} />
 			</Link>
 
 			<div className="flex min-w-0 flex-col gap-0.5">
