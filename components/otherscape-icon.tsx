@@ -41,8 +41,10 @@ const RUN_CYCLES = 1;
  *  globals.css (.otherscape-icon). Stops after RUN_CYCLES, restarts on hover. */
 export function OtherscapeIcon({
 	themes,
+	size = 36,
 }: {
 	themes?: readonly { type: ThemeType }[];
+	size?: number;
 }) {
 	const id = useId();
 	const [running, setRunning] = useState(true);
@@ -57,8 +59,8 @@ export function OtherscapeIcon({
 	return (
 		<svg
 			aria-hidden="true"
-			width="36"
-			height="36"
+			width={size}
+			height={size}
 			viewBox="-179 -221 1408 1408"
 			fill="none"
 			stroke="currentColor"

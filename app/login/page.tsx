@@ -1,6 +1,7 @@
 import { Button } from "@base-ui/react/button";
 import type { Metadata } from "next";
 import { CheckInviteError } from "@/app/login/_components/check-invite-error";
+import { OtherscapeIcon } from "@/components/otherscape-icon";
 import { signInWithDiscord, signInWithGoogle } from "@/lib/actions";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -13,6 +14,7 @@ export default function LoginPage() {
 				<h1 className="font-display text-xl font-bold tracking-[0.16em] uppercase">
 					Otherscape
 				</h1>
+				<OtherscapeIcon size={72} />
 				<p className="max-w-xs text-sm text-dim">
 					Sign in to reach your characters.
 				</p>
