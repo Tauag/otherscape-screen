@@ -27,14 +27,14 @@ export function Board() {
 	return (
 		<div className="flex w-full flex-1 flex-col bg-bg">
 			<div className="flex flex-1 items-start">
-				<div className="flex min-w-0 flex-1 flex-col [@media(min-height:800px)]:h-[calc(100dvh-62px)]">
+				<div className="flex min-w-0 flex-1 flex-col tall:h-[calc(100dvh-62px)]">
 					{warnings.length > 0 && (
 						<p className="shrink-0 border-b border-edge bg-recess px-5 py-2 font-sans text-sm text-negative-text">
 							{warnings.join(" ")}
 						</p>
 					)}
 
-					<div className="grid min-w-0 grid-cols-2 content-start gap-3.5 p-5 xl:grid-cols-3 [@media(min-height:800px)]:min-h-0 [@media(min-height:800px)]:flex-1 [@media(min-height:800px)]:auto-rows-fr [@media(min-height:800px)]:content-stretch [@media(min-height:800px)]:overflow-hidden">
+					<div className="grid min-w-0 grid-cols-2 content-start gap-3.5 p-5 xl:grid-cols-3 tall:min-h-0 tall:flex-1 tall:auto-rows-fr tall:content-stretch tall:overflow-hidden">
 						{character.themes.map((theme, index) => (
 							<ThemePanel
 								key={theme.id}

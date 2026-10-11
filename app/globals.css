@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Tall enough for the board grid to fill the viewport; shorter, the page scrolls. */
+@custom-variant tall (@media (min-height: 800px));
+
 @theme {
 	/* Theme type: hue a tag inherits from its origin theme. */
 	--color-self: #e85a5f;
