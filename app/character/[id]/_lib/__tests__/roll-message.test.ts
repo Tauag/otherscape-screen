@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { cleanLines, outcome, rollMessage } from "../roll-message.ts";
+import {
+	cleanLines,
+	outcome,
+	requestMessage,
+	rollMessage,
+} from "../roll-message.ts";
 
 test("outcome tiers break at 7 and 10", () => {
 	assert.equal(outcome(6), "Miss");
@@ -41,4 +46,22 @@ test("the post scores only counted lines and pings nobody", () => {
 	assert.equal(embed.title, "9 · Mixed hit");
 	assert.match(embed.description, /\\\*fast\\\*/);
 	assert.match(embed.description, /~~.*Hurt-2~~/);
+});
+
+test("a request lists the tags and power but rolls no dice", () => {
+	const message = requestMessage(
+		"Kit",
+		[
+			{ label: "Sharp *eyes*", value: 2, counted: true },
+			{ label: "Weak", value: -1, counted: false },
+		],
+		false,
+	);
+	const [embed] = message.embeds;
+	assert.deepEqual(message.allowed_mentions, { parse: [] });
+	assert.equal(embed.title, "Requests a roll");
+	assert.equal(
+		embed.description,
+		"Power **+2**\n`+2` Sharp \\*eyes\\*\n~~`−1` Weak~~",
+	);
 });

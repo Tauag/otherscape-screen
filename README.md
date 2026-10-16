@@ -46,9 +46,6 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# Optional: enables the Discord webhook write path
-DISCORD_WEBHOOK_URL=
-
 ```
 
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is read as

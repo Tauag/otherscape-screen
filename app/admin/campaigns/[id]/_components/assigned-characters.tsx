@@ -3,7 +3,9 @@ import Link from "next/link";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
 import { AssignDialog } from "@/app/admin/campaigns/[id]/_components/assign-dialog";
 import { CharacterSheetDialog } from "@/app/admin/campaigns/[id]/_components/character-sheet-dialog";
+import { DiscordRollsForm } from "@/app/admin/campaigns/[id]/_components/discord-rolls-form";
 import { RemoveCharacterForm } from "@/app/admin/campaigns/[id]/_components/remove-character-form";
+import { DiceIcon } from "@/components/icons";
 import { LiveRefresh } from "@/components/live-refresh";
 import { RowMenu } from "@/components/row-menu";
 import { LABEL, MENU_ITEM } from "@/components/styles";
@@ -17,7 +19,19 @@ type InvitedUser = {
 
 type AssignedRow = {
 	character_id: string;
-	characters: { id: string; name: string; owner: string; data: unknown } | null;
+	characters: {
+		id: string;
+		name: string;
+		owner: string;
+		data: unknown;
+		discord_enabled: boolean;
+	} | null;
+};
+
+type PlacementRow = {
+	character_id: string;
+	campaign_id: string;
+	campaigns: { name: string | null } | null;
 };
 
 type AllCharacterRow = {
@@ -49,20 +63,30 @@ export async function AssignedCharacters({
 }) {
 	const { supabase } = await requireAdmin();
 
-	const [{ data: assignedRows }, { data: allCharacters }, { data: invited }] =
-		await Promise.all([
-			supabase
-				.from("campaign_characters")
-				.select("character_id, characters(id, name, owner, data)")
-				.eq("campaign_id", campaignId)
-				.order("added_at")
-				.overrideTypes<AssignedRow[], { merge: false }>(),
-			supabase
-				.from("characters")
-				.select("id, name, essence, owner")
-				.overrideTypes<AllCharacterRow[], { merge: false }>(),
-			supabase.rpc("admin_list_users"),
-		]);
+	const [
+		{ data: assignedRows },
+		{ data: placements },
+		{ data: allCharacters },
+		{ data: invited },
+	] = await Promise.all([
+		supabase
+			.from("campaign_characters")
+			.select(
+				"character_id, characters(id, name, owner, data, discord_enabled)",
+			)
+			.eq("campaign_id", campaignId)
+			.order("added_at")
+			.overrideTypes<AssignedRow[], { merge: false }>(),
+		supabase
+			.from("campaign_characters")
+			.select("character_id, campaign_id, campaigns(name)")
+			.overrideTypes<PlacementRow[], { merge: false }>(),
+		supabase
+			.from("characters")
+			.select("id, name, essence, owner")
+			.overrideTypes<AllCharacterRow[], { merge: false }>(),
+		supabase.rpc("admin_list_users"),
+	]);
 
 	const invitedUsers = invited as InvitedUser[] | null;
 	const assigned = (assignedRows ?? []).flatMap((row) =>
@@ -70,12 +94,23 @@ export async function AssignedCharacters({
 	);
 	const assignedIds = new Set(assigned.map((character) => character.id));
 
+	// A character is in at most one campaign, so this maps 1:1.
+	const elsewhere = new Map(
+		(placements ?? [])
+			.filter((row) => row.campaign_id !== campaignId)
+			.map((row) => [
+				row.character_id,
+				row.campaigns?.name?.trim() || "Unnamed",
+			]),
+	);
+
 	const candidates = (allCharacters ?? []).map((character) => ({
 		id: character.id,
 		name: character.name?.trim() || "Unnamed",
 		essence: character.essence ?? "",
 		player: playerName(invitedUsers, character.owner),
 		assigned: assignedIds.has(character.id),
+		elsewhere: elsewhere.get(character.id) ?? null,
 	}));
 
 	const groups = Array.from(
@@ -110,7 +145,7 @@ export async function AssignedCharacters({
 					return (
 						<li
 							key={character.id}
-							className="notched flex w-64 shrink-0 items-center border border-border bg-surface"
+							className="notched relative flex w-64 shrink-0 items-center border border-border bg-surface"
 						>
 							<CharacterSheetDialog character={migrated} player={player}>
 								<span
@@ -141,6 +176,24 @@ export async function AssignedCharacters({
 									</span>
 								)}
 							</CharacterSheetDialog>
+							<span
+								role="img"
+								aria-label={
+									character.discord_enabled
+										? "Discord rolls on"
+										: "Discord rolls off"
+								}
+								title={
+									character.discord_enabled
+										? "Discord rolls on"
+										: "Discord rolls off"
+								}
+								className={`pointer-events-none absolute right-1.5 bottom-1 ${
+									character.discord_enabled ? "text-positive" : "text-danger"
+								}`}
+							>
+								<DiceIcon className="size-3.5" />
+							</span>
 
 							<RowMenu label={`Menu for ${name}`}>
 								<Menu.Item
@@ -149,6 +202,12 @@ export async function AssignedCharacters({
 								>
 									Edit
 								</Menu.Item>
+								<DiscordRollsForm
+									campaignId={campaignId}
+									characterId={character.id}
+									name={name}
+									enabled={character.discord_enabled}
+								/>
 								<RemoveCharacterForm
 									campaignId={campaignId}
 									characterId={character.id}

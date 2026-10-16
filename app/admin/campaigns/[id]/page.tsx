@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
 import { migrate } from "@/app/admin/campaigns/_lib/migrate";
 import { AssignedCharacters } from "@/app/admin/campaigns/[id]/_components/assigned-characters";
+import { DiscordChannelForm } from "@/app/admin/campaigns/[id]/_components/discord-channel-form";
 import { accountName } from "@/lib/account-name";
 import { CampaignProvider } from "./_components/campaign-provider";
 import { CampaignScreen } from "./_components/campaign-screen";
@@ -14,11 +15,16 @@ export default async function CampaignPage({
 
 	const { data: row, error } = await supabase
 		.from("campaigns")
-		.select("data, version, updated_at")
+		.select("data, version, updated_at, discord_webhook_url")
 		.eq("id", id)
 		.maybeSingle()
 		.overrideTypes<
-			{ data: unknown; version: number; updated_at: string },
+			{
+				data: unknown;
+				version: number;
+				updated_at: string;
+				discord_webhook_url: string | null;
+			},
 			{ merge: false }
 		>();
 
@@ -35,7 +41,15 @@ export default async function CampaignPage({
 		>
 			<CampaignScreen
 				accountName={accountName(user)}
-				characters={<AssignedCharacters campaignId={id} />}
+				characters={
+					<>
+						<AssignedCharacters campaignId={id} />
+						<DiscordChannelForm
+							campaignId={id}
+							url={row.discord_webhook_url ?? ""}
+						/>
+					</>
+				}
 			/>
 		</CampaignProvider>
 	);

@@ -4,7 +4,7 @@ import { Button } from "@base-ui/react/button";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { CopyIcon } from "@/app/character/[id]/_components/icons";
-import { rollDice } from "@/app/character/[id]/_lib/roll-action";
+import { requestRoll, rollDice } from "@/app/character/[id]/_lib/roll-action";
 import {
 	type Dice,
 	outcome,
@@ -68,6 +68,9 @@ export function RollTotal({
 	// Snapshot on roll, so clearing the tag selection right after doesn't
 	// change the power this dialog is already showing.
 	const [rolledPower, setRolledPower] = useState(total);
+	const [request, setRequest] = useState<
+		{ state: "sending" } | { state: "failed"; error: string } | null
+	>(null);
 
 	async function start() {
 		setRolledPower(total);
@@ -96,6 +99,21 @@ export function RollTotal({
 		setRoll({ state: "done", dice: result.dice, posted: result.posted });
 	}
 
+	async function sendRequest() {
+		setRequest({ state: "sending" });
+		const result = await requestRoll(id, lines, mitigating).catch(() => ({
+			error: "Could not reach the server.",
+		}));
+		if (result.error === null && result.posted) {
+			setRequest(null);
+			return;
+		}
+		setRequest({
+			state: "failed",
+			error: result.error ?? "Not posted to Discord. Ask the GM aloud.",
+		});
+	}
+
 	async function copy() {
 		await navigator.clipboard.writeText(rollCommand(rolledPower));
 		setCopied(true);
@@ -107,14 +125,24 @@ export function RollTotal({
 	return (
 		<div className="shrink-0 border-t border-edge bg-chrome">
 			<div className="flex items-stretch gap-3 px-5 pt-4 pb-4">
-				<Button
-					type="button"
-					disabled={open && roll.state === "rolling"}
-					onClick={start}
-					className="flex flex-1 flex-col items-center justify-center rounded-[5px] bg-primary font-display text-[19px] font-bold tracking-[0.1em] text-bg uppercase [clip-path:polygon(0_0,100%_0,100%_74%,92%_100%,0_100%)]"
-				>
-					Roll 2d6
-				</Button>
+				<div className="flex flex-1 gap-2">
+					<Button
+						type="button"
+						disabled={lines.length === 0 || request?.state === "sending"}
+						onClick={sendRequest}
+						className="flex flex-1 flex-col items-center justify-center rounded-[5px] border border-primary font-display text-[19px] font-bold tracking-[0.1em] text-primary uppercase disabled:opacity-40"
+					>
+						Request
+					</Button>
+					<Button
+						type="button"
+						disabled={open && roll.state === "rolling"}
+						onClick={start}
+						className="flex flex-1 flex-col items-center justify-center rounded-[5px] bg-primary font-display text-[19px] font-bold tracking-[0.1em] text-bg uppercase [clip-path:polygon(0_0,100%_0,100%_74%,92%_100%,0_100%)]"
+					>
+						Roll 2d6
+					</Button>
+				</div>
 
 				<p className="flex flex-col items-end justify-center">
 					<span className={LABEL}>Power</span>
@@ -126,6 +154,21 @@ export function RollTotal({
 					</span>
 				</p>
 			</div>
+
+			<ConfirmDialog
+				open={request !== null}
+				onOpenChange={(next) => {
+					if (!next) setRequest(null);
+				}}
+				title={
+					request?.state === "sending" ? "Requesting roll" : "Request not sent"
+				}
+				cancelLabel="Close"
+			>
+				<p role="status" className="font-sans text-sm text-dim">
+					{request?.state === "failed" ? request.error : "Requesting…"}
+				</p>
+			</ConfirmDialog>
 
 			<ConfirmDialog
 				open={open}

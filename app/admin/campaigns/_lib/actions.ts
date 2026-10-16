@@ -92,17 +92,44 @@ export async function assignCharacters(
 	if (characterIds.length === 0) return "Choose at least one character.";
 
 	const { supabase } = await requireAdmin();
-	// The picker only offers unassigned characters, so a PK conflict here is
-	// just a stale error message, not a state the admin needs to resolve.
+	// The picker disables characters already placed, so a unique violation
+	// here means the page was stale.
 	const { error } = await supabase.from("campaign_characters").insert(
 		characterIds.map((characterId) => ({
 			campaign_id: campaignId,
 			character_id: characterId,
 		})),
 	);
+	if (error?.code === "23505")
+		return "A character is already in a campaign. Reload the page.";
 	if (error) return "Could not assign the selected characters.";
 
 	revalidatePath(`/admin/campaigns/${campaignId}`);
+	return null;
+}
+
+const WEBHOOK_URL =
+	/^https:\/\/(?:(?:ptb|canary)\.)?(?:discord|discordapp)\.com\/api\/webhooks\/\d+\/[\w-]+(?:\?[\w=&-]*)?$/;
+
+/** An empty URL clears the campaign's channel, so rolls use the env fallback. */
+export async function setCampaignWebhook(
+	_previous: Message,
+	form: FormData,
+): Promise<Message> {
+	const id = String(form.get("id") ?? "");
+	const url = String(form.get("url") ?? "").trim();
+	if (url && !WEBHOOK_URL.test(url))
+		return "Paste a Discord webhook URL (discord.com/api/webhooks/...).";
+
+	const { supabase } = await requireAdmin();
+	const { data, error } = await supabase
+		.from("campaigns")
+		.update({ discord_webhook_url: url || null })
+		.eq("id", id)
+		.select("id");
+	if (error || !data?.length) return "Could not save the Discord channel.";
+
+	revalidatePath(`/admin/campaigns/${id}`);
 	return null;
 }
 
@@ -121,6 +148,28 @@ export async function removeCharacter(
 		.eq("campaign_id", campaignId)
 		.eq("character_id", characterId);
 	if (error) return "Could not remove the character.";
+
+	revalidatePath(`/admin/campaigns/${campaignId}`);
+	return null;
+}
+
+/** Whether this character's rolls post to the campaign's Discord channel. */
+export async function setCharacterDiscord(
+	_previous: Message,
+	form: FormData,
+): Promise<Message> {
+	const campaignId = String(form.get("campaignId") ?? "");
+	const characterId = String(form.get("characterId") ?? "");
+	const enabled = form.get("enabled") === "true";
+	if (!campaignId || !characterId) return "Missing character.";
+
+	const { supabase } = await requireAdmin();
+	const { data, error } = await supabase
+		.from("characters")
+		.update({ discord_enabled: enabled })
+		.eq("id", characterId)
+		.select("id");
+	if (error || !data?.length) return "Could not update the Discord setting.";
 
 	revalidatePath(`/admin/campaigns/${campaignId}`);
 	return null;

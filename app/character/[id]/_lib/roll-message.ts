@@ -59,6 +59,38 @@ export function outcome(score: number, dice?: Dice): keyof typeof COLOR {
 const escapeMarkdown = (text: string) =>
 	text.replace(/[\\`*_~|>[\]()]/g, "\\$&");
 
+function breakdownOf(lines: RollLine[]): string[] {
+	return lines.map((line) => {
+		const text = `\`${signed(line.value)}\` ${escapeMarkdown(line.label)}`;
+		return line.counted ? text : `~~${text}~~`;
+	});
+}
+
+const authorOf = (name: string, mitigation: boolean) =>
+	`${name.trim().slice(0, MAX_LABEL) || "Unnamed"}${mitigation ? " · mitigation" : ""}`;
+
+/** Asks the GM to approve a roll: the tags, no dice. */
+export function requestMessage(
+	name: string,
+	lines: RollLine[],
+	mitigation: boolean,
+) {
+	return {
+		allowed_mentions: { parse: [] },
+		embeds: [
+			{
+				author: { name: authorOf(name, mitigation) },
+				title: "Requests a roll",
+				description: [
+					`Power **${signed(powerOf(lines))}**`,
+					...breakdownOf(lines),
+				].join("\n"),
+				color: 0x5865f2,
+			},
+		],
+	};
+}
+
 export function rollMessage(
 	name: string,
 	lines: RollLine[],
@@ -68,18 +100,13 @@ export function rollMessage(
 	const power = powerOf(lines);
 	const score = dice[0] + dice[1] + power;
 	const result = outcome(score, dice);
-	const breakdown = lines.map((line) => {
-		const text = `\`${signed(line.value)}\` ${escapeMarkdown(line.label)}`;
-		return line.counted ? text : `~~${text}~~`;
-	});
+	const breakdown = breakdownOf(lines);
 	return {
 		// Player text can't ping @everyone or a role.
 		allowed_mentions: { parse: [] },
 		embeds: [
 			{
-				author: {
-					name: `${name.trim().slice(0, MAX_LABEL) || "Unnamed"}${mitigation ? " · mitigation" : ""}`,
-				},
+				author: { name: authorOf(name, mitigation) },
 				title: `${score} · ${result}`,
 				description: [
 					`🎲 **${dice[0]}** + **${dice[1]}**  Power **${signed(power)}**`,

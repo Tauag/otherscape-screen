@@ -22,6 +22,8 @@ type Candidate = {
 	essence: string;
 	player: string;
 	assigned: boolean;
+	/** Name of the other campaign holding this character, if any. */
+	elsewhere: string | null;
 };
 
 type Group = { player: string; characters: Candidate[] };
@@ -105,6 +107,8 @@ export function AssignDialog({
 											{group.player}
 										</span>
 										{group.characters.map((character) => {
+											const locked =
+												character.assigned || !!character.elsewhere;
 											const checked =
 												character.assigned || selected.has(character.id);
 											return (
@@ -112,9 +116,7 @@ export function AssignDialog({
 													key={character.id}
 													htmlFor={`assign-${character.id}`}
 													className={`flex min-h-11 items-center gap-3 rounded-sm px-2.5 ${
-														character.assigned
-															? "opacity-55"
-															: "hover:bg-white/[0.03]"
+														locked ? "opacity-55" : "hover:bg-white/[0.03]"
 													}`}
 												>
 													<Checkbox.Root
@@ -122,7 +124,7 @@ export function AssignDialog({
 														name="characterId"
 														value={character.id}
 														checked={checked}
-														disabled={character.assigned}
+														disabled={locked}
 														onCheckedChange={(next) =>
 															setSelected((current) => {
 																const updated = new Set(current);
@@ -152,11 +154,13 @@ export function AssignDialog({
 													<span className="flex-1 font-display text-sm font-semibold tracking-[0.05em] uppercase">
 														{character.name}
 													</span>
-													{(character.assigned || character.essence) && (
+													{(locked || character.essence) && (
 														<span className={LABEL}>
 															{character.assigned
 																? "In campaign"
-																: character.essence}
+																: character.elsewhere
+																	? `In ${character.elsewhere}`
+																	: character.essence}
 														</span>
 													)}
 												</label>
