@@ -42,7 +42,7 @@ export function Chip({
 			</span>
 			{broad && <ChipBadge>BROAD</ChipBadge>}
 			{burnt && <ChipBadge>BURNT</ChipBadge>}
-			{stowed && <ChipBadge>OFF</ChipBadge>}
+			{stowed && <ChipBadge>STOWED</ChipBadge>}
 		</li>
 	);
 }
