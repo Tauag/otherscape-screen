@@ -9,7 +9,7 @@ export function LoadoutBlock({ loadout }: { loadout: Loadout }) {
 	const spend = loadoutSpend(loadout);
 
 	if (
-		!loadout.sets.some((set) => set.titleLoaded) &&
+		loadout.sets.length === 0 &&
 		loadout.wildcards === 0 &&
 		loadout.upgrade === 0 &&
 		loadout.specials.length === 0
@@ -36,7 +36,7 @@ export function LoadoutBlock({ loadout }: { loadout: Loadout }) {
 					/>
 				</div>
 
-				<LoadoutSummary loadout={loadout} />
+				<LoadoutSummary loadout={loadout} showStowed />
 			</div>
 		</article>
 	);

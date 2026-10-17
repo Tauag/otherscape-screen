@@ -76,53 +76,88 @@ export function SpecialsList({ specials }: { specials: string[] }) {
 }
 
 /** The loaded sets, the wildcard count, and the loadout specials. Stowed
- *  sets stay off: only what is loaded is usable in play. */
-export function LoadoutSummary({ loadout }: { loadout: Loadout }) {
-	const loadedSets = loadout.sets.filter((set) => set.titleLoaded);
+ *  sets and unloaded features stay off unless `showStowed` is set, as on the
+ *  read-only share view, where they show dimmed and marked. */
+export function LoadoutSummary({
+	loadout,
+	showStowed = false,
+}: {
+	loadout: Loadout;
+	showStowed?: boolean;
+}) {
+	const visibleSets = loadout.sets.filter(
+		(set) => set.titleLoaded || showStowed,
+	);
 
 	return (
 		<>
-			{loadedSets.length > 0 && (
+			{visibleSets.length > 0 && (
 				<div className="flex flex-col gap-3">
-					{loadedSets.map((set) => {
+					{visibleSets.map((set) => {
 						const title = set.title.trim();
-						const features = set.features.filter((feature) => feature.loaded);
-						return (
-							<div
-								key={set.id}
-								className="flex flex-col gap-1.5 border-l-2 border-[var(--hue)]/40 pl-2.5"
-							>
-								<h3
-									className={`flex items-center gap-1.5 font-display text-[17px] leading-tight font-bold tracking-[0.045em] uppercase ${
-										set.titleBurnt
-											? "text-muted line-through"
+						const features = set.titleLoaded
+							? set.features.filter((feature) => showStowed || feature.loaded)
+							: set.features;
+						const tags = (
+							<ul className="flex flex-wrap gap-1.5 pt-1.5">
+								{features.map((feature) => (
+									<Chip
+										key={feature.id}
+										label="+"
+										text={feature.text}
+										burnt={feature.burnt}
+										stowed={!set.titleLoaded || !feature.loaded}
+									/>
+								))}
+								{set.weaknesses.map((weakness) => (
+									<Chip
+										key={weakness.id}
+										label="!"
+										text={weakness.text}
+										negative
+										stowed={!set.titleLoaded}
+									/>
+								))}
+							</ul>
+						);
+						const heading = (
+							<h3
+								className={`inline-flex items-center gap-1.5 font-display text-[17px] leading-tight font-bold tracking-[0.045em] uppercase ${
+									set.titleBurnt
+										? "text-muted line-through"
+										: !set.titleLoaded
+											? "text-muted"
 											: title
 												? "text-[var(--hue-title)]"
 												: "text-dim"
-									}`}
-								>
-									{title || "Untitled set"}
-									{set.titleBurnt && <ChipBadge>BURNT</ChipBadge>}
-								</h3>
-								{(features.length > 0 || set.weaknesses.length > 0) && (
-									<ul className="flex flex-wrap gap-1.5">
-										{features.map((feature) => (
-											<Chip
-												key={feature.id}
-												label="+"
-												text={feature.text}
-												burnt={feature.burnt}
-											/>
-										))}
-										{set.weaknesses.map((weakness) => (
-											<Chip
-												key={weakness.id}
-												label="!"
-												text={weakness.text}
-												negative
-											/>
-										))}
-									</ul>
+								}`}
+							>
+								{title || "Untitled set"}
+								{set.titleBurnt && <ChipBadge>BURNT</ChipBadge>}
+								{!set.titleLoaded && <ChipBadge>STOWED</ChipBadge>}
+							</h3>
+						);
+						const hasTags = features.length > 0 || set.weaknesses.length > 0;
+
+						return (
+							<div
+								key={set.id}
+								className={`flex flex-col border-l-2 pl-2.5 ${
+									set.titleLoaded
+										? "border-[var(--hue)]/40"
+										: "border-dashed border-pip"
+								}`}
+							>
+								{set.titleLoaded || !hasTags ? (
+									<>
+										{heading}
+										{hasTags && tags}
+									</>
+								) : (
+									<details>
+										<summary className="cursor-pointer">{heading}</summary>
+										{tags}
+									</details>
 								)}
 							</div>
 						);
