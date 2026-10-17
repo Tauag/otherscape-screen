@@ -57,6 +57,7 @@ export function TabBar({ id }: { id: string }) {
 			<Link
 				key={tab.segment}
 				href={href}
+				prefetch
 				aria-current={active ? "page" : undefined}
 				className={`${KEY} ${active ? "-mt-px border-t-2 border-primary text-text" : "text-muted"}`}
 			>
@@ -78,6 +79,8 @@ export function TabBar({ id }: { id: string }) {
 		);
 	};
 
+	// prefetch (full, not auto): every page here is dynamic, so auto stops at
+	// loading.tsx and a tap still waits on a possibly cold server function.
 	const half = Math.ceil(TABS.length / 2);
 
 	return (
@@ -92,6 +95,7 @@ export function TabBar({ id }: { id: string }) {
 
 			<Link
 				href={roll}
+				prefetch
 				aria-label="Build a roll"
 				className="flex items-center justify-center"
 			>
