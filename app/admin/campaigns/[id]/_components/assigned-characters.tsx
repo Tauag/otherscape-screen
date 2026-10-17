@@ -14,7 +14,8 @@ import { migrate } from "@/lib/character/migrate";
 type InvitedUser = {
 	user_id: string | null;
 	display_name: string | null;
-	email: string;
+	email: string | null;
+	discord_id: string | null;
 };
 
 type AssignedRow = {
@@ -53,7 +54,12 @@ function monogram(name: string): string {
 
 function playerName(invited: InvitedUser[] | null, ownerId: string): string {
 	const match = invited?.find((row) => row.user_id === ownerId);
-	return match?.display_name ?? match?.email ?? "Unknown player";
+	return (
+		match?.display_name ??
+		match?.email ??
+		(match?.discord_id && `Discord ${match.discord_id}`) ??
+		"Unknown player"
+	);
 }
 
 export async function AssignedCharacters({

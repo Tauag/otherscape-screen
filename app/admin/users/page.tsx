@@ -1,21 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { requireAdmin } from "@/app/admin/_lib/require-admin";
+import { InviteForm } from "@/app/admin/users/_components/invite-form";
+import {
+	type InvitedUser,
+	UserRow,
+} from "@/app/admin/users/_components/user-row";
 import { RosterAppBar } from "@/components/roster-app-bar";
-import { LABEL } from "@/components/styles";
 import { accountName } from "@/lib/account-name";
-import { relativeTime } from "@/lib/relative-time";
 
 export const metadata: Metadata = { title: "Admin" };
-
-type InvitedUser = {
-	email: string;
-	role: string;
-	invited_at: string;
-	user_id: string | null;
-	display_name: string | null;
-	last_sign_in_at: string | null;
-};
 
 export default async function AdminPage() {
 	const { supabase, user } = await requireAdmin();
@@ -32,6 +25,7 @@ export default async function AdminPage() {
 			/>
 
 			<div className="flex flex-1 flex-col gap-1 px-5 pb-4">
+				<InviteForm />
 				{error && (
 					<p className="font-sans text-sm text-negative-text">
 						Could not load invited users. Reload the page.
@@ -40,38 +34,13 @@ export default async function AdminPage() {
 
 				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 					{users?.map((invited) => (
-						<UserRow key={invited.email} invited={invited} />
+						<UserRow
+							key={invited.email ?? invited.discord_id}
+							invited={invited}
+						/>
 					))}
 				</div>
 			</div>
 		</main>
-	);
-}
-
-function UserRow({ invited }: { invited: InvitedUser }) {
-	const className =
-		"flex items-center justify-between gap-3 rounded-md border border-border bg-surface px-3 py-2.5";
-	const content = (
-		<div className="flex min-w-0 flex-col gap-0.5">
-			<span className="truncate font-sans text-sm text-text">
-				{invited.display_name ?? invited.email}
-			</span>
-			<span className={LABEL}>
-				{invited.display_name && `${invited.email} · `}
-				{invited.role}
-				{" · "}
-				{invited.last_sign_in_at
-					? `active ${relativeTime(invited.last_sign_in_at)}`
-					: "never signed in"}
-			</span>
-		</div>
-	);
-
-	if (!invited.user_id) return <div className={className}>{content}</div>;
-
-	return (
-		<Link href={`/admin/users/${invited.user_id}`} className={className}>
-			{content}
-		</Link>
 	);
 }

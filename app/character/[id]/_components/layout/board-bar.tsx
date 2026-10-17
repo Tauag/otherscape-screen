@@ -43,7 +43,7 @@ export function BoardBar({
 				<OtherscapeIcon themes={character.themes} />
 			</Link>
 
-			<div className="flex min-w-0 flex-col gap-0.5">
+			<div className="flex min-w-0 w-full flex-col gap-0.5">
 				<NameField className="-my-2 py-2" />
 				{character.essence && (
 					<span className="font-display text-[10px] font-semibold tracking-[0.18em] text-dim uppercase">

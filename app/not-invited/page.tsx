@@ -12,7 +12,7 @@ export default function NotInvitedPage() {
 				</h1>
 				<p className="max-w-xs text-sm text-dim">
 					This account isn&apos;t invited yet. Ask whoever runs your game to add
-					your email.
+					your email or Discord ID.
 				</p>
 			</div>
 

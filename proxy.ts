@@ -42,7 +42,9 @@ export async function proxy(request: NextRequest) {
 			return undefined;
 		}
 	})();
-	const email = claims?.email as string | undefined;
+	// A Discord-ID invite can belong to an account with no email claim, so fall
+	// back to the user id. decideRoute only needs to know someone is signed in.
+	const email = (claims?.email ?? claims?.sub) as string | undefined;
 	// The access token hook sets invited at issue time. Anything but true (hook
 	// off, old token, or invited since) re-checks live so nobody is locked out.
 	// lazy: a true claim is trusted, so a revoked invite lasts until the token
