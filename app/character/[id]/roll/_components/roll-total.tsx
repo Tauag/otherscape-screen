@@ -126,7 +126,7 @@ export function RollTotal({
 
 	return (
 		<div className="shrink-0 border-t border-edge bg-chrome">
-			<div className="flex items-stretch gap-3 pt-4 pb-4">
+			<div className="flex items-stretch gap-3 pt-4 pb-4 px-3 sm:px-0">
 				<div className="flex flex-1 gap-2">
 					<Button
 						type="button"
