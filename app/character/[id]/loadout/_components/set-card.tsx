@@ -38,7 +38,7 @@ export function SetCard({ set }: { set: LoadoutSet }) {
 							text: event.target.value,
 						})
 					}
-					className={`min-h-11 w-full rounded-sm bg-bg px-2 font-display text-[15px] tracking-[0.03em] text-text uppercase ${
+					className={`min-h-11 w-full rounded-sm bg-bg px-2 font-display text-[15px] tracking-[0.03em] text-text ${
 						set.titleBurnt ? "line-through" : ""
 					}`}
 				/>
