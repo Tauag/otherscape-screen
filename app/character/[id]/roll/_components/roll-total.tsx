@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import { useParams } from "next/navigation";
+import { unstable_isUnrecognizedActionError, useParams } from "next/navigation";
 import { useState } from "react";
 import { CopyIcon } from "@/app/character/[id]/_components/icons";
 import { requestRoll, rollDice } from "@/app/character/[id]/_lib/roll-action";
@@ -24,6 +24,12 @@ function rollCommand(total: number): string {
 // Discord post does and the table sees it together.
 const TUMBLE_MS = 800;
 const d6 = () => Math.floor(Math.random() * 6) + 1;
+
+function serverError(error: unknown) {
+	// A tab left open across a deploy has stale action IDs; a reload fixes it.
+	if (unstable_isUnrecognizedActionError(error)) window.location.reload();
+	return { error: "Could not reach the server." };
+}
 
 const OUTCOME_CLASS = {
 	"Strong hit": "text-positive",
@@ -84,9 +90,7 @@ export function RollTotal({
 			? undefined
 			: setInterval(() => setFaces([d6(), d6()]), 90);
 		const [result] = await Promise.all([
-			rollDice(id, lines, mitigating).catch(() => ({
-				error: "Could not reach the server.",
-			})),
+			rollDice(id, lines, mitigating).catch(serverError),
 			new Promise((resolve) => setTimeout(resolve, TUMBLE_MS)),
 		]);
 		clearInterval(tumble);
@@ -101,9 +105,7 @@ export function RollTotal({
 
 	async function sendRequest() {
 		setRequest({ state: "sending" });
-		const result = await requestRoll(id, lines, mitigating).catch(() => ({
-			error: "Could not reach the server.",
-		}));
+		const result = await requestRoll(id, lines, mitigating).catch(serverError);
 		if (result.error === null && result.posted) {
 			setRequest(null);
 			return;

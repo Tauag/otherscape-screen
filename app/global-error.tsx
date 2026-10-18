@@ -2,6 +2,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 import NextError from "next/error";
+import { unstable_isUnrecognizedActionError } from "next/navigation";
 import { useEffect } from "react";
 
 export default function GlobalError({
@@ -10,6 +11,7 @@ export default function GlobalError({
 	error: Error & { digest?: string };
 }) {
 	useEffect(() => {
+		if (unstable_isUnrecognizedActionError(error)) window.location.reload();
 		Sentry.captureException(error);
 	}, [error]);
 
