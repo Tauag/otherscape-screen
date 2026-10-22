@@ -442,7 +442,13 @@ export function rollLabels(character: Character, pick: RollPick): string[] {
 	const { tags, statuses } = picked(character, pick);
 	return [
 		...(pick.rollWith ? [`Rolling with ${pick.rollWith}`] : []),
-		...[...tags, ...statuses].map((entry) => entry.label),
+		// Rolling with a domain forbids a burn, so power() ignores it there too.
+		...tags.map((entry) =>
+			entry.tag.burnValue != null && !pick.rollWith
+				? `${entry.label} [Burnt]`
+				: entry.label,
+		),
+		...statuses.map((entry) => entry.label),
 		...(pick.modifier !== 0 ? ["Modifier"] : []),
 	];
 }

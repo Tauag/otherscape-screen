@@ -12,6 +12,7 @@ import {
 	finalizeRollPick,
 	NO_PICK,
 	rollGroups,
+	rollLabels,
 	rollOrder,
 	startMitigationPick,
 	toRollSelection,
@@ -33,6 +34,15 @@ test("a burnt tag carries this roll's override instead of the default", () => {
 	assert.equal(selection.tags[0].burnValue, 5);
 	// The override is the pick's alone: the document still reads as it did.
 	assert.equal(sample.themes[0].powerTags[2].burnValue, undefined);
+});
+
+test("a burnt tag's label says so, except when rolling with a domain", () => {
+	const ids = ["pt-2", "pt-3"];
+	const [plain, burnt] = rollLabels(sample, pick({ ids }));
+	assert.ok(!plain.includes("[Burnt]"));
+	assert.ok(burnt.endsWith(" [Burnt]"));
+	const domain = rollLabels(sample, pick({ ids, rollWith: "mythos" }));
+	assert.ok(!domain.some((label) => label.includes("[Burnt]")));
 });
 
 test("an unburnt tag carries no burn value", () => {
