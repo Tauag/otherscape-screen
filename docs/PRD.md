@@ -368,8 +368,9 @@ This is what a player uses while a session runs.
   rather than refusing it. A burnt power tag contributes 3 instead of 1. Theme
   specials change that number, so treat 3 as the default and let the player
   override it here, per burn, when building the roll.
-- Support rolling with Self, Mythos, or Noise: when the action is generally
-  about that domain, Power comes from the count of themes of that type instead
+- Support rolling with Self, Mythos, or Noise, alone or combined (one to three):
+  when the action is generally about those domains, Power comes from the count
+  of themes of those types instead
   of the counted tags. Negative tags and statuses still count, and the player
   cannot burn a tag for Power on that roll. Several Essence specials grant this.
 - Allow a manual modifier for the Scale gap and for MC calls.
@@ -441,9 +442,10 @@ matters here.
 Confirmed against the rulebook. O1 to O6 are closed.
 
 - **O1. Rolling with Self, Mythos, or Noise.** Rulebook p.122. When an action is
-  generally about one of the three domains (identifying or understanding a
+  generally about the three domains (identifying or understanding a
   phenomenon of that type, or resisting a transformation of that type, are the
-  common cases), the player may use the count of themes of that type as Power
+  common cases), the player may use the count of themes of one to three of
+  those types as Power
   instead of counting tags. Negative tags and statuses still apply. The player
   cannot burn a tag for Power on that roll. The MC decides which actions
   qualify.

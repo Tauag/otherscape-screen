@@ -88,7 +88,7 @@ test("rolling with Self replaces the positive tags but keeps negatives and statu
 		selection({
 			tags: [{ valence: "positive", burnValue: 5 }, { valence: "negative" }],
 			statuses: [{ valence: "positive", tier: 2 }],
-			rollWith: { type: "self", themeCount: 2 },
+			rollWith: { types: ["self"], themeCount: 2 },
 		}),
 	);
 	assert.deepEqual(lines, [

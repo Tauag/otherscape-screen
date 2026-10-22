@@ -22,7 +22,8 @@ export type RollPick = {
 	/** Tag, status, and story tag ids. The document decides the roll's order. */
 	ids: string[];
 	modifier: number;
-	rollWith: ThemeType | null;
+	/** One to three theme types the roll is made with; empty when none. */
+	rollWith: ThemeType[];
 	/**
 	 * A burnt tag's Power for this roll alone, keyed by tag id. It never reaches
 	 * the character document: the sheet's own burn toggle keeps the default.
@@ -42,7 +43,7 @@ export type RollPick = {
 export const NO_PICK: RollPick = {
 	ids: [],
 	modifier: 0,
-	rollWith: null,
+	rollWith: [],
 	burnValues: {},
 	lastRolledIds: [],
 	mitigationLockedIds: [],
@@ -387,12 +388,14 @@ export function toRollSelection(
 		tags: tags.map((entry) => entry.tag),
 		statuses: statuses.map((entry) => entry.status),
 		modifier: pick.modifier,
-		rollWith: pick.rollWith && {
-			type: pick.rollWith,
-			themeCount: character.themes.filter(
-				(theme) => theme.type === pick.rollWith,
-			).length,
-		},
+		rollWith: pick.rollWith.length
+			? {
+					types: pick.rollWith,
+					themeCount: character.themes.filter((theme) =>
+						pick.rollWith.includes(theme.type),
+					).length,
+				}
+			: null,
 	};
 }
 
@@ -441,10 +444,12 @@ export function rollOrder(character: Character, pick: RollPick): string[] {
 export function rollLabels(character: Character, pick: RollPick): string[] {
 	const { tags, statuses } = picked(character, pick);
 	return [
-		...(pick.rollWith ? [`Rolling with ${pick.rollWith}`] : []),
+		...(pick.rollWith.length
+			? [`Rolling with ${pick.rollWith.join(" + ")}`]
+			: []),
 		// Rolling with a domain forbids a burn, so power() ignores it there too.
 		...tags.map((entry) =>
-			entry.tag.burnValue != null && !pick.rollWith
+			entry.tag.burnValue != null && !pick.rollWith.length
 				? `${entry.label} [Burnt]`
 				: entry.label,
 		),

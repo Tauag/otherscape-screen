@@ -41,7 +41,7 @@ test("a burnt tag's label says so, except when rolling with a domain", () => {
 	const [plain, burnt] = rollLabels(sample, pick({ ids }));
 	assert.ok(!plain.includes("[Burnt]"));
 	assert.ok(burnt.endsWith(" [Burnt]"));
-	const domain = rollLabels(sample, pick({ ids, rollWith: "mythos" }));
+	const domain = rollLabels(sample, pick({ ids, rollWith: ["mythos"] }));
 	assert.ok(!domain.some((label) => label.includes("[Burnt]")));
 });
 
@@ -84,16 +84,27 @@ test("a negative story tag never carries a burn value", () => {
 	assert.equal(selection.tags[0].burnValue, null);
 });
 
-test("rolling with a theme type carries the count of themes of that type", () => {
+test("rolling with theme types carries the count of themes of those types", () => {
 	// The sample holds one self, one mythos, and two noise themes.
-	const selection = toRollSelection(sample, pick({ rollWith: "noise" }));
-	assert.deepEqual(selection.rollWith, { type: "noise", themeCount: 2 });
+	const selection = toRollSelection(sample, pick({ rollWith: ["noise"] }));
+	assert.deepEqual(selection.rollWith, { types: ["noise"], themeCount: 2 });
+
+	const combined = toRollSelection(
+		sample,
+		pick({ rollWith: ["self", "noise"] }),
+	);
+	assert.equal(combined.rollWith?.themeCount, 3);
+	assert.equal(toRollSelection(sample, NO_PICK).rollWith, null);
+	assert.equal(
+		rollLabels(sample, pick({ rollWith: ["self", "noise"] }))[0],
+		"Rolling with self + noise",
+	);
 });
 
 test("rolling with a domain stops a positive tag counting, and keeps the weakness", () => {
 	const selection = toRollSelection(
 		sample,
-		pick({ ids: ["pt-2", "wt-1"], rollWith: "noise" }),
+		pick({ ids: ["pt-2", "wt-1"], rollWith: ["noise"] }),
 	);
 	// 2 for the two noise themes, minus 1 for the weakness, and the power tag
 	// contributes nothing (O1).
@@ -247,7 +258,7 @@ test("rollOrder names the lines in document order, not tap order", () => {
 test("a rollWith line offsets the ids by one, and a modifier line trails past them", () => {
 	const taps = pick({
 		ids: ["pt-1", "st-1"],
-		rollWith: "noise",
+		rollWith: ["noise"],
 		modifier: -2,
 	});
 	const ids = rollOrder(sample, taps);

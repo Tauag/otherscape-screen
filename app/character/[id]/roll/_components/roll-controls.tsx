@@ -1,15 +1,14 @@
 "use client";
 
 import { Button } from "@base-ui/react/button";
-import { Radio } from "@base-ui/react/radio";
-import { RadioGroup } from "@base-ui/react/radio-group";
+import { Toggle } from "@base-ui/react/toggle";
+import { ToggleGroup } from "@base-ui/react/toggle-group";
 import { useId } from "react";
 import { useRollSelection } from "@/app/character/[id]/_components/roll-selection";
 import { LABEL } from "@/components/styles";
 import type { ThemeType } from "@/lib/character/types";
 
-const OPTIONS: { value: string; label: string }[] = [
-	{ value: "none", label: "None" },
+const OPTIONS: { value: ThemeType; label: string }[] = [
 	{ value: "self", label: "Self" },
 	{ value: "mythos", label: "Mythos" },
 	{ value: "noise", label: "Noise" },
@@ -18,7 +17,7 @@ const OPTIONS: { value: string; label: string }[] = [
 const STEP =
 	"grid size-11 place-items-center border border-border font-display text-[20px] text-quiet";
 const SEGMENT =
-	"grid min-h-11 cursor-pointer place-items-center border-r border-border px-1 font-display text-[13px] font-semibold tracking-[0.05em] text-dim last:border-r-0 data-checked:bg-primary/12 data-checked:text-primary";
+	"grid min-h-11 cursor-pointer place-items-center border-r border-border px-1 font-display text-[13px] font-semibold tracking-[0.05em] text-dim last:border-r-0 data-pressed:bg-primary/12 data-pressed:text-primary";
 
 /** The manual modifier, and the theme type the roll replaces its tags with. */
 export function RollControls() {
@@ -67,27 +66,27 @@ export function RollControls() {
 				<span id={label} className={LABEL}>
 					Rolling with
 				</span>
-				<RadioGroup
+				<ToggleGroup
+					multiple
 					aria-labelledby={label}
-					value={pick.rollWith ?? "none"}
+					value={pick.rollWith}
 					onValueChange={(value) =>
 						setPick((current) => ({
 							...current,
-							rollWith: value === "none" ? null : (value as ThemeType),
+							// Fixed order, so the label doesn't depend on tap order.
+							rollWith: OPTIONS.map((o) => o.value).filter((v) =>
+								value.includes(v),
+							),
 						}))
 					}
-					className="grid grid-cols-4 overflow-hidden rounded-sm border border-border"
+					className="grid grid-cols-3 overflow-hidden rounded-sm border border-border"
 				>
 					{OPTIONS.map((option) => (
-						<Radio.Root
-							key={option.value}
-							value={option.value}
-							className={SEGMENT}
-						>
+						<Toggle key={option.value} value={option.value} className={SEGMENT}>
 							{option.label}
-						</Radio.Root>
+						</Toggle>
 					))}
-				</RadioGroup>
+				</ToggleGroup>
 			</div>
 		</div>
 	);

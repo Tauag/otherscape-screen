@@ -161,7 +161,7 @@ The board is the desktop home at `lg`. It fits 1440x900 without scrolling.
 │ build this  │ grapple…    │ we all owe… │  the door is open    crispy  │
 │ theme       │ bulky…      │ Maro · …    │                              │
 ├─────────────┴─────────────┴─────────────┴──────────────────────────────┤
-│ MOD [−][0][+]  ROLLING WITH [None|Self +2|Mythos|Noise]  POWER +3 [ROLL]│
+│ MOD [−][0][+]  ROLLING WITH [Self +2|Mythos|Noise]  POWER +3 [ROLL]│
 └────────────────────────────────────────────────────────────────────────┘
 ```
 

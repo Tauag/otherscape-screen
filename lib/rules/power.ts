@@ -1,4 +1,4 @@
-import type { PowerTag, ThemeType, Valence } from "../character/types.ts";
+import type { PowerTag, Valence } from "../character/types.ts";
 import { DEFAULT_BURN_VALUE } from "./constants.ts";
 
 export type PowerLine = { value: number; counted: boolean };
@@ -17,7 +17,8 @@ export type RollSelection = {
 	tags: SelectedTag[];
 	statuses: SelectedStatus[];
 	modifier: number;
-	rollWith?: { type: ThemeType; themeCount: number } | null;
+	/** The theme types rolled with, and the count of the character's themes of those types. */
+	rollWith?: { themeCount: number } | null;
 };
 
 /** The burn value a selected tag carries, or null when the tag is not burnt. */
