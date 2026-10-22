@@ -7,18 +7,14 @@ import { CopyIcon } from "@/app/character/[id]/_components/icons";
 import { requestRoll, rollDice } from "@/app/character/[id]/_lib/roll-action";
 import {
 	type Dice,
+	diceMaidenArgs,
 	outcome,
 	type RollLine,
+	requestBlock,
 } from "@/app/character/[id]/_lib/roll-message";
 import { signed } from "@/app/character/[id]/_lib/roll-selection";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { LABEL, QUIET, REMOVE_BUTTON } from "@/components/styles";
-
-/** The Discord slash command that reproduces this roll's power modifier. */
-function rollCommand(total: number): string {
-	if (total === 0) return "/roll 2d6";
-	return `/roll 2d6${total > 0 ? "+" : ""}${total}`;
-}
 
 // The tumble runs at least this long, so the reveal lands about when the
 // Discord post does and the table sees it together.
@@ -29,6 +25,52 @@ function serverError(error: unknown) {
 	// A tab left open across a deploy has stale action IDs; a reload fixes it.
 	if (unstable_isUnrecognizedActionError(error)) window.location.reload();
 	return { error: "Could not reach the server." };
+}
+
+async function copyText(text: string): Promise<boolean> {
+	try {
+		await navigator.clipboard.writeText(text);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+function CopyBox({
+	text,
+	label,
+	onCopy,
+}: {
+	text: string;
+	label: string;
+	onCopy: () => void;
+}) {
+	return (
+		<div className="flex items-stretch rounded-sm border border-border bg-bg">
+			<pre className="min-w-0 flex-1 overflow-x-auto px-3 py-3 font-mono text-sm text-text">
+				{text}
+			</pre>
+			<Button
+				type="button"
+				aria-label={label}
+				onClick={onCopy}
+				className={`${REMOVE_BUTTON} w-11`}
+			>
+				<CopyIcon />
+			</Button>
+		</div>
+	);
+}
+
+function CopyStatus({ copied }: { copied: boolean | null }) {
+	if (copied === null) return null;
+	return copied ? (
+		<p className="font-sans text-xs text-positive">Copied.</p>
+	) : (
+		<p className="font-sans text-xs text-negative">
+			Could not copy. Select the text above.
+		</p>
+	);
 }
 
 const OUTCOME_CLASS = {
@@ -70,17 +112,24 @@ export function RollTotal({
 	const [open, setOpen] = useState(false);
 	const [roll, setRoll] = useState<Roll>({ state: "rolling" });
 	const [faces, setFaces] = useState<Dice>([1, 1]);
-	const [copied, setCopied] = useState(false);
+	// null until the player taps copy; false when the clipboard refused.
+	const [copied, setCopied] = useState<boolean | null>(null);
 	// Snapshot on roll, so clearing the tag selection right after doesn't
 	// change the power this dialog is already showing.
 	const [rolledPower, setRolledPower] = useState(total);
+	const [rolledBlock, setRolledBlock] = useState("");
 	const [request, setRequest] = useState<
-		{ state: "sending" } | { state: "failed"; error: string } | null
+		| { state: "sending" }
+		| { state: "done"; posted: boolean; error: string | null }
+		| null
 	>(null);
+	const [blockCopied, setBlockCopied] = useState<boolean | null>(null);
 
 	async function start() {
 		setRolledPower(total);
-		setCopied(false);
+		// Snapshot too: onRoll() below clears the lines the block is built from.
+		setRolledBlock(diceMaidenArgs(lines, mitigating));
+		setCopied(null);
 		setRoll({ state: "rolling" });
 		setOpen(true);
 		onRoll();
@@ -105,21 +154,20 @@ export function RollTotal({
 
 	async function sendRequest() {
 		setRequest({ state: "sending" });
+		setBlockCopied(null);
 		const result = await requestRoll(id, lines, mitigating).catch(serverError);
-		if (result.error === null && result.posted) {
-			setRequest(null);
-			return;
-		}
 		setRequest({
-			state: "failed",
-			error: result.error ?? "Not posted to Discord. Ask the GM aloud.",
+			state: "done",
+			posted: result.error === null && result.posted,
+			error: result.error,
 		});
 	}
 
 	async function copy() {
-		await navigator.clipboard.writeText(rollCommand(rolledPower));
-		setCopied(true);
+		setCopied(await copyText(rolledBlock));
 	}
+
+	const block = requestBlock(lines, mitigating);
 
 	const score =
 		roll.state === "done" ? roll.dice[0] + roll.dice[1] + rolledPower : 0;
@@ -162,14 +210,27 @@ export function RollTotal({
 				onOpenChange={(next) => {
 					if (!next) setRequest(null);
 				}}
-				title={
-					request?.state === "sending" ? "Requesting roll" : "Request not sent"
-				}
+				title="Request roll"
 				cancelLabel="Close"
 			>
-				<p role="status" className="font-sans text-sm text-dim">
-					{request?.state === "failed" ? request.error : "Requesting…"}
-				</p>
+				{request?.state === "done" && !request.posted ? (
+					<>
+						<p role="status" className="font-sans text-sm text-dim">
+							{request.error ?? "Not posted to Discord."} Copy this and send it
+							to the GM instead:
+						</p>
+						<CopyBox
+							text={block}
+							label="Copy request"
+							onCopy={async () => setBlockCopied(await copyText(block))}
+						/>
+						<CopyStatus copied={blockCopied} />
+					</>
+				) : (
+					<p role="status" className="font-sans text-sm text-dim">
+						{request?.state === "done" ? "Posted to Discord." : "Requesting…"}
+					</p>
+				)}
 			</ConfirmDialog>
 
 			<ConfirmDialog
@@ -181,24 +242,11 @@ export function RollTotal({
 				{roll.state === "failed" ? (
 					<>
 						<p className="font-sans text-sm text-dim">
-							{roll.error} Roll on Discord instead:
+							{roll.error} Roll on Discord instead: type /roll, pick it from the
+							menu, then paste.
 						</p>
-						<div className="flex items-stretch rounded-sm border border-border bg-bg">
-							<p className="min-w-0 flex-1 self-center truncate px-3 py-3 font-mono text-sm text-text">
-								{rollCommand(rolledPower)}
-							</p>
-							<Button
-								type="button"
-								aria-label="Copy command"
-								onClick={copy}
-								className={`${REMOVE_BUTTON} w-11`}
-							>
-								<CopyIcon />
-							</Button>
-						</div>
-						{copied && (
-							<p className="font-sans text-xs text-positive">Copied.</p>
-						)}
+						<CopyBox text={rolledBlock} label="Copy roll" onCopy={copy} />
+						<CopyStatus copied={copied} />
 					</>
 				) : (
 					<>
@@ -233,11 +281,21 @@ export function RollTotal({
 									<span className="font-sans text-xs text-dim">
 										{roll.posted
 											? "Posted to Discord."
-											: "Not posted to Discord. Tell the table your result."}
+											: "Not posted to Discord. Tell the table your result or copy the dice maiden command below."}
 									</span>
 								</>
 							)}
 						</p>
+						{roll.state === "done" && !roll.posted && (
+							<>
+								<p className="font-sans text-xs text-dim">
+									For Dice Maiden: type /roll, pick it from the menu, then
+									paste.
+								</p>
+								<CopyBox text={rolledBlock} label="Copy roll" onCopy={copy} />
+								<CopyStatus copied={copied} />
+							</>
+						)}
 					</>
 				)}
 				{canMitigate && roll.state !== "rolling" && (

@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
 	cleanLines,
+	diceMaidenArgs,
 	outcome,
+	requestBlock,
 	requestMessage,
 	rollMessage,
 } from "../roll-message.ts";
@@ -46,6 +48,35 @@ test("the post scores only counted lines and pings nobody", () => {
 	assert.equal(embed.title, "9 · Mixed hit");
 	assert.match(embed.description, /\\\*fast\\\*/);
 	assert.match(embed.description, /~~.*Hurt-2~~/);
+});
+
+test("the request block lists every line and marks the uncounted ones", () => {
+	assert.equal(
+		requestBlock(
+			[
+				{ label: "Sharp `eyes`", value: 2, counted: true },
+				{ label: "Hurt-2", value: -2, counted: false },
+			],
+			true,
+		),
+		"```\nMitigation Roll\nTotal Power +2\n+2 Sharp 'eyes'\n−2 Hurt-2 (not counted)\n```",
+	);
+});
+
+test("the Dice Maiden args are one line with the power as the modifier", () => {
+	const lines = [
+		{ label: "Sharp\neyes", value: 2, counted: true },
+		{ label: "Hurt-2", value: -2, counted: false },
+	];
+	assert.equal(
+		diceMaidenArgs(lines, false),
+		"2d6+2 ! Power Roll: +2 Sharp eyes, −2 Hurt-2 (not counted)",
+	);
+	assert.match(
+		diceMaidenArgs([{ ...lines[0], value: -1 }], true),
+		/^2d6-1 ! Mitigation/,
+	);
+	assert.match(diceMaidenArgs([], false), /^2d6 ! /);
 });
 
 test("a request lists the tags and power but rolls no dice", () => {

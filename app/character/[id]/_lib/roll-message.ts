@@ -69,6 +69,38 @@ function breakdownOf(lines: RollLine[]): string[] {
 const authorOf = (name: string, mitigation: boolean) =>
 	`${name.trim().slice(0, MAX_LABEL) || "Unnamed"}${mitigation ? " · mitigation" : ""}`;
 
+/**
+ * Text to paste into Discord next to a Dice Maiden roll, so the GM sees what
+ * the power is made of. A code fence keeps player text from restyling it.
+ */
+export function requestBlock(lines: RollLine[], mitigation: boolean): string {
+	return [
+		"```",
+		`${mitigation ? "Mitigation Roll" : "Power Roll"}`,
+		`Total Power ${signed(powerOf(lines))}`,
+		...lines.map(
+			(line) =>
+				`${signed(line.value)} ${line.label.replaceAll("`", "'")}${line.counted ? "" : " (not counted)"}`,
+		),
+		"```",
+	].join("\n");
+}
+
+/**
+ * What goes in the `dice` option of Dice Maiden's /roll: the 2d6 with this
+ * power, and everything after "!" is a comment it echoes. Discord only runs a
+ * slash command picked from its menu, so the player types /roll and pastes
+ * this. One line, because a slash option cannot hold a newline.
+ */
+export function diceMaidenArgs(lines: RollLine[], mitigation: boolean): string {
+	const power = powerOf(lines);
+	const parts = lines.map(
+		(line) =>
+			`${signed(line.value)} ${line.label.replace(/\s+/g, " ")}${line.counted ? "" : " (not counted)"}`,
+	);
+	return `2d6${power > 0 ? "+" : ""}${power || ""} ! ${mitigation ? "Mitigation Roll" : "Power Roll"}: ${parts.join(", ")}`;
+}
+
 /** Asks the GM to approve a roll: the tags, no dice. */
 export function requestMessage(
 	name: string,
