@@ -101,7 +101,7 @@ export function BoardTable({ board }: { board: RollBoard }) {
 						onCancel={cancelMitigation}
 					/>
 				) : (
-					<RollControls />
+					<RollControls collapsible />
 				)}
 
 				<RollTotal

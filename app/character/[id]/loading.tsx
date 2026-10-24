@@ -34,7 +34,7 @@ export default function Loading() {
 					))}
 				</div>
 				{/* Mirrors BoardTable. Heights match the real rows: LabelAction 44,
-				    StatusCard 86, story tag chip 34, RollControls 149, RollTotal 107. */}
+				    StatusCard 86, story tag chip 34, RollControls 46, RollTotal 107. */}
 				<div className="flex h-[calc(100dvh-62px)] w-[340px] shrink-0 flex-col border-l border-edge bg-chrome/40 xl:w-[370px]">
 					<div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4">
 						{[
@@ -53,7 +53,7 @@ export default function Loading() {
 						))}
 					</div>
 					<div className="flex shrink-0 flex-col gap-3 border-t border-edge bg-chrome p-3">
-						<div className="h-[149px] shrink-0 rounded-[5px] border border-hairline bg-recess" />
+						<div className="h-[46px] shrink-0 rounded-[5px] border border-hairline bg-recess" />
 						<div className="h-[107px] shrink-0 rounded-[5px] bg-surface" />
 					</div>
 				</div>
