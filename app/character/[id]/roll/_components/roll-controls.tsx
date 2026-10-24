@@ -112,11 +112,9 @@ export function RollControls({
 	].join(" · ");
 
 	return (
-		<Collapsible.Root className={card}>
-			<Collapsible.Trigger className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 px-3 font-display text-[13px] font-semibold tracking-[0.05em] text-dim">
-				<span className={pick.modifier !== 0 ? "text-burnt" : ""}>
-					{summary}
-				</span>
+		<Collapsible.Root className="rounded-[5px] border border-raised bg-recess">
+			<Collapsible.Trigger className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 px-3 font-display text-[13px] font-semibold tracking-[0.05em] text-burnt">
+				<span>{summary}</span>
 				<span
 					aria-hidden
 					className="transition-transform group-data-panel-open:rotate-180"
