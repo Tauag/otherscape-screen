@@ -5,6 +5,7 @@ import { test } from "node:test";
 import {
 	CREW_THEME_SPECIALS_COUNT,
 	EFFECT_NAMES,
+	ESSENCE_NAMES,
 	EVOLUTION_MOMENT_NAMES,
 	LOADOUT_SPECIALS_COUNT,
 	POWER_LETTERS,
@@ -150,6 +151,11 @@ test("the fallback reference holds the names it knows, and nothing it does not",
 	assert.deepEqual(
 		reference.powerOptions,
 		POWER_OPTION_NAMES.map((name) => ({ name, text: "" })),
+	);
+
+	assert.deepEqual(
+		reference.essences,
+		ESSENCE_NAMES.map((name) => ({ name, text: "" })),
 	);
 
 	// The mitigation rows, the Scale steps, and the Going Out In a Blaze rules

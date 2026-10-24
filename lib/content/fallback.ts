@@ -1,4 +1,5 @@
 import type {
+	Essence,
 	PowerQuestionLetter,
 	ThemeType,
 	WeaknessQuestionLetter,
@@ -66,6 +67,18 @@ export const EFFECT_NAMES = [
 	"Discover",
 	"Extra Feat",
 ] as const;
+
+/** The eight Essences, in the order the Essence table prints them (PRD 3). */
+export const ESSENCE_NAMES = [
+	"Real",
+	"Avatar",
+	"Conduit",
+	"Singularity",
+	"Spiritualist",
+	"Cyborg",
+	"Transhuman",
+	"Nexus",
+] as const satisfies readonly Essence[];
 
 /** The three ways to spend or gain Power the cheatsheet lists (PRD 7.10). */
 export const POWER_OPTION_NAMES = [

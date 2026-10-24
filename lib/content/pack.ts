@@ -6,6 +6,7 @@ import type {
 import {
 	CREW_THEME_SPECIALS_COUNT,
 	EFFECT_NAMES,
+	ESSENCE_NAMES,
 	EVOLUTION_MOMENT_NAMES,
 	FALLBACK_THEMEBOOKS,
 	LOADOUT_SPECIALS_COUNT,
@@ -55,6 +56,8 @@ export type Reference = {
 	/** One row per Scale step. The pack decides how many; the fallback knows none. */
 	scale: Special[];
 	powerOptions: Special[];
+	/** Always the eight Essences. Each row is that Essence's special effect. */
+	essences: Special[];
 	/** The rolling rules and the degree-of-sacrifice chart for Going Out In a Blaze. */
 	blaze: Special[];
 };
@@ -107,6 +110,7 @@ export const FALLBACK_REFERENCE: Reference = {
 	mitigation: [],
 	scale: [],
 	powerOptions: POWER_OPTION_NAMES.map((name) => ({ name, text: "" })),
+	essences: ESSENCE_NAMES.map((name) => ({ name, text: "" })),
 	blaze: [],
 };
 
@@ -224,6 +228,7 @@ function normalizeReference(raw: unknown): Reference {
 			plainRow,
 			FALLBACK_REFERENCE.powerOptions,
 		),
+		essences: rows(section.essences, plainRow, FALLBACK_REFERENCE.essences),
 		blaze: rows(section.blaze, plainRow, FALLBACK_REFERENCE.blaze),
 	};
 }

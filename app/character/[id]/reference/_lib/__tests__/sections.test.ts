@@ -14,10 +14,17 @@ const all: Section[] = [
 	{ title: "Scale", rows: [] },
 ];
 
-test("the five cheatsheet sections come from the pack, in reading order", () => {
+test("the six cheatsheet sections come from the pack, in reading order", () => {
 	assert.deepEqual(
 		sections(FALLBACK_PACK.reference).map((section) => section.title),
-		["Effects", "Mitigation", "Scale", "Power options", "Going Out In a Blaze"],
+		[
+			"Effects",
+			"Mitigation",
+			"Scale",
+			"Power options",
+			"Essence Specials",
+			"Going Out In a Blaze",
+		],
 	);
 	assert.equal(sections(FALLBACK_PACK.reference)[0].rows.length, 12);
 });

@@ -96,11 +96,11 @@ reference cheatsheet) from the `content_packs` table rather than from code,
 since that text is licensed rulebook content and isn't checked into this
 repo (see `/content` in `.gitignore`).
 
-Copy `content/content_pack.sample.json` to `content/content_pack.json` and fill in
+Copy `content/content_pack.sample.json` to `content/themebooks.json` and fill in
 your own rulebook text, then upload it:
 
 ```bash
-cp content/content_pack.sample.json content/content_pack.json
+cp content/content_pack.sample.json content/themebooks.json
 npm run upload-content
 ```
 
