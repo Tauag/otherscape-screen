@@ -72,7 +72,7 @@ export function RollControls({
 
 			<div className="flex flex-col gap-1.5">
 				<span id={label} className={LABEL}>
-					Rolling with
+					Rolling with (Select 1 or more)
 				</span>
 				<ToggleGroup
 					multiple
@@ -104,9 +104,11 @@ export function RollControls({
 
 	const summary = [
 		`Mod ${pick.modifier > 0 ? "+" : ""}${pick.modifier}`,
-		pick.rollWith
-			.map((v) => OPTIONS.find((o) => o.value === v)?.label)
-			.join(", ") || "No type",
+		pick.rollWith.length
+			? `Rolling with ${pick.rollWith
+					.map((v) => OPTIONS.find((o) => o.value === v)?.label)
+					.join("+")}`
+			: "Not rolling with theme(s)",
 	].join(" · ");
 
 	return (
@@ -119,7 +121,7 @@ export function RollControls({
 					aria-hidden
 					className="transition-transform group-data-panel-open:rotate-180"
 				>
-					▾
+					▴
 				</span>
 			</Collapsible.Trigger>
 			<Collapsible.Panel className="px-3 pb-3">{body}</Collapsible.Panel>
