@@ -12,7 +12,7 @@ import { TierTrack } from "@/components/tier-track";
 import type { Status } from "@/lib/character/types";
 
 const NAME =
-	"min-w-[7ch] max-w-full bg-transparent font-display tracking-[0.04em] placeholder:text-dim field-sizing-content";
+	"min-w-[7ch] max-w-full truncate bg-transparent font-display tracking-[0.04em] placeholder:text-dim field-sizing-content";
 
 export function StatusCard({
 	status,
@@ -58,7 +58,10 @@ export function StatusCard({
 				className={`${NAME} ${className}`}
 			/>
 		) : (
-			<span className={`${NAME} ${className} ${status.name ? "" : "text-dim"}`}>
+			<span
+				title={status.name}
+				className={`${NAME} ${className} ${status.name ? "" : "text-dim"}`}
+			>
 				{status.name || "Name this status"}
 			</span>
 		);

@@ -4,7 +4,7 @@ import { Button } from "@base-ui/react/button";
 import type { MouseEvent } from "react";
 import type { Status } from "@/lib/character/types";
 
-const BOX = "h-3.5 w-9";
+const BOX = "h-3.5 w-full";
 const LIT = `${BOX} bg-[var(--hue)] shadow-[0_0_8px_color-mix(in_oklab,var(--hue)_55%,transparent)]`;
 const UNLIT = `${BOX} border border-[var(--hue)]/30`;
 
@@ -23,7 +23,7 @@ export function TierTrack({
 	return (
 		<fieldset
 			aria-label={`Tier, ${tier} of ${status.limit} marked`}
-			className="m-0 flex flex-wrap gap-1.5 border-0 p-0"
+			className="m-0 flex gap-1.5 border-0 p-0"
 		>
 			{status.tiers.map((marked, index) => (
 				<Button
@@ -33,7 +33,7 @@ export function TierTrack({
 					aria-pressed={marked}
 					aria-label={label(index + 1, marked)}
 					onClick={(event) => onTier(index + 1, marked, event)}
-					className="flex h-9 w-9 items-center justify-center"
+					className="flex h-9 min-w-0 max-w-9 flex-1 items-center justify-center"
 				>
 					<span aria-hidden className={marked ? LIT : UNLIT} />
 				</Button>
