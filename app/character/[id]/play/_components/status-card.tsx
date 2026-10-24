@@ -53,7 +53,7 @@ export function StatusCard({
 						name: event.target.value,
 					})
 				}
-				aria-label="Status name"
+				aria-label={`${status.valence === "negative" ? "Negative s" : "S"}tatus name`}
 				placeholder="Name this status"
 				className={`${NAME} ${className}`}
 			/>
@@ -62,6 +62,9 @@ export function StatusCard({
 				title={status.name}
 				className={`${NAME} ${className} ${status.name ? "" : "text-dim"}`}
 			>
+				{status.valence === "negative" && (
+					<span className="sr-only">Negative: </span>
+				)}
 				{status.name || "Name this status"}
 			</span>
 		);
@@ -113,7 +116,14 @@ export function StatusCard({
 	const body = (
 		<>
 			<div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
-				{name("text-base font-semibold text-[var(--hue-text)]")}
+				<div className="flex min-w-0 items-center gap-1.5 text-base text-[var(--hue-text)]">
+					{status.valence === "negative" && (
+						<span aria-hidden className="shrink-0 font-display font-bold">
+							!
+						</span>
+					)}
+					{name("text-base font-semibold text-[var(--hue-text)]")}
+				</div>
 
 				<TierTrack
 					status={status}

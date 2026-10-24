@@ -34,6 +34,14 @@ export function StoryTagChip({
 					: "border-[var(--hue)]/40 bg-[var(--hue)]/7"
 			}`}
 		>
+			{tag.valence === "negative" && (
+				<span
+					aria-hidden
+					className="pr-1.5 font-display font-bold text-[var(--hue-text)]"
+				>
+					!
+				</span>
+			)}
 			<Input
 				type="text"
 				autoComplete="off"
@@ -46,7 +54,7 @@ export function StoryTagChip({
 						name: event.target.value,
 					})
 				}
-				aria-label="Story tag"
+				aria-label={`${tag.valence === "negative" ? "Negative s" : "S"}tory tag`}
 				placeholder="Name this tag"
 				className={`${NAME} ${
 					tag.burnt ? "text-muted line-through" : "text-[var(--hue-text)]"

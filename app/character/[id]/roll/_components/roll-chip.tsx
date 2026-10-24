@@ -70,6 +70,15 @@ export function RollChip({
 
 	const body = (
 		<>
+			{/* lazy: a signed value already says negative, so the glyph only fills in when it's absent. */}
+			{valence === "negative" && value === undefined && (
+				<>
+					<span aria-hidden className={`font-display font-bold ${ink}`}>
+						!
+					</span>
+					<span className="sr-only">Negative:</span>
+				</>
+			)}
 			<span
 				className={`font-display ${prominent ? "text-[15px] font-bold" : "text-[13px]"} ${ink}`}
 			>

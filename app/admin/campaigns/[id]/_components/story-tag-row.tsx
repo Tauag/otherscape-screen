@@ -38,6 +38,17 @@ export function StoryTagRow({
 			}`}
 		>
 			<div className="flex min-h-11 min-w-0 flex-1 items-center gap-[7px] px-[9px] py-1.5">
+				{tag.valence === "negative" && (
+					<>
+						<span
+							aria-hidden
+							className="shrink-0 font-display font-bold text-[var(--hue-text)]"
+						>
+							!
+						</span>
+						<span className="sr-only">Negative:</span>
+					</>
+				)}
 				<span
 					className={`truncate font-display text-[13px] ${
 						tag.burnt ? "text-muted line-through" : "text-[var(--hue-text)]"
