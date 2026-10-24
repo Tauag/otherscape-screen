@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
 	EditLink,
 	EMPTY_SHELL,
-	HEADER_LABEL,
 	SHELL,
 	type TagChip,
 	TagList,
@@ -16,6 +15,9 @@ import {
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
+import { CardLabel } from "@/components/card-label";
+import { LoadoutSetBlock, SetBar, SpecialsList } from "@/components/card-parts";
+import { GroupLabel } from "@/components/group-label";
 import type { Loadout } from "@/lib/character/types";
 import { UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
@@ -44,18 +46,21 @@ export function LoadoutPanel({
 		return acc;
 	}, []);
 
+	const stowedSets = loadout.sets.filter((set) => !set.titleLoaded);
+
 	function mark() {
 		dispatch({ type: "markLoadoutUpgrade" });
 	}
 
 	return (
-		<section data-type="loadout" className={empty ? EMPTY_SHELL : SHELL}>
+		<section
+			data-type="loadout"
+			className={empty && stowedSets.length === 0 ? EMPTY_SHELL : SHELL}
+		>
 			<div className="flex items-center justify-between gap-2">
-				<span
-					className={`${HEADER_LABEL} ${spend.over > 0 ? "text-negative-text" : ""}`}
-				>
+				<CardLabel tone={spend.over > 0 ? "negative" : "dim"}>
 					Loadout · {spend.spent} of {spend.available} Power
-				</span>
+				</CardLabel>
 				<EditLink href={href} label="Edit the loadout" />
 			</div>
 			<div className="flex items-center gap-3.5">
@@ -77,16 +82,32 @@ export function LoadoutPanel({
 			{empty ? (
 				<p className="font-sans text-sm text-dim">Nothing loaded.</p>
 			) : (
-				<div className="flex flex-col divide-y divide-border *:py-2.5 *:first:pt-0 *:last:pb-0">
-					{segments.map((tags) => (
-						<TagList
-							key={tags[0].id}
-							group={{ ...group, tags }}
-							tagChip={tagChip}
-						/>
-					))}
-				</div>
+				<>
+					{stowedSets.length > 0 && (
+						<GroupLabel>Loaded Sets · {segments.length}</GroupLabel>
+					)}
+					<div className="flex flex-col gap-2">
+						{segments.map((tags) => (
+							<SetBar key={tags[0].id}>
+								<TagList group={{ ...group, tags }} tagChip={tagChip} />
+							</SetBar>
+						))}
+					</div>
+				</>
 			)}
+
+			{stowedSets.length > 0 && (
+				<>
+					<GroupLabel spaced={!empty}>Stowed · {stowedSets.length}</GroupLabel>
+					<div className="flex flex-col gap-2">
+						{stowedSets.map((set) => (
+							<LoadoutSetBlock key={set.id} set={set} />
+						))}
+					</div>
+				</>
+			)}
+
+			<SpecialsList specials={loadout.specials} />
 
 			<LoadoutUpgradeDialog
 				loadoutHref={href}

@@ -3,18 +3,18 @@
 import { useState } from "react";
 import {
 	SheetCard,
-	SheetCardLabel,
 	SheetCardTitle,
 } from "@/app/character/[id]/_components/sheet/sheet-card";
 import {
 	CardTracks,
 	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
+import { CardLabel } from "@/components/card-label";
 import {
+	CrewTags,
 	NascentBadge,
 	QuoteLine,
 	SpecialsList,
-	TagChips,
 } from "@/components/card-parts";
 import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
@@ -42,9 +42,9 @@ export function CrewCard({
 				faded={nascent}
 			>
 				<div className="flex items-center justify-between gap-2">
-					<SheetCardLabel faded={nascent}>
+					<CardLabel tone={nascent ? "muted" : "dim"}>
 						Crew · {crew.motivation}
-					</SheetCardLabel>
+					</CardLabel>
 
 					<div className="flex items-center gap-3">
 						{nascent && <NascentBadge />}
@@ -64,24 +64,8 @@ export function CrewCard({
 					burnt={title?.burnt ?? false}
 					nascent={nascent}
 				/>
-				<TagChips theme={crew} />
+				<CrewTags crew={crew} relationships={relationships} />
 				<QuoteLine label={crew.motivation} quote={crew.quote} />
-
-				{relationships.length > 0 && (
-					<ul className="flex flex-col gap-1">
-						{relationships.map((relationship) => (
-							<li
-								key={relationship.id}
-								className={`font-sans text-[13px] text-dim ${relationship.burnt ? "line-through" : ""}`}
-							>
-								<span className="text-[var(--hue-text)]">
-									{relationship.member.trim() || "Unnamed"}
-								</span>
-								{relationship.tag.trim() && ` — ${relationship.tag}`}
-							</li>
-						))}
-					</ul>
-				)}
 
 				<SpecialsList specials={crew.specials} />
 

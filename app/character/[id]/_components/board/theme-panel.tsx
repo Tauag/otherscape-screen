@@ -5,7 +5,6 @@ import { useState } from "react";
 import {
 	EditLink,
 	EMPTY_SHELL,
-	HEADER_LABEL,
 	SHELL,
 	type TagChip,
 	TagList,
@@ -15,6 +14,7 @@ import {
 	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
+import { CardLabel } from "@/components/card-label";
 import { NascentBadge, QuoteLine, SpecialsList } from "@/components/card-parts";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
@@ -39,7 +39,7 @@ export function ThemePanel({
 		return (
 			<section data-type={theme.type} className={EMPTY_SHELL}>
 				<div className="flex items-center justify-between gap-2">
-					<span className={`${HEADER_LABEL} text-muted`}>{group.label}</span>
+					<CardLabel tone="muted">{group.label}</CardLabel>
 					<NascentBadge />
 				</div>
 				<Link
@@ -55,7 +55,7 @@ export function ThemePanel({
 	return (
 		<section data-type={theme.type} className={SHELL}>
 			<div className="flex items-center justify-between gap-2">
-				<span className={HEADER_LABEL}>{group.label}</span>
+				<CardLabel>{group.label}</CardLabel>
 				<EditLink
 					href={href}
 					label={`Edit ${title?.text.trim() || "this theme"}`}

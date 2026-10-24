@@ -8,13 +8,13 @@ import {
 } from "@/app/character/[id]/_components/lose-theme";
 import {
 	SheetCard,
-	SheetCardLabel,
 	SheetCardTitle,
 } from "@/app/character/[id]/_components/sheet/sheet-card";
 import {
 	CardTracks,
 	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
+import { CardLabel } from "@/components/card-label";
 import {
 	NascentBadge,
 	QuoteLine,
@@ -36,9 +36,9 @@ export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 		<>
 			<SheetCard href={href} type={theme.type} faded={nascent}>
 				<div className="flex items-center justify-between gap-2">
-					<SheetCardLabel faded={nascent}>
+					<CardLabel tone={nascent ? "muted" : "dim"}>
 						{theme.type} · {theme.themebook.trim() || "No themebook"}
-					</SheetCardLabel>
+					</CardLabel>
 
 					<div className="flex items-center gap-3">
 						{nascent && <NascentBadge />}

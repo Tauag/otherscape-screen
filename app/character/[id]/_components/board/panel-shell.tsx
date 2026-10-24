@@ -14,8 +14,6 @@ import type {
 
 export type TagChip = (tag: RollTag, hue?: RollGroup["hue"]) => React.ReactNode;
 
-export const HEADER_LABEL =
-	"font-display text-[10px] font-semibold tracking-[0.17em] text-dim uppercase";
 export const SHELL =
 	"notched [--bt:3px] flex min-h-[15.25rem] flex-col gap-2 tall:overflow-y-auto border border-border border-t-[3px] border-t-[var(--hue)] bg-surface px-3 pt-[11px] pb-3";
 export const EMPTY_SHELL =

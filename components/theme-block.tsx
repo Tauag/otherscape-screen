@@ -1,3 +1,4 @@
+import { CardLabel } from "@/components/card-label";
 import {
 	NascentBadge,
 	QuoteLine,
@@ -22,9 +23,9 @@ export function ThemeBlock({ theme }: { theme: Theme }) {
 			<div aria-hidden="true" className={CARD_STRIPE} />
 			<div className={CARD_BODY}>
 				<div className="flex items-center justify-between gap-2">
-					<span className="font-display text-[10px] font-semibold tracking-[0.17em] text-dim uppercase">
+					<CardLabel>
 						{theme.type} · {theme.themebook.trim() || "No themebook"}
-					</span>
+					</CardLabel>
 					<div className="flex items-center gap-3">
 						{isNascent(theme) && <NascentBadge />}
 						<Pips

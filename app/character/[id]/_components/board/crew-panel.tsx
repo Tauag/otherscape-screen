@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
 	EditLink,
 	EMPTY_SHELL,
-	HEADER_LABEL,
 	SHELL,
 	type TagChip,
 	TagList,
@@ -14,18 +13,22 @@ import {
 	UpgradeDialog,
 } from "@/app/character/[id]/_components/track";
 import type { RollGroup } from "@/app/character/[id]/_lib/roll-selection";
+import { CardLabel } from "@/components/card-label";
 import { QuoteLine, SpecialsList } from "@/components/card-parts";
+import { GroupLabel } from "@/components/group-label";
 import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { isNascent, themeTitle } from "@/lib/character/theme";
-import type { CrewTheme } from "@/lib/character/types";
+import type { CrewRelationship, CrewTheme } from "@/lib/character/types";
 
 export function CrewPanel({
 	crewTheme,
+	relationships,
 	group,
 	tagChip,
 	id,
 }: {
 	crewTheme: CrewTheme;
+	relationships: CrewRelationship[];
 	group: RollGroup;
 	tagChip: TagChip;
 	id: string;
@@ -33,6 +36,12 @@ export function CrewPanel({
 	const [upgradeOpen, setUpgradeOpen] = useState(false);
 	const href = `/character/${id}/crew`;
 	const empty = group.tags.length === 0;
+	const relationshipIds = new Set(relationships.map((r) => r.id));
+	const mainTags = group.tags.filter((tag) => !relationshipIds.has(tag.id));
+	const relationshipTags = group.tags.filter((tag) =>
+		relationshipIds.has(tag.id),
+	);
+	const mixed = mainTags.length > 0 && relationshipTags.length > 0;
 
 	return (
 		<section
@@ -40,7 +49,7 @@ export function CrewPanel({
 			className={empty ? EMPTY_SHELL : SHELL}
 		>
 			<div className="flex items-center justify-between gap-2">
-				<span className={HEADER_LABEL}>Crew</span>
+				<CardLabel>Crew</CardLabel>
 				<EditLink
 					href={href}
 					label={`Edit ${themeTitle(crewTheme)?.text.trim() || "the crew theme"}`}
@@ -58,7 +67,25 @@ export function CrewPanel({
 			{empty ? (
 				<p className="font-sans text-sm text-dim">Nothing built yet.</p>
 			) : (
-				<TagList group={group} tagChip={tagChip} />
+				<>
+					{mixed && <GroupLabel>Tags</GroupLabel>}
+					{mainTags.length > 0 && (
+						<TagList group={{ ...group, tags: mainTags }} tagChip={tagChip} />
+					)}
+					{relationshipTags.length > 0 && (
+						<>
+							{mixed && (
+								<GroupLabel spaced>
+									Relationships · {relationshipTags.length}
+								</GroupLabel>
+							)}
+							<TagList
+								group={{ ...group, tags: relationshipTags }}
+								tagChip={tagChip}
+							/>
+						</>
+					)}
+				</>
 			)}
 
 			<QuoteLine label={crewTheme.motivation} quote={crewTheme.quote} />

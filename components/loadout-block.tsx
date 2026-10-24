@@ -1,3 +1,4 @@
+import { CardLabel } from "@/components/card-label";
 import { LoadoutSummary } from "@/components/card-parts";
 import { Pips } from "@/components/pips";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
@@ -22,13 +23,9 @@ export function LoadoutBlock({ loadout }: { loadout: Loadout }) {
 			<div aria-hidden="true" className={CARD_STRIPE} />
 			<div className={CARD_BODY}>
 				<div className="flex items-center justify-between gap-2">
-					<span
-						className={`font-display text-[10px] font-semibold tracking-[0.17em] uppercase ${
-							spend.over > 0 ? "text-negative-text" : "text-dim"
-						}`}
-					>
+					<CardLabel tone={spend.over > 0 ? "negative" : "dim"}>
 						Loadout · {spend.spent} of {spend.available} Power
-					</span>
+					</CardLabel>
 					<Pips
 						name="UPG"
 						marked={loadout.upgrade}
@@ -36,7 +33,7 @@ export function LoadoutBlock({ loadout }: { loadout: Loadout }) {
 					/>
 				</div>
 
-				<LoadoutSummary loadout={loadout} showStowed />
+				<LoadoutSummary loadout={loadout} showStowed showUnloaded />
 			</div>
 		</article>
 	);

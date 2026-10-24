@@ -8,8 +8,8 @@ import {
 	UpgradeBadge,
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
+import { CardLabel } from "@/components/card-label";
 import { LoadoutSummary } from "@/components/card-parts";
-import { LABEL } from "@/components/styles";
 import type { Loadout } from "@/lib/character/types";
 import { UPGRADE_TRACK_LENGTH } from "@/lib/rules/constants";
 import { loadoutSpend } from "@/lib/rules/loadout";
@@ -26,7 +26,6 @@ export function LoadoutCard({
 	const [upgradeOpen, setUpgradeOpen] = useState(false);
 
 	const loaded = loadout.sets.filter((set) => set.titleLoaded).length;
-	const stowed = loadout.sets.length - loaded;
 	// Nothing to summarize: no loaded set and no wildcard reserved, so the card
 	// reads like a nascent theme rather than an empty one.
 	const empty = loaded === 0 && loadout.wildcards === 0;
@@ -40,15 +39,15 @@ export function LoadoutCard({
 
 	return (
 		<>
-			<SheetCard href={href} type="loadout" faded={empty}>
+			<SheetCard
+				href={href}
+				type="loadout"
+				faded={empty && loadout.sets.length === 0}
+			>
 				<div className="flex items-center justify-between gap-2">
-					<span
-						className={`font-display text-[10px] font-semibold tracking-[0.17em] uppercase ${
-							spend.over > 0 ? "text-negative-text" : "text-dim"
-						}`}
-					>
+					<CardLabel tone={spend.over > 0 ? "negative" : "dim"}>
 						Loadout · {spend.spent} of {spend.available} Power
-					</span>
+					</CardLabel>
 
 					<div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
 						<TrackPips
@@ -74,13 +73,21 @@ export function LoadoutCard({
 				)}
 
 				{empty && <p className="font-sans text-sm text-dim">Nothing loaded.</p>}
-				<LoadoutSummary loadout={loadout} />
-
-				{stowed > 0 && (
-					<p className={LABEL}>
-						{stowed} set{stowed === 1 ? "" : "s"} stowed
-					</p>
-				)}
+				{/* `contents` keeps the card's flex gap; the handler stops a stowed set's
+				    toggle from also firing the card Link. It adds no interaction of
+				    its own, so it needs no key handler. */}
+				{/* biome-ignore lint/a11y/noStaticElementInteractions: click filter only */}
+				{/* biome-ignore lint/a11y/useKeyWithClickEvents: click filter only */}
+				<div
+					className="contents"
+					onClick={(event) => {
+						if ((event.target as Element).closest("summary")) {
+							event.stopPropagation();
+						}
+					}}
+				>
+					<LoadoutSummary loadout={loadout} showStowed />
+				</div>
 			</SheetCard>
 
 			<LoadoutUpgradeDialog

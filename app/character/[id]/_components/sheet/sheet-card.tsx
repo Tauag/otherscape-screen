@@ -71,22 +71,3 @@ export function SheetCardTitle({
 		</h2>
 	);
 }
-
-/** The header row's left label: dimmer while the card is under construction. */
-export function SheetCardLabel({
-	faded,
-	children,
-}: {
-	faded: boolean;
-	children: React.ReactNode;
-}) {
-	return (
-		<span
-			className={`font-display text-[10px] font-semibold tracking-[0.17em] uppercase ${
-				faded ? "text-muted" : "text-dim"
-			}`}
-		>
-			{children}
-		</span>
-	);
-}

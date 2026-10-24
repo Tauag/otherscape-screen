@@ -66,6 +66,7 @@ export function Board() {
 
 						<CrewPanel
 							crewTheme={character.crewTheme}
+							relationships={character.crew}
 							group={groups.crew}
 							tagChip={tagChip}
 							id={id}

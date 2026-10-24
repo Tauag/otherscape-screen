@@ -1,4 +1,5 @@
-import { NascentBadge, SpecialsList, TagChips } from "@/components/card-parts";
+import { CardLabel } from "@/components/card-label";
+import { CrewTags, NascentBadge, SpecialsList } from "@/components/card-parts";
 import { Pips } from "@/components/pips";
 import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import { MOTIVATION_TYPE } from "@/lib/character/crew-theme";
@@ -31,9 +32,7 @@ export function CrewBlock({
 			<div aria-hidden="true" className={CARD_STRIPE} />
 			<div className={CARD_BODY}>
 				<div className="flex items-center justify-between gap-2">
-					<span className="font-display text-[10px] font-semibold tracking-[0.17em] text-dim uppercase">
-						Crew · {crew.motivation}
-					</span>
+					<CardLabel>Crew · {crew.motivation}</CardLabel>
 					<div className="flex items-center gap-3">
 						{isNascent(crew) && <NascentBadge />}
 						<Pips
@@ -53,23 +52,7 @@ export function CrewBlock({
 					{title?.text.trim() || "No title tag yet."}
 				</h2>
 
-				<TagChips theme={crew} />
-
-				{relationships.length > 0 && (
-					<ul className="flex flex-col gap-1">
-						{relationships.map((relationship) => (
-							<li
-								key={relationship.id}
-								className={`font-sans text-[13px] text-dim ${relationship.burnt ? "line-through" : ""}`}
-							>
-								<span className="text-[var(--hue-text)]">
-									{relationship.member.trim() || "Unnamed"}
-								</span>
-								{relationship.tag.trim() && ` — ${relationship.tag}`}
-							</li>
-						))}
-					</ul>
-				)}
+				<CrewTags crew={crew} relationships={relationships} />
 
 				<SpecialsList specials={crew.specials} />
 			</div>
