@@ -71,13 +71,37 @@ export function SheetMenu({
 								className={MENU_ITEM}
 								onClick={() => setShareOpen(true)}
 							>
-								Share
+								Share Character
 							</Menu.Item>
 							<Menu.Item
 								className={MENU_ITEM}
 								onClick={() => exportCharacter(character)}
 							>
-								Export
+								Export Character
+							</Menu.Item>
+							<Menu.Item
+								className={MENU_ITEM}
+								render={
+									<a
+										href="https://docs.google.com/forms/d/e/1FAIpQLSc5GwYSAkX_g21H68FRcm2lGULKbgkOJxlF6zVVrGoEDFzRLg/viewform"
+										target="_blank"
+										rel="noopener noreferrer"
+									/>
+								}
+							>
+								Report a Bug
+							</Menu.Item>
+							<Menu.Item
+								className={MENU_ITEM}
+								render={
+									<a
+										href="https://docs.google.com/forms/d/e/1FAIpQLSc5GwYSAkX_g21H68FRcm2lGULKbgkOJxlF6zVVrGoEDFzRLg/viewform"
+										target="_blank"
+										rel="noopener noreferrer"
+									/>
+								}
+							>
+								Share Feedback
 							</Menu.Item>
 						</Menu.Popup>
 					</Menu.Positioner>

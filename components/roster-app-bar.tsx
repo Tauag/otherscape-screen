@@ -97,6 +97,30 @@ export function RosterAppBar({
 										Campaigns
 									</Menu.Item>
 								)}
+								<Menu.Item
+									className={MENU_ITEM}
+									render={
+										<a
+											href="https://docs.google.com/forms/d/e/1FAIpQLSc5GwYSAkX_g21H68FRcm2lGULKbgkOJxlF6zVVrGoEDFzRLg/viewform"
+											target="_blank"
+											rel="noopener noreferrer"
+										/>
+									}
+								>
+									Report a Bug
+								</Menu.Item>
+								<Menu.Item
+									className={MENU_ITEM}
+									render={
+										<a
+											href="https://docs.google.com/forms/d/e/1FAIpQLSc5GwYSAkX_g21H68FRcm2lGULKbgkOJxlF6zVVrGoEDFzRLg/viewform"
+											target="_blank"
+											rel="noopener noreferrer"
+										/>
+									}
+								>
+									Share Feedback
+								</Menu.Item>
 								<Menu.Item className={MENU_ITEM} onClick={() => void signOut()}>
 									Log out
 									<ChevronRightIcon className="size-3.5 text-faint ml-2" />
