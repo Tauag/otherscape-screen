@@ -9,6 +9,8 @@ import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { LabelAction } from "@/components/label-action";
 import { CREW_THEME_ID } from "@/lib/character/crew-theme";
 import type { ThemeCard } from "@/lib/character/theme";
+import type { ThemeType } from "@/lib/character/types";
+import { tagType } from "@/lib/pickers";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 
 /**
@@ -48,6 +50,7 @@ export function TagSections({
 							key={tag.id}
 							kind="power"
 							tag={tag}
+							type={tagType(tag)}
 							href={`${here}/tag/${tag.id}`}
 							index={index}
 							count={card.powerTags.length}
@@ -155,10 +158,12 @@ export function TagSections({
 export function ThemeSpecialsPanel({
 	themeId,
 	specials,
+	types,
 	here,
 }: {
 	themeId: string;
 	specials: string[];
+	types?: Record<string, ThemeType>;
 	here: string;
 }) {
 	const { dispatch } = useCharacter();
@@ -177,6 +182,7 @@ export function ThemeSpecialsPanel({
 			) : (
 				<SpecialList
 					specials={specials}
+					types={types}
 					onRemove={(special) =>
 						dispatch({ type: "removeThemeSpecial", themeId, special })
 					}

@@ -115,6 +115,7 @@ export default function ThemePage({
 					<ThemeSpecialsPanel
 						themeId={theme.id}
 						specials={theme.specials}
+						types={theme.specialTypes}
 						here={here}
 					/>
 

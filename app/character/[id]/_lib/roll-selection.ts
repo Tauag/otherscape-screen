@@ -9,6 +9,7 @@ import type {
 	ThemeType,
 	Valence,
 } from "@/lib/character/types";
+import { tagType } from "@/lib/pickers";
 import { DEFAULT_BURN_VALUE } from "@/lib/rules/constants";
 import {
 	burnValueOf,
@@ -96,6 +97,8 @@ export type RollTag = {
 	crispy: boolean;
 	/** The tag an Evolution unlocked. Power tags only. */
 	broad: boolean;
+	/** Set on a power tag borrowed from another type's themebook: it wears that hue. */
+	hue?: ThemeType;
 };
 
 export type RollGroup = {
@@ -117,6 +120,7 @@ function powerTag(tag: PowerTag, crispy = false): RollTag {
 		canBurn: !crispy,
 		crispy,
 		broad: tag.broad ?? false,
+		hue: tagType(tag),
 	};
 }
 

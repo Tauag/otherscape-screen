@@ -10,6 +10,7 @@ import { CARD, CARD_BODY, CARD_STRIPE } from "@/components/styles";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
+import { tagType } from "@/lib/pickers";
 import {
 	DECAY_TRACK_LENGTH,
 	UPGRADE_TRACK_LENGTH,
@@ -38,6 +39,7 @@ export function ThemeBlock({ theme }: { theme: Theme }) {
 				</div>
 
 				<h2
+					data-type={title && tagType(title)}
 					className={`font-display text-[21px] leading-tight font-bold tracking-[0.045em] uppercase ${
 						title?.burnt ? "text-muted line-through" : "text-[var(--hue-title)]"
 					}`}
@@ -47,7 +49,7 @@ export function ThemeBlock({ theme }: { theme: Theme }) {
 
 				<TagChips theme={theme} />
 				<QuoteLine label={themeLine(theme.type)} quote={theme.quote} />
-				<SpecialsList specials={theme.specials} />
+				<SpecialsList specials={theme.specials} types={theme.specialTypes} />
 
 				{decayFull(theme) && (
 					<p className="font-sans text-sm text-negative-text">

@@ -24,6 +24,7 @@ import {
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeLine, themeTitle } from "@/lib/character/theme";
 import type { Theme } from "@/lib/character/types";
+import { tagType } from "@/lib/pickers";
 
 export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 	const title = themeTitle(theme);
@@ -57,10 +58,11 @@ export function ThemeCard({ theme, href }: { theme: Theme; href: string }) {
 					text={title?.text}
 					burnt={title?.burnt ?? false}
 					nascent={nascent}
+					type={title && tagType(title)}
 				/>
 				<TagChips theme={theme} />
 				<QuoteLine label={themeLine(theme.type)} quote={theme.quote} />
-				<SpecialsList specials={theme.specials} />
+				<SpecialsList specials={theme.specials} types={theme.specialTypes} />
 
 				{decayFull(theme) && (
 					<>

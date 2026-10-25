@@ -791,3 +791,34 @@ test("removing a special that was never added changes nothing", () => {
 	});
 	assert.deepEqual(character.loadout.specials, []);
 });
+
+test("a type change drops the source types saved on its tags and specials", () => {
+	let character = newCharacter();
+	character = reduce(character, { type: "addTheme", id: "t" });
+	character = reduce(character, {
+		type: "addThemeSpecial",
+		themeId: "t",
+		special: "Echo",
+		from: "mythos",
+	});
+	character = reduce(character, {
+		type: "addPowerTag",
+		themeId: "t",
+		id: "p",
+		letter: "A",
+	});
+	character = reduce(character, {
+		type: "editPowerTag",
+		themeId: "t",
+		tagId: "p",
+		edit: { type: "mythos" },
+	});
+	character = reduce(character, {
+		type: "setThemeType",
+		themeId: "t",
+		themeType: "noise",
+	});
+	const theme = character.themes.find((candidate) => candidate.id === "t");
+	assert.equal(theme?.specialTypes, undefined);
+	assert.equal(theme?.powerTags[0].type, undefined);
+});

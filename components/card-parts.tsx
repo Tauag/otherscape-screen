@@ -8,8 +8,9 @@ import type {
 	CrewRelationship,
 	Loadout,
 	LoadoutSet,
+	ThemeType,
 } from "@/lib/character/types";
-import { specialName, specialText } from "@/lib/pickers";
+import { specialName, specialText, specialType, tagType } from "@/lib/pickers";
 
 // The pieces a theme, crew, or loadout card is built from. The sheet's cards,
 // the board's panels, and the read-only share view all draw through these.
@@ -31,7 +32,8 @@ export function hasChipTags(theme: ThemeCard) {
 	);
 }
 
-/** Every tag but the title, which the card shows as its heading. */
+/** Every tag but the title, which the card shows as its heading. A tag
+ *  borrowed from another type wears that type's hue. */
 export function TagChips({ theme }: { theme: ThemeCard }) {
 	const title = themeTitle(theme);
 
@@ -46,6 +48,7 @@ export function TagChips({ theme }: { theme: ThemeCard }) {
 						text={tag.text}
 						burnt={tag.burnt}
 						broad={tag.broad}
+						type={tagType(tag)}
 					/>
 				))}
 			{theme.weaknessTags.map((tag) => (
@@ -121,13 +124,24 @@ export function QuoteLine({ label, quote }: { label: string; quote: string }) {
 	);
 }
 
-export function SpecialsList({ specials }: { specials: string[] }) {
+export function SpecialsList({
+	specials,
+	types,
+}: {
+	specials: string[];
+	/** `Theme.specialTypes`: where each special came from. */
+	types?: Record<string, ThemeType>;
+}) {
 	if (specials.length === 0) return null;
 
 	return (
 		<ul className="flex flex-col gap-1">
 			{specials.map((special) => (
-				<li key={special} className="flex items-baseline gap-[7px]">
+				<li
+					key={special}
+					data-type={specialType(special, types)}
+					className="flex items-baseline gap-[7px]"
+				>
 					<span className="shrink-0 font-mono text-[8px] font-bold tracking-[0.14em] text-[var(--hue)]/80 uppercase">
 						Special
 					</span>

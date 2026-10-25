@@ -139,7 +139,7 @@ export function useRollBoard(
 			<RollChip
 				key={tag.id}
 				text={tag.text}
-				type={tag.valence === "positive" ? hue : undefined}
+				type={tag.valence === "positive" ? (tag.hue ?? hue) : undefined}
 				valence={hue && tag.valence === "positive" ? undefined : tag.valence}
 				burnt={burnt}
 				broad={tag.broad}

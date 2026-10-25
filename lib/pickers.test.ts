@@ -18,6 +18,7 @@ import {
 	specialName,
 	specialsOf,
 	specialText,
+	stampSourceTypes,
 	veteranSpecialsOf,
 	weaknessQuestions,
 } from "./pickers.ts";
@@ -139,4 +140,61 @@ test("answered letters count a question answered twice as twice", () => {
 	assert.deepEqual(answerCounts(troubledPast.powerTags), { A: 1, C: 2 });
 	assert.deepEqual(answerCounts(troubledPast.weaknessTags), { B: 1 });
 	assert.deepEqual(answerCounts([]), {});
+});
+
+test("stampSourceTypes saves borrowed types once and then changes nothing", () => {
+	const special = { name: "Echo", text: "Hear it twice." };
+	const theme = { ...sample.themes[0], type: "self" as const };
+	const character = {
+		...sample,
+		themes: [{ ...theme, specials: [formatSpecial(special)] }],
+	};
+	const pack: ContentPack = {
+		...FALLBACK_PACK,
+		themebooks: [
+			{
+				...FALLBACK_PACK.themebooks[0],
+				id: "x",
+				name: "Echoes",
+				type: "mythos",
+				specials: [special],
+			},
+		],
+	};
+	const stamped = stampSourceTypes(character, pack);
+	assert.deepEqual(stamped.themes[0].specialTypes, {
+		[formatSpecial(special)]: "mythos",
+	});
+	assert.equal(stampSourceTypes(stamped, pack), stamped);
+});
+
+test("stampSourceTypes stamps a borrowed power tag and leaves an own-type tag alone", () => {
+	const [first] = sample.themes;
+	const tag = (id: string, themebook: string) => ({
+		...first.powerTags[0],
+		id,
+		themebook,
+		type: undefined,
+	});
+	const character = {
+		...sample,
+		themes: [
+			{
+				...first,
+				type: "self" as const,
+				powerTags: [tag("a", "Echoes"), tag("b", "Own")],
+			},
+		],
+	};
+	const book = FALLBACK_PACK.themebooks[0];
+	const pack: ContentPack = {
+		...FALLBACK_PACK,
+		themebooks: [
+			{ ...book, id: "x", name: "Echoes", type: "mythos" },
+			{ ...book, id: "y", name: "Own", type: "self" },
+		],
+	};
+	const [a, b] = stampSourceTypes(character, pack).themes[0].powerTags;
+	assert.equal(a.type, "mythos");
+	assert.equal(b.type, undefined);
 });

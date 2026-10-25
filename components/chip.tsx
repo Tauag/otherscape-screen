@@ -1,4 +1,5 @@
 import { ChipBadge } from "@/components/chip-badge";
+import type { ThemeType } from "@/lib/character/types";
 
 export function Chip({
 	label,
@@ -7,6 +8,7 @@ export function Chip({
 	negative,
 	broad,
 	stowed,
+	type,
 }: {
 	label: string;
 	text: string;
@@ -16,9 +18,12 @@ export function Chip({
 	broad?: boolean;
 	/** Written on the sheet but not loaded, so not usable in play. */
 	stowed?: boolean;
+	/** Set when the tag's hue differs from its card's: a tag borrowed from another type. */
+	type?: ThemeType;
 }) {
 	return (
 		<li
+			data-type={type}
 			data-burnt={burnt ? "true" : undefined}
 			data-stowed={stowed ? "true" : undefined}
 			data-valence={negative ? "negative" : undefined}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ThemeType } from "@/lib/character/types";
 
 /**
  * The sheet's card chrome: one Link to the card's editor, with the hue stripe
@@ -43,10 +44,13 @@ export function SheetCardTitle({
 	text,
 	burnt,
 	nascent,
+	type,
 }: {
 	text: string | undefined;
 	burnt: boolean;
 	nascent: boolean;
+	/** Set when the title tag comes from another type's themebook. */
+	type?: ThemeType;
 }) {
 	if (text === undefined) {
 		return (
@@ -58,6 +62,7 @@ export function SheetCardTitle({
 
 	return (
 		<h2
+			data-type={type}
 			data-burnt={burnt ? "true" : undefined}
 			className={`font-display text-[21px] leading-tight font-bold tracking-[0.045em] uppercase ${
 				burnt ? "line-through" : ""

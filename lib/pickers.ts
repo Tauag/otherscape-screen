@@ -1,4 +1,5 @@
 import { POWER_LETTERS, WEAKNESS_LETTERS } from "./character/theme.ts";
+import type { Character, Theme, ThemeType } from "./character/types.ts";
 import {
 	type ContentPack,
 	findThemebook,
@@ -23,6 +24,55 @@ export const weaknessQuestions = (pack: ContentPack, themebook: string) =>
 /** Five once a themebook is chosen, none before then. */
 export const specialsOf = (pack: ContentPack, themebook: string): Special[] =>
 	findThemebook(pack, themebook)?.specials ?? [];
+
+/** The type of the themebook a tag was answered from, once saved by `stampSourceTypes` or a picker. */
+export const tagType = (tag: { type?: ThemeType }) => tag.type;
+
+/** The type of the themebook a stored special comes from, by `Theme.specialTypes`. */
+export const specialType = (
+	stored: string,
+	known?: Record<string, ThemeType>,
+) => known?.[stored];
+
+const packTagType = (pack: ContentPack, themebook: string) =>
+	findThemebook(pack, themebook)?.type;
+
+const packSpecialType = (pack: ContentPack, stored: string) =>
+	pack.themebooks.find((book) =>
+		book.specials.some((special) => formatSpecial(special) === stored),
+	)?.type;
+
+/**
+ * Saves the source type of every tag and special taken across types before
+ * that was stored, so views with no pack (the share link) can color them.
+ * Returns the same character when there is nothing to add.
+ */
+export function stampSourceTypes(
+	character: Character,
+	pack: ContentPack,
+): Character {
+	let changed = false;
+	const themes = character.themes.map((theme): Theme => {
+		let next = theme;
+		const specialTypes = { ...theme.specialTypes };
+		for (const special of theme.specials) {
+			const type = packSpecialType(pack, special);
+			if (type && type !== theme.type && !specialTypes[special]) {
+				specialTypes[special] = type;
+				next = { ...next, specialTypes };
+			}
+		}
+		const powerTags = theme.powerTags.map((tag) => {
+			const type = tag.type ? undefined : packTagType(pack, tag.themebook);
+			return type && type !== theme.type ? { ...tag, type } : tag;
+		});
+		if (powerTags.some((tag, index) => tag !== theme.powerTags[index]))
+			next = { ...next, powerTags };
+		changed ||= next !== theme;
+		return next;
+	});
+	return changed ? { ...character, themes } : character;
+}
 
 /** The loadout theme's own eight, fixed rather than per-themebook. */
 export const loadoutSpecialsOf = (pack: ContentPack): Special[] =>

@@ -3,7 +3,8 @@
 import { Accordion } from "@base-ui/react/accordion";
 import { Button } from "@base-ui/react/button";
 import { REMOVE_BUTTON } from "@/components/styles";
-import { specialName, specialText } from "@/lib/pickers";
+import type { ThemeType } from "@/lib/character/types";
+import { specialName, specialText, specialType } from "@/lib/pickers";
 
 function RemoveButton({
 	name,
@@ -31,9 +32,11 @@ function RemoveButton({
  */
 function SpecialCard({
 	special,
+	type,
 	onRemove,
 }: {
 	special: string;
+	type?: ThemeType;
 	onRemove?: () => void;
 }) {
 	const name = specialName(special);
@@ -41,7 +44,10 @@ function SpecialCard({
 
 	if (!text) {
 		return (
-			<li className="flex items-stretch rounded-sm border border-border bg-surface">
+			<li
+				data-type={type}
+				className="flex items-stretch rounded-sm border border-border bg-surface"
+			>
 				<span className="min-h-11 flex-1 content-center px-3 py-2 font-sans text-sm">
 					{name}
 				</span>
@@ -52,7 +58,7 @@ function SpecialCard({
 
 	return (
 		<Accordion.Item
-			render={<li />}
+			render={<li data-type={type} />}
 			className="rounded-sm border border-border bg-surface data-[open]:border-[var(--hue)]"
 		>
 			<div className="flex items-stretch">
@@ -81,9 +87,11 @@ function SpecialCard({
  */
 export function SpecialList({
 	specials,
+	types,
 	onRemove,
 }: {
 	specials: string[];
+	types?: Record<string, ThemeType>;
 	onRemove: (special: string) => void;
 }) {
 	return (
@@ -92,6 +100,7 @@ export function SpecialList({
 				<SpecialCard
 					key={special}
 					special={special}
+					type={specialType(special, types)}
 					onRemove={() => onRemove(special)}
 				/>
 			))}

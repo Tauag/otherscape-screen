@@ -36,6 +36,7 @@ export type ThemeCard = Pick<
 	| "weaknessTags"
 	| "quote"
 	| "specials"
+	| "specialTypes"
 	| "upgrade"
 	| "decay"
 	| "pendingUpgrades"
@@ -105,7 +106,7 @@ export function addWeaknessTag<T extends ThemeCard>(
 export function editPowerTag<T extends ThemeCard>(
 	theme: T,
 	tagId: string,
-	edit: Partial<Pick<PowerTag, "themebook" | "letter" | "text">>,
+	edit: Partial<Pick<PowerTag, "themebook" | "type" | "letter" | "text">>,
 ): T {
 	return {
 		...theme,

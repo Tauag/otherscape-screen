@@ -40,6 +40,8 @@ export type PowerTag = {
 	id: string;
 	/** Theme specials let a tag answer another themebook's question, so the tag records the source. */
 	themebook: string;
+	/** That themebook's type, kept so a view with no content pack can still color the tag. Absent reads as the card's. */
+	type?: ThemeType;
 	letter: PowerQuestionLetter;
 	text: string;
 	burnt: boolean;
@@ -65,6 +67,8 @@ export type Theme = {
 	/** The Identity, Ritual, or Itch line. The theme type names it. */
 	quote: string;
 	specials: string[];
+	/** The type of a special's source themebook, by stored text. Only specials taken across types appear. */
+	specialTypes?: Record<string, ThemeType>;
 	upgrade: MarkCount;
 	decay: MarkCount;
 	/** Times the Upgrade track has filled without being taken yet. A filled

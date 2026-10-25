@@ -36,6 +36,7 @@ import type {
 	WeaknessQuestionLetter,
 	WeaknessTag,
 } from "@/lib/character/types";
+import type { ContentPack } from "@/lib/content/pack";
 import {
 	addLoadoutFeature,
 	addLoadoutSet,
@@ -58,6 +59,7 @@ import {
 	type UpgradeChoice,
 	unloadAllLoadout,
 } from "@/lib/loadout-edit";
+import { stampSourceTypes } from "@/lib/pickers";
 import {
 	DEFAULT_BURN_VALUE,
 	DEFAULT_STATUS_LIMIT,
@@ -85,7 +87,14 @@ export type CharacterAction =
 	| { type: "setThemeType"; themeId: string; themeType: ThemeType }
 	| { type: "setThemebook"; themeId: string; themebook: string }
 	| { type: "setThemeQuote"; themeId: string; quote: string }
-	| { type: "addThemeSpecial"; themeId: string; special: string }
+	| { type: "stampSourceTypes"; pack: ContentPack }
+	| {
+			type: "addThemeSpecial";
+			themeId: string;
+			special: string;
+			/** The special's source type, when it is not the theme's own. */
+			from?: ThemeType;
+	  }
 	| { type: "removeThemeSpecial"; themeId: string; special: string }
 	| {
 			type: "addPowerTag";
@@ -103,7 +112,7 @@ export type CharacterAction =
 			type: "editPowerTag";
 			themeId: string;
 			tagId: string;
-			edit: Partial<Pick<PowerTag, "themebook" | "letter" | "text">>;
+			edit: Partial<Pick<PowerTag, "themebook" | "type" | "letter" | "text">>;
 	  }
 	| {
 			type: "editWeaknessTag";
@@ -286,6 +295,11 @@ export function reduce(
 				...theme,
 				type: action.themeType,
 				themebook: theme.type === action.themeType ? theme.themebook : "",
+				// Stored source types are relative to the old type too.
+				...(theme.type !== action.themeType && {
+					specialTypes: undefined,
+					powerTags: theme.powerTags.map(({ type: _, ...tag }) => tag),
+				}),
 			}));
 			return { ...next, essence: autoEssence(next, next.themes) };
 		}
@@ -299,11 +313,22 @@ export function reduce(
 				...theme,
 				quote: action.quote,
 			}));
+		case "stampSourceTypes":
+			return stampSourceTypes(character, action.pack);
 		case "addThemeSpecial":
 			return inCard(character, action.themeId, (theme) =>
 				theme.specials.includes(action.special)
 					? theme
-					: { ...theme, specials: [...theme.specials, action.special] },
+					: {
+							...theme,
+							specials: [...theme.specials, action.special],
+							...(action.from && {
+								specialTypes: {
+									...theme.specialTypes,
+									[action.special]: action.from,
+								},
+							}),
+						},
 			);
 		case "removeThemeSpecial":
 			return inCard(character, action.themeId, (theme) => ({
@@ -311,6 +336,13 @@ export function reduce(
 				specials: theme.specials.filter(
 					(special) => special !== action.special,
 				),
+				...(theme.specialTypes && {
+					specialTypes: Object.fromEntries(
+						Object.entries(theme.specialTypes).filter(
+							([special]) => special !== action.special,
+						),
+					),
+				}),
 			}));
 		case "addPowerTag":
 			return inCard(character, action.themeId, (theme) =>

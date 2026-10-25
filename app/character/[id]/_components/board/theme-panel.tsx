@@ -75,7 +75,7 @@ export function ThemePanel({
 
 			<QuoteLine label={themeLine(theme.type)} quote={theme.quote} />
 
-			<SpecialsList specials={theme.specials} />
+			<SpecialsList specials={theme.specials} types={theme.specialTypes} />
 
 			<UpgradeDialog
 				themeId={theme.id}

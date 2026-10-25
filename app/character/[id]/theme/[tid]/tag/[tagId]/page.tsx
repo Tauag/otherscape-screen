@@ -40,6 +40,9 @@ export default function QuestionPicker({
 	const book = (power?.themebook.trim() || theme.themebook).trim();
 	const current = findThemebook(pack, book);
 	const type = borrowType ?? theme.type;
+	// Stored only when it differs from the theme's own, so a type change cannot leave a stale one.
+	const borrowedType = (source: ThemeType) =>
+		source === theme.type ? undefined : source;
 
 	return (
 		<PickerFrame
@@ -61,7 +64,11 @@ export default function QuestionPicker({
 							type: "editPowerTag",
 							themeId: theme.id,
 							tagId,
-							edit: { letter, themebook: book },
+							edit: {
+								letter,
+								themebook: book,
+								...(current && { type: borrowedType(current.type) }),
+							},
 						})
 					}
 				/>
@@ -113,7 +120,10 @@ export default function QuestionPicker({
 											type: "editPowerTag",
 											themeId: theme.id,
 											tagId,
-											edit: { themebook: candidate.name },
+											edit: {
+												themebook: candidate.name,
+												type: borrowedType(candidate.type),
+											},
 										})
 									}
 									data-type={candidate.type}

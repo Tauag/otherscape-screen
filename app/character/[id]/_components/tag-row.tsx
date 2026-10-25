@@ -3,10 +3,10 @@ import { Input } from "@base-ui/react/input";
 import Link from "next/link";
 import { BroadButton } from "@/app/character/[id]/_components/broad-button";
 import { BurnButton } from "@/app/character/[id]/_components/burn-button";
-import { ChipBadge } from "@/components/chip-badge";
 import type { MoveDirection, TagKind } from "@/lib/character/theme";
 import type {
 	PowerQuestionLetter,
+	ThemeType,
 	WeaknessQuestionLetter,
 } from "@/lib/character/types";
 
@@ -38,6 +38,7 @@ export function TagRow({
 	onDelete,
 	onBurntChange,
 	onBroadChange,
+	type,
 }: {
 	kind: TagKind;
 	tag: RowTag;
@@ -52,6 +53,8 @@ export function TagRow({
 	onBurntChange?: (burnt: boolean) => void;
 	/** Power tags only: absent leaves the broad toggle off the row. */
 	onBroadChange?: (broad: boolean) => void;
+	/** Set when the tag comes from another type's themebook. */
+	type?: ThemeType;
 }) {
 	const label = tag.letter;
 	const named = tag.text.trim() || `the blank ${label} tag`;
@@ -75,6 +78,7 @@ export function TagRow({
 	return (
 		<li
 			id={`tag-${tag.id}`}
+			data-type={type}
 			data-burnt={tag.burnt ? "true" : undefined}
 			data-valence={power ? undefined : "negative"}
 			className="flex scroll-mt-20 flex-col gap-1.5 border-l-2 border-[var(--hue)] pl-2 @xl:flex-row @xl:items-center"
@@ -119,8 +123,6 @@ export function TagRow({
 
 			{/* Under a wide `@container`, the controls join the field on one line. */}
 			<div className="flex flex-wrap items-center gap-1.5 @xl:shrink-0 @xl:flex-nowrap">
-				{power && tag.broad && <ChipBadge>BROAD POWER TAG</ChipBadge>}
-
 				<div className="ml-auto flex divide-x divide-border overflow-hidden rounded-sm border border-border">
 					<Button
 						type="button"

@@ -20,6 +20,8 @@ import {
 } from "@/lib/character/autosave";
 import { migrate } from "@/lib/character/migrate";
 import type { Character } from "@/lib/character/types";
+import { useContentPack } from "@/lib/content/load";
+import { FALLBACK_PACK } from "@/lib/content/pack";
 import { createClient } from "@/lib/supabase/client";
 import { type CharacterAction, reduce } from "../../_lib/reducer";
 import { AppBar } from "./app-bar";
@@ -79,6 +81,7 @@ export function CharacterProvider({
 	children,
 }: Props) {
 	const [character, dispatch] = useReducer(reduce, server);
+	const pack = useContentPack();
 	const [status, setStatus] = useState<SaveStatus>("saved");
 	const [conflict, setConflict] = useState<Conflict | null>(null);
 	const [parked, setParked] = useState<string | null>(null);
@@ -324,6 +327,14 @@ export function CharacterProvider({
 		});
 		saver.current?.schedule();
 	}, [character, id]);
+
+	// Characters saved before source types were stored get them once the pack
+	// loads. A no-op returns the same document, so this does not loop or save.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: a replaced document (pull, conflict) needs stamping too.
+	useEffect(() => {
+		if (pack !== FALLBACK_PACK && !conflict)
+			dispatch({ type: "stampSourceTypes", pack });
+	}, [pack, character, conflict]);
 
 	function dismiss() {
 		setConflict(null);
