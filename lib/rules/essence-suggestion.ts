@@ -1,4 +1,5 @@
 import type { Essence, Theme } from "../character/types.ts";
+import { STARTING_THEMES } from "./constants.ts";
 import { essenceCandidates } from "./essence.ts";
 
 /** Every Essence, in the order the sheet offers them, so an override can reach all eight. */
@@ -27,6 +28,8 @@ export type EssenceSuggestion = {
 	/** The player's confirmed Essence, reported back in every state. */
 	chosen: Essence | "";
 	state: EssenceState;
+	/** An unchosen Mythos-only mix with all starting themes: the one tie the player must break. */
+	tied: boolean;
 	/** design.md decision 3: a warning is a sentence and never blocks. */
 	warning: string | null;
 };
@@ -42,7 +45,9 @@ export function essenceSuggestion(
 	chosen: Essence | "",
 ): EssenceSuggestion {
 	const candidates = essenceCandidates(themes);
-	const base = { candidates, chosen, warning: null };
+	const tied =
+		chosen === "" && candidates.length > 1 && themes.length >= STARTING_THEMES;
+	const base = { candidates, chosen, warning: null, tied };
 
 	if (chosen === "") return { ...base, state: "unchosen" };
 	if (candidates.includes(chosen)) return { ...base, state: "suggested" };

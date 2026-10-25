@@ -262,7 +262,7 @@ function ShareControls({
  *  or fix a tied mix it can't resolve on its own (reducer.ts's `addTheme` case). */
 function EssencePicker() {
 	const { character, dispatch } = useCharacter();
-	const { candidates, warning } = essenceSuggestion(
+	const { candidates, warning, tied } = essenceSuggestion(
 		character.themes,
 		character.essence,
 	);
@@ -298,9 +298,11 @@ function EssencePicker() {
 					<p className="font-sans text-sm text-dim">
 						{candidates.length === 0
 							? "Add a theme and the sheet suggests an Essence. Until then, choose one yourself."
-							: candidates.length === 1
-								? "Your themes suggest this. It assigns itself once you have 4 theme cards, unless you choose first."
-								: "Your themes suggest one of these. The mix ties, so choose one yourself."}
+							: tied
+								? "Your themes suggest one of these. The mix ties, so choose one yourself."
+								: candidates.length === 1
+									? "Your themes suggest this. It assigns itself once you have 4 theme cards, unless you choose first."
+									: "Your themes suggest one of these. Add more theme cards, up to 4, and choose one then."}
 					</p>
 
 					{candidates.length > 0 && (

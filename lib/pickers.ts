@@ -95,8 +95,9 @@ export const veteranSpecialsOf = (pack: ContentPack): Special[] =>
 
 /**
  * How many tags already answer each letter. It labels a row and never removes
- * one, because a question is never consumed. Counted across the theme rather
- * than the themebook: a borrowed answer is still an answer given here.
+ * one, because a question is never consumed. The caller passes only the tags
+ * that answer from the themebook on screen, since a letter means one question
+ * per book.
  */
 export function answerCounts(
 	tags: readonly { letter: string }[],

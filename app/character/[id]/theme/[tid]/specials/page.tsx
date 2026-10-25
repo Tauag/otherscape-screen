@@ -32,7 +32,7 @@ export default function SpecialsPicker({
 	// the grid, and taking from it saves the special's source type.
 	const book = borrowBook ?? theme.themebook;
 	const current = findThemebook(pack, book);
-	const type = borrowType ?? theme.type;
+	const type = borrowType ?? current?.type ?? theme.type;
 	const specials = specialsOf(pack, book);
 	const toggle = (special: string) =>
 		dispatch(
@@ -47,7 +47,7 @@ export default function SpecialsPicker({
 		);
 
 	return (
-		<PickerFrame type={theme.type} title="Theme specials" wide>
+		<PickerFrame type={current?.type ?? theme.type} title="Theme specials" wide>
 			{specials.length === 0 ? (
 				<p className="font-sans text-sm text-dim">
 					{theme.themebook.trim()

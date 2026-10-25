@@ -17,10 +17,8 @@ export default function SheetPage({ params }: PageProps<"/character/[id]">) {
 	const { id } = use(params);
 	const { character, dispatch } = useCharacter();
 	const warning = themeCountWarning(character.themes.length);
-	const { candidates: essenceCandidates, state: essenceState } =
+	const { candidates: essenceCandidates, tied: essenceTied } =
 		essenceSuggestion(character.themes, character.essence);
-	const essenceTied =
-		essenceState === "unchosen" && essenceCandidates.length > 1;
 
 	const isBoard = useMediaQuery("(min-width: 1024px)", false);
 	if (isBoard) return <Board />;

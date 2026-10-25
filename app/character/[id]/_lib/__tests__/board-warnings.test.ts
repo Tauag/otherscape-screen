@@ -91,6 +91,10 @@ test("a Mythos-only mix asks the player to break the tie", () => {
 	);
 });
 
+test("a Mythos-only mix below 4 themes does not ask yet", () => {
+	assert.ok(!boardWarnings(mythosThemes(3)).some((w) => w.includes("tie")));
+});
+
 test("an untied mix, and a mix the player already chose from, never ask", () => {
 	let character = newCharacter();
 	for (let i = 0; i < 4; i++) {

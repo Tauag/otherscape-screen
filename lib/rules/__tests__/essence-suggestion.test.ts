@@ -43,6 +43,7 @@ test("no themes suggests nothing and argues with nothing", () => {
 		candidates: [],
 		chosen: "",
 		state: "unchosen",
+		tied: false,
 		warning: null,
 	});
 
@@ -60,4 +61,15 @@ test("the sample character's mix suggests the Essence it carries", () => {
 
 test("the override list holds all eight Essences once", () => {
 	assert.equal(new Set(ESSENCES).size, 8);
+});
+
+test("a Mythos-only tie waits for all starting themes", () => {
+	assert.equal(
+		essenceSuggestion(themes("mythos", "mythos", "mythos"), "").tied,
+		false,
+	);
+	assert.equal(
+		essenceSuggestion(themes("mythos", "mythos", "mythos", "mythos"), "").tied,
+		true,
+	);
 });

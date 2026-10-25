@@ -39,14 +39,19 @@ export default function QuestionPicker({
 	// is what lets it differ from the theme's. A weakness tag never borrows.
 	const book = (power?.themebook.trim() || theme.themebook).trim();
 	const current = findThemebook(pack, book);
-	const type = borrowType ?? theme.type;
+	const type = borrowType ?? current?.type ?? theme.type;
+	// Compared like `findThemebook` resolves a name, so a case difference is the same book.
+	const sameBook = (name: string) =>
+		current
+			? findThemebook(pack, name)?.id === current.id
+			: name.trim().toLowerCase() === book.toLowerCase();
 	// Stored only when it differs from the theme's own, so a type change cannot leave a stale one.
 	const borrowedType = (source: ThemeType) =>
 		source === theme.type ? undefined : source;
 
 	return (
 		<PickerFrame
-			type={theme.type}
+			type={current?.type ?? theme.type}
 			title={power ? "Power tag question" : "Weakness tag question"}
 		>
 			<p className="font-sans text-sm text-dim">
@@ -58,7 +63,9 @@ export default function QuestionPicker({
 				<QuestionList
 					kind="power"
 					questions={powerQuestions(pack, book)}
-					tags={theme.powerTags}
+					tags={theme.powerTags.filter((tag) =>
+						sameBook(tag.themebook.trim() || theme.themebook),
+					)}
 					onPick={(letter) =>
 						pick({
 							type: "editPowerTag",

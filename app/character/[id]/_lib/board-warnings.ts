@@ -14,11 +14,11 @@ export function boardWarnings(character: Character): string[] {
 	const count = themeCountWarning(character.themes.length);
 	if (count) warnings.push(count);
 
-	const { candidates, state } = essenceSuggestion(
+	const { candidates, tied } = essenceSuggestion(
 		character.themes,
 		character.essence,
 	);
-	if (state === "unchosen" && candidates.length > 1) {
+	if (tied) {
 		warnings.push(
 			`Your themes tie between ${candidates[0]} and ${candidates[1]}. Pick one from the menu.`,
 		);
