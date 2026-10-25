@@ -15,7 +15,7 @@ import type {
 export type TagChip = (tag: RollTag, hue?: RollGroup["hue"]) => React.ReactNode;
 
 export const SHELL =
-	"notched [--bt:3px] flex min-h-[15.25rem] flex-col gap-2 tall:overflow-y-auto border border-border border-t-[3px] border-t-[var(--hue)] bg-surface px-3 pt-[11px] pb-3";
+	"notched [--bt:3px] flex min-h-[15.25rem] flex-col gap-2 tall:overflow-y-auto tall:overflow-x-hidden border border-border border-t-[3px] border-t-[var(--hue)] bg-surface px-3 pt-[11px] pb-3";
 export const EMPTY_SHELL =
 	"notched [--bt:3px] flex flex-col gap-2 overflow-hidden border border-dashed border-raised border-t-[3px] border-t-[var(--hue)]/35 bg-recess px-3 pt-[11px] pb-3";
 
