@@ -180,6 +180,7 @@ export type CharacterAction =
 	| { type: "adjustLoadoutPower"; delta: number }
 	| { type: "markLoadoutUpgrade" }
 	| { type: "unloadAllLoadout" }
+	| { type: "unburnCrew" }
 	| { type: "takeLoadoutUpgrade"; choice: UpgradeChoice }
 	| { type: "addLoadoutSpecial"; special: string }
 	| { type: "removeLoadoutSpecial"; special: string }
@@ -548,6 +549,19 @@ export function reduce(
 			return { ...character, loadout: markLoadoutUpgrade(loadout) };
 		case "unloadAllLoadout":
 			return { ...character, loadout: unloadAllLoadout(loadout) };
+		case "unburnCrew":
+			// Crew power tags and relationship tags refresh at the start of a session.
+			return {
+				...character,
+				crewTheme: character.crewTheme.powerTags.reduce(
+					(card, tag) => unburnTag(card, tag.id),
+					character.crewTheme,
+				),
+				crew: character.crew.map((relationship) => ({
+					...relationship,
+					burnt: false,
+				})),
+			};
 		case "takeLoadoutUpgrade":
 			return {
 				...character,

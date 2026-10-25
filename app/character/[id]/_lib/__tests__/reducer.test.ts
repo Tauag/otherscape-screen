@@ -347,6 +347,29 @@ test("a crew relationship burns and un-burns, reversibly and without a burn valu
 	assert.equal(character.crew[0].burnt, false);
 });
 
+test("unburnCrew unburns crew power tags and relationship tags only", () => {
+	let character = newCharacter();
+	character = reduce(character, { type: "addCrewRelationship", id: "cr-1" });
+	character = reduce(character, { type: "burnCrewRelationship", id: "cr-1" });
+	character = reduce(character, {
+		type: "addPowerTag",
+		themeId: CREW_THEME_ID,
+		id: "pt-1",
+		letter: "A",
+	});
+	character = reduce(character, {
+		type: "burnTag",
+		themeId: CREW_THEME_ID,
+		tagId: "pt-1",
+		burnValue: 1,
+	});
+	assert.equal(character.crewTheme.powerTags[0].burnt, true);
+
+	character = reduce(character, { type: "unburnCrew" });
+	assert.equal(character.crewTheme.powerTags[0].burnt, false);
+	assert.equal(character.crew[0].burnt, false);
+});
+
 test("marking Evolution points cycles 0 to 5 and wraps, never granting a Moment itself", () => {
 	let character = newCharacter();
 	for (let i = 0; i < 5; i++) {

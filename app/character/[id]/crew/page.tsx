@@ -28,7 +28,7 @@ import {
 } from "@/app/character/[id]/_components/track";
 import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { LabelAction } from "@/components/label-action";
-import { LABEL } from "@/components/styles";
+import { LABEL, SMALL_BUTTON } from "@/components/styles";
 import { CREW_THEME_ID, MOTIVATION_TYPE } from "@/lib/character/crew-theme";
 import { decayFull } from "@/lib/character/loss";
 import { isNascent, themeTitle } from "@/lib/character/theme";
@@ -223,6 +223,14 @@ export default function CrewPage({
 						specials={crew.specials}
 						here={here}
 					/>
+
+					<Button
+						type="button"
+						onClick={() => dispatch({ type: "unburnCrew" })}
+						className={`${SMALL_BUTTON} self-start text-dim`}
+					>
+						Unburn all crew tags
+					</Button>
 
 					<SaveLink href={`/character/${id}`} />
 					{decayFull(crew) && (
