@@ -61,11 +61,11 @@ export function CharacterCard({
 	const error = renameError ?? copyError ?? deleteError;
 
 	return (
-		<article className="flex flex-col gap-[11px] rounded-md border border-raised bg-surface px-[15px] py-[14px]">
+		<article className="relative flex flex-col gap-[11px] rounded-md border border-raised bg-surface px-[15px] py-[14px] transition-colors hover:border-primary">
 			<div className="flex items-start justify-between gap-3">
 				{renaming ? (
 					<form
-						className="flex flex-1 items-center gap-2"
+						className="relative flex flex-1 items-center gap-2"
 						onKeyDown={(event) => event.key === "Escape" && setRenaming(false)}
 						action={(form) => {
 							setRenaming(false);
@@ -91,7 +91,7 @@ export function CharacterCard({
 					>
 						<Link
 							href={`/character/${id}`}
-							className="inline-flex min-h-11 items-center"
+							className="inline-flex min-h-11 cursor-pointer items-center after:absolute after:inset-0 after:content-['']"
 						>
 							{label}
 						</Link>
@@ -130,7 +130,7 @@ export function CharacterCard({
 					Edited <time dateTime={updatedAt}>{edited}</time>
 				</p>
 
-				<div className="flex items-center">
+				<div className="relative flex items-center">
 					<Button
 						type="button"
 						onClick={() => setRenaming(true)}
