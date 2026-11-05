@@ -29,6 +29,7 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
+		".cloudflare/types",
 		".next/dev/types/**/*.ts",
 		"**/*.mts"
 	],
