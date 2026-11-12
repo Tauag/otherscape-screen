@@ -44,17 +44,18 @@ async function prepare(
 	// RLS returns the row only to a caller who may open this character.
 	const { data: row } = await supabase
 		.from("characters")
-		.select("name, discord_enabled")
+		.select("name, discord_enabled, solo:data->solo")
 		.eq("id", characterId)
 		.maybeSingle()
 		.overrideTypes<
-			{ name: string | null; discord_enabled: boolean },
+			{ name: string | null; discord_enabled: boolean; solo: unknown },
 			{ merge: false }
 		>();
 	if (!row) return { error: "Could not find that character." };
 
 	let webhook: string | null = null;
-	if (row.discord_enabled) {
+	// Solo play is a private game, so it never posts to the campaign's table.
+	if (row.discord_enabled && row.solo !== true) {
 		// RLS above proved access; the service role may read the campaign.
 		const { data: campaignWebhook, error } = await createServiceClient().rpc(
 			"character_discord_webhook",

@@ -30,7 +30,7 @@ const TUMBLE_MS = 600;
 const d6 = () => Math.floor(Math.random() * 6) + 1;
 
 const SEGMENTS =
-	"inline-flex self-start overflow-hidden rounded-sm border border-border";
+	"inline-flex self-start overflow-hidden rounded-sm border border-border data-disabled:opacity-40";
 const SEGMENT =
 	"grid min-h-11 min-w-11 cursor-pointer place-items-center border-r border-border px-3 font-display text-[13px] font-semibold tracking-[0.05em] text-dim uppercase last:border-r-0 data-pressed:bg-primary/12 data-pressed:text-primary";
 /** Full width on a phone, beside its controls from md up. */
@@ -222,6 +222,8 @@ function Tarot() {
 				</span>
 				<ToggleGroup
 					aria-labelledby={label}
+					// draw() already holds the count; a change mid-shuffle would be lost.
+					disabled={shuffling}
 					value={[count]}
 					// A new count deals that many fresh face-down cards.
 					onValueChange={(value) => {
