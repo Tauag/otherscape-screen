@@ -83,7 +83,7 @@ export function OracleDialog({
 	);
 }
 
-type Answer = { dice: number[]; kept: number; odds: Odds };
+type Answer = { dice: number[]; kept: number };
 
 function YesNo() {
 	const label = useId();
@@ -93,7 +93,7 @@ function YesNo() {
 	const rolling = faces.length > 0 && answer === null;
 
 	async function ask() {
-		const next = { ...askOracle(odds), odds };
+		const next = askOracle(odds);
 		setAnswer(null);
 		const tumbleFaces = () => setFaces(next.dice.map(d6));
 		tumbleFaces();
@@ -163,10 +163,8 @@ function YesNo() {
 									>
 										{ANSWERS[landed]}
 									</span>
-									<span className="font-mono text-xs text-dim">
-										<span className="sr-only">
-											, rolled {answer.dice.join(" and ")}
-										</span>
+									<span className="sr-only">
+										, rolled {answer.dice.join(" and ")}
 									</span>
 								</>
 							)}
@@ -182,16 +180,21 @@ function YesNo() {
 	);
 }
 
+// Module scope: the dialog unmounts Tarot on close, so a ref would reset.
+let preloaded = false;
+
 function Tarot() {
 	const label = useId();
 	const [count, setCount] = useState("1");
 	const [drawn, setDrawn] = useState<Draw[]>([]);
 	const [shuffling, setShuffling] = useState(false);
 
-	// lazy: fetches all 22 cards (~1.3MB, cached after the first open) so the
+	// lazy: fetches all 23 images (~1.3MB) once per page load, so the
 	// shuffle never flashes a blank card. Preload on first Draw instead if
 	// that ever costs too much on mobile data.
 	useEffect(() => {
+		if (preloaded) return;
+		preloaded = true;
 		for (const card of MAJOR_ARCANA) new Image().src = artPath(card);
 		new Image().src = BACK_ART;
 	}, []);

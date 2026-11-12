@@ -46,9 +46,13 @@ test("the deck is the 22 major arcana in order", () => {
 	);
 });
 
+/** Resolved from this file, so the check works from any working directory. */
+const publicFile = (path: string) =>
+	new URL(`../../../../../public${path}`, import.meta.url);
+
 test("every card's art file exists", () => {
 	for (const card of MAJOR_ARCANA) {
-		assert.ok(existsSync(`public${artPath(card)}`), artPath(card));
+		assert.ok(existsSync(publicFile(artPath(card))), artPath(card));
 	}
-	assert.ok(existsSync(`public${BACK_ART}`));
+	assert.ok(existsSync(publicFile(BACK_ART)));
 });
