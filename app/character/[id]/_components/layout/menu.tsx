@@ -32,7 +32,7 @@ export function SheetMenu({
 	shareToken: string | null;
 	id: string;
 }) {
-	const { character } = useCharacter();
+	const { character, dispatch } = useCharacter();
 	const [ghostsOpen, setGhostsOpen] = useState(false);
 	const [essenceOpen, setEssenceOpen] = useState(false);
 	const [shareOpen, setShareOpen] = useState(false);
@@ -61,6 +61,19 @@ export function SheetMenu({
 							>
 								Ghost Memories
 							</Menu.Item>
+							<Menu.CheckboxItem
+								className={`${MENU_ITEM} justify-between gap-3`}
+								checked={character.solo === true}
+								onCheckedChange={(solo) => dispatch({ type: "setSolo", solo })}
+							>
+								Solo Play
+								<span
+									aria-hidden="true"
+									className="relative h-[18px] w-8 shrink-0 rounded-full bg-pip transition-colors in-data-checked:bg-primary"
+								>
+									<span className="absolute top-0.5 left-0.5 size-3.5 rounded-full bg-bg transition-transform in-data-checked:translate-x-3.5" />
+								</span>
+							</Menu.CheckboxItem>
 							<Menu.Item
 								className={MENU_ITEM}
 								onClick={() => setEssenceOpen(true)}

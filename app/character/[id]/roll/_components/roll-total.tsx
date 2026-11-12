@@ -4,6 +4,7 @@ import { Button } from "@base-ui/react/button";
 import { unstable_isUnrecognizedActionError, useParams } from "next/navigation";
 import { useState } from "react";
 import { CopyIcon } from "@/app/character/[id]/_components/icons";
+import { useCharacter } from "@/app/character/[id]/_hooks/use-character";
 import { requestRoll, rollDice } from "@/app/character/[id]/_lib/roll-action";
 import {
 	type Dice,
@@ -13,6 +14,7 @@ import {
 	requestBlock,
 } from "@/app/character/[id]/_lib/roll-message";
 import { signed } from "@/app/character/[id]/_lib/roll-selection";
+import { OracleDialog } from "@/app/character/[id]/roll/_components/oracle-dialog";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { LABEL, QUIET, REMOVE_BUTTON } from "@/components/styles";
 
@@ -109,6 +111,8 @@ export function RollTotal({
 	onStartMitigation: () => void;
 }) {
 	const { id } = useParams<{ id: string }>();
+	const solo = useCharacter().character.solo === true;
+	const [oracleOpen, setOracleOpen] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [roll, setRoll] = useState<Roll>({ state: "rolling" });
 	const [faces, setFaces] = useState<Dice>([1, 1]);
@@ -176,14 +180,25 @@ export function RollTotal({
 		<div className="shrink-0 border-t border-edge bg-chrome">
 			<div className="flex items-stretch gap-3 pt-4 pb-4 px-3 sm:px-0">
 				<div className="flex flex-1 gap-2">
-					<Button
-						type="button"
-						disabled={lines.length === 0 || request?.state === "sending"}
-						onClick={sendRequest}
-						className="flex flex-1 flex-col items-center justify-center rounded-[5px] border border-primary font-display text-[19px] font-bold tracking-[0.1em] text-primary uppercase disabled:opacity-40"
-					>
-						Request
-					</Button>
+					{/* Solo: the player is the GM, so nobody takes a request. */}
+					{solo ? (
+						<Button
+							type="button"
+							onClick={() => setOracleOpen(true)}
+							className="flex flex-1 flex-col items-center justify-center rounded-[5px] border border-noise font-display text-[19px] font-bold tracking-[0.1em] text-noise uppercase"
+						>
+							Oracle
+						</Button>
+					) : (
+						<Button
+							type="button"
+							disabled={lines.length === 0 || request?.state === "sending"}
+							onClick={sendRequest}
+							className="flex flex-1 flex-col items-center justify-center rounded-[5px] border border-primary font-display text-[19px] font-bold tracking-[0.1em] text-primary uppercase disabled:opacity-40"
+						>
+							Request
+						</Button>
+					)}
 					<Button
 						type="button"
 						disabled={open && roll.state === "rolling"}
@@ -204,6 +219,8 @@ export function RollTotal({
 					</span>
 				</p>
 			</div>
+
+			{solo && <OracleDialog open={oracleOpen} onOpenChange={setOracleOpen} />}
 
 			<ConfirmDialog
 				open={request !== null}
@@ -278,15 +295,18 @@ export function RollTotal({
 										Dice {roll.dice[0]} and {roll.dice[1]}, power{" "}
 										{signed(rolledPower)}.
 									</span>
-									<span className="font-sans text-xs text-dim">
-										{roll.posted
-											? "Posted to Discord."
-											: "Not posted to Discord. Tell the table your result or copy the dice maiden command below."}
-									</span>
+									{/* Solo has no table to tell. */}
+									{(roll.posted || !solo) && (
+										<span className="font-sans text-xs text-dim">
+											{roll.posted
+												? "Posted to Discord."
+												: "Not posted to Discord. Tell the table your result or copy the dice maiden command below."}
+										</span>
+									)}
 								</>
 							)}
 						</p>
-						{roll.state === "done" && !roll.posted && (
+						{roll.state === "done" && !roll.posted && !solo && (
 							<>
 								<p className="font-sans text-xs text-dim">
 									For Dice Maiden: type /roll, pick it from the menu, then

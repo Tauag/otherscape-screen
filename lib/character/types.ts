@@ -228,4 +228,7 @@ export type Character = {
 	storyTags: StoryTag[];
 	/** Step 1-10 of guided creation, or null once it is finished. */
 	creationStep: number | null;
+	/** The player is also the GM: shows the oracle instead of Request. Absent
+	 *  reads as false. Issue #42 moves this onto a solo campaign type. */
+	solo?: boolean;
 };

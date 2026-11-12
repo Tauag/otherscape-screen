@@ -84,6 +84,7 @@ export type CharacterAction =
 	| { type: "replace"; document: Character }
 	| { type: "rename"; name: string }
 	| { type: "setPlayerName"; playerName: string }
+	| { type: "setSolo"; solo: boolean }
 	| { type: "setThemeType"; themeId: string; themeType: ThemeType }
 	| { type: "setThemebook"; themeId: string; themebook: string }
 	| { type: "setThemeQuote"; themeId: string; quote: string }
@@ -289,6 +290,8 @@ export function reduce(
 			return { ...character, name: action.name };
 		case "setPlayerName":
 			return { ...character, playerName: action.playerName };
+		case "setSolo":
+			return { ...character, solo: action.solo };
 		case "setThemeType": {
 			// A themebook belongs to one type, so a stale choice from the old type
 			// would otherwise linger, matching nothing in the new type's list.
