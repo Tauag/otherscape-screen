@@ -23,6 +23,7 @@ type CardProps = {
 	id: string;
 	name: string;
 	essence: string;
+	solo: boolean;
 	shared: boolean;
 	/** ISO 8601, for the machine-readable <time>. */
 	updatedAt: string;
@@ -36,6 +37,7 @@ export function CharacterCard({
 	id,
 	name,
 	essence,
+	solo,
 	shared,
 	updatedAt,
 	edited,
@@ -98,11 +100,21 @@ export function CharacterCard({
 					</h2>
 				)}
 
-				{shared && (
-					<span className="flex shrink-0 items-center gap-1 rounded-[3px] border border-border px-1.5 py-0.5 font-mono text-[9px] tracking-[0.08em] text-positive-text uppercase">
-						<LinkIcon className="size-2.5 stroke-positive" />
-						Shared
-					</span>
+				{(solo || shared) && (
+					<div className="flex shrink-0 items-center gap-1.5">
+						{solo && (
+							<span className="flex shrink-0 items-center gap-1 rounded-[3px] border border-border px-1.5 py-0.5 font-mono text-[9px] tracking-[0.08em] text-dim uppercase">
+								Solo
+							</span>
+						)}
+
+						{shared && (
+							<span className="flex shrink-0 items-center gap-1 rounded-[3px] border border-border px-1.5 py-0.5 font-mono text-[9px] tracking-[0.08em] text-positive-text uppercase">
+								<LinkIcon className="size-2.5 stroke-positive" />
+								Shared
+							</span>
+						)}
+					</div>
 				)}
 			</div>
 

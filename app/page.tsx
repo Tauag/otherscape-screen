@@ -16,6 +16,7 @@ type RosterRow = {
 	essence: string | null;
 	updated_at: string;
 	share_token: string | null;
+	solo: boolean | null;
 	roster_summary: unknown;
 };
 
@@ -36,7 +37,9 @@ export default async function RosterPage() {
 	const [{ data: characters, error }, { data: isAdmin }] = await Promise.all([
 		supabase
 			.from("characters")
-			.select("id, name, essence, updated_at, share_token, roster_summary")
+			.select(
+				"id, name, essence, updated_at, share_token, solo:data->solo, roster_summary",
+			)
 			.eq("owner", user.id)
 			.order("updated_at", { ascending: false })
 			.overrideTypes<RosterRow[], { merge: false }>(),
@@ -74,6 +77,7 @@ export default async function RosterPage() {
 							id={character.id}
 							name={character.name ?? ""}
 							essence={character.essence ?? ""}
+							solo={character.solo === true}
 							shared={character.share_token !== null}
 							updatedAt={character.updated_at}
 							edited={relativeTime(character.updated_at)}

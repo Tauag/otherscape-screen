@@ -4,7 +4,8 @@ import { Button } from "@base-ui/react/button";
 import { Dialog } from "@base-ui/react/dialog";
 import { Toggle } from "@base-ui/react/toggle";
 import { ToggleGroup } from "@base-ui/react/toggle-group";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { SearchIcon } from "@/app/character/[id]/_components/icons";
 import {
 	ANSWERS,
 	answerIndex,
@@ -188,6 +189,7 @@ function Tarot() {
 	const [count, setCount] = useState("1");
 	const [drawn, setDrawn] = useState<Draw[]>([]);
 	const [shuffling, setShuffling] = useState(false);
+	const [zoomed, setZoomed] = useState<(Draw & { from: DOMRect }) | null>(null);
 
 	// lazy: fetches all 23 images (~1.3MB) once per page load, so the
 	// shuffle never flashes a blank card. Preload on first Draw instead if
@@ -282,7 +284,7 @@ function Tarot() {
 						<li
 							// biome-ignore lint/suspicious/noArrayIndexKey: slots are fixed while the shuffle swaps their cards
 							key={index}
-							className="grid grid-cols-[56px_minmax(0,1fr)] gap-3 border-t border-border pt-3 first:border-t-0 first:pt-0 md:flex md:w-52 md:flex-col md:gap-2.5 md:border-t-0 md:pt-0"
+							className="relative grid grid-cols-[56px_minmax(0,1fr)] gap-3 border-t border-border pt-3 first:border-t-0 first:pt-0 md:flex md:w-52 md:flex-col md:gap-2.5 md:border-t-0 md:pt-0"
 						>
 							<span className="hidden font-display text-[10px] font-semibold tracking-[0.16em] text-faint uppercase md:block">
 								Card {index + 1}
@@ -290,12 +292,37 @@ function Tarot() {
 							{/* Black line art, so invert it for the dark UI. Each SVG's
 								    viewBox is cropped to the card frame, which keeps the art
 								    centred when a reversed card rotates. */}
-							{/* biome-ignore lint/performance/noImgElement: static SVG art from public/, nothing for next/image to optimize. */}
-							<img
-								src={artPath(card)}
-								alt=""
-								className={`aspect-[443/702] w-full max-w-full invert ${reversed ? "rotate-180" : ""} ${shuffling ? "opacity-60" : ""}`}
-							/>
+							<Button
+								type="button"
+								disabled={shuffling}
+								aria-label={`Expand ${card.name}`}
+								onClick={(event) =>
+									setZoomed({
+										card,
+										reversed,
+										from: event.currentTarget
+											.querySelector("img")
+											?.getBoundingClientRect() as DOMRect,
+									})
+								}
+								// after: stretches the hit area over the whole row (the li is relative).
+								className="block cursor-pointer after:absolute after:inset-0 after:content-['']"
+							>
+								<span className="relative block">
+									{/* biome-ignore lint/performance/noImgElement: static SVG art from public/, nothing for next/image to optimize. */}
+									<img
+										src={artPath(card)}
+										alt=""
+										className={`aspect-[443/702] w-full max-w-full invert ${reversed ? "rotate-180" : ""} ${shuffling ? "opacity-60" : ""}`}
+									/>
+									<span
+										aria-hidden="true"
+										className="absolute right-0 bottom-1 grid size-5 place-items-center rounded-full bg-bg/80 text-dim"
+									>
+										<SearchIcon className="size-3" />
+									</span>
+								</span>
+							</Button>
 							<div
 								className={`flex min-w-0 flex-col gap-1.5 ${shuffling ? "invisible" : ""}`}
 							>
@@ -335,6 +362,31 @@ function Tarot() {
 			>
 				Draw
 			</Button>
+
+			<Dialog.Root
+				open={zoomed !== null}
+				onOpenChange={(open) => !open && setZoomed(null)}
+			>
+				<Dialog.Portal>
+					<Dialog.Backdrop className={`${DIALOG_BACKDROP} z-50`} />
+					<Dialog.Popup className="fixed inset-0 z-50 flex flex-col items-center gap-3 transition-opacity duration-200 data-starting-style:opacity-0 overflow-y-auto bg-surface px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] text-text outline-none">
+						{zoomed && (
+							<>
+								<Dialog.Title className={HEADING}>
+									{zoomed.card.name} ·{" "}
+									{zoomed.reversed ? "Reversed" : "Upright"}
+								</Dialog.Title>
+								<ZoomCard zoomed={zoomed} />
+								<Dialog.Close
+									className={`${QUIET} w-full max-w-[420] justify-center`}
+								>
+									Close
+								</Dialog.Close>
+							</>
+						)}
+					</Dialog.Popup>
+				</Dialog.Portal>
+			</Dialog.Root>
 		</section>
 	);
 }
@@ -360,5 +412,41 @@ function Keywords({
 			</span>
 			{text}
 		</p>
+	);
+}
+
+/** Flies from the tapped thumbnail to full size (FLIP), turning face-up on the way. */
+function ZoomCard({ zoomed }: { zoomed: Draw & { from: DOMRect } }) {
+	const ref = useRef<HTMLImageElement>(null);
+	const { card, reversed, from } = zoomed;
+
+	useEffect(() => {
+		const el = ref.current;
+		if (!el || !from) return;
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+		const to = el.getBoundingClientRect();
+		const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+		const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+		const rest = reversed ? "rotate(180deg)" : "none";
+		el.animate(
+			[
+				{
+					transform: `translate(${dx}px, ${dy}px) scale(${from.width / to.width}) perspective(800px) rotateY(180deg) ${reversed ? "rotate(180deg)" : ""}`,
+				},
+				{ transform: rest },
+			],
+			{ duration: 450, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+		);
+	}, [from, reversed]);
+
+	return (
+		// biome-ignore lint/performance/noImgElement: static SVG art from public/, nothing for next/image to optimize.
+		<img
+			ref={ref}
+			src={artPath(card)}
+			alt=""
+			style={reversed ? { transform: "rotate(180deg)" } : undefined}
+			className="aspect-[443/702] max-h-[70dvh] w-auto max-w-full invert"
+		/>
 	);
 }
